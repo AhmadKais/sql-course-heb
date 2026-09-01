@@ -18,7 +18,7 @@
 | 2 | [מודל הנתונים](modules/module-02-data-model/) | ישויות, מופעים, מאפיינים, מזהים | ✅ מוכן |
 | 3 | [תרשים ERD](modules/module-03-erd/) | קשרים, יחסים, מוסכמות שרטוט, דיאגרמות מטריציוניות | ✅ מוכן |
 | 4 | [טיפוסי משנה וטיפוסי על](modules/module-04-subtypes-supertypes/) | Subtypes, Supertypes, תיעוד חוקים עסקיים | ✅ מוכן |
-| 5 | יחסים | סוגי יחסים, יחסי רבים‑לרבים, CRUD | 🔜 בהמשך |
+| 5 | [יחסים](modules/module-05-relationships/) | יחסים עבירים, סוגי יחסים, פתרון M:M, CRUD | ✅ מוכן |
 | 6 | נרמול | NF1, NF2, NF3, מזהים ייחודיים | 🔜 בהמשך |
 | … | … | ראו את [תכנית הלימודים המלאה](SYLLABUS.md) | |
 
@@ -83,7 +83,8 @@ sql-course-heb/
 │   │   └── solutions.md         ← פתרונות
 │   ├── module-02-data-model/
 │   ├── module-03-erd/
-│   └── module-04-subtypes-supertypes/
+│   ├── module-04-subtypes-supertypes/
+│   └── module-05-relationships/
 ├── project/
 │   └── README.md                ← הפרויקט המלווה: מקלט לבעלי חיים
 └── resources/
