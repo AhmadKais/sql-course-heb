@@ -175,6 +175,26 @@
 
 ---
 
+## מעקב אחר שינויים (מודול 10)
+
+| עברית | English | הסבר |
+|-------|---------|-------|
+| מימד הזמן | Time Dimension | היכולת לענות לא רק "מה יש" אלא "מה היה" |
+| זמן תקף | Valid Time | מתי העובדה נכונה **בעולם** |
+| זמן רישום | Transaction Time | מתי **המערכת ידעה** על העובדה |
+| מודל דו‑זמני | Bitemporal Model | שמירת שני צירי הזמן יחד |
+| נקודת זמן | Point in Time | אירוע שקרה בתאריך — עמודה אחת |
+| שרשרת אירועים | Event Chain | שורות עם `from` בלבד; כל אחת נגמרת כשהבאה מתחילה |
+| יומן ביקורת | Audit Log | טבלה שרושמת כל שינוי: מי, מה, מתי |
+| ניהול גרסאות | Versioning | כל שינוי יוצר שורה חדשה שלמה |
+| SCD Type 2 | Slowly Changing Dimension | השם התקני של ישות תקופה בעולם מחסני הנתונים |
+| מחירון | Price List | מחירים עם `valid_from` / `valid_to` |
+| מחיר מוקפא | Frozen / Paid Price | המחיר ששולם בפועל — נעול לנצח |
+| בסיס החישוב | Calculation Basis | עמודה שמסבירה **למה** יצא הסכום הזה |
+| נעילת מחיר | Price Lock | לקוח שנשאר במחיר שבו נרשם |
+
+---
+
 ## ראשי תיבות
 
 | ר"ת | הפירוש | בעברית |
@@ -200,7 +220,7 @@
 
 ## 🔤 אינדקס אלפביתי (אנגלית)
 
-`ACID` · `Anomaly` · `Arc` · `Attribute` · `Barker Notation` · `Business Rule` · `Candidate Key` · `Cardinality` · `Cascade Delete` · `Check Constraint` · `Code Table` · `Column` · `Composite Attribute` · `Composite Key` · `Conceptual Model` · `Constraint` · `Crow's Foot` · `CRUD` · `Data` · `Data Dictionary` · `Data Independence` · `Data Integrity` · `Data Model` · `Data Redundancy` · `Database` · `DBMS` · `DCL` · `DDL` · `Decision Log` · `Degree` · `Delete Rule` · `Denormalization` · `Derived Attribute` · `Discriminator` · `DML` · `Domain` · `Entity` · `Entity Integrity` · `ERD` · `Exhaustive Rule` · `Fear Effect` · `First Normal Form` · `Foreign Key` · `Frozen Value` · `Functional Dependency` · `Handover` · `Hierarchical Model` · `Hierarchical Relationship` · `Historical Data` · `Index` · `Information` · `Inheritance` · `Instance` · `Intersection Entity` · `Knowledge` · `Logical Model` · `Mandatory Attribute` · `Matrix Diagram` · `Multi‑valued Attribute` · `Mutually Exclusive Rule` · `Natural Key` · `Network Model` · `Normalization` · `NULL` · `OLAP` · `OLTP` · `Open Period` · `Optional Attribute` · `Optionality` · `Partial Dependency` · `Physical Model` · `Playback` · `Primary Key` · `Query` · `Recursive Query` · `Recursive Relationship` · `Redundant Relationship` · `Referential Integrity` · `Relational Model` · `Relationship` · `Repeating Group` · `Role` · `Row` · `Schema` · `Scope Creep` · `SDLC` · `Second Normal Form` · `Secondary UID` · `Set Null` · `SQL` · `Stakeholders` · `Subtype` · `Supertype` · `Surrogate Key` · `Table` · `Third Normal Form` · `Transaction` · `Transitive Dependency` · `Trigger` · `UID` · `View` · `Wisdom`
+`ACID` · `Anomaly` · `Arc` · `Attribute` · `Audit Log` · `Barker Notation` · `Bitemporal Model` · `Business Rule` · `Candidate Key` · `Cardinality` · `Cascade Delete` · `Check Constraint` · `Code Table` · `Column` · `Composite Attribute` · `Composite Key` · `Conceptual Model` · `Constraint` · `Crow's Foot` · `CRUD` · `Data` · `Data Dictionary` · `Data Independence` · `Data Integrity` · `Data Model` · `Data Redundancy` · `Database` · `DBMS` · `DCL` · `DDL` · `Decision Log` · `Degree` · `Delete Rule` · `Denormalization` · `Derived Attribute` · `Discriminator` · `DML` · `Domain` · `Entity` · `Entity Integrity` · `ERD` · `Event Chain` · `Exhaustive Rule` · `Fear Effect` · `First Normal Form` · `Foreign Key` · `Frozen Value` · `Functional Dependency` · `Handover` · `Hierarchical Model` · `Hierarchical Relationship` · `Historical Data` · `Index` · `Information` · `Inheritance` · `Instance` · `Intersection Entity` · `Knowledge` · `Logical Model` · `Mandatory Attribute` · `Matrix Diagram` · `Multi‑valued Attribute` · `Mutually Exclusive Rule` · `Natural Key` · `Network Model` · `Normalization` · `NULL` · `OLAP` · `OLTP` · `Open Period` · `Optional Attribute` · `Optionality` · `Partial Dependency` · `Physical Model` · `Playback` · `Point in Time` · `Price List` · `Price Lock` · `Primary Key` · `Query` · `Recursive Query` · `Recursive Relationship` · `Redundant Relationship` · `Referential Integrity` · `Relational Model` · `Relationship` · `Repeating Group` · `Role` · `Row` · `SCD` · `Schema` · `Scope Creep` · `SDLC` · `Second Normal Form` · `Secondary UID` · `Set Null` · `SQL` · `Stakeholders` · `Subtype` · `Supertype` · `Surrogate Key` · `Table` · `Third Normal Form` · `Time Dimension` · `Transaction` · `Transaction Time` · `Transitive Dependency` · `Trigger` · `UID` · `Valid Time` · `Versioning` · `View` · `Wisdom`
 
 ---
 
