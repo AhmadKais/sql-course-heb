@@ -33,7 +33,8 @@
 | 6 | [נרמול](modules/module-06-normalization/) | מזהים מלאכותיים/מורכבים/משניים, 1NF, 2NF, 3NF | ✅ מוכן |
 | 7 | [אילוצים](modules/module-07-constraints/) | תחומים, קשתות, היררכיות, כללי מחיקה, מידע היסטורי | ✅ מוכן |
 | 8 | [תפקיד היועץ](modules/module-08-consultant/) | מיהו היועץ, אפקט הפחד, הצגה ללקוח, יומן החלטות | ✅ מוכן |
-| 9 | פרויקט I | פעילות מקיפה: המקלט לבעלי חיים מקצה לקצה | 🔜 בהמשך |
+| 9 | [פרויקט I](modules/module-09-project-1/) | פרויקט מלא: ראיון ⟵ חוקים ⟵ ERD ⟵ הצגה ⟵ שילוב שינויים | ✅ מוכן |
+| 10 | עיצוב למעקב אחר שינויים | מימד הזמן, שינויי מחיר | 🔜 בהמשך |
 | … | … | ראו את [תכנית הלימודים המלאה](SYLLABUS.md) | |
 
 ---
@@ -104,7 +105,8 @@ sql-course-heb/
 │   ├── module-05-relationships/
 │   ├── module-06-normalization/
 │   ├── module-07-constraints/
-│   └── module-08-consultant/
+│   ├── module-08-consultant/
+│   └── module-09-project-1/
 ├── project/
 │   └── README.md                ← הפרויקט המלווה: מקלט לבעלי חיים
 └── resources/
