@@ -65,7 +65,7 @@
 | רבים לרבים | Many‑to‑Many (M:M) | חייב פירוק |
 | ישות מקשרת | Intersection Entity | פותרת M:M |
 | יחס רקורסיבי | Recursive Relationship | ישות קשורה לעצמה |
-| קשת | Arc | יחס בלעדי — "או‑או" |
+| קשת | Arc | יחס בלעדי — "או‑או". ראו הרחבה במודול 7 |
 | דיאגרמה מטריציונית | Matrix Diagram | טבלת כל זוגות הישויות |
 | קשר מיותר | Redundant Relationship | נגזר דרך ישות שלישית |
 
@@ -132,6 +132,30 @@
 
 ---
 
+## אילוצים (מודול 7)
+
+| עברית | English | הסבר |
+|-------|---------|-------|
+| אילוץ | Constraint | חוק עסקי שנאכף בבסיס הנתונים — לא רק מתועד |
+| תחום | Domain | קבוצת הערכים החוקיים שמאפיין יכול לקבל |
+| קשת | Arc | "בדיוק אחד" מבין כמה יחסים היוצאים מאותה ישות |
+| שלמות התייחסותית | Referential Integrity | מפתח זר חייב להצביע על שורה קיימת |
+| שלמות ישות | Entity Integrity | לכל שורה מזהה ייחודי ומלא |
+| אילוץ בדיקה | Check Constraint | תנאי שכל שורה חייבת לקיים |
+| כלל מחיקה | Delete Rule | מה קורה לילדים כשמוחקים את ההורה |
+| מחיקה מדורגת | Cascade Delete | מחיקת ההורה מוחקת גם את הילדים |
+| מניעת מחיקה | Restrict / No Action | המחיקה נדחית כל עוד יש ילדים |
+| איפוס הפניה | Set Null | מחיקת ההורה מרוקנת את המפתח הזר |
+| טריגר | Trigger | קוד שרץ אוטומטית בבסיס הנתונים בעת שינוי |
+| יחס היררכי | Hierarchical Relationship | יחס רקורסיבי 1:M — עץ, לכל צומת הורה אחד |
+| שאילתה רקורסיבית | Recursive Query | `CONNECT BY` / `WITH RECURSIVE` — טיול בעץ |
+| ישות תקופה | Period / History Entity | ישות עם `start_date` ו‑`end_date` ששומרת מה היה |
+| תקופה פתוחה | Open Period | שורה עם `end_date IS NULL` — התקופה הנוכחית |
+| מידע היסטורי | Historical Data | תיעוד מה **היה**, לא רק מה **יש** |
+| טבלת קוד | Code / Lookup Table | טבלה קטנה של ערכים חוקיים (סטטוסים, סוגים) |
+
+---
+
 ## ראשי תיבות
 
 | ר"ת | הפירוש | בעברית |
@@ -157,7 +181,7 @@
 
 ## 🔤 אינדקס אלפביתי (אנגלית)
 
-`ACID` · `Anomaly` · `Arc` · `Attribute` · `Barker Notation` · `Business Rule` · `Candidate Key` · `Cardinality` · `Column` · `Composite Attribute` · `Composite Key` · `Conceptual Model` · `Constraint` · `CRUD` · `Crow's Foot` · `Data` · `Database` · `Data Independence` · `Data Integrity` · `Data Model` · `Data Redundancy` · `DBMS` · `Denormalization` · `DCL` · `DDL` · `Derived Attribute` · `Discriminator` · `DML` · `Entity` · `ERD` · `Exhaustive Rule` · `First Normal Form` · `Foreign Key` · `Frozen Value` · `Functional Dependency` · `Hierarchical Model` · `Index` · `Information` · `Inheritance` · `Instance` · `Intersection Entity` · `Knowledge` · `Logical Model` · `Mandatory Attribute` · `Matrix Diagram` · `Multi‑valued Attribute` · `Mutually Exclusive Rule` · `Natural Key` · `Network Model` · `Normalization` · `NULL` · `OLAP` · `OLTP` · `Optionality` · `Optional Attribute` · `Partial Dependency` · `Physical Model` · `Primary Key` · `Query` · `Recursive Relationship` · `Redundant Relationship` · `Relational Model` · `Relationship` · `Repeating Group` · `Role` · `Row` · `Schema` · `SDLC` · `SQL` · `Second Normal Form` · `Secondary UID` · `Subtype` · `Supertype` · `Surrogate Key` · `Table` · `Third Normal Form` · `Transaction` · `Transitive Dependency` · `UID` · `View` · `Wisdom`
+`ACID` · `Anomaly` · `Arc` · `Attribute` · `Barker Notation` · `Business Rule` · `Candidate Key` · `Cardinality` · `Cascade Delete` · `Check Constraint` · `Code Table` · `Column` · `Composite Attribute` · `Composite Key` · `Conceptual Model` · `Constraint` · `Crow's Foot` · `CRUD` · `Data` · `Data Independence` · `Data Integrity` · `Data Model` · `Data Redundancy` · `Database` · `DBMS` · `DCL` · `DDL` · `Delete Rule` · `Denormalization` · `Derived Attribute` · `Discriminator` · `DML` · `Domain` · `Entity` · `Entity Integrity` · `ERD` · `Exhaustive Rule` · `First Normal Form` · `Foreign Key` · `Frozen Value` · `Functional Dependency` · `Hierarchical Model` · `Hierarchical Relationship` · `Historical Data` · `Index` · `Information` · `Inheritance` · `Instance` · `Intersection Entity` · `Knowledge` · `Logical Model` · `Mandatory Attribute` · `Matrix Diagram` · `Multi‑valued Attribute` · `Mutually Exclusive Rule` · `Natural Key` · `Network Model` · `Normalization` · `NULL` · `OLAP` · `OLTP` · `Open Period` · `Optional Attribute` · `Optionality` · `Partial Dependency` · `Physical Model` · `Primary Key` · `Query` · `Recursive Query` · `Recursive Relationship` · `Redundant Relationship` · `Referential Integrity` · `Relational Model` · `Relationship` · `Repeating Group` · `Role` · `Row` · `Schema` · `SDLC` · `Second Normal Form` · `Secondary UID` · `Set Null` · `SQL` · `Subtype` · `Supertype` · `Surrogate Key` · `Table` · `Third Normal Form` · `Transaction` · `Transitive Dependency` · `Trigger` · `UID` · `View` · `Wisdom`
 
 ---
 
