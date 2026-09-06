@@ -156,6 +156,23 @@
 
 ---
 
+## תפקיד היועץ (מודול 8)
+
+| עברית | English | הסבר |
+|-------|---------|-------|
+| אפקט הפחד | Fear Effect | התנגדות והסתרה של אנשים בארגון מול פרויקט מערכת חדשה |
+| בעלי עניין | Stakeholders | כל מי שהמערכת משפיעה עליו — לא רק מי שמזמין אותה |
+| יומן החלטות | Decision Log | תיעוד של מה הוחלט, למה, ומי החליט |
+| זחילת היקף | Scope Creep | גדילה הדרגתית של הפרויקט דרך בקשות קטנות |
+| הצגה חוזרת | Playback | חזרה על מה שהובן, במילות הלקוח, לאימות |
+| שאלת הזהב | — | "עם מי עוד כדאי שאדבר?" |
+| מסמך חוקים עסקיים | Business Rules Document | כל חוק, איפה נאכף, ומה קורה כשמפרים |
+| מילון ישויות | Data Dictionary | הסבר בעברית פשוטה מה כל ישות ומאפיין אומרים |
+| רשימת שלב ב' | Phase 2 Backlog | בקשות שנדחו במכוון, מתועדות וגלויות ללקוח |
+| מסירה | Handover | חבילת המסמכים שמאפשרת ללקוח להמשיך בלעדיכם |
+
+---
+
 ## ראשי תיבות
 
 | ר"ת | הפירוש | בעברית |
@@ -181,7 +198,7 @@
 
 ## 🔤 אינדקס אלפביתי (אנגלית)
 
-`ACID` · `Anomaly` · `Arc` · `Attribute` · `Barker Notation` · `Business Rule` · `Candidate Key` · `Cardinality` · `Cascade Delete` · `Check Constraint` · `Code Table` · `Column` · `Composite Attribute` · `Composite Key` · `Conceptual Model` · `Constraint` · `Crow's Foot` · `CRUD` · `Data` · `Data Independence` · `Data Integrity` · `Data Model` · `Data Redundancy` · `Database` · `DBMS` · `DCL` · `DDL` · `Delete Rule` · `Denormalization` · `Derived Attribute` · `Discriminator` · `DML` · `Domain` · `Entity` · `Entity Integrity` · `ERD` · `Exhaustive Rule` · `First Normal Form` · `Foreign Key` · `Frozen Value` · `Functional Dependency` · `Hierarchical Model` · `Hierarchical Relationship` · `Historical Data` · `Index` · `Information` · `Inheritance` · `Instance` · `Intersection Entity` · `Knowledge` · `Logical Model` · `Mandatory Attribute` · `Matrix Diagram` · `Multi‑valued Attribute` · `Mutually Exclusive Rule` · `Natural Key` · `Network Model` · `Normalization` · `NULL` · `OLAP` · `OLTP` · `Open Period` · `Optional Attribute` · `Optionality` · `Partial Dependency` · `Physical Model` · `Primary Key` · `Query` · `Recursive Query` · `Recursive Relationship` · `Redundant Relationship` · `Referential Integrity` · `Relational Model` · `Relationship` · `Repeating Group` · `Role` · `Row` · `Schema` · `SDLC` · `Second Normal Form` · `Secondary UID` · `Set Null` · `SQL` · `Subtype` · `Supertype` · `Surrogate Key` · `Table` · `Third Normal Form` · `Transaction` · `Transitive Dependency` · `Trigger` · `UID` · `View` · `Wisdom`
+`ACID` · `Anomaly` · `Arc` · `Attribute` · `Barker Notation` · `Business Rule` · `Candidate Key` · `Cardinality` · `Cascade Delete` · `Check Constraint` · `Code Table` · `Column` · `Composite Attribute` · `Composite Key` · `Conceptual Model` · `Constraint` · `Crow's Foot` · `CRUD` · `Data` · `Data Dictionary` · `Data Independence` · `Data Integrity` · `Data Model` · `Data Redundancy` · `Database` · `DBMS` · `DCL` · `DDL` · `Decision Log` · `Delete Rule` · `Denormalization` · `Derived Attribute` · `Discriminator` · `DML` · `Domain` · `Entity` · `Entity Integrity` · `ERD` · `Exhaustive Rule` · `Fear Effect` · `First Normal Form` · `Foreign Key` · `Frozen Value` · `Functional Dependency` · `Handover` · `Hierarchical Model` · `Hierarchical Relationship` · `Historical Data` · `Index` · `Information` · `Inheritance` · `Instance` · `Intersection Entity` · `Knowledge` · `Logical Model` · `Mandatory Attribute` · `Matrix Diagram` · `Multi‑valued Attribute` · `Mutually Exclusive Rule` · `Natural Key` · `Network Model` · `Normalization` · `NULL` · `OLAP` · `OLTP` · `Open Period` · `Optional Attribute` · `Optionality` · `Partial Dependency` · `Physical Model` · `Playback` · `Primary Key` · `Query` · `Recursive Query` · `Recursive Relationship` · `Redundant Relationship` · `Referential Integrity` · `Relational Model` · `Relationship` · `Repeating Group` · `Role` · `Row` · `Schema` · `Scope Creep` · `SDLC` · `Second Normal Form` · `Secondary UID` · `Set Null` · `SQL` · `Stakeholders` · `Subtype` · `Supertype` · `Surrogate Key` · `Table` · `Third Normal Form` · `Transaction` · `Transitive Dependency` · `Trigger` · `UID` · `View` · `Wisdom`
 
 ---
 

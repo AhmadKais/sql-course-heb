@@ -32,7 +32,8 @@
 | 5 | [יחסים](modules/module-05-relationships/) | יחסים עבירים, סוגי יחסים, פתרון M:M, CRUD | ✅ מוכן |
 | 6 | [נרמול](modules/module-06-normalization/) | מזהים מלאכותיים/מורכבים/משניים, 1NF, 2NF, 3NF | ✅ מוכן |
 | 7 | [אילוצים](modules/module-07-constraints/) | תחומים, קשתות, היררכיות, כללי מחיקה, מידע היסטורי | ✅ מוכן |
-| 8 | תפקיד היועץ | מיהו היועץ, התגברות על אפקט הפחד | 🔜 בהמשך |
+| 8 | [תפקיד היועץ](modules/module-08-consultant/) | מיהו היועץ, אפקט הפחד, הצגה ללקוח, יומן החלטות | ✅ מוכן |
+| 9 | פרויקט I | פעילות מקיפה: המקלט לבעלי חיים מקצה לקצה | 🔜 בהמשך |
 | … | … | ראו את [תכנית הלימודים המלאה](SYLLABUS.md) | |
 
 ---
@@ -102,7 +103,8 @@ sql-course-heb/
 │   ├── module-04-subtypes-supertypes/
 │   ├── module-05-relationships/
 │   ├── module-06-normalization/
-│   └── module-07-constraints/
+│   ├── module-07-constraints/
+│   └── module-08-consultant/
 ├── project/
 │   └── README.md                ← הפרויקט המלווה: מקלט לבעלי חיים
 └── resources/
