@@ -107,6 +107,31 @@
 
 ---
 
+## נרמול (מודול 6)
+
+| עברית | English | הסבר |
+|-------|---------|-------|
+| נרמול | Normalization | תהליך הקצאת תכונות לישויות — כל עובדה במקום אחד בדיוק |
+| דה‑נרמול | Denormalization | הכנסת כפילות **במכוון**, בדרך כלל משיקולי ביצועים |
+| תלות פונקציונלית | Functional Dependency | `A ⟵ B`: אם ידוע A, אז B ידוע בוודאות |
+| תלות טרנזיטיבית / מעבירה | Transitive Dependency | שרשרת `מזהה ⟵ מאפיין ⟵ מאפיין` — אסורה ב‑3NF |
+| תלות חלקית | Partial Dependency | מאפיין שתלוי רק בחלק ממזהה מורכב — אסורה ב‑2NF |
+| צורה נורמלית ראשונה | First Normal Form (1NF) | ערך אחד בכל תא, ללא קבוצות חוזרות |
+| צורה נורמלית שנייה | Second Normal Form (2NF) | אין תלות חלקית — רלוונטית רק למזהה מורכב |
+| צורה נורמלית שלישית | Third Normal Form (3NF) | אין תלות טרנזיטיבית |
+| חריגת עדכון | Update Anomaly | עובדה כתובה בהרבה שורות; עדכון חלקי יוצר סתירה |
+| חריגת הוספה | Insert Anomaly | אי אפשר לרשום דבר בלי דבר אחר |
+| חריגת מחיקה | Delete Anomaly | מחיקת שורה מוחקת מידע לא קשור |
+| קבוצה חוזרת | Repeating Group | `מוצר_1`, `מוצר_2`, `מוצר_3` — הפרת 1NF |
+| ערך אטומי | Atomic Value | ערך יחיד ובלתי מתחלק בתא |
+| מזהה מורכב | Composite UID / Key | מזהה שמורכב משתי עמודות או יותר |
+| מזהה משני | Secondary UID | מאפיין ייחודי **נוסף** למזהה הראשי; אוכף חוק עסקי |
+| מזהה טבעי | Natural Key | מזהה בעל משמעות בעולם האמיתי (ת"ז, מק"ט) |
+| שדה מחושב | Derived / Computed Field | ערך הנגזר משדות אחרים — בדרך כלל לא נשמר |
+| ערך היסטורי / מוקפא | Historical / Frozen Value | ערך שנקבע ברגע העסקה ואינו משתנה. **אינו כפילות** |
+
+---
+
 ## ראשי תיבות
 
 | ר"ת | הפירוש | בעברית |
@@ -132,7 +157,7 @@
 
 ## 🔤 אינדקס אלפביתי (אנגלית)
 
-`ACID` · `Anomaly` · `Arc` · `Attribute` · `Barker Notation` · `Business Rule` · `Candidate Key` · `Cardinality` · `Column` · `Composite Attribute` · `Composite Key` · `Conceptual Model` · `Constraint` · `CRUD` · `Crow's Foot` · `Data` · `Database` · `Data Independence` · `Data Integrity` · `Data Model` · `Data Redundancy` · `DBMS` · `DCL` · `DDL` · `Derived Attribute` · `Discriminator` · `DML` · `Entity` · `ERD` · `Exhaustive Rule` · `Foreign Key` · `Hierarchical Model` · `Index` · `Information` · `Inheritance` · `Instance` · `Intersection Entity` · `Knowledge` · `Logical Model` · `Mandatory Attribute` · `Matrix Diagram` · `Multi‑valued Attribute` · `Mutually Exclusive Rule` · `Natural Key` · `Network Model` · `Normalization` · `NULL` · `OLAP` · `OLTP` · `Optionality` · `Optional Attribute` · `Physical Model` · `Primary Key` · `Query` · `Recursive Relationship` · `Redundant Relationship` · `Relational Model` · `Relationship` · `Role` · `Row` · `Schema` · `SDLC` · `SQL` · `Subtype` · `Supertype` · `Surrogate Key` · `Table` · `Transaction` · `UID` · `View` · `Wisdom`
+`ACID` · `Anomaly` · `Arc` · `Attribute` · `Barker Notation` · `Business Rule` · `Candidate Key` · `Cardinality` · `Column` · `Composite Attribute` · `Composite Key` · `Conceptual Model` · `Constraint` · `CRUD` · `Crow's Foot` · `Data` · `Database` · `Data Independence` · `Data Integrity` · `Data Model` · `Data Redundancy` · `DBMS` · `Denormalization` · `DCL` · `DDL` · `Derived Attribute` · `Discriminator` · `DML` · `Entity` · `ERD` · `Exhaustive Rule` · `First Normal Form` · `Foreign Key` · `Frozen Value` · `Functional Dependency` · `Hierarchical Model` · `Index` · `Information` · `Inheritance` · `Instance` · `Intersection Entity` · `Knowledge` · `Logical Model` · `Mandatory Attribute` · `Matrix Diagram` · `Multi‑valued Attribute` · `Mutually Exclusive Rule` · `Natural Key` · `Network Model` · `Normalization` · `NULL` · `OLAP` · `OLTP` · `Optionality` · `Optional Attribute` · `Partial Dependency` · `Physical Model` · `Primary Key` · `Query` · `Recursive Relationship` · `Redundant Relationship` · `Relational Model` · `Relationship` · `Repeating Group` · `Role` · `Row` · `Schema` · `SDLC` · `SQL` · `Second Normal Form` · `Secondary UID` · `Subtype` · `Supertype` · `Surrogate Key` · `Table` · `Third Normal Form` · `Transaction` · `Transitive Dependency` · `UID` · `View` · `Wisdom`
 
 ---
 

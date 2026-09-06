@@ -30,7 +30,8 @@
 | 3 | [תרשים ERD](modules/module-03-erd/) | קשרים, יחסים, מוסכמות שרטוט, דיאגרמות מטריציוניות | ✅ מוכן |
 | 4 | [טיפוסי משנה וטיפוסי על](modules/module-04-subtypes-supertypes/) | Subtypes, Supertypes, תיעוד חוקים עסקיים | ✅ מוכן |
 | 5 | [יחסים](modules/module-05-relationships/) | יחסים עבירים, סוגי יחסים, פתרון M:M, CRUD | ✅ מוכן |
-| 6 | נרמול | NF1, NF2, NF3, מזהים ייחודיים | 🔜 בהמשך |
+| 6 | [נרמול](modules/module-06-normalization/) | מזהים מלאכותיים/מורכבים/משניים, 1NF, 2NF, 3NF | ✅ מוכן |
+| 7 | אילוצים | קשתות, יחסים היררכיים, מידע היסטורי | 🔜 בהמשך |
 | … | … | ראו את [תכנית הלימודים המלאה](SYLLABUS.md) | |
 
 ---
@@ -98,7 +99,8 @@ sql-course-heb/
 │   ├── module-02-data-model/
 │   ├── module-03-erd/
 │   ├── module-04-subtypes-supertypes/
-│   └── module-05-relationships/
+│   ├── module-05-relationships/
+│   └── module-06-normalization/
 ├── project/
 │   └── README.md                ← הפרויקט המלווה: מקלט לבעלי חיים
 └── resources/
