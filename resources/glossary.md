@@ -58,7 +58,9 @@
 | סימון Barker | Barker Notation | הסימון של אורקל ותכנית הלימודים |
 | כף עורב | Crow's Foot | סימון "רבים" בקצה קו יחס |
 | יחס | Relationship | קשר עסקי בין שתי ישויות |
-| דרגה | Cardinality | כמה מופעים — אחד או רבים |
+| עוצמה | Cardinality | כמה מופעים בצד השני — אחד או רבים |
+| דרגה | Degree | כמה ישויות משתתפות ביחס — אונרי (1), בינארי (2), טרנרי (3) |
+| ⚠️ | — | **אל תבלבלו:** *עוצמה* = כמה מופעים · *דרגה* = כמה ישויות |
 | אופציונליות | Optionality | האם חובה — must be / may be |
 | אחד לאחד | One‑to‑One (1:1) | |
 | אחד לרבים | One‑to‑Many (1:M) | הנפוץ ביותר |
@@ -198,7 +200,7 @@
 
 ## 🔤 אינדקס אלפביתי (אנגלית)
 
-`ACID` · `Anomaly` · `Arc` · `Attribute` · `Barker Notation` · `Business Rule` · `Candidate Key` · `Cardinality` · `Cascade Delete` · `Check Constraint` · `Code Table` · `Column` · `Composite Attribute` · `Composite Key` · `Conceptual Model` · `Constraint` · `Crow's Foot` · `CRUD` · `Data` · `Data Dictionary` · `Data Independence` · `Data Integrity` · `Data Model` · `Data Redundancy` · `Database` · `DBMS` · `DCL` · `DDL` · `Decision Log` · `Delete Rule` · `Denormalization` · `Derived Attribute` · `Discriminator` · `DML` · `Domain` · `Entity` · `Entity Integrity` · `ERD` · `Exhaustive Rule` · `Fear Effect` · `First Normal Form` · `Foreign Key` · `Frozen Value` · `Functional Dependency` · `Handover` · `Hierarchical Model` · `Hierarchical Relationship` · `Historical Data` · `Index` · `Information` · `Inheritance` · `Instance` · `Intersection Entity` · `Knowledge` · `Logical Model` · `Mandatory Attribute` · `Matrix Diagram` · `Multi‑valued Attribute` · `Mutually Exclusive Rule` · `Natural Key` · `Network Model` · `Normalization` · `NULL` · `OLAP` · `OLTP` · `Open Period` · `Optional Attribute` · `Optionality` · `Partial Dependency` · `Physical Model` · `Playback` · `Primary Key` · `Query` · `Recursive Query` · `Recursive Relationship` · `Redundant Relationship` · `Referential Integrity` · `Relational Model` · `Relationship` · `Repeating Group` · `Role` · `Row` · `Schema` · `Scope Creep` · `SDLC` · `Second Normal Form` · `Secondary UID` · `Set Null` · `SQL` · `Stakeholders` · `Subtype` · `Supertype` · `Surrogate Key` · `Table` · `Third Normal Form` · `Transaction` · `Transitive Dependency` · `Trigger` · `UID` · `View` · `Wisdom`
+`ACID` · `Anomaly` · `Arc` · `Attribute` · `Barker Notation` · `Business Rule` · `Candidate Key` · `Cardinality` · `Cascade Delete` · `Check Constraint` · `Code Table` · `Column` · `Composite Attribute` · `Composite Key` · `Conceptual Model` · `Constraint` · `Crow's Foot` · `CRUD` · `Data` · `Data Dictionary` · `Data Independence` · `Data Integrity` · `Data Model` · `Data Redundancy` · `Database` · `DBMS` · `DCL` · `DDL` · `Decision Log` · `Degree` · `Delete Rule` · `Denormalization` · `Derived Attribute` · `Discriminator` · `DML` · `Domain` · `Entity` · `Entity Integrity` · `ERD` · `Exhaustive Rule` · `Fear Effect` · `First Normal Form` · `Foreign Key` · `Frozen Value` · `Functional Dependency` · `Handover` · `Hierarchical Model` · `Hierarchical Relationship` · `Historical Data` · `Index` · `Information` · `Inheritance` · `Instance` · `Intersection Entity` · `Knowledge` · `Logical Model` · `Mandatory Attribute` · `Matrix Diagram` · `Multi‑valued Attribute` · `Mutually Exclusive Rule` · `Natural Key` · `Network Model` · `Normalization` · `NULL` · `OLAP` · `OLTP` · `Open Period` · `Optional Attribute` · `Optionality` · `Partial Dependency` · `Physical Model` · `Playback` · `Primary Key` · `Query` · `Recursive Query` · `Recursive Relationship` · `Redundant Relationship` · `Referential Integrity` · `Relational Model` · `Relationship` · `Repeating Group` · `Role` · `Row` · `Schema` · `Scope Creep` · `SDLC` · `Second Normal Form` · `Secondary UID` · `Set Null` · `SQL` · `Stakeholders` · `Subtype` · `Supertype` · `Surrogate Key` · `Table` · `Third Normal Form` · `Transaction` · `Transitive Dependency` · `Trigger` · `UID` · `View` · `Wisdom`
 
 ---
 

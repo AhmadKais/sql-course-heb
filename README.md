@@ -73,9 +73,10 @@
 
 | כלי | למה הוא טוב | קישור |
 |-----|-------------|-------|
-| **Oracle APEX** (Application Express) | סביבת התרגול הרשמית של תכנית הלימודים, עובדת מהדפדפן ללא התקנה | [apex.oracle.com](https://apex.oracle.com) |
-| **DB Fiddle / SQL Fiddle** | הרצת שאילתות מהירה בדפדפן, מצוין לתרגול קצר | [db-fiddle.com](https://www.db-fiddle.com) |
-| **SQLite + DB Browser** | קל, מקומי, ללא שרת — מצוין ללמידה | [sqlitebrowser.org](https://sqlitebrowser.org) |
+| ⭐ **Programiz Online SQL** | **ברירת המחדל של הקורס** — רץ בדפדפן, אפס התקנה, מגיע עם נתוני דוגמה | [programiz.com](https://www.programiz.com/sql/online-compiler/) |
+| **DB Fiddle** | חלופה בדפדפן לבדיקת שאילתה בודדת | [db-fiddle.com](https://www.db-fiddle.com) |
+| **SQLite + DB Browser** | מקומי, ללא שרת — כשרוצים לשמור פרויקט מתמשך | [sqlitebrowser.org](https://sqlitebrowser.org) |
+| **Oracle APEX** | סביבת התרגול הרשמית של תכנית הלימודים | [apex.oracle.com](https://apex.oracle.com) |
 | **MySQL / PostgreSQL** | בסיסי נתונים תעשייתיים אמיתיים | — |
 
 לשרטוט תרשימי ERD: [draw.io](https://app.diagrams.net) (חינמי), Lucidchart, או פשוט נייר.

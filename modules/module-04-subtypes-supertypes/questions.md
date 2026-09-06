@@ -91,9 +91,13 @@
 
 **הפתרון הנכון:**
 
+<div dir="ltr">
+
 ```text
 PERSON ──< PERSON_ROLE >── ROLE
 ```
+
+</div>
 
 `PERSON` מחזיק את הפרטים האישיים פעם אחת; `PERSON_ROLE` מקשר אותו לכל תפקיד שהוא ממלא, עם `start_date` ו‑`end_date`.
 
@@ -159,7 +163,9 @@ PERSON ──< PERSON_ROLE >── ROLE
 **כן** — זה נקרא **טיפוסי משנה מקוננים (Nested Subtypes)**.
 
 **דוגמה בנקאית:**
-```
+<div dir="ltr">
+
+```text
 ACCOUNT
  ├─ DEPOSIT_ACCOUNT
  │   ├─ CHECKING
@@ -168,6 +174,8 @@ ACCOUNT
      ├─ MORTGAGE
      └─ PERSONAL_LOAN
 ```
+
+</div>
 
 **המגבלה המעשית: שתי רמות.** שלוש רמות ומעלה הופכות את המודל לבלתי קריא ללקוח, ואת המימוש בטבלאות לסיוט (JOIN של 4 טבלאות לשליפת רשומה אחת).
 
