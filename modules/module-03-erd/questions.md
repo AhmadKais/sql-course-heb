@@ -250,8 +250,8 @@
 <div dir="ltr">
 
 ```text
-STUDENT ──< CLASS >── SCHOOL          ✅ נכון
-    └──────────────────┘              ❌ קשר ישיר מיותר
+STUDENT --< CLASS >-- SCHOOL          [OK] correct
+    +------------------+              [X]  redundant direct link
 ```
 
 </div>

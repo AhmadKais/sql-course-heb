@@ -40,26 +40,26 @@
 </div>
 
 ```text
-   ⏰ 06:45   האזעקה מצלצלת
-              → הטלפון קורא את הגדרת השעון מבסיס נתונים מקומי
+   06:45   Alarm rings
+           -> phone reads your alarm setting from a local database
 
-   📱 06:47   אתם פותחים ווטסאפ ורואים 14 הודעות
-              → שאילתה: "כל ההודעות שנשלחו אליי ולא נקראו"
+   06:47   You open WhatsApp and see 14 messages
+           -> query: "all messages sent to me that are unread"
 
-   🎵 07:10   ספוטיפיי מציע לכם פלייליסט
-              → שאילתה על היסטוריית ההאזנה שלכם + של מיליונים אחרים
+   07:10   Spotify suggests a playlist
+           -> query over YOUR listening history + millions of others
 
-   🚌 07:25   מעבירים כרטיס רב-קו
-              → קריאה: יש יתרה? כתיבה: נסיעה חדשה, קו 18, 07:25
+   07:25   You tap your bus card
+           -> read: is there balance?  write: new ride, line 18, 07:25
 
-   ☕ 07:40   קונים שתייה במכולת, משלמים באפליקציה
-              → 4 בסיסי נתונים: החנות, הבנק שלכם, חברת האשראי, המכולת
+   07:40   You buy a drink, pay with an app
+           -> 4 databases: the shop, your bank, the card company, the app
 
-   🏫 07:55   המורה לוקח נוכחות בטאבלט
-              → כתיבה לבסיס הנתונים של משרד החינוך
+   07:55   Teacher takes attendance on a tablet
+           -> write to the Ministry of Education database
 
-   📸 08:10   מעלים סטורי
-              → כתיבה + עשרות שאילתות: מי עוקב אחריכם, מי מקוון, מי חסום
+   08:10   You upload a story
+           -> write + dozens of queries: who follows you, who is online, who is blocked
 ```
 
 <div dir="rtl">
@@ -88,13 +88,13 @@
 </div>
 
 ```text
-   ┌─────────────────────────────────────────┐
-   │  יוסי - 050-1234567 - מרגריטה - 45 ש"ח │
-   │  דנה - 052-7654321 - פטריות - 52 ש"ח   │
-   │  יוסי - 050-1234567 - מרגריטה - 45 ש"ח │
-   │  יוסי - 050-1234568 - פפרוני - 48 ש"ח  │  ← טעות הקלדה?
-   │  ...                                    │     אותו יוסי או אחר?
-   └─────────────────────────────────────────┘
+   +-----------------------------------------------------+
+   |  Yossi - 050-1234567 - Margherita - 45 NIS          |
+   |  Dana  - 052-7654321 - Mushroom   - 52 NIS          |
+   |  Yossi - 050-1234567 - Margherita - 45 NIS          |
+   |  Yossi - 050-1234568 - Pepperoni  - 48 NIS          |  <- typo?
+   |  ...                                                |     same Yossi or another?
+   +-----------------------------------------------------+
 ```
 
 <div dir="rtl">
@@ -110,15 +110,15 @@
 </div>
 
 ```text
-   טבלת CUSTOMERS                      טבלת ORDERS
-   ┌────┬──────┬─────────────┐         ┌────┬─────────┬────────────┬───────┐
-   │ id │ שם   │ טלפון       │         │ id │ cust_id │ תאריך      │ סכום  │
-   ├────┼──────┼─────────────┤         ├────┼─────────┼────────────┼───────┤
-   │ 1  │ יוסי │ 050-1234567 │◄───┐    │ 101│    1    │ 2026-03-01 │  45   │
-   │ 2  │ דנה  │ 052-7654321 │◄─┐ │    │ 102│    2    │ 2026-03-01 │  52   │
-   └────┴──────┴─────────────┘  │ └────│ 103│    1    │ 2026-03-04 │  45   │
-                                └──────│ 104│    2    │ 2026-03-07 │  48   │
-    יוסי נשמר פעם אחת            הקישור└────┴─────────┴────────────┴───────┘
+   CUSTOMERS table                     ORDERS table
+   +----+-------+-------------+        +-----+---------+------------+--------+
+   | id | name  | phone       |        | id  | cust_id | date       | amount |
+   +----+-------+-------------+        +-----+---------+------------+--------+
+   | 1  | Yossi | 050-1234567 |<---+   | 101 |    1    | 2026-03-01 |   45   |
+   | 2  | Dana  | 052-7654321 |<-+ |   | 102 |    2    | 2026-03-01 |   52   |
+   +----+-------+-------------+  | +---| 103 |    1    | 2026-03-04 |   45   |
+                                 +-----| 104 |    2    | 2026-03-07 |   48   |
+    Yossi stored ONCE          the link+-----+---------+------------+--------+
 ```
 
 <div dir="rtl">
@@ -224,37 +224,37 @@ SQL נולדה ב‑1974 במעבדות IBM. מאז נולדו ומתו עשרו
 </div>
 
 ```text
-  ╔══════════════════════════════════════════════════════════════════╗
-  ║              חלק א' — עיצוב בסיסי נתונים  (פרקים 1–15)           ║
-  ║                                                                  ║
-  ║   "איך חושבים על נתונים לפני שכותבים שורת קוד אחת"                ║
-  ║                                                                  ║
-  ║   1  רקע ומושגי יסוד        ✅      9   פרויקט I                  ║
-  ║   2  מודל הנתונים           ✅      10  מעקב אחר שינויים          ║
-  ║   3  תרשים ERD              ✅      11  מודלים גנריים             ║
-  ║   4  טיפוסי משנה ועל        ✅      12  מעבר לבסיס הנתונים        ║
-  ║   5  יחסים                  ✅      13  SQL I — ההיכרות           ║
-  ║   6  נרמול                          14  SDLC                     ║
-  ║   7  אילוצים                        15  המצגת                    ║
-  ║   8  תפקיד היועץ                                                 ║
-  ╚══════════════════════════════════════════════════════════════════╝
-                                 │
-                                 ▼
-  ╔══════════════════════════════════════════════════════════════════╗
-  ║               חלק ב' — תכנות ב-SQL  (פרקים 16–32)                ║
-  ║                                                                  ║
-  ║   "עכשיו מדברים עם בסיס הנתונים"                                 ║
-  ║                                                                  ║
-  ║   16  אנטומיה של SQL              25  DML — עדכון נתונים          ║
-  ║   17  הגבלת השליפה (WHERE)        26  DDL — יצירת טבלאות          ║
-  ║   18  מיונים (ORDER BY)           27  אילוצים ב-SQL               ║
-  ║   19  פונקציות                    28  Views                      ║
-  ║   20  פונקציות 2                  29  Sequences ואינדקסים        ║
-  ║   21  איחוד טבלאות (JOIN)         30  ניהול משתמשים               ║
-  ║   22  איחוד טבלאות 2              31  פרויקט מסכם                 ║
-  ║   23  פונקציות מצרפיות            32  טרנזקציות + הסמכה           ║
-  ║   24  קיבוץ ותת-שאילתות                                          ║
-  ╚══════════════════════════════════════════════════════════════════╝
+  +==================================================================+
+  |          PART A -- DATABASE DESIGN  (chapters 1-15)              |
+  |                                                                  |
+  |   "How to think about data before writing a single line of code" |
+  |                                                                  |
+  |   1  Foundations              [x]     9   Project I          [x] |
+  |   2  The Data Model           [x]     10  Tracking Changes   [x] |
+  |   3  ERD                      [x]     11  Generic Models         |
+  |   4  Subtypes & Supertypes    [x]     12  Moving to the Database |
+  |   5  Relationships            [x]     13  SQL I -- First Contact |
+  |   6  Normalization            [x]     14  SDLC                   |
+  |   7  Constraints              [x]     15  The Presentation       |
+  |   8  The Consultant's Role    [x]                                |
+  +==================================================================+
+                                 |
+                                 v
+  +==================================================================+
+  |          PART B -- SQL PROGRAMMING  (chapters 16-32)             |
+  |                                                                  |
+  |   "Now we talk to the database"                                  |
+  |                                                                  |
+  |   16  Anatomy of SQL              25  DML -- changing data       |
+  |   17  Filtering (WHERE)           26  DDL -- creating tables     |
+  |   18  Sorting (ORDER BY)          27  Constraints in SQL         |
+  |   19  Functions                   28  Views                      |
+  |   20  Functions 2                 29  Sequences & Indexes        |
+  |   21  Joining tables (JOIN)       30  User management            |
+  |   22  Joining tables 2            31  Final project              |
+  |   23  Aggregate functions         32  Transactions + certificate |
+  |   24  Grouping & subqueries                                      |
+  +==================================================================+
 ```
 
 <div dir="rtl">
@@ -297,25 +297,25 @@ SQL נולדה ב‑1974 במעבדות IBM. מאז נולדו ומתו עשרו
 </div>
 
 ```text
-        ┌─────────────────────────────────────────────────┐
-        │                                                 │
-        ▼                                                 │
-   ① קוראים את ההסבר                                      │
-        │                                                 │
-        ▼                                                 │
-   ② קוראים שאלה — עונים בראש — ורק אז פותחים ✋           │
-        │                                                 │
-        ▼                                                 │
-   ③ פותרים תרגיל על נייר                                 │
-        │                                                 │
-        ▼                                                 │
-   ④ משווים לפתרון — לא מעתיקים, משווים 🔍                 │
-        │                                                 │
-        ▼                                                 │
-   ⑤ לא הבנתם משהו? חוזרים לסעיף הרלוונטי ──────────────┘
-        │
-        ▼
-   ⑥ עוברים למודול הבא
+        +-------------------------------------------------+
+        |                                                 |
+        v                                                 |
+   (1) Read the explanation                               |
+        |                                                 |
+        v                                                 |
+   (2) Read a question -- answer in your head -- THEN open it   |
+        |                                                 |
+        v                                                 |
+   (3) Solve an exercise on paper                         |
+        |                                                 |
+        v                                                 |
+   (4) Compare to the solution -- compare, don't copy     |
+        |                                                 |
+        v                                                 |
+   (5) Didn't get something? Go back to that section -----+
+        |
+        v
+   (6) Move on to the next module
 ```
 
 <div dir="rtl">
@@ -459,11 +459,11 @@ SQL נולדה ב‑1974 במעבדות IBM. מאז נולדו ומתו עשרו
 </div>
 
 ```text
-   מודול 2  →  מי הישויות? מה המאפיינים? מה נשאל את הלקוחה?
-   מודול 3  →  תרשים ERD מלא, קשתות, יחסים רקורסיביים
-   מודול 4  →  טיפוסי משנה, תפקידים, מסמך חוקים עסקיים
-   מודול 5  →  עבירות יחסים, מטריצת CRUD, מחזורי חיים
-   מודול 6+ →  נרמול, אילוצים, ואז — טבלאות אמיתיות ו-SQL
+   Module 2  ->  Who are the entities? What attributes? What to ask the client?
+   Module 3  ->  Full ERD, arcs, recursive relationships
+   Module 4  ->  Subtypes, roles, business-rules document
+   Module 5  ->  Transferability, CRUD matrix, life cycles
+   Module 6+ ->  Normalization, constraints, then -- real tables and SQL
 ```
 
 <div dir="rtl">

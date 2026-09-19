@@ -34,35 +34,35 @@
 </div>
 
 ```text
-① ┌──────────────────────────────────────┐
-  │              ANIMAL                  │
-  │  ┌──────┐ ┌───────┐                  │
-  │  │ DOG  │ │  CAT  │                  │
-  │  └──────┘ └───────┘                  │
-  └──────────────────────────────────────┘
-     (במקלט מגיעים גם ארנבים ותוכים)
+(1) +--------------------------------------+
+    |              ANIMAL                  |
+    |  +------+ +-------+                  |
+    |  | DOG  | |  CAT  |                  |
+    |  +------+ +-------+                  |
+    +--------------------------------------+
+       (the shelter also takes rabbits and parrots)
 
-② ┌──────────────────────────────────────┐
-  │              PERSON                  │
-  │  ┌─────────┐ ┌──────────┐ ┌────────┐ │
-  │  │ STUDENT │ │ TEACHER  │ │ PARENT │ │
-  │  └─────────┘ └──────────┘ └────────┘ │
-  └──────────────────────────────────────┘
-     (בבית ספר; יש מורה שהיא גם אמא לתלמיד)
+(2) +--------------------------------------+
+    |              PERSON                  |
+    |  +---------+ +----------+ +--------+ |
+    |  | STUDENT | | TEACHER  | | PARENT | |
+    |  +---------+ +----------+ +--------+ |
+    +--------------------------------------+
+       (a school; one teacher is also a student's mother)
 
-③ ┌──────────────────────────────────────┐
-  │             EMPLOYEE                 │
-  │  ┌───────────┐ ┌────────────┐        │
-  │  │  MANAGER  │ │ NON_MANAGER│        │
-  │  └───────────┘ └────────────┘        │
-  └──────────────────────────────────────┘
+(3) +--------------------------------------+
+    |             EMPLOYEE                 |
+    |  +-----------+ +------------+        |
+    |  |  MANAGER  | | NON_MANAGER|        |
+    |  +-----------+ +------------+        |
+    +--------------------------------------+
 
-④ ┌──────────────────────────────────────┐
-  │             ACCOUNT                  │
-  │  ┌──────────┐ ┌─────────┐ ┌────────┐ │
-  │  │ CHECKING │ │ SAVINGS │ │  LOAN  │ │
-  │  └──────────┘ └─────────┘ └────────┘ │
-  └──────────────────────────────────────┘
+(4) +--------------------------------------+
+    |             ACCOUNT                  |
+    |  +----------+ +---------+ +--------+ |
+    |  | CHECKING | | SAVINGS | |  LOAN  | |
+    |  +----------+ +---------+ +--------+ |
+    +--------------------------------------+
 ```
 
 <div dir="rtl">
@@ -91,24 +91,24 @@
 </div>
 
 ```text
-┌───────────────────────────────────────────────────────────────┐
-│                          PROPERTY                             │
-├───────────────────────────────────────────────────────────────┤
-│ # property_id        │ * price            │ o num_of_rooms    │
-│ * property_type      │ * city             │ o floor           │
-│ * address            │ * street           │ o has_elevator    │
-│ * size_sqm           │ * listing_date     │ o has_parking     │
-│ * agent_id           │ * status           │ o land_size_sqm   │
-│                      │                    │ o num_of_floors   │
-│                      │                    │ o has_garden      │
-│                      │                    │ o office_rooms    │
-│                      │                    │ o has_reception   │
-│                      │                    │ o zoning_type     │
-│                      │                    │ o warehouse_height│
-│                      │                    │ o loading_docks   │
-└───────────────────────────────────────────────────────────────┘
++---------------------------------------------------------------+
+|                          PROPERTY                             |
++---------------------------------------------------------------+
+| # property_id        | * price            | o num_of_rooms    |
+| * property_type      | * city             | o floor           |
+| * address            | * street           | o has_elevator    |
+| * size_sqm           | * listing_date     | o has_parking     |
+| * agent_id           | * status           | o land_size_sqm   |
+|                      |                    | o num_of_floors   |
+|                      |                    | o has_garden      |
+|                      |                    | o office_rooms    |
+|                      |                    | o has_reception   |
+|                      |                    | o zoning_type     |
+|                      |                    | o warehouse_height|
+|                      |                    | o loading_docks   |
++---------------------------------------------------------------+
 
-    property_type ∈ { דירה, בית פרטי, משרד, מחסן, מגרש }
+    property_type in { apartment, house, office, warehouse, land }
 ```
 
 <div dir="rtl">
@@ -195,11 +195,11 @@
 
 ```text
    VEHICLE (# vehicle_id, * license_plate, * manufacturer, * year)
-      ├─ PRIVATE_CAR  (* num_of_seats, * has_child_seat)
-      ├─ TRUCK        (* max_load_tons, * num_of_axles, * license_class)
-      └─ MOTORCYCLE   (* engine_cc, * has_sidecar)
+      +- PRIVATE_CAR  (* num_of_seats, * has_child_seat)
+      +- TRUCK        (* max_load_tons, * num_of_axles, * license_class)
+      +- MOTORCYCLE   (* engine_cc, * has_sidecar)
 
-   בנוסף קיימות:
+   Also present:
    PARKING_TICKET (# ticket_id, * vehicle_id, * date, * amount)
    INSURANCE      (# policy_id, * vehicle_id, * start_date, * premium)
 ```

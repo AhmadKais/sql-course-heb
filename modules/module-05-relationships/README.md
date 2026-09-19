@@ -95,30 +95,30 @@
 </div>
 
 ```text
-❌ תכונה — כשזה צריך להיות יחס:
+[X] ATTRIBUTE -- when it should be a relationship:
 
-   ┌────────────────────────────┐
-   │         EMPLOYEE           │       500 עובדים × "מחלקת שיווק" כטקסט
-   ├────────────────────────────┤       ⟵ שינוי שם המחלקה = 500 עדכונים
-   │ # employee_id              │       ⟵ טעות הקלדה = "מחלקת שיווק " עם רווח
-   │ * first_name               │       ⟵ אי אפשר לשמור תקציב או מנהל למחלקה
-   │ * department_name  ← ❌    │       ⟵ אי אפשר לדעת אילו מחלקות קיימות
-   └────────────────────────────┘          כשאין בהן עובדים
+   +----------------------------+
+   |         EMPLOYEE           |       500 employees x "Marketing dept" as text
+   +----------------------------+       -> renaming the dept = 500 updates
+   | # employee_id              |       -> a typo = "Marketing dept " with a space
+   | * first_name               |       -> nowhere to store the dept's budget or manager
+   | * department_name  <- [X]  |       -> no way to know which depts exist
+   +----------------------------+          when they have no employees
 
 
-✅ יחס:
+[OK] RELATIONSHIP:
 
-   ┌──────────────────┐              ┌────────────────────────┐
-   │    EMPLOYEE      │─────────────>│      DEPARTMENT        │
-   ├──────────────────┤   "עובד ב"   ├────────────────────────┤
-   │ # employee_id    │              │ # department_id        │
-   │ * first_name     │              │ * department_name      │
-   │ * hire_date  ✅  │              │ * budget               │
-   └──────────────────┘              │ o manager_id      (FK) │
-                                     │ * location             │
-      hire_date נשאר תכונה —          └────────────────────────┘
-      אין לו קיום עצמאי, אין לו
-      מאפיינים, והוא לא חוזר
+   +------------------+              +------------------------+
+   |    EMPLOYEE      |------------->|      DEPARTMENT        |
+   +------------------+  "works in"  +------------------------+
+   | # employee_id    |              | # department_id        |
+   | * first_name     |              | * department_name      |
+   | * hire_date [OK] |              | * budget               |
+   +------------------+              | o manager_id      (FK) |
+                                     | * location             |
+      hire_date STAYS an attribute -- +------------------------+
+      it has no independent existence,
+      no attributes of its own, and does not repeat
 ```
 
 <div dir="rtl">
@@ -149,22 +149,22 @@
 </div>
 
 ```text
-   יחס עביר (רגיל):
+   TRANSFERABLE relationship (the normal case):
 
-   ┌────────────┐                        ┌────────────┐
-   │ DEPARTMENT │────────────────────── <│  EMPLOYEE  │
-   └────────────┘   "מעסיקה"  "עובד ב"   └────────────┘
+   +------------+                        +------------+
+   | DEPARTMENT |---------------------- <|  EMPLOYEE  |
+   +------------+   "employs"  "works in" +------------+
 
 
-   יחס לא עביר:
+   NON-TRANSFERABLE relationship:
 
-   ┌────────────┐                        ┌────────────┐
-   │  CUSTOMER  │──────────◇─────────── <│  INVOICE   │
-   └────────────┘   "מחויב"  "שייכת ל"   └────────────┘
-                              ▲
-                              │
-                     ◇ = יהלום = לא ניתן להעברה
-                       (Non-transferable)
+   +------------+                        +------------+
+   |  CUSTOMER  |----------<>----------- <|  INVOICE   |
+   +------------+   "billed"  "belongs to"+------------+
+                              ^
+                              |
+                     <> = diamond = cannot be moved
+                        (Non-transferable)
 ```
 
 <div dir="rtl">
@@ -222,28 +222,28 @@
 </div>
 
 ```text
-① יחס אונרי / רקורסיבי  (דרגה 1)  — ישות אחת עם עצמה
-   ┌──────────┐
-   │ EMPLOYEE │───┐
-   └────┬─────┘   │
-        └─────────┘   "מנהל את" / "מנוהל על ידי"
+(1) UNARY / RECURSIVE relationship  (degree 1)  -- an entity with itself
+   +----------+
+   | EMPLOYEE |---+
+   +----+-----+   |
+        +---------+   "manages" / "managed by"
 
 
-② יחס בינארי  (דרגה 2)  — שתי ישויות   ← 95% מהמקרים
-   ┌──────────┐        ┌────────────┐
-   │ EMPLOYEE │──────< │ DEPARTMENT │
-   └──────────┘        └────────────┘
+(2) BINARY relationship  (degree 2)  -- two entities   <- 95% of cases
+   +----------+        +------------+
+   | EMPLOYEE |------< | DEPARTMENT |
+   +----------+        +------------+
 
 
-③ יחס טרנרי  (דרגה 3)  — שלוש ישויות בו זמנית
-   ┌──────────┐        ┌────────────┐        ┌───────────┐
-   │ SUPPLIER │────────│  PRODUCT   │────────│ WAREHOUSE │
-   └──────────┘   ╲    └────────────┘    ╱   └───────────┘
-                   ╲         │          ╱
-                    ╲────────┼─────────╱
-                             │
-                    "ספק X מספק מוצר Y למחסן Z"
-                    ⟵ עובדה אחת שדורשת שלושתם
+(3) TERNARY relationship  (degree 3)  -- three entities AT ONCE
+   +----------+        +------------+        +-----------+
+   | SUPPLIER |--------|  PRODUCT   |--------| WAREHOUSE |
+   +----------+   \    +------------+    /   +-----------+
+                   \         |          /
+                    \--------+---------/
+                             |
+                    "Supplier X supplies product Y to warehouse Z"
+                    -> ONE fact that needs all three
 ```
 
 <div dir="rtl">
@@ -270,19 +270,19 @@
 </div>
 
 ```text
-   ┌────────────────┐                              ┌────────────────┐
-   │    EMPLOYEE    │──────────────────────────── <│   DEPARTMENT   │
-   │                │      "עובד ב" / "מעסיקה"     │                │
-   │                │                              │                │
-   │                │─────────────────────────────>│                │
-   └────────────────┘      "מנהל" / "מנוהלת ע"י"   └────────────────┘
+   +----------------+                              +----------------+
+   |    EMPLOYEE    |---------------------------- <|   DEPARTMENT   |
+   |                |      "works in" / "employs"  |                |
+   |                |                              |                |
+   |                |----------------------------->|                |
+   +----------------+      "manages" / "managed by"+----------------+
 
-   שני יחסים שונים לחלוטין:
-   ① כל עובד עובד במחלקה אחת       (1:M — מחלקה⟵עובדים)
-   ② כל מחלקה מנוהלת ע"י עובד אחד  (1:1 — מחלקה⟵מנהל)
+   Two completely different relationships:
+   (1) each employee works in ONE department      (1:M -- dept -> employees)
+   (2) each department is managed by ONE employee (1:1 -- dept -> manager)
 
-   ⚠️ ובמימוש:  EMPLOYEE.department_id     ← היחס הראשון
-                DEPARTMENT.manager_emp_id  ← היחס השני
+   (!) and in the implementation:  EMPLOYEE.department_id     <- relationship 1
+                                   DEPARTMENT.manager_emp_id  <- relationship 2
 ```
 
 <div dir="rtl">
@@ -309,11 +309,11 @@
 </div>
 
 ```text
-   לפני:   STUDENT >──────────────< COURSE
+   BEFORE:   STUDENT >----------------< COURSE
 
-   אחרי:   STUDENT ──< ENROLLMENT >── COURSE
-                        ▲
-                   ישות מקשרת עם מאפיינים משלה
+   AFTER:    STUDENT --< ENROLLMENT >-- COURSE
+                          ^
+                   intersection entity with its OWN attributes
 ```
 
 <div dir="rtl">
@@ -327,18 +327,18 @@
 </div>
 
 ```text
-   ┌──────────┐                                     ┌──────────┐
-   │ STUDENT  │────────┼──────┐         ┌───────┼───│  COURSE  │
-   └──────────┘        ▲      │         │       ▲   └──────────┘
-                       │      ▼         ▼       │
-                  UID Bar  ┌───────────────┐  UID Bar
-                           │  ENROLLMENT   │
-                           ├───────────────┤
-                           │ (student_id + │  ← המזהה הוא הצירוף
-                           │  course_id)   │
-                           │ * enroll_date │
-                           │ o final_grade │
-                           └───────────────┘
+   +----------+                                     +----------+
+   | STUDENT  |--------+------+         +-------+---|  COURSE  |
+   +----------+        ^      |         |       ^   +----------+
+                       |      v         v       |
+                  UID Bar  +---------------+  UID Bar
+                           |  ENROLLMENT   |
+                           +---------------+
+                           | (student_id + |  <- the UID is the COMBINATION
+                           |  course_id)   |
+                           | * enroll_date |
+                           | o final_grade |
+                           +---------------+
 ```
 
 <div dir="rtl">
@@ -350,16 +350,16 @@
 </div>
 
 ```text
-                           ┌────────────────────┐
-                           │    ENROLLMENT      │
-                           ├────────────────────┤
-                           │ # enrollment_id    │  ← מזהה מלאכותי
-                           │ * student_id  (FK) │
-                           │ * course_id   (FK) │
-                           │ * semester         │
-                           │ * enroll_date      │
-                           │ o final_grade      │
-                           └────────────────────┘
+                           +--------------------+
+                           |    ENROLLMENT      |
+                           +--------------------+
+                           | # enrollment_id    |  <- surrogate UID
+                           | * student_id  (FK) |
+                           | * course_id   (FK) |
+                           | * semester         |
+                           | * enroll_date      |
+                           | o final_grade      |
+                           +--------------------+
 ```
 
 <div dir="rtl">
@@ -419,30 +419,30 @@
 </div>
 
 ```text
-   התרחיש: מוצר מורכב מתת-מוצרים  (Bill of Materials)
-   אופניים ⟵ 2 גלגלים + 1 שלדה + 1 כידון
-   גלגל    ⟵ 1 חישוק + 32 חישורים + 1 צמיג
+   Scenario: a product made of sub-products  (Bill of Materials)
+   Bicycle  -> 2 wheels + 1 frame + 1 handlebar
+   Wheel    -> 1 rim + 32 spokes + 1 tire
 
-   ┌────────────────┐
-   │    PRODUCT     │>──────┐
-   │                │       │  M:M
-   │                │<──────┘  עם עצמה
-   └────────────────┘
+   +----------------+
+   |    PRODUCT     |>------+
+   |                |       |  M:M
+   |                |<------+  with itself
+   +----------------+
 
-   הפירוק:
+   Resolved:
 
-   ┌────────────────┐              ┌───────────────────────────┐
-   │    PRODUCT     │◄─────────────│      PRODUCT_COMPONENT    │
-   ├────────────────┤   "מכיל"     ├───────────────────────────┤
-   │ # product_id   │              │ # product_component_id    │
-   │ * product_name │◄─────────────│ * parent_product_id (FK)  │
-   │ * unit_price   │  "חלק מ"     │ * child_product_id  (FK)  │
-   └────────────────┘              │ * quantity           ⭐   │
-                                   │ o assembly_order          │
-                                   │ * is_optional             │
-                                   └───────────────────────────┘
+   +----------------+              +---------------------------+
+   |    PRODUCT     |<-------------|      PRODUCT_COMPONENT    |
+   +----------------+  "contains"  +---------------------------+
+   | # product_id   |              | # product_component_id    |
+   | * product_name |<-------------| * parent_product_id (FK)  |
+   | * unit_price   |  "part of"   | * child_product_id  (FK)  |
+   +----------------+              | * quantity           *    |
+                                   | o assembly_order          |
+                                   | * is_optional             |
+                                   +---------------------------+
 
-   ⚠️ שימו לב: שני מפתחות זרים לאותה טבלה
+   (!) note: TWO foreign keys to the SAME table
 ```
 
 <div dir="rtl">
@@ -468,13 +468,13 @@
 </div>
 
 ```text
-   ❌ הפתרון השגוי — פירוק לשלושה יחסי M:M בינאריים:
+   [X] THE WRONG solution -- splitting into three binary M:M relationships:
 
-   SUPPLIER >────< PRODUCT        "טכנו מספק מקלדות"
-   PRODUCT  >────< WAREHOUSE      "מקלדות מאוחסנות בצפון"
-   SUPPLIER >────< WAREHOUSE      "טכנו מספק למחסן צפון"
+   SUPPLIER >----< PRODUCT        "Techno supplies keyboards"
+   PRODUCT  >----< WAREHOUSE      "keyboards are stored in North"
+   SUPPLIER >----< WAREHOUSE      "Techno supplies warehouse North"
 
-   ⚠️ נראה שקול — ואינו!
+   (!) looks equivalent -- and it is NOT!
 ```
 
 <div dir="rtl">
@@ -509,22 +509,22 @@
 </div>
 
 ```text
-   ┌──────────────┐        ┌────────────────────────────┐        ┌─────────────┐
-   │   SUPPLIER   │───────>│      SUPPLY_AGREEMENT      │<───────│  WAREHOUSE  │
-   ├──────────────┤        ├────────────────────────────┤        ├─────────────┤
-   │# supplier_id │        │ # agreement_id             │        │# warehouse_ │
-   │* company_name│        │ * supplier_id       (FK)   │        │   id        │
-   └──────────────┘        │ * product_id        (FK)   │        │* location   │
-                           │ * warehouse_id      (FK)   │        └─────────────┘
-   ┌──────────────┐        │ * unit_cost           ⭐   │
-   │   PRODUCT    │───────>│ * lead_time_days      ⭐   │
-   ├──────────────┤        │ * min_order_quantity  ⭐   │
-   │# product_id  │        │ * contract_start_date      │
-   │* product_name│        │ o contract_end_date        │
-   └──────────────┘        └────────────────────────────┘
+   +--------------+        +----------------------------+        +-------------+
+   |   SUPPLIER   |------->|      SUPPLY_AGREEMENT      |<-------|  WAREHOUSE  |
+   +--------------+        +----------------------------+        +-------------+
+   |# supplier_id |        | # agreement_id             |        |# warehouse_ |
+   |* company_name|        | * supplier_id       (FK)   |        |   id        |
+   +--------------+        | * product_id        (FK)   |        |* location   |
+                           | * warehouse_id      (FK)   |        +-------------+
+   +--------------+        | * unit_cost           *    |
+   |   PRODUCT    |------->| * lead_time_days      *    |
+   +--------------+        | * min_order_quantity  *    |
+   |# product_id  |        | * contract_start_date      |
+   |* product_name|        | o contract_end_date        |
+   +--------------+        +----------------------------+
 
-   ⭐ שימו לב: עלות, זמן אספקה וכמות מינימלית שייכים לצירוף של שלושתם —
-      אותו ספק עשוי לגבות מחיר שונה למחסן קרוב לעומת מחסן מרוחק
+   * note: cost, lead time and minimum quantity belong to the COMBINATION of all three --
+     the same supplier may charge a different price for a near vs. a far warehouse
 ```
 
 <div dir="rtl">
@@ -558,15 +558,15 @@
 </div>
 
 ```text
-   ┌─────────────────────────────────────────────────────────────┐
-   │  C  │  Create  │  יצירה   │  INSERT  │  מי מייצר את הנתון?  │
-   ├─────┼──────────┼──────────┼──────────┼──────────────────────┤
-   │  R  │  Read    │  קריאה   │  SELECT  │  מי צורך את הנתון?   │
-   ├─────┼──────────┼──────────┼──────────┼──────────────────────┤
-   │  U  │  Update  │  עדכון   │  UPDATE  │  מי משנה את הנתון?   │
-   ├─────┼──────────┼──────────┼──────────┼──────────────────────┤
-   │  D  │  Delete  │  מחיקה   │  DELETE  │  מי מסיר את הנתון?   │
-   └─────────────────────────────────────────────────────────────┘
+   +-------------------------------------------------------------+
+   |  C  |  Create  |  INSERT  |  Who CREATES the data?          |
+   +-----+----------+----------+---------------------------------+
+   |  R  |  Read    |  SELECT  |  Who CONSUMES the data?         |
+   +-----+----------+----------+---------------------------------+
+   |  U  |  Update  |  UPDATE  |  Who CHANGES the data?          |
+   +-----+----------+----------+---------------------------------+
+   |  D  |  Delete  |  DELETE  |  Who REMOVES the data?          |
+   +-------------------------------------------------------------+
 ```
 
 <div dir="rtl">
@@ -582,27 +582,27 @@
 </div>
 
 ```text
-   התהליך העסקי         │MEMBER│BOOK_ │ LOAN │RESERV│ FINE │LIBRAR
-                        │      │COPY  │      │ATION │      │IAN
-   ─────────────────────┼──────┼──────┼──────┼──────┼──────┼──────
-    רישום קורא חדש      │  C   │  —   │  —   │  —   │  —   │  R
-   ─────────────────────┼──────┼──────┼──────┼──────┼──────┼──────
-    קליטת ספר חדש       │  —   │  C   │  —   │  —   │  —   │  R
-   ─────────────────────┼──────┼──────┼──────┼──────┼──────┼──────
-    השאלת ספר           │  R   │ R,U  │  C   │  R,U │  R   │  R
-   ─────────────────────┼──────┼──────┼──────┼──────┼──────┼──────
-    החזרת ספר           │  R   │  U   │  U   │  R,U │  C   │  R
-   ─────────────────────┼──────┼──────┼──────┼──────┼──────┼──────
-    הזמנת ספר תפוס      │  R   │  R   │  R   │  C   │  —   │  —
-   ─────────────────────┼──────┼──────┼──────┼──────┼──────┼──────
-    תשלום קנס           │  R   │  —   │  —   │  —   │  U   │  R
-   ─────────────────────┼──────┼──────┼──────┼──────┼──────┼──────
-    הוצאת ספר משירות    │  —   │  U   │  R   │  —   │  —   │  R
-   ─────────────────────┼──────┼──────┼──────┼──────┼──────┼──────
-    דוח חודשי           │  R   │  R   │  R   │  R   │  R   │  R
-   ─────────────────────┴──────┴──────┴──────┴──────┴──────┴──────
+   BUSINESS PROCESS       |MEMBER|BOOK_ | LOAN |RESERV| FINE |LIBRAR
+                          |      |COPY  |      |ATION |      |IAN
+   -----------------------+------+------+------+------+------+------
+    Register new member   |  C   |  -   |  -   |  -   |  -   |  R
+   -----------------------+------+------+------+------+------+------
+    Receive new book      |  -   |  C   |  -   |  -   |  -   |  R
+   -----------------------+------+------+------+------+------+------
+    Lend a book           |  R   | R,U  |  C   |  R,U |  R   |  R
+   -----------------------+------+------+------+------+------+------
+    Return a book         |  R   |  U   |  U   |  R,U |  C   |  R
+   -----------------------+------+------+------+------+------+------
+    Reserve a loaned book |  R   |  R   |  R   |  C   |  -   |  -
+   -----------------------+------+------+------+------+------+------
+    Pay a fine            |  R   |  -   |  -   |  -   |  U   |  R
+   -----------------------+------+------+------+------+------+------
+    Retire a book         |  -   |  U   |  R   |  -   |  -   |  R
+   -----------------------+------+------+------+------+------+------
+    Monthly report        |  R   |  R   |  R   |  R   |  R   |  R
+   -----------------------+------+------+------+------+------+------
 
-     C=Create  R=Read  U=Update  D=Delete  —=לא מעורב
+     C=Create  R=Read  U=Update  D=Delete  -=not involved
 ```
 
 <div dir="rtl">
@@ -639,25 +639,25 @@ CRUD מוביל אותנו לשאלה עמוקה יותר: **מה קורה למ�
 </div>
 
 ```text
-    יצירה           עדכונים             סיום
-      │                │                  │
-      ▼                ▼                  ▼
-   ┌──────┐  →  ┌──────────┐  →  ┌────────────────┐
-   │נוצרה │     │  פעילה   │     │  הסתיימה /     │
-   │      │     │ (משתנה)  │     │  בוטלה / ארכיון│
-   └──────┘     └──────────┘     └────────────────┘
+    creation         updates             end
+      |                |                  |
+      v                v                  v
+   +--------+  ->  +----------+  ->  +----------------+
+   |CREATED |      |  ACTIVE  |      |  ENDED /       |
+   |        |      |(changing)|      |  CANCELLED / ARCHIVED |
+   +--------+      +----------+      +----------------+
 
-   דוגמה — הזמנה:
-   ┌────────┐   ┌────────┐   ┌────────┐   ┌────────┐   ┌────────┐
-   │ טיוטה  │──>│ נקלטה  │──>│ אושרה  │──>│ נשלחה  │──>│הושלמה  │
-   └────────┘   └───┬────┘   └───┬────┘   └───┬────┘   └────────┘
-                    │            │            │
-                    ▼            ▼            ▼
-                 ┌─────────────────────────────────┐
-                 │            בוטלה                │
-                 └─────────────────────────────────┘
+   Example -- an order:
+   +--------+   +--------+   +--------+   +--------+   +--------+
+   | DRAFT  |-->|RECEIVED|-->|APPROVED|-->|SHIPPED |-->|COMPLETE|
+   +--------+   +---+----+   +---+----+   +---+----+   +--------+
+                    |            |            |
+                    v            v            v
+                 +---------------------------------+
+                 |            CANCELLED            |
+                 +---------------------------------+
 
-   ⚠️ שימו לב: מ"הושלמה" אין מעבר לביטול — יש "החזרה", וזה תהליך אחר
+   (!) note: from COMPLETE there is NO transition to cancelled -- there is a RETURN, a different process
 ```
 
 <div dir="rtl">
@@ -697,50 +697,50 @@ CRUD מוביל אותנו לשאלה עמוקה יותר: **מה קורה למ�
 </div>
 
 ```text
-  ┌──────────────┐                                  ┌──────────────────┐
-  │   CUSTOMER   │                                  │     VEHICLE      │
-  ├──────────────┤                                  ├──────────────────┤
-  │# customer_id │                                  │# vehicle_id      │
-  │* first_name  │                                  │* license_plate   │
-  │* last_name   │                                  │* category_id (FK)│
-  │* license_no  │                                  │* status          │
-  │* is_active   │                                  │* is_active       │
-  └──────┬───────┘                                  └────────┬─────────┘
-         │                                                   │
-         │ "שוכר"                                    "מושכר" │
-         │        ◇  ← לא עביר!                          ◇   │  ← לא עביר!
-         ▼                                                   ▼
-  ┌──────────────────────────────────────────────────────────────────┐
-  │                            RENTAL                                │
-  ├──────────────────────────────────────────────────────────────────┤
-  │ # rental_id                                                      │
-  │ * customer_id      (FK)  ◇ לא עביר — מסמך חוזי                   │
-  │ * vehicle_id       (FK)  ◇ לא עביר — הרכב שנמסר בפועל            │
-  │ * pickup_branch_id (FK)  ◇ לא עביר                               │
-  │ o return_branch_id (FK)     ✅ עביר — יכול להשתנות בזמן ההשכרה   │
-  │ * start_date · o actual_return_date · * daily_rate ⭐            │
-  │ * status                                                         │
-  └────────────────┬──────────────────────────┬──────────────────────┘
-                   │ "כוללת"                  │ "מבוצעת ע"י"
-                   ▼                          ▼
-  ┌────────────────────────────┐   ┌──────────────────────────────┐
-  │        RENTAL_EXTRA        │   │       RENTAL_DRIVER          │
-  ├────────────────────────────┤   ├──────────────────────────────┤
-  │ # rental_extra_id          │   │ # rental_driver_id           │
-  │ * rental_id  (FK)  ◇       │   │ * rental_id     (FK)  ◇      │
-  │ * extra_id   (FK)          │   │ * customer_id   (FK)  ◇      │
-  │ * quantity                 │   │ * is_primary_driver          │
-  │ * price_charged      ⭐    │   │ * added_date                 │
-  └────────────┬───────────────┘   └──────────────────────────────┘
-               │                       ▲
-               ▼                       │
-  ┌────────────────────────────┐       │  ⭐ M:M בין CUSTOMER ל-RENTAL!
-  │           EXTRA            │       │     כי להשכרה יכולים להיות
-  ├────────────────────────────┤       │     כמה נהגים מורשים
-  │ # extra_id                 │       │
-  │ * extra_name (GPS/כיסא)    │───────┘
-  │ * daily_price              │
-  └────────────────────────────┘
+  +--------------+                                  +------------------+
+  |   CUSTOMER   |                                  |     VEHICLE      |
+  +--------------+                                  +------------------+
+  |# customer_id |                                  |# vehicle_id      |
+  |* first_name  |                                  |* license_plate   |
+  |* last_name   |                                  |* category_id (FK)|
+  |* license_no  |                                  |* status          |
+  |* is_active   |                                  |* is_active       |
+  +------+-------+                                  +--------+---------+
+         |                                                   |
+         | "rents"                                  "rented" |
+         |        <>  <- non-transferable!                <> |  <- non-transferable!
+         v                                                   v
+  +------------------------------------------------------------------+
+  |                            RENTAL                                |
+  +------------------------------------------------------------------+
+  | # rental_id                                                      |
+  | * customer_id      (FK)  <> non-transferable -- a contract       |
+  | * vehicle_id       (FK)  <> non-transferable -- the car actually handed over |
+  | * pickup_branch_id (FK)  <> non-transferable                     |
+  | o return_branch_id (FK)     [OK] transferable -- can change during the rental |
+  | * start_date . o actual_return_date . * daily_rate *             |
+  | * status                                                         |
+  +----------------+--------------------------+----------------------+
+                   | "includes"               | "driven by"
+                   v                          v
+  +----------------------------+   +------------------------------+
+  |        RENTAL_EXTRA        |   |       RENTAL_DRIVER          |
+  +----------------------------+   +------------------------------+
+  | # rental_extra_id          |   | # rental_driver_id           |
+  | * rental_id  (FK)  <>      |   | * rental_id     (FK)  <>     |
+  | * extra_id   (FK)          |   | * customer_id   (FK)  <>     |
+  | * quantity                 |   | * is_primary_driver          |
+  | * price_charged      *     |   | * added_date                 |
+  +------------+---------------+   +------------------------------+
+               |                       ^
+               v                       |
+  +----------------------------+       |  * M:M between CUSTOMER and RENTAL!
+  |           EXTRA            |       |    because a rental can have
+  +----------------------------+       |    several authorised drivers
+  | # extra_id                 |       |
+  | * extra_name (GPS/seat)    |-------+
+  | * daily_price              |
+  +----------------------------+
 ```
 
 <div dir="rtl">
@@ -767,27 +767,27 @@ CRUD מוביל אותנו לשאלה עמוקה יותר: **מה קורה למ�
 </div>
 
 ```text
-   התהליך                │CUSTO│VEHIC│RENTAL│RENT_│RENT_│EXTRA│BRANCH
-                         │MER  │LE   │      │EXTRA│DRIVR│     │
-   ──────────────────────┼─────┼─────┼──────┼─────┼─────┼─────┼──────
-    רישום לקוח חדש       │  C  │  —  │  —   │  —  │  —  │  —  │  R
-   ──────────────────────┼─────┼─────┼──────┼─────┼─────┼─────┼──────
-    הוספת רכב לצי        │  —  │  C  │  —   │  —  │  —  │  —  │  R
-   ──────────────────────┼─────┼─────┼──────┼─────┼─────┼─────┼──────
-    ביצוע השכרה          │  R  │ R,U │  C   │  C  │  C  │  R  │  R
-   ──────────────────────┼─────┼─────┼──────┼─────┼─────┼─────┼──────
-    הוספת נהג באמצע      │  R  │  —  │  R   │  —  │  C  │  —  │  —
-   ──────────────────────┼─────┼─────┼──────┼─────┼─────┼─────┼──────
-    החזרת רכב            │  R  │  U  │  U   │  R  │  R  │  —  │  R
-   ──────────────────────┼─────┼─────┼──────┼─────┼─────┼─────┼──────
-    חיוב על נזק          │  R  │  U  │  U   │  C  │  R  │  R  │  —
-   ──────────────────────┼─────┼─────┼──────┼─────┼─────┼─────┼──────
-    הוצאת רכב לטיפול     │  —  │  U  │  R   │  —  │  —  │  —  │  R
-   ──────────────────────┼─────┼─────┼──────┼─────┼─────┼─────┼──────
-    עדכון תעריף תוספת    │  —  │  —  │  —   │  —  │  —  │  U  │  —
-   ──────────────────────┼─────┼─────┼──────┼─────┼─────┼─────┼──────
-    דוח הכנסות חודשי     │  R  │  R  │  R   │  R  │  —  │  R  │  R
-   ──────────────────────┴─────┴─────┴──────┴─────┴─────┴─────┴──────
+   PROCESS                 |CUSTO|VEHIC|RENTAL|RENT_|RENT_|EXTRA|BRANCH
+                           |MER  |LE   |      |EXTRA|DRIVR|     |
+   ------------------------+-----+-----+------+-----+-----+-----+------
+    Register new customer  |  C  |  -  |  -   |  -  |  -  |  -  |  R
+   ------------------------+-----+-----+------+-----+-----+-----+------
+    Add vehicle to fleet   |  -  |  C  |  -   |  -  |  -  |  -  |  R
+   ------------------------+-----+-----+------+-----+-----+-----+------
+    Make a rental          |  R  | R,U |  C   |  C  |  C  |  R  |  R
+   ------------------------+-----+-----+------+-----+-----+-----+------
+    Add driver mid-rental  |  R  |  -  |  R   |  -  |  C  |  -  |  -
+   ------------------------+-----+-----+------+-----+-----+-----+------
+    Return vehicle         |  R  |  U  |  U   |  R  |  R  |  -  |  R
+   ------------------------+-----+-----+------+-----+-----+-----+------
+    Charge for damage      |  R  |  U  |  U   |  C  |  R  |  R  |  -
+   ------------------------+-----+-----+------+-----+-----+-----+------
+    Send vehicle to service|  -  |  U  |  R   |  -  |  -  |  -  |  R
+   ------------------------+-----+-----+------+-----+-----+-----+------
+    Update extra's price   |  -  |  -  |  -   |  -  |  -  |  U  |  -
+   ------------------------+-----+-----+------+-----+-----+-----+------
+    Monthly revenue report |  R  |  R  |  R   |  R  |  -  |  R  |  R
+   ------------------------+-----+-----+------+-----+-----+-----+------
 ```
 
 <div dir="rtl">

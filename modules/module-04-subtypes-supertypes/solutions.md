@@ -154,32 +154,32 @@
 </div>
 
 ```text
-┌──────────────────┐        ┌───────────────────────┐        ┌──────────────┐
-│      PERSON      │───────<│      PERSON_ROLE      │>───────│     ROLE     │
-├──────────────────┤        ├───────────────────────┤        ├──────────────┤
-│ # person_id      │        │ # person_role_id      │        │ # role_id    │
-│ * first_name     │        │ * person_id      (FK) │        │ * role_name  │
-│ * last_name      │        │ * role_id        (FK) │        │   תלמיד      │
-│ * phone          │        │ * start_date          │        │   מורה       │
-│ o email          │        │ o end_date            │        │   הורה       │
-│ o national_id UQ │        │ * is_active           │        │   צוות מנהלי │
-│ * birth_date     │        └───────────────────────┘        └──────────────┘
-└──────────────────┘
++------------------+        +-----------------------+        +--------------+
+|      PERSON      |-------<|      PERSON_ROLE      |>-------|     ROLE     |
++------------------+        +-----------------------+        +--------------+
+| # person_id      |        | # person_role_id      |        | # role_id    |
+| * first_name     |        | * person_id      (FK) |        | * role_name  |
+| * last_name      |        | * role_id        (FK) |        |   student    |
+| * phone          |        | * start_date          |        |   teacher    |
+| o email          |        | o end_date            |        |   parent     |
+| o national_id UQ |        | * is_active           |        |   admin staff|
+| * birth_date     |        +-----------------------+        +--------------+
++------------------+
 
-        ┌───────────────────────────────────────────────────────┐
-        │  ומה עם המאפיינים הייחודיים לתפקיד? — ראו סעיף ד'      │
-        └───────────────────────────────────────────────────────┘
+        +-------------------------------------------------------+
+        |  And the role-specific attributes? -- see part (d)     |
+        +-------------------------------------------------------+
 
-  יחס נפרד לקשרי משפחה (הורה ↔ ילד — יחס בין שני PERSON):
-  ┌────────────────────────────┐
-  │       GUARDIANSHIP         │
-  ├────────────────────────────┤
-  │ # guardianship_id          │
-  │ * guardian_person_id  (FK) │  ← ההורה
-  │ * student_person_id   (FK) │  ← הילד
-  │ * relationship_type        │  ← אב/אם/אפוטרופוס
-  │ * is_primary_contact       │
-  └────────────────────────────┘
+  A separate relationship for family ties (parent <-> child: between two PERSONs):
+  +----------------------------+
+  |       GUARDIANSHIP         |
+  +----------------------------+
+  | # guardianship_id          |
+  | * guardian_person_id  (FK) |  <- the parent
+  | * student_person_id   (FK) |  <- the child
+  | * relationship_type        |  <- father/mother/guardian
+  | * is_primary_contact       |
+  +----------------------------+
 ```
 
 <div dir="rtl">
@@ -282,21 +282,21 @@
 </div>
 
 ```text
-┌──────────────────────────────────────────────────────────────┐
-│                        STAFF_MEMBER                          │
-│  # staff_id · * first_name · * last_name · * hire_date       │
-│  * salary · * phone · * employment_status                    │
-│  ┌─────────────────┐ ┌──────────────────┐ ┌────────────────┐ │
-│  │     DOCTOR      │ │      NURSE       │ │ ADMIN_STAFF    │ │
-│  ├─────────────────┤ ├──────────────────┤ ├────────────────┤ │
-│  │* license_number │ │* nurse_grade     │ │* department_id │ │
-│  │* specialty_id   │ │* certifications  │ │* job_title     │ │
-│  │o sub_specialty  │ │o unit_id         │ │                │ │
-│  └─────────────────┘ └──────────────────┘ └────────────────┘ │
-│  ┌─────────────────┐                                         │
-│  │      OTHER      │  ← טכנאים, עובדי מעבדה, אחזקה           │
-│  └─────────────────┘                                         │
-└──────────────────────────────────────────────────────────────┘
++--------------------------------------------------------------+
+|                        STAFF_MEMBER                          |
+|  # staff_id . * first_name . * last_name . * hire_date       |
+|  * salary . * phone . * employment_status                    |
+|  +-----------------+ +------------------+ +----------------+ |
+|  |     DOCTOR      | |      NURSE       | | ADMIN_STAFF    | |
+|  +-----------------+ +------------------+ +----------------+ |
+|  |* license_number | |* nurse_grade     | |* department_id | |
+|  |* specialty_id   | |* certifications  | |* job_title     | |
+|  |o sub_specialty  | |o unit_id         | |                | |
+|  +-----------------+ +------------------+ +----------------+ |
+|  +-----------------+                                         |
+|  |      OTHER      |  <- technicians, lab staff, maintenance |
+|  +-----------------+                                         |
++--------------------------------------------------------------+
 ```
 
 <div dir="rtl">
@@ -372,13 +372,13 @@
 </div>
 
 ```text
-   STAFF_MEMBER ──┬── DOCTOR / NURSE / ADMIN_STAFF     ← טיפוסי משנה (הכשרה)
-                  │
-                  └──< STAFF_POSITION >── POSITION      ← תפקידים (ניהול)
-                          │                    │
-                     start_date            "מנהל מחלקה"
-                     end_date              "אחראי משמרת"
-                     department_id         "רופא תורן"
+   STAFF_MEMBER --+-- DOCTOR / NURSE / ADMIN_STAFF     <- SUBTYPES (training)
+                  |
+                  +--< STAFF_POSITION >-- POSITION      <- ROLES (management)
+                          |                    |
+                     start_date            "head of department"
+                     end_date              "shift supervisor"
+                     department_id         "doctor on call"
 ```
 
 <div dir="rtl">
@@ -444,13 +444,13 @@ CREATE TABLE vehicle (
   license_plate  VARCHAR2(15) NOT NULL UNIQUE,
   manufacturer   VARCHAR2(50) NOT NULL,
   year           NUMBER(4)    NOT NULL,
-  num_of_seats   NUMBER,          -- רק CAR
-  has_child_seat CHAR(1),         -- רק CAR
-  max_load_tons  NUMBER,          -- רק TRUCK   ⚠️ לא יכול NOT NULL
-  num_of_axles   NUMBER,          -- רק TRUCK
-  license_class  VARCHAR2(5),     -- רק TRUCK
-  engine_cc      NUMBER,          -- רק MOTORCYCLE
-  has_sidecar    CHAR(1),         -- רק MOTORCYCLE
+  num_of_seats   NUMBER,          -- CAR only
+  has_child_seat CHAR(1),         -- CAR only
+  max_load_tons  NUMBER,          -- TRUCK only   (!) cannot be NOT NULL
+  num_of_axles   NUMBER,          -- TRUCK only
+  license_class  VARCHAR2(5),     -- TRUCK only
+  engine_cc      NUMBER,          -- MOTORCYCLE only
+  has_sidecar    CHAR(1),         -- MOTORCYCLE only
   CONSTRAINT veh_type_ck CHECK (vehicle_type IN ('CAR','TRUCK','MOTORCYCLE'))
 );
 ```
@@ -464,23 +464,23 @@ CREATE TABLE vehicle (
 ```sql
 CREATE TABLE private_car (
   car_id         NUMBER PRIMARY KEY,
-  license_plate  VARCHAR2(15) NOT NULL UNIQUE,   -- ⚠️ משוכפל
-  manufacturer   VARCHAR2(50) NOT NULL,          -- ⚠️ משוכפל
-  year           NUMBER(4)    NOT NULL,          -- ⚠️ משוכפל
+  license_plate  VARCHAR2(15) NOT NULL UNIQUE,   -- (!) duplicated
+  manufacturer   VARCHAR2(50) NOT NULL,          -- (!) duplicated
+  year           NUMBER(4)    NOT NULL,          -- (!) duplicated
   num_of_seats   NUMBER       NOT NULL,
   has_child_seat CHAR(1)      NOT NULL
 );
 
 CREATE TABLE truck (
   truck_id       NUMBER PRIMARY KEY,
-  license_plate  VARCHAR2(15) NOT NULL UNIQUE,   -- ⚠️ משוכפל
+  license_plate  VARCHAR2(15) NOT NULL UNIQUE,   -- (!) duplicated
   manufacturer   VARCHAR2(50) NOT NULL,
   year           NUMBER(4)    NOT NULL,
   max_load_tons  NUMBER       NOT NULL,
   num_of_axles   NUMBER       NOT NULL,
   license_class  VARCHAR2(5)  NOT NULL
 );
--- וכן motorcycle...
+-- ... and motorcycle
 ```
 
 <div dir="rtl">
@@ -552,7 +552,7 @@ UNION ALL
 SELECT m.license_plate, m.manufacturer FROM motorcycle m
   JOIN parking_ticket_moto t ON t.moto_id = m.moto_id
   WHERE EXTRACT(YEAR FROM t.ticket_date) = 2026;
--- ⚠️ ושלוש טבלאות דוחות נפרדות! וכשיתווסף "אוטובוס" — עוד בלוק בכל שאילתה במערכת
+-- (!) and THREE separate ticket tables! When "BUS" is added -- another block in every query in the system
 ```
 
 <div dir="rtl">
@@ -575,15 +575,15 @@ WHERE  EXTRACT(YEAR FROM t.ticket_date) = 2026;
 </div>
 
 ```sql
--- דרך א':
+-- Method A:
 SELECT license_plate, max_load_tons FROM vehicle
 WHERE  vehicle_type = 'TRUCK' AND max_load_tons > 10;
 
--- דרך ב':
+-- Method B:
 SELECT license_plate, max_load_tons FROM truck
 WHERE  max_load_tons > 10;
 
--- דרך ג':
+-- Method C:
 SELECT v.license_plate, t.max_load_tons
 FROM   vehicle v JOIN truck t ON t.vehicle_id = v.vehicle_id
 WHERE  t.max_load_tons > 10;
@@ -596,13 +596,13 @@ WHERE  t.max_load_tons > 10;
 </div>
 
 ```sql
--- ❌ מה שרצינו לכתוב — ואי אפשר:
+-- [X] What we WANTED to write -- and cannot:
 CREATE TABLE parking_ticket (
   ticket_id  NUMBER PRIMARY KEY,
-  vehicle_id NUMBER REFERENCES ??????   -- לאיזו טבלה?! אין טבלת vehicle
+  vehicle_id NUMBER REFERENCES ??????   -- which table?! there is no vehicle table
 );
 
--- ❌ פתרון עקום א' — עמודה לכל סוג + קשת:
+-- [X] Ugly workaround A -- a column per type + an arc:
 CREATE TABLE parking_ticket (
   ticket_id NUMBER PRIMARY KEY,
   car_id    NUMBER REFERENCES private_car(car_id),
@@ -614,12 +614,12 @@ CREATE TABLE parking_ticket (
      CASE WHEN moto_id  IS NOT NULL THEN 1 ELSE 0 END) = 1
   )
 );
--- כל סוג חדש = עמודה חדשה + עדכון האילוץ + עדכון כל שאילתה במערכת
+-- every new type = new column + update the constraint + update every query in the system
 
--- ❌ פתרון עקום ב' — לוותר על שלמות:
+-- [X] Ugly workaround B -- give up integrity:
 CREATE TABLE parking_ticket (
   ticket_id     NUMBER PRIMARY KEY,
-  license_plate VARCHAR2(15)   -- ללא FK ⟵ אפשר להזין רכב שלא קיים
+  license_plate VARCHAR2(15)   -- no FK -> you can enter a vehicle that doesn't exist
 );
 ```
 
@@ -675,25 +675,25 @@ CREATE TABLE parking_ticket (
 </div>
 
 ```sql
--- תקלה 3 ו-4: מניעת מחיקה
+-- Failures 3 and 4: prevent deletion
 ALTER TABLE orders ADD CONSTRAINT ord_cust_fk
   FOREIGN KEY (customer_id) REFERENCES customer(customer_id);
-  -- ברירת המחדל באורקל היא RESTRICT — מחיקת לקוח עם הזמנות תיכשל
+  -- Oracle's default is RESTRICT -- deleting a customer with orders will fail
 
--- תקלה 6: ייחודיות מספר הזמנה
+-- Failure 6: order number uniqueness
 ALTER TABLE orders ADD CONSTRAINT ord_number_uq UNIQUE (order_number);
 
--- תקלה 2: טווח הנחה
+-- Failure 2: discount range
 ALTER TABLE order_line ADD CONSTRAINT ol_discount_ck
   CHECK (discount_pct BETWEEN 0 AND 100);
 
--- תקלה 8: מימוש קופון פעם אחת
+-- Failure 8: a coupon redeemed only once
 CREATE TABLE coupon_redemption (
-  coupon_id   NUMBER PRIMARY KEY REFERENCES coupon(coupon_id),  -- ⭐ PK = פעם אחת
+  coupon_id   NUMBER PRIMARY KEY REFERENCES coupon(coupon_id),  -- * PK = once only
   order_id    NUMBER NOT NULL REFERENCES orders(order_id),
   redeemed_at DATE   DEFAULT SYSDATE NOT NULL
 );
--- ⭐ הפיכת coupon_id ל-PRIMARY KEY אוכפת מימוש יחיד ברמת המבנה — בלי טריגר!
+-- * Making coupon_id the PRIMARY KEY enforces single redemption at the STRUCTURE level -- no trigger!
 ```
 
 <div dir="rtl">
@@ -746,28 +746,28 @@ CREATE TABLE coupon_redemption (
 </div>
 
 ```text
-┌───────────────────────────────────────────────────────────────────────┐
-│                               ANIMAL                                  │
-│  # animal_id · * animal_name · * species_id (FK) · * gender           │
-│  o estimated_birth_date · o weight_kg · * status                      │
-│  o microchip_number (UQ) · o mother_animal_id (FK) 🔄                 │
-│  ───────────────────────────────────────────────────────────────────  │
-│  ┌────────────────────┐ ┌────────────────────┐ ┌───────────────────┐  │
-│  │        DOG         │ │        CAT         │ │      RABBIT       │  │
-│  ├────────────────────┤ ├────────────────────┤ ├───────────────────┤  │
-│  │ * breed            │ │ * is_neutered      │ │ * fur_type        │  │
-│  │ * size_category    │ │ * is_indoor_only   │ │ * is_neutered     │  │
-│  │ * is_house_trained │ │ * fiv_status       │ └───────────────────┘  │
-│  │ * dog_aggression   │ │ * felv_status      │                        │
-│  └────────────────────┘ └────────────────────┘ ┌───────────────────┐  │
-│  ┌────────────────────┐                        │       OTHER       │  │
-│  │       PARROT       │                        ├───────────────────┤  │
-│  ├────────────────────┤                        │ o description     │  │
-│  │ * bird_species     │                        └───────────────────┘  │
-│  │ * can_talk         │                             ▲                 │
-│  │ * wingspan_cm      │                    האוגר, השרקן, הצב...       │
-│  └────────────────────┘                                               │
-└───────────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------------+
+|                               ANIMAL                                  |
+|  # animal_id . * animal_name . * species_id (FK) . * gender           |
+|  o estimated_birth_date . o weight_kg . * status                      |
+|  o microchip_number (UQ) . o mother_animal_id (FK) (R)                |
+|  -------------------------------------------------------------------  |
+|  +--------------------+ +--------------------+ +-------------------+  |
+|  |        DOG         | |        CAT         | |      RABBIT       |  |
+|  +--------------------+ +--------------------+ +-------------------+  |
+|  | * breed            | | * is_neutered      | | * fur_type        |  |
+|  | * size_category    | | * is_indoor_only   | | * is_neutered     |  |
+|  | * is_house_trained | | * fiv_status       | +-------------------+  |
+|  | * dog_aggression   | | * felv_status      |                        |
+|  +--------------------+ +--------------------+ +-------------------+  |
+|  +--------------------+                        |       OTHER       |  |
+|  |       PARROT       |                        +-------------------+  |
+|  +--------------------+                        | o description     |  |
+|  | * bird_species     |                        +-------------------+  |
+|  | * can_talk         |                             ^                 |
+|  | * wingspan_cm      |                    hamster, guinea pig, turtle...|
+|  +--------------------+                                               |
++-----------------------------------------------------------------------+
 ```
 
 <div dir="rtl">
@@ -810,22 +810,22 @@ CREATE TABLE coupon_redemption (
 </div>
 
 ```text
-┌──────────────┐      ┌───────────────────────┐      ┌──────────────┐
-│    PERSON    │─────<│     PERSON_ROLE       │>─────│     ROLE     │
-├──────────────┤      ├───────────────────────┤      ├──────────────┤
-│# person_id   │      │# person_role_id       │      │# role_id     │
-│* first_name  │      │* person_id       (FK) │      │* role_name   │
-│* last_name   │      │* role_id         (FK) │      │  מתנדב/מאמץ/ │
-│* phone       │      │* start_date           │      │  בעלים/וטרינר│
-│o email       │      │o end_date             │      └──────────────┘
-│o national_id │      │* is_active            │
-│* is_active   │      └───────────────────────┘
-└──────┬───────┘
-       │
-       ├──────< VET_DETAILS       (person_id PK/FK · * license_number UQ · * specialty)
-       │
-       └──────< VOLUNTEER_DETAILS (person_id PK/FK · * start_date · * weekly_hours
-                                    · o preferred_animal_type)
++--------------+      +-----------------------+      +--------------+
+|    PERSON    |-----<|     PERSON_ROLE       |>-----|     ROLE     |
++--------------+      +-----------------------+      +--------------+
+|# person_id   |      |# person_role_id       |      |# role_id     |
+|* first_name  |      |* person_id       (FK) |      |* role_name   |
+|* last_name   |      |* role_id         (FK) |      |  volunteer/  |
+|* phone       |      |* start_date           |      |  adopter/    |
+|o email       |      |o end_date             |      |  owner/vet   |
+|o national_id |      |* is_active            |      +--------------+
+|* is_active   |      +-----------------------+
++------+-------+
+       |
+       +------< VET_DETAILS       (person_id PK/FK . * license_number UQ . * specialty)
+       |
+       +------< VOLUNTEER_DETAILS (person_id PK/FK . * start_date . * weekly_hours
+                                    . o preferred_animal_type)
 ```
 
 <div dir="rtl">

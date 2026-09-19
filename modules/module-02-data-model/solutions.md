@@ -108,39 +108,39 @@
 </div>
 
 ```text
-┌────────────────────────────┐
-│          PATIENT           │
-├────────────────────────────┤          ┌─────────────────────────┐
-│ # patient_id  (מלאכותי)    │─────────<│     PATIENT_PHONE       │
-│ o national_id  (UNIQUE)    │          ├─────────────────────────┤
-│ * first_name               │          │ # phone_id              │
-│ * last_name                │          │ * phone_number          │
-│ o father_name              │          │ * phone_type  (בית/נייד)│
-│ * birth_date               │          │ * is_primary            │
-│ o city                     │          └─────────────────────────┘
-│ o street                   │
-│ o house_number             │          ┌─────────────────────────┐
-│ o apartment                │─────────<│   PATIENT_ALLERGY       │
-│ o zip_code                 │          ├─────────────────────────┤
-│ o insurance_fund_id  (FK)  │          │ # patient_allergy_id    │
-│ o insurance_plan           │          │ * allergen_id     (FK)  │───┐
-│ * is_active                │          │ * severity              │   │
-└────────────────────────────┘          │ o notes                 │   │
-                                        └─────────────────────────┘   │
-      ┌──────────────────────┐          ┌─────────────────────────┐   │
-      │   INSURANCE_FUND     │          │        ALLERGEN         │◄──┘
-      ├──────────────────────┤          ├─────────────────────────┤
-      │ # fund_id            │          │ # allergen_id           │
-      │ * fund_name          │          │ * allergen_name         │
-      └──────────────────────┘          │ * allergen_type         │
-                                        └─────────────────────────┘
++----------------------------+
+|          PATIENT           |
++----------------------------+          +-------------------------+
+| # patient_id  (surrogate)  |---------<|     PATIENT_PHONE       |
+| o national_id  (UNIQUE)    |          +-------------------------+
+| * first_name               |          | # phone_id              |
+| * last_name                |          | * phone_number          |
+| o father_name              |          | * phone_type (home/mobile)|
+| * birth_date               |          | * is_primary            |
+| o city                     |          +-------------------------+
+| o street                   |
+| o house_number             |          +-------------------------+
+| o apartment                |---------<|   PATIENT_ALLERGY       |
+| o zip_code                 |          +-------------------------+
+| o insurance_fund_id  (FK)  |          | # patient_allergy_id    |
+| o insurance_plan           |          | * allergen_id     (FK)  |---+
+| * is_active                |          | * severity              |   |
++----------------------------+          | o notes                 |   |
+                                        +-------------------------+   |
+      +----------------------+          +-------------------------+   |
+      |   INSURANCE_FUND     |          |        ALLERGEN         |<--+
+      +----------------------+          +-------------------------+
+      | # fund_id            |          | # allergen_id           |
+      | * fund_name          |          | * allergen_name         |
+      +----------------------+          | * allergen_type         |
+                                        +-------------------------+
 
-      ❌ age — הוסר. מחושב: SYSDATE - birth_date
+      [X] age -- REMOVED. Derived: SYSDATE - birth_date
 ```
 
-**הישויות החדשות:** `PATIENT_PHONE` (1:M) · `ALLERGEN` + `PATIENT_ALLERGY` (פירוק M:M) · `INSURANCE_FUND` (1:M)
-
 <div dir="rtl">
+
+**הישויות החדשות:** `PATIENT_PHONE` (1:M) · `ALLERGEN` + `PATIENT_ALLERGY` (פירוק M:M) · `INSURANCE_FUND` (1:M)
 
 ### ד. שאילתה שהתאפשרה
 
@@ -191,13 +191,13 @@ LESSON                          PACKAGE                 PAYMENT
 * lesson_date                   * student_id (FK)       * package_id (FK)
 * start_time                    * subject_id (FK)       * amount
 * duration_min  (60/90)         * total_lessons (10)    * payment_date
-* status  (בוצע/בוטל/מחויב)     * purchase_date         * payment_method
-* teacher_id   (FK)             * price_paid  ← מוקפא!
+* status  (done/cancelled/billed) * purchase_date       * payment_method
+* teacher_id   (FK)             * price_paid  <- FROZEN!
 * student_id   (FK)             * expiry_date
 * package_id   (FK)
-o cancel_notice_time  ← קריטי לכלל 24 השעות
+o cancel_notice_time  <- critical for the 24-hour rule
 o cancel_reason
-* is_billable   ← נגזר מלוגיקה, אך נשמר כי הוא החלטה עסקית
+* is_billable   <- derived by logic, but stored: it is a business decision
 ```
 
 <div dir="rtl">
@@ -321,8 +321,8 @@ WHERE  o.order_date BETWEEN '2026-01-01' AND '2026-01-31';
 
 ```text
 ORDER_LINE(order_line_id #, order_id *, product_id *, quantity *, unit_price_charged *)
-                                                                  ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
-                                                        המחיר בעת ההזמנה — "מוקפא"
+                                                                  ^^^^^^^^^^^^^^^^^^
+                                                        price AT ORDER TIME -- "frozen"
 ```
 
 <div dir="rtl">
@@ -401,32 +401,32 @@ WHERE  o.order_date BETWEEN '2026-01-01' AND '2026-01-31';
 </div>
 
 ```text
-┌────────────────────┐        ┌────────────────────┐        ┌────────────────────┐
-│      PATIENT       │        │     TREATMENT      │        │      DENTIST       │
-├────────────────────┤        ├────────────────────┤        ├────────────────────┤
-│ # patient_id       │───┐    │ # treatment_id     │    ┌───│ # dentist_id       │
-│ o national_id (UQ) │   │    │ * treatment_date   │    │   │ * first_name       │
-│ * first_name       │   └───<│ * patient_id  (FK) │    │   │ * last_name        │
-│ * last_name        │        │ * dentist_id  (FK) │>───┘   │ * license_number   │
-│ * birth_date       │        │ * type_id     (FK) │>───┐   │ * phone            │
-│ * phone            │        │ * price_charged ⭐ │    │   │ o specialty        │
-│ o city             │        │ * status           │    │   └────────────────────┘
-│ o street           │        │ o tooth_number     │    │
-│ * is_active        │        │ o notes            │    │   ┌────────────────────┐
-└────────────────────┘        └────────────────────┘    └──>│  TREATMENT_TYPE    │
-         │                                                  ├────────────────────┤
-         │                    ┌────────────────────┐        │ # type_id          │
-         └───────────────────<│      PAYMENT       │        │ * type_name        │
-                              ├────────────────────┤        │ * catalog_price    │
-                              │ # payment_id       │        │ * duration_min     │
-                              │ * patient_id  (FK) │        └────────────────────┘
-                              │ * amount           │
-                              │ * payment_date     │        ⭐ price_charged — מוקפא
-                              │ * method           │           ומופרד מ-catalog_price
-                              │ o treatment_id(FK) │
-                              └────────────────────┘
++--------------------+        +--------------------+        +--------------------+
+|      PATIENT       |        |     TREATMENT      |        |      DENTIST       |
++--------------------+        +--------------------+        +--------------------+
+| # patient_id       |---+    | # treatment_id     |    +---| # dentist_id       |
+| o national_id (UQ) |   |    | * treatment_date   |    |   | * first_name       |
+| * first_name       |   +---<| * patient_id  (FK) |    |   | * last_name        |
+| * last_name        |        | * dentist_id  (FK) |>---+   | * license_number   |
+| * birth_date       |        | * type_id     (FK) |>---+   | * phone            |
+| * phone            |        | * price_charged *  |    |   | o specialty        |
+| o city             |        | * status           |    |   +--------------------+
+| o street           |        | o tooth_number     |    |
+| * is_active        |        | o notes            |    |   +--------------------+
++--------------------+        +--------------------+    +-->|  TREATMENT_TYPE    |
+         |                                                  +--------------------+
+         |                    +--------------------+        | # type_id          |
+         +-------------------<|      PAYMENT       |        | * type_name        |
+                              +--------------------+        | * catalog_price    |
+                              | # payment_id       |        | * duration_min     |
+                              | * patient_id  (FK) |        +--------------------+
+                              | * amount           |
+                              | * payment_date     |        * price_charged -- FROZEN,
+                              | * method           |          separate from catalog_price
+                              | o treatment_id(FK) |
+                              +--------------------+
 
-    ❌ הוסרו:  treatment1/2/3  ·  total_paid  ·  last_visit_date   (נגזרים/כפולים)
+    [X] REMOVED:  treatment1/2/3  .  total_paid  .  last_visit_date   (derived / duplicated)
 ```
 
 <div dir="rtl">
@@ -478,22 +478,22 @@ ANIMAL                          INTAKE                      PERSON
 # animal_id                     # intake_id                 # person_id
 * animal_name                   * animal_id      (FK)       * first_name
 * species_id      (FK)          * intake_date               * last_name
-o breed                         * intake_type ← נמצא/נמסר   * phone
+o breed                         * intake_type <- found/surrendered  * phone
 o estimated_birth_date          o found_location            o email
-* gender                        o surrendered_by (FK→PERSON)o address_city
-o color                         o volunteer_id   (FK→PERSON)o address_street
+* gender                        o surrendered_by (FK->PERSON) o address_city
+o color                         o volunteer_id   (FK->PERSON) o address_street
 o weight_kg                     o reason                    o id_number  (UQ)
-* status ← במקלט/מאומץ/בטיפול   o notes                     * is_active
+* status <- in shelter/adopted/in care  o notes             * is_active
 o microchip_number  (UQ)
-o photo_url                     ❌ days_in_shelter — נגזר!
-o notes                         ❌ total_cost     — נגזר!
+o photo_url                     [X] days_in_shelter -- derived!
+o notes                         [X] total_cost      -- derived!
 
 VET_EXAM                        VACCINATION                 ADOPTION_APPLICATION
 # exam_id                       # vaccination_id            # application_id
 * animal_id       (FK)          * animal_id     (FK)        * person_id    (FK)
-* vet_id          (FK→PERSON)   * vaccine_type_id (FK)      * animal_id    (FK)
+* vet_id          (FK->PERSON)  * vaccine_type_id (FK)      * animal_id    (FK)
 * exam_date                     * vaccination_date          * application_date
-* exam_type ← כניסה/תקופתית     * vet_id        (FK)        * status ← הוגש/רואיין/אושר/נדחה
+* exam_type <- intake/periodic  * vet_id        (FK)        * status <- submitted/interviewed/approved/rejected
 o findings                      o batch_number              o interview_date
 o treatment_given               o next_due_date             o interviewer_id (FK)
 o next_exam_date                                            o decision_notes
@@ -502,12 +502,12 @@ ADOPTION                        HOME_VISIT                  EXPENSE
 # adoption_id                   # visit_id                  # expense_id
 * application_id  (FK)          * adoption_id   (FK)        * animal_id  (FK)
 * animal_id       (FK)          * scheduled_date            * expense_date
-* adopter_id      (FK→PERSON)   o actual_date               * amount
-* adoption_date                 * status                    * category ← מזון/רפואי/ציוד
+* adopter_id      (FK->PERSON)  o actual_date               * amount
+* adoption_date                 * status                    * category <- food/medical/equipment
 o adoption_fee                  o findings                  o description
-* status ← פעיל/הוחזר           o is_satisfactory           o vendor
+* status <- active/returned     o is_satisfactory           o vendor
 o return_date
-o return_reason  ← חיה מוחזרת!
+o return_reason  <- an animal can be RETURNED!
 ```
 
 <div dir="rtl">
@@ -569,16 +569,16 @@ o return_reason  ← חיה מוחזרת!
 </div>
 
 ```text
-┌──────────────────┐         ┌──────────────────────┐        ┌──────────────┐
-│      PERSON      │────────<│     PERSON_ROLE      │>───────│     ROLE     │
-├──────────────────┤         ├──────────────────────┤        ├──────────────┤
-│ # person_id      │         │ # person_role_id     │        │ # role_id    │
-│ * first_name     │         │ * person_id     (FK) │        │ * role_name  │
-│ * last_name      │         │ * role_id       (FK) │        │   מתנדב      │
-│ * phone          │         │ * start_date         │        │   מאמץ       │
-│ o email          │         │ o end_date           │        │   בעלים קודם │
-│ o id_number (UQ) │         │ * is_active          │        │   וטרינר     │
-└──────────────────┘         └──────────────────────┘        └──────────────┘
++------------------+         +----------------------+        +----------------+
+|      PERSON      |--------<|     PERSON_ROLE      |>-------|      ROLE      |
++------------------+         +----------------------+        +----------------+
+| # person_id      |         | # person_role_id     |        | # role_id      |
+| * first_name     |         | * person_id     (FK) |        | * role_name    |
+| * last_name      |         | * role_id       (FK) |        |   volunteer    |
+| * phone          |         | * start_date         |        |   adopter      |
+| o email          |         | o end_date           |        |   prev. owner  |
+| o id_number (UQ) |         | * is_active          |        |   vet          |
++------------------+         +----------------------+        +----------------+
 ```
 
 <div dir="rtl">

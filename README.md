@@ -92,15 +92,15 @@
 
 ```text
 sql-course-heb/
-├── README.md                    ← אתם כאן
-├── SYLLABUS.md                  ← תכנית הלימודים המלאה (32 פרקים)
+├── README.md                    <- you are here
+├── SYLLABUS.md                  <- full syllabus (32 chapters)
 ├── modules/
-│   ├── module-00-intro/         ← התחילו כאן 👈
+│   ├── module-00-intro/         <- START HERE
 │   ├── module-01-foundations/
-│   │   ├── README.md            ← ההסבר המלא
-│   │   ├── questions.md         ← שאלות ותשובות
-│   │   ├── exercises.md         ← תרגילים
-│   │   └── solutions.md         ← פתרונות
+│   │   ├── README.md            <- full explanation
+│   │   ├── questions.md         <- Q & A
+│   │   ├── exercises.md         <- exercises
+│   │   └── solutions.md         <- solutions
 │   ├── module-02-data-model/
 │   ├── module-03-erd/
 │   ├── module-04-subtypes-supertypes/
@@ -111,11 +111,11 @@ sql-course-heb/
 │   ├── module-09-project-1/
 │   └── module-10-tracking-changes/
 ├── project/
-│   └── README.md                ← הפרויקט המלווה: מקלט לבעלי חיים
+│   └── README.md                <- running project: animal shelter
 └── resources/
-    ├── glossary.md              ← מילון מונחים עברית–אנגלית
-    ├── setup.md                 ← מדריך התקנת סביבת עבודה
-    └── pro-data.pdf             ← תכנית הלימודים המקורית
+    ├── glossary.md              <- Hebrew-English glossary
+    ├── setup.md                 <- environment setup guide
+    └── pro-data.pdf             <- original syllabus
 ```
 
 <div dir="rtl">

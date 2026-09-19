@@ -49,10 +49,10 @@
 
 ```text
 42
-"כהן"
+"Cohen"
 2024-03-17
-₪89.90
-"אדום"
+89.90 NIS
+"red"
 ```
 
 <div dir="rtl">
@@ -85,19 +85,19 @@
 </div>
 
 ```text
-                    ▲
-                   ╱ ╲          Wisdom · תבונה
-                  ╱   ╲         "מה כדאי לעשות?"
-                 ╱─────╲
-                ╱       ╲       Knowledge · ידע
-               ╱         ╲      "למה זה קרה?"
-              ╱───────────╲
-             ╱             ╲    Information · מידע
-            ╱               ╲   "מה קרה?"
-           ╱─────────────────╲
-          ╱                   ╲ Data · נתונים
-         ╱                     ╲"עובדות גולמיות"
-        ╱───────────────────────╲
+                    ^
+                   / \          WISDOM
+                  /   \         "What should we do?"
+                 /-----\
+                /       \       KNOWLEDGE
+               /         \      "Why did it happen?"
+              /-----------\
+             /             \    INFORMATION
+            /               \   "What happened?"
+           /-----------------\
+          /                   \ DATA
+         /                     \"raw facts"
+        /-----------------------\
 ```
 
 <div dir="rtl">
@@ -170,18 +170,18 @@
 </div>
 
 ```text
-        ┌──────────────┐         ┌──────────────┐        ┌──────────────┐
-        │  מחלקת מכירות │         │  מחלקת גבייה  │        │  מחלקת שילוח  │
-        └──────┬───────┘         └──────┬───────┘        └──────┬───────┘
-               │                        │                       │
-               ▼                        ▼                       ▼
-        ┌──────────────┐         ┌──────────────┐        ┌──────────────┐
-        │ customers.txt│         │ billing.dat  │        │ ship_list.xls│
-        │──────────────│         │──────────────│        │──────────────│
-        │ יוסי לוי      │         │ י. לוי       │        │ יוסי לוי      │
-        │ הרצל 5        │         │ הרצל 5       │        │ הרצל 15       │  ← ?!
-        │ 050-1234567  │         │ 050-1234567  │        │ 052-9999999  │  ← ?!
-        └──────────────┘         └──────────────┘        └──────────────┘
+        +--------------+         +--------------+        +--------------+
+        |  Sales dept  |         | Billing dept |        | Shipping dept|
+        +------+-------+         +------+-------+        +------+-------+
+               |                        |                       |
+               v                        v                       v
+        +--------------+         +--------------+        +--------------+
+        | customers.txt|         | billing.dat  |        | ship_list.xls|
+        |--------------|         |--------------|        |--------------|
+        | Yossi Levi   |         | Y. Levi      |        | Yossi Levi   |
+        | Herzl 5      |         | Herzl 5      |        | Herzl 15     |  <- ?!
+        | 050-1234567  |         | 050-1234567  |        | 052-9999999  |  <- ?!
+        +--------------+         +--------------+        +--------------+
 ```
 
 <div dir="rtl">
@@ -231,32 +231,32 @@
 </div>
 
 ```text
-1890 ──────► כרטיסי ניקוב (Hollerith) — מפקד האוכלוסין האמריקאי
-   │
-1950s ─────► סרטים מגנטיים · קבצים סדרתיים (Sequential Files)
-   │
-1960s ─────► המודל ההיררכי (IBM IMS) — עץ · אפולו 11
-   │
-1969 ──────► המודל הרשתי (CODASYL / DBTG) — רשת
-   │
-1970 ──────► ⭐ E. F. Codd מפרסם את המאמר על המודל הרלציוני
-   │
-1974 ──────► IBM מפתחת SEQUEL (לימים SQL) בפרויקט System R
-   │
-1979 ──────► ⭐ Oracle V2 — בסיס הנתונים הרלציוני המסחרי הראשון
-   │
-1986 ──────► SQL הופך לתקן ANSI
-   │
-1990s ─────► עידן ה‑Client‑Server · MySQL · PostgreSQL · SQL Server
-   │
-2000s ─────► האינטרנט · אפליקציות ווב · בסיסי נתונים בקנה מידה עצום
-   │
-2009 ──────► עליית NoSQL — MongoDB, Cassandra, Redis
-   │
-2010s ─────► הענן — Amazon RDS, Azure SQL, Google Cloud SQL
-   │
-2020s ─────► Big Data · Data Lakes · בסיסי נתונים וקטוריים ל‑AI
-   ▼
+1890  -----> Punched cards (Hollerith) -- US census
+   |
+1950s -----> Magnetic tape . Sequential files
+   |
+1960s -----> Hierarchical model (IBM IMS) -- a tree . Apollo program
+   |
+1969  -----> Network model (CODASYL / DBTG) -- a network
+   |
+1970  -----> * E. F. Codd publishes the relational model paper
+   |
+1974  -----> IBM develops SEQUEL (later SQL) in project System R
+   |
+1979  -----> * Oracle V2 -- first commercial relational database
+   |
+1986  -----> SQL becomes an ANSI standard
+   |
+1990s -----> Client-Server era . MySQL . PostgreSQL . SQL Server
+   |
+2000s -----> The internet . web apps . databases at huge scale
+   |
+2009  -----> Rise of NoSQL -- MongoDB, Cassandra, Redis
+   |
+2010s -----> The cloud -- Amazon RDS, Azure SQL, Google Cloud SQL
+   |
+2020s -----> Big Data . Data Lakes . vector databases for AI
+   v
 ```
 
 <div dir="rtl">
@@ -268,19 +268,19 @@
 </div>
 
 ```text
-                    ┌─────────────┐
-                    │  בית ספר    │
-                    └──────┬──────┘
-              ┌────────────┼────────────┐
-              ▼            ▼            ▼
-         ┌────────┐   ┌────────┐   ┌────────┐
-         │ כיתה א'│   │ כיתה ב'│   │ כיתה ג'│
-         └───┬────┘   └───┬────┘   └───┬────┘
-        ┌────┴───┐        │            │
-        ▼        ▼        ▼            ▼
-     ┌─────┐ ┌─────┐  ┌─────┐      ┌─────┐
-     │תלמיד│ │תלמיד│  │תלמיד│      │תלמיד│
-     └─────┘ └─────┘  └─────┘      └─────┘
+                    +-------------+
+                    |   SCHOOL    |
+                    +------+------+
+              +------------+------------+
+              v            v            v
+         +---------+  +---------+  +---------+
+         | Class A |  | Class B |  | Class C |
+         +----+----+  +----+----+  +----+----+
+        +-----+----+       |            |
+        v          v       v            v
+     +-------+ +-------+ +-------+  +-------+
+     |Student| |Student| |Student|  |Student|
+     +-------+ +-------+ +-------+  +-------+
 ```
 
 <div dir="rtl">
@@ -358,20 +358,20 @@
 </div>
 
 ```text
-① מיינפריים (60s-70s)      ② Client-Server (80s-90s)
-   מסופים "טיפשים"              PC חכם מול שרת
-   ┌──┐ ┌──┐ ┌──┐              ┌──┐    ┌──┐
-   └┬─┘ └┬─┘ └┬─┘              └┬─┘    └┬─┘
-    └────┼────┘                 └───┬───┘
-      ┌──▼──┐                    ┌──▼──┐
-      │ ענק │                    │ שרת │
-      └─────┘                    └─────┘
+(1) Mainframe (60s-70s)       (2) Client-Server (80s-90s)
+   "dumb" terminals               smart PC + server
+   +--+ +--+ +--+                 +--+     +--+
+   +-++ +-++ +-++                 +-++     +-++
+     +----+----+                    +---+---+
+      +---v---+                      +--v--+
+      | giant |                      |server|
+      +-------+                      +-----+
 
-③ Web / 3-Tier (2000s)      ④ Cloud (2010s)     ⑤ Big Data + AI (2020s)
-   דפדפן → שרת → DB            השרת של מישהו       Data Lakes
-   ┌───┐  ┌───┐  ┌──┐          אחר, בתשלום         Vector DBs
-   │דפ.│→│אפ.│→│DB│           לפי שימוש            NoSQL + SQL
-   └───┘  └───┘  └──┘
+(3) Web / 3-Tier (2000s)       (4) Cloud (2010s)      (5) Big Data + AI (2020s)
+   browser -> server -> DB       someone else's        Data Lakes
+   +----+  +----+  +--+          server, paid           Vector DBs
+   |brws|->| app|->|DB|          per use                NoSQL + SQL
+   +----+  +----+  +--+
 ```
 
 <div dir="rtl">
@@ -423,17 +423,17 @@
 
 ```text
       Primary Key
-          │
-    ┌─────▼─────┬──────────────┬───────┬─────────────┐
-    │student_id │ student_name │ grade │  class_id   │◄── Foreign Key
-    ├───────────┼──────────────┼───────┼─────────────┤
-    │    101    │  דנה לוי      │  12   │      3      │  ← שורה (Record)
-    │    102    │  עומר כהן     │  11   │      1      │
-    │    103    │  ליאור אבו    │  12   │      3      │
-    └───────────┴──────────────┴───────┴─────────────┘
-          ▲             ▲
-          │             └── עמודה (Column / Field)
-       הערך הזה ייחודי — אין שני תלמידים עם אותו מזהה
+          |
+    +-----v-----+--------------+-------+-------------+
+    |student_id | student_name | grade |  class_id   |<-- Foreign Key
+    +-----------+--------------+-------+-------------+
+    |    101    |  Dana Levi   |  12   |      3      |  <- a row (Record)
+    |    102    |  Omer Cohen  |  11   |      1      |
+    |    103    |  Lior Abu    |  12   |      3      |
+    +-----------+--------------+-------+-------------+
+          ^             ^
+          |             +-- a column (Field)
+       this value is UNIQUE -- no two students share an id
 ```
 
 <div dir="rtl">

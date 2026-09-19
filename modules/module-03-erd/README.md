@@ -71,24 +71,24 @@
 </div>
 
 ```text
-      ┌───────────────────────────┐
-      │        EMPLOYEE           │   ← שם הישות: יחיד, אותיות גדולות
-      ├───────────────────────────┤
-      │  # employee_id            │   ← #  מזהה ייחודי (UID)
-      │  * first_name             │   ← *  חובה (Mandatory)
-      │  * last_name              │
-      │  * hire_date              │
-      │  o email                  │   ← o  רשות (Optional)
-      │  o mobile_phone           │
-      └───────────────────────────┘
+      +---------------------------+
+      |        EMPLOYEE           |   <- entity name: singular, CAPS
+      +---------------------------+
+      |  # employee_id            |   <- #  unique identifier (UID)
+      |  * first_name             |   <- *  Mandatory
+      |  * last_name              |
+      |  * hire_date              |
+      |  o email                  |   <- o  Optional
+      |  o mobile_phone           |
+      +---------------------------+
 
-      ┌──────────── המקרא ────────────┐
-      │  #   מזהה ייחודי — UID        │
-      │  *   מאפיין חובה              │
-      │  o   מאפיין רשות              │
-      │  (בסימון Barker המלא:         │
-      │   מלבן עם פינות מעוגלות)      │
-      └───────────────────────────────┘
+      +------------ LEGEND ------------+
+      |  #   unique identifier -- UID  |
+      |  *   mandatory attribute       |
+      |  o   optional attribute        |
+      |  (full Barker notation:        |
+      |   a box with rounded corners)  |
+      +--------------------------------+
 ```
 
 <div dir="rtl">
@@ -100,15 +100,15 @@
 </div>
 
 ```text
-                       ① השם              ③ העוצמה (Cardinality)
-                         ▼                       ▼
-      ┌─────────┐    "מוצב ב"                ┌─────────┐
-      │EMPLOYEE │──────────────────────────< │DEPARTMENT│
-      └─────────┘  ▲                    ▲    └─────────┘
-                   │                    │
-              ② האופציונליות        "כף עורב" = רבים
-              קו רציף  = חובה
-              קו מקווקו = רשות
+                       (1) the NAME         (3) CARDINALITY
+                         v                       v
+      +---------+   "assigned to"             +----------+
+      |EMPLOYEE |--------------------------< |DEPARTMENT|
+      +---------+  ^                    ^    +----------+
+                   |                    |
+              (2) OPTIONALITY       "crow's foot" = many
+              solid line  = mandatory
+              dashed line = optional
 ```
 
 <div dir="rtl">
@@ -137,13 +137,13 @@
 </div>
 
 ```text
-   ────────────      חובה, אחד       "חייב להיות משויך ל... אחד בדיוק"
+   ------------      mandatory, one    "must be related to ... exactly one"
 
-   ───────────<      חובה, רבים      "חייב להכיל... אחד או יותר"
+   -----------<      mandatory, many   "must contain ... one or more"
 
-   - - - - - -       רשות, אחד       "עשוי להיות משויך ל... אחד"
+   - - - - - -       optional, one     "may be related to ... one"
 
-   - - - - - -<      רשות, רבים      "עשוי להכיל... אחד או יותר"
+   - - - - - -<      optional, many    "may contain ... one or more"
 ```
 
 <div dir="rtl">
@@ -163,12 +163,12 @@
 </div>
 
 ```text
-      ┌──────────┐                              ┌──────────┐
-      │DEPARTMENT│───────────────────────────<  │ EMPLOYEE │
-      └──────────┘   "מעסיקה"      "מוצב ב"     └──────────┘
-                 ▲   מקווקו   רציף  ▲
-                 │                  │
-        רשות + רבים          חובה + אחד
+      +----------+                              +----------+
+      |DEPARTMENT|---------------------------<  | EMPLOYEE |
+      +----------+   "employs"     "assigned to" +----------+
+                 ^   dashed   solid  ^
+                 |                   |
+        optional + many       mandatory + one
 ```
 
 <div dir="rtl">
@@ -192,12 +192,12 @@
 </div>
 
 ```text
-      ┌──────────┐                          ┌──────────┐
-      │  CLASS   │───────────────────────<  │ STUDENT  │
-      └──────────┘  "מכילה"      "לומד ב"   └──────────┘
+      +----------+                          +----------+
+      |  CLASS   |-----------------------<  | STUDENT  |
+      +----------+  "contains"   "studies in" +----------+
 
-      "כל כיתה עשויה להכיל תלמיד אחד או יותר"
-      "כל תלמיד חייב ללמוד בכיתה אחת ובדיוק אחת"
+      "Each CLASS may contain one or more STUDENTS"
+      "Each STUDENT must study in one and only one CLASS"
 ```
 
 <div dir="rtl">
@@ -209,9 +209,9 @@
 </div>
 
 ```text
-      ┌──────────┐                          ┌──────────┐
-      │ EMPLOYEE │──────────────────────────│  LOCKER  │
-      └──────────┘  "מקבל"      "מוקצה ל"   └──────────┘
+      +----------+                          +----------+
+      | EMPLOYEE |--------------------------|  LOCKER  |
+      +----------+  "gets"     "assigned to" +----------+
 ```
 
 <div dir="rtl">
@@ -234,12 +234,12 @@
 </div>
 
 ```text
-      ┌──────────┐                          ┌──────────┐
-      │ STUDENT  │>─────────────────────<   │  COURSE  │
-      └──────────┘  "לומד"      "נלמד ע"י"  └──────────┘
+      +----------+                          +----------+
+      | STUDENT  |>---------------------<   |  COURSE  |
+      +----------+  "takes"     "taken by"  +----------+
 
-      "כל סטודנט עשוי ללמוד קורס אחד או יותר"
-      "כל קורס עשוי להילמד על ידי סטודנט אחד או יותר"
+      "Each STUDENT may take one or more COURSES"
+      "Each COURSE may be taken by one or more STUDENTS"
 ```
 
 <div dir="rtl">
@@ -263,34 +263,34 @@
 </div>
 
 ```text
-    לפני:
-    ┌──────────┐                              ┌──────────┐
-    │ STUDENT  │>──────────────────────────<  │  COURSE  │
-    └──────────┘                              └──────────┘
+    BEFORE:
+    +----------+                              +----------+
+    | STUDENT  |>--------------------------<  |  COURSE  |
+    +----------+                              +----------+
 
 
-    אחרי:
-    ┌──────────┐                              ┌──────────┐
-    │ STUDENT  │───┐                      ┌───│  COURSE  │
-    └──────────┘   │                      │   └──────────┘
-                   │                      │
-                   ▼                      ▼
-              ┌──────────────────────────────────┐
-              │          ENROLLMENT              │  ← הישות המקשרת
-              ├──────────────────────────────────┤
-              │  # enrollment_id                 │
-              │  * student_id   (FK)             │
-              │  * course_id    (FK)             │
-              │  * enrollment_date               │  ⭐ מאפיינים משלה!
-              │  o final_grade                   │
-              │  * status                        │
-              └──────────────────────────────────┘
+    AFTER:
+    +----------+                              +----------+
+    | STUDENT  |---+                      +---|  COURSE  |
+    +----------+   |                      |   +----------+
+                   |                      |
+                   v                      v
+              +----------------------------------+
+              |          ENROLLMENT              |  <- the intersection entity
+              +----------------------------------+
+              |  # enrollment_id                 |
+              |  * student_id   (FK)             |
+              |  * course_id    (FK)             |
+              |  * enrollment_date               |  * its OWN attributes!
+              |  o final_grade                   |
+              |  * status                        |
+              +----------------------------------+
 
-    קריאה:
-    "כל סטודנט עשוי להיות בעל הרשמה אחת או יותר"
-    "כל הרשמה חייבת להיות של סטודנט אחד ובדיוק אחד"
-    "כל קורס עשוי לכלול הרשמה אחת או יותר"
-    "כל הרשמה חייבת להיות לקורס אחד ובדיוק אחד"
+    Read aloud:
+    "Each STUDENT may have one or more ENROLLMENTS"
+    "Each ENROLLMENT must be for one and only one STUDENT"
+    "Each COURSE may include one or more ENROLLMENTS"
+    "Each ENROLLMENT must be for one and only one COURSE"
 ```
 
 <div dir="rtl">
@@ -335,13 +335,13 @@
 </div>
 
 ```text
-      ┌──────────┐                          ┌──────────┐
-      │ BUILDING │─────────────┼─────────<  │APARTMENT │
-      └──────────┘  "מכיל"     ▲  "נמצאת ב" └──────────┘
-      # building_id            │            # apt_number  ← ייחודי רק בתוך הבניין!
-      * address                │
+      +----------+                          +----------+
+      | BUILDING |-------------+---------<  |APARTMENT |
+      +----------+  "contains" ^ "located in"+----------+
+      # building_id            |            # apt_number  <- unique only WITHIN the building!
+      * address                |
                           UID Bar
-                    (קו חוצה את קו היחס)
+                 (a bar crossing the relationship line)
 ```
 
 <div dir="rtl">
@@ -372,20 +372,20 @@
 </div>
 
 ```text
-                    ┌──────────────────┐
-                    │     EMPLOYEE     │
-                    ├──────────────────┤
-              ┌────>│  # employee_id   │────┐
-              │     │  * first_name    │    │
-              │     │  * last_name     │    │
-              │     │  o manager_id    │    │
-              │     └──────────────────┘    │
-              │                             │
-              └──────  "מנוהל על ידי"  ─────┘
-                       "מנהל את"
+                    +------------------+
+                    |     EMPLOYEE     |
+                    +------------------+
+              +---->|  # employee_id   |----+
+              |     |  * first_name    |    |
+              |     |  * last_name     |    |
+              |     |  o manager_id    |    |
+              |     +------------------+    |
+              |                             |
+              +------  "managed by"  -------+
+                       "manages"
 
-      "כל עובד עשוי להיות מנוהל על ידי עובד אחד"
-      "כל עובד עשוי לנהל עובד אחד או יותר"
+      "Each EMPLOYEE may be managed by one EMPLOYEE"
+      "Each EMPLOYEE may manage one or more EMPLOYEES"
 ```
 
 <div dir="rtl">
@@ -403,20 +403,20 @@
 </div>
 
 ```text
-      ┌──────────┐         ┌──────────┐
-      │ CUSTOMER │         │ SUPPLIER │
-      └────┬─────┘         └─────┬────┘
-           │                     │
-           └───────╮   ╭─────────┘
-                   ╰───╯    ← הקשת (Arc)
-                     │
-                     │
-              ┌──────────────┐
-              │   PAYMENT    │
-              └──────────────┘
+      +----------+         +----------+
+      | CUSTOMER |         | SUPPLIER |
+      +----+-----+         +-----+----+
+           |                     |
+           +-------.   .---------+
+                   '---'    <- the ARC
+                     |
+                     |
+              +--------------+
+              |   PAYMENT    |
+              +--------------+
 
-      "כל תשלום חייב להיות משויך ללקוח אחד או לספק אחד —
-       אבל לא לשניהם, ולא לאף אחד"
+      "Each PAYMENT must be related to ONE customer OR ONE supplier --
+       but not both, and not neither"
 ```
 
 <div dir="rtl">
@@ -447,21 +447,21 @@
 </div>
 
 ```text
-                 │ STUDENT │ CLASS │ TEACHER │ SUBJECT │ GRADE │ ROOM
-    ─────────────┼─────────┼───────┼─────────┼─────────┼───────┼──────
-     STUDENT     │    —    │       │         │         │       │
-    ─────────────┼─────────┼───────┼─────────┼─────────┼───────┼──────
-     CLASS       │   1:M   │   —   │         │         │       │
-    ─────────────┼─────────┼───────┼─────────┼─────────┼───────┼──────
-     TEACHER     │   M:M ⚠ │  1:M  │    —    │         │       │
-    ─────────────┼─────────┼───────┼─────────┼─────────┼───────┼──────
-     SUBJECT     │   M:M ⚠ │  M:M ⚠│  M:M ⚠  │    —    │       │
-    ─────────────┼─────────┼───────┼─────────┼─────────┼───────┼──────
-     GRADE       │   1:M   │   —   │   1:M   │   1:M   │   —   │
-    ─────────────┼─────────┼───────┼─────────┼─────────┼───────┼──────
-     ROOM        │    —    │  1:M  │    —    │    —    │   —   │  —
+                 | STUDENT | CLASS | TEACHER | SUBJECT | GRADE | ROOM
+    -------------+---------+-------+---------+---------+-------+------
+     STUDENT     |    -    |       |         |         |       |
+    -------------+---------+-------+---------+---------+-------+------
+     CLASS       |   1:M   |   -   |         |         |       |
+    -------------+---------+-------+---------+---------+-------+------
+     TEACHER     |   M:M ! |  1:M  |    -    |         |       |
+    -------------+---------+-------+---------+---------+-------+------
+     SUBJECT     |   M:M ! |  M:M !|  M:M !  |    -    |       |
+    -------------+---------+-------+---------+---------+-------+------
+     GRADE       |   1:M   |   -   |   1:M   |   1:M   |   -   |
+    -------------+---------+-------+---------+---------+-------+------
+     ROOM        |    -    |  1:M  |    -    |    -    |   -   |  -
 
-     ⚠ = יחס רבים-לרבים שחייב פירוק לישות מקשרת
+     ! = many-to-many relationship that MUST be resolved into an intersection entity
 ```
 
 <div dir="rtl">
@@ -503,23 +503,23 @@
 </div>
 
 ```text
-              │ CUST │ ADDR │ ORDER │ PROD │ CAT │ SUPP │ REV
-    ──────────┼──────┼──────┼───────┼──────┼─────┼──────┼─────
-     CUSTOMER │  —   │      │       │      │     │      │
-    ──────────┼──────┼──────┼───────┼──────┼─────┼──────┼─────
-     ADDRESS  │ 1:M  │  —   │       │      │     │      │
-    ──────────┼──────┼──────┼───────┼──────┼─────┼──────┼─────
-     ORDER    │ 1:M  │ M:1  │   —   │      │     │      │
-    ──────────┼──────┼──────┼───────┼──────┼─────┼──────┼─────
-     PRODUCT  │  —   │  —   │ M:M ⚠ │  —   │     │      │
-    ──────────┼──────┼──────┼───────┼──────┼─────┼──────┼─────
-     CATEGORY │  —   │  —   │   —   │ 1:M  │ 🔄  │      │
-    ──────────┼──────┼──────┼───────┼──────┼─────┼──────┼─────
-     SUPPLIER │  —   │  —   │   —   │ M:M ⚠│  —  │  —   │
-    ──────────┼──────┼──────┼───────┼──────┼─────┼──────┼─────
-     REVIEW   │ 1:M  │  —   │   —   │ 1:M  │  —  │  —   │  —
+              | CUST | ADDR | ORDER | PROD | CAT | SUPP | REV
+    ----------+------+------+-------+------+-----+------+-----
+     CUSTOMER |  -   |      |       |      |     |      |
+    ----------+------+------+-------+------+-----+------+-----
+     ADDRESS  | 1:M  |  -   |       |      |     |      |
+    ----------+------+------+-------+------+-----+------+-----
+     ORDER    | 1:M  | M:1  |   -   |      |     |      |
+    ----------+------+------+-------+------+-----+------+-----
+     PRODUCT  |  -   |  -   | M:M ! |  -   |     |      |
+    ----------+------+------+-------+------+-----+------+-----
+     CATEGORY |  -   |  -   |   -   | 1:M  | (R) |      |
+    ----------+------+------+-------+------+-----+------+-----
+     SUPPLIER |  -   |  -   |   -   | M:M !|  -  |  -   |
+    ----------+------+------+-------+------+-----+------+-----
+     REVIEW   | 1:M  |  -   |   -   | 1:M  |  -  |  -   |  -
 
-     ⚠ = דורש פירוק      🔄 = יחס רקורסיבי (תת-קטגוריות)
+     ! = needs resolving      (R) = recursive relationship (sub-categories)
 ```
 
 <div dir="rtl">
@@ -531,90 +531,90 @@
 </div>
 
 ```text
-  ┌────────────────┐                        ┌────────────────┐
-  │    CUSTOMER    │─────────────────────<  │    ADDRESS     │
-  ├────────────────┤   "מחזיק"  "שייכת ל"   ├────────────────┤
-  │ # customer_id  │                        │ # address_id   │
-  │ * first_name   │                        │ * city         │
-  │ * last_name    │                        │ * street       │
-  │ * email  (UQ)  │                        │ * house_number │
-  │ * password_hash│                        │ o apartment    │
-  │ * join_date    │                        │ o zip_code     │
-  │ * is_active    │                        │ * is_default   │
-  └───────┬────────┘                        └───────┬────────┘
-          │                                         │
-          │ "מבצע"                          "משמשת" │
-          │                                         │
-          ▼                                         ▼
-  ┌──────────────────────────────────────────────────────┐
-  │                        ORDER                         │
-  ├──────────────────────────────────────────────────────┤
-  │ # order_id                                           │
-  │ * order_date                                         │
-  │ * status        ← נקלטה/אושרה/נשלחה/הושלמה/בוטלה     │
-  │ * customer_id      (FK)                              │
-  │ * ship_address_id  (FK)                              │
-  │ * shipping_cost                                      │
-  └───────────────────────┬──────────────────────────────┘
-                          │ "מכילה"
-                          ▼
-  ┌──────────────────────────────────────────────────────┐
-  │                     ORDER_LINE       ⭐ ישות מקשרת    │
-  ├──────────────────────────────────────────────────────┤
-  │ # order_line_id                                      │
-  │ * order_id           (FK)                            │
-  │ * product_id         (FK)                            │
-  │ * quantity                                           │
-  │ * unit_price_charged  ← המחיר בעת ההזמנה — מוקפא!    │
-  │ o discount_pct                                       │
-  └───────────────────────┬──────────────────────────────┘
-                          │ "של"
-                          ▼
-  ┌────────────────┐              ┌──────────────────────┐
-  │    PRODUCT     │─────────────<│  PRODUCT_SUPPLIER    │  ⭐ ישות מקשרת
-  ├────────────────┤   "מסופק"    ├──────────────────────┤
-  │ # product_id   │              │ # product_supplier_id│
-  │ * product_name │              │ * product_id    (FK) │
-  │ * catalog_price│              │ * supplier_id   (FK) │
-  │ * stock_qty    │              │ * cost_price         │
-  │ * category_id  │              │ * lead_time_days     │
-  │ o description  │              │ * is_preferred       │
-  │ * is_active    │              └───────────┬──────────┘
-  └───┬────────┬───┘                          │
-      │        │                              ▼
-      │        │                    ┌────────────────┐
-      │        │                    │   SUPPLIER     │
-      │        │                    ├────────────────┤
-      │        │                    │ # supplier_id  │
-      │        │                    │ * company_name │
-      │        │                    │ * contact_name │
-      │        │                    │ * phone        │
-      │        │                    └────────────────┘
-      │        │
-      │        │ "מסווג ב"
-      │        ▼
-      │   ┌─────────────────────────┐
-      │   │       CATEGORY          │
-      │   ├─────────────────────────┤
-      │   │ # category_id           │◄──┐
-      │   │ * category_name         │   │  🔄 יחס רקורסיבי
-      │   │ o parent_category_id ───┼───┘     (תת-קטגוריות)
-      │   │ * display_order         │
-      │   └─────────────────────────┘
-      │
-      │ "מקבל"
-      ▼
-  ┌────────────────────────┐
-  │        REVIEW          │
-  ├────────────────────────┤
-  │ # review_id            │
-  │ * product_id     (FK)  │
-  │ * customer_id    (FK)  │
-  │ * rating   (1-5)       │
-  │ * review_date          │
-  │ o review_text          │
-  │ * is_approved          │
-  └────────────────────────┘
+  +----------------+                        +----------------+
+  |    CUSTOMER    |---------------------<  |    ADDRESS     |
+  +----------------+   "holds"  "belongs to"+----------------+
+  | # customer_id  |                        | # address_id   |
+  | * first_name   |                        | * city         |
+  | * last_name    |                        | * street       |
+  | * email  (UQ)  |                        | * house_number |
+  | * password_hash|                        | o apartment    |
+  | * join_date    |                        | o zip_code     |
+  | * is_active    |                        | * is_default   |
+  +-------+--------+                        +-------+--------+
+          |                                         |
+          | "places"                      "used by" |
+          |                                         |
+          v                                         v
+  +------------------------------------------------------+
+  |                        ORDER                         |
+  +------------------------------------------------------+
+  | # order_id                                           |
+  | * order_date                                         |
+  | * status        <- received/approved/shipped/done/cancelled |
+  | * customer_id      (FK)                              |
+  | * ship_address_id  (FK)                              |
+  | * shipping_cost                                      |
+  +-----------------------+------------------------------+
+                          | "contains"
+                          v
+  +------------------------------------------------------+
+  |                     ORDER_LINE       * intersection   |
+  +------------------------------------------------------+
+  | # order_line_id                                      |
+  | * order_id           (FK)                            |
+  | * product_id         (FK)                            |
+  | * quantity                                           |
+  | * unit_price_charged  <- price AT ORDER TIME -- FROZEN!|
+  | o discount_pct                                       |
+  +-----------------------+------------------------------+
+                          | "of"
+                          v
+  +----------------+              +----------------------+
+  |    PRODUCT     |-------------<|  PRODUCT_SUPPLIER    |  * intersection
+  +----------------+  "supplied"  +----------------------+
+  | # product_id   |              | # product_supplier_id|
+  | * product_name |              | * product_id    (FK) |
+  | * catalog_price|              | * supplier_id   (FK) |
+  | * stock_qty    |              | * cost_price         |
+  | * category_id  |              | * lead_time_days     |
+  | o description  |              | * is_preferred       |
+  | * is_active    |              +-----------+----------+
+  +---+--------+---+                          |
+      |        |                              v
+      |        |                    +----------------+
+      |        |                    |   SUPPLIER     |
+      |        |                    +----------------+
+      |        |                    | # supplier_id  |
+      |        |                    | * company_name |
+      |        |                    | * contact_name |
+      |        |                    | * phone        |
+      |        |                    +----------------+
+      |        |
+      |        | "classified in"
+      |        v
+      |   +-------------------------+
+      |   |       CATEGORY          |
+      |   +-------------------------+
+      |   | # category_id           |<--+
+      |   | * category_name         |   |  (R) recursive relationship
+      |   | o parent_category_id ---+---+      (sub-categories)
+      |   | * display_order         |
+      |   +-------------------------+
+      |
+      | "receives"
+      v
+  +------------------------+
+  |        REVIEW          |
+  +------------------------+
+  | # review_id            |
+  | * product_id     (FK)  |
+  | * customer_id    (FK)  |
+  | * rating   (1-5)       |
+  | * review_date          |
+  | o review_text          |
+  | * is_approved          |
+  +------------------------+
 ```
 
 <div dir="rtl">
@@ -663,20 +663,20 @@
 </div>
 
 ```text
-    ❌ שגוי — קשר מיותר:
+    [X] WRONG -- redundant relationship:
 
-    ┌────────┐        ┌────────┐        ┌─────────┐
-    │STUDENT │───────<│ CLASS  │>───────│ SCHOOL  │
-    └───┬────┘        └────────┘        └────┬────┘
-        │                                    │
-        └────────────────────────────────────┘
-                    ❌ מיותר!
+    +--------+        +--------+        +---------+
+    |STUDENT |-------<| CLASS  |>-------| SCHOOL  |
+    +---+----+        +--------+        +----+----+
+        |                                    |
+        +------------------------------------+
+                    [X] redundant!
 
-    למה מיותר: בית הספר של התלמיד נגזר מהכיתה שלו.
-    למה מסוכן: אפשר לעדכן את הכיתה ולשכוח את בית הספר
-               ⟵ תלמיד בכיתה של בי"ס א' הרשום לבי"ס ב'.
+    Why redundant: the student's school is DERIVED from their class.
+    Why dangerous: someone updates the class and forgets the school
+                   -> a student in a class of school A, registered at school B.
 
-    ✅ נכון:  STUDENT ──< CLASS >── SCHOOL      (בלבד)
+    [OK] CORRECT:  STUDENT --< CLASS >-- SCHOOL      (and nothing else)
 ```
 
 <div dir="rtl">

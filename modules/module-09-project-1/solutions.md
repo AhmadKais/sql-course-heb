@@ -16,35 +16,35 @@
 </div>
 
 ```text
-ישויות ודאיות                    מאפיינים                  ערכים / לא רלוונטי
-─────────────────                ─────────                 ──────────────────
-חיה        ANIMAL                שם                        "חומה"  ⟵ ערך
-מין        SPECIES               צבע                       "20-30 טלפונים" ⟵ מדד
-גזע        BREED                 גיל משוער                 "13 שנה" ⟵ רקע
-קליטה      INTAKE                מספר שבב                  אינסטגרם ⟵ מחוץ להיקף
-כלוב       LOCATION              תאריך                     בגרות ⟵ מחוץ להיקף
-אגף        ⟵ LOCATION            סכום
-מבנה       ⟵ LOCATION            כתובת
-אדם        PERSON                מספר טלפון
-מתנדב      ⟵ תפקיד               סיבת מסירה
-מאמץ       ⟵ תפקיד               מצב בכניסה
-וטרינר     ⟵ תפקיד
-ביקור וטרינר  VET_VISIT           ⚠️ שימו לב שאלה *לא* ישויות:
-בדיקה      VET_EXAM               "הסגר"   ⟵ מצב, לא ישות
-חיסון      VACCINATION            "אגף"    ⟵ רמה ב-LOCATION
-סוג חיסון  VACCINE_TYPE           "מתנדב"  ⟵ תפקיד של PERSON
-פרוטוקול   VACCINE_PROTOCOL       "טופס"   ⟵ = ADOPTION_APPLICATION
-בקשת אימוץ ADOPTION_APPLICATION   "חוזה"   ⟵ מסמך של ADOPTION
-ראיון      INTERVIEW              "תיק רפואי" ⟵ תצוגה, לא ישות
-אימוץ      ADOPTION
-ביקורת בית HOME_VISIT
-החזרה      RETURN  ⟵ ⭐
-הוצאה      EXPENSE
-קטגוריית הוצאה EXPENSE_CATEGORY
-תכונת אופי TRAIT  ⟵ ⭐⭐
-משמרת      SHIFT
-רישום יומי DAILY_LOG  ⟵ ⭐
-אומנה      FOSTER  ⟵ ⭐⭐⭐ (רק מנועה!)
+CERTAIN ENTITIES                 ATTRIBUTES              VALUES / NOT RELEVANT
+----------------                 ----------              ---------------------
+Animal      ANIMAL               name                    "brown"   <- a value
+Species     SPECIES              colour                  "20-30 calls" <- a metric
+Breed       BREED                estimated age           "13 years" <- background
+Intake      INTAKE               chip number             Instagram <- out of scope
+Kennel      LOCATION             date                    matriculation <- out of scope
+Wing        -> LOCATION          amount
+Building    -> LOCATION          address
+Person      PERSON               phone number
+Volunteer   -> a ROLE            surrender reason
+Adopter     -> a ROLE            condition at intake
+Vet         -> a ROLE
+Vet visit   VET_VISIT            (!) NOTE these are NOT entities:
+Exam        VET_EXAM               "quarantine" <- a STATE, not an entity
+Vaccination VACCINATION            "wing"       <- a LEVEL inside LOCATION
+Vaccine type VACCINE_TYPE          "volunteer"  <- a ROLE of PERSON
+Protocol    VACCINE_PROTOCOL       "form"       <- = ADOPTION_APPLICATION
+Application ADOPTION_APPLICATION   "contract"   <- a document OF adoption
+Interview   INTERVIEW              "medical file" <- a VIEW, not an entity
+Adoption    ADOPTION
+Home visit  HOME_VISIT
+Return      RETURN  <- *
+Expense     EXPENSE
+Expense cat. EXPENSE_CATEGORY
+Trait       TRAIT  <- **
+Shift       SHIFT
+Daily log   DAILY_LOG  <- *
+Foster      FOSTER  <- *** (only from Noa!)
 ```
 
 <div dir="rtl">
@@ -92,35 +92,39 @@
 </div>
 
 ```text
-┌────┬────────────────────────────────────────┬───────────────────┬─────────┬──────────┐
-│ #  │ החוק                                   │ ישויות            │ סוג     │ אכיפה    │
-├────┼────────────────────────────────────────┼───────────────────┼─────────┼──────────┤
-│ 1  │ לכל חיה מין אחד ויחיד                  │ ANIMAL, SPECIES   │ התייחסות│ ① מבנה   │
-│ 2  │ לא ייתכנו שתי חיות עם אותו שבב         │ ANIMAL            │ מזהה    │ ① UNIQUE │
-│ 3  │ שבב יכול להיות ריק (חיית רחוב)         │ ANIMAL            │ תחום    │ ① NULL   │
-│ 4  │ קליטה היא מרחוב / ממסירה / ממקלט אחר   │ INTAKE + 3 משנה   │ טיפוסי  │ ① מבנה   │
-│    │ — בדיוק אחד משלושתם                    │                   │ משנה    │          │
-│ 5  │ חיה חדשה בהסגר לפחות 14 יום            │ PLACEMENT         │ תהליך   │ ② טריגר  │
-│ 6  │ רק וטרינר משחרר מהסגר                  │ VET_EXAM          │ תהליך   │ ③ אפליק' │
-│ 7  │ חיה בהסגר לא תעבור לאגף אימוץ          │ PLACEMENT, HEALTH │ מורכב   │ ② טריגר  │
-│ 8  │ חיה נמצאת בכלוב אחד בכל רגע            │ ANIMAL_PLACEMENT  │ מורכב   │ ② טריגר  │
-│ 9  │ כלוב מכיל חיה אחת — אלא אם קרבת         │ ANIMAL_PLACEMENT  │ מורכב   │ ② טריגר  │
-│    │ המלטה או "הגיעו יחד"                   │                   │         │          │
-│ 10 │ סטטוס חיה מרשימה סגורה                 │ ANIMAL_STATUS     │ תחום    │ ① טבלה   │
-│ 11 │ אותו חיסון יכול לחזור על אותה חיה      │ VACCINATION       │ מזהה    │ ① מלאכ'  │
-│ 12 │ חיסון לא עובר לחיה אחרת (◇)            │ VACCINATION       │ עבירות  │ ③ אפליק' │
-│ 13 │ דמי אימוץ נשמרים כפי ששולמו            │ ADOPTION          │ היסטורי │ ① מבנה   │
-│ 14 │ מעל גיל 8 — חצי מחיר                   │ ADOPTION, ANIMAL  │ מורכב   │ ② טריגר  │
-│ 15 │ תוצאת ראיון: מאושר/בתנאי/לא מאושר      │ INTERVIEW         │ תחום    │ ① טבלה   │
-│ 16 │ אימוץ מחייב בקשה מאושרת                │ ADOPTION, APPLIC. │ מורכב   │ ② טריגר  │
-│ 17 │ ביקורת בית ראשונה תוך 30-45 יום        │ HOME_VISIT        │ תהליך   │ ③ אפליק' │
-│ 18 │ הוצאה משויכת לחיה או כללית (NULL)      │ EXPENSE           │ תחום    │ ① מבנה   │
-│ 19 │ חשבונית אחת יכולה לכסות כמה חיות       │ EXPENSE_ALLOCATION│ יחס M:M │ ① מבנה   │
-│ 20 │ אין מחיקה — סימון בלבד                 │ הכול              │ מדיניות │ ① RESTRICT│
-├────┼────────────────────────────────────────┼───────────────────┼─────────┼──────────┤
-│ 21 │ ⚠️ פתוח: אישור אימוץ בסופ"ש            │ ADOPTION          │ מדיניות │ ❓ ממתין  │
-│ 22 │ ⚠️ פתוח: פקיעת בקשה תלויה              │ APPLICATION       │ תהליך   │ ❓ ממתין  │
-└────┴────────────────────────────────────────┴───────────────────┴─────────┴──────────┘
++----+----------------------------------------+-------------------+----------+-------------+
+| #  | RULE                                   | ENTITIES          | TYPE     | ENFORCEMENT |
++----+----------------------------------------+-------------------+----------+-------------+
+| 1  | Each animal has exactly one species    | ANIMAL, SPECIES   | referent.| (1) structure|
+| 2  | No two animals with the same chip      | ANIMAL            | UID      | (1) UNIQUE  |
+| 3  | Chip may be empty (a stray)            | ANIMAL            | domain   | (1) NULL    |
+| 4  | Intake is street / surrender / transfer| INTAKE + 3 subtypes| subtypes| (1) structure|
+|    | -- exactly one of the three            |                   |          |             |
+| 5  | New animal in quarantine >= 14 days    | PLACEMENT         | process  | (2) trigger |
+| 6  | Only a vet releases from quarantine    | VET_EXAM          | process  | (3) app     |
+| 7  | Quarantined animal cannot move to      | PLACEMENT, HEALTH | complex  | (2) trigger |
+|    | the adoption wing                      |                   |          |             |
+| 8  | An animal is in ONE kennel at a time   | ANIMAL_PLACEMENT  | complex  | (2) trigger |
+| 9  | A kennel holds one animal -- unless     | ANIMAL_PLACEMENT  | complex  | (2) trigger |
+|    | litter kin or "arrived together"       |                   |          |             |
+| 10 | Animal status from a closed list       | ANIMAL_STATUS     | domain   | (1) table   |
+| 11 | The same vaccine can repeat on an animal| VACCINATION      | UID      | (1) surrogate|
+| 12 | A vaccination cannot move to another   | VACCINATION       | transfer.| (3) app     |
+|    | animal (non-transferable)              |                   |          |             |
+| 13 | Adoption fee stored as actually paid   | ADOPTION          | historic | (1) structure|
+| 14 | Animal over age 8 -- half price         | ADOPTION, ANIMAL  | complex  | (2) trigger |
+| 15 | Interview result: approved / with      | INTERVIEW         | domain   | (1) table   |
+|    | conditions / not approved              |                   |          |             |
+| 16 | Adoption requires an approved applic.  | ADOPTION, APPLIC. | complex  | (2) trigger |
+| 17 | First home visit within 30-45 days     | HOME_VISIT        | process  | (3) app     |
+| 18 | Expense tied to an animal or general   | EXPENSE           | domain   | (1) structure|
+|    | (NULL)                                 |                   |          |             |
+| 19 | One invoice can cover several animals  | EXPENSE_ALLOCATION| M:M      | (1) structure|
+| 20 | Nothing is deleted -- flag only         | everything        | policy   | (1) RESTRICT|
++----+----------------------------------------+-------------------+----------+-------------+
+| 21 | (!) OPEN: weekend adoption approval    | ADOPTION          | policy   | ? pending   |
+| 22 | (!) OPEN: expiry of a pending applic.  | APPLICATION       | process  | ? pending   |
++----+----------------------------------------+-------------------+----------+-------------+
 ```
 
 <div dir="rtl">
@@ -136,52 +140,52 @@
 </div>
 
 ```text
-                          ┌──────────────────┐
-                          │ SPECIES          │
-                          ├──────────────────┤
-                          │ # species_id     │
-                          │ * name           │
-                          └────────┬─────────┘
-                                   │ 1
-                          ┌────────┴─────────┐
-                          │ BREED            │
-                          ├──────────────────┤
-                          │ # breed_id       │
-                          │ * species_id (FK)│
-                          │ * name           │
-                          └────────┬─────────┘
-                                   │ 1
-                                   │ M
-┌──────────────────────────────────┴──────────────────────────────┐
-│ ANIMAL                                                          │
-├─────────────────────────────────────────────────────────────────┤
-│ # animal_id          NUMBER                                     │
-│ * name               VARCHAR2(50)   ברירת מחדל "ללא שם"         │
-│ * species_id  (FK)                                              │
-│ o breed_id    (FK)                  לא תמיד ידוע                │
-│ * sex         ∈ {זכר, נקבה, לא ידוע}                            │
-│ o birth_date         DATE           ⚠️ משוער!                    │
-│ o birth_date_estimated  BOOLEAN                                 │
-│ o chip_number        ⟵ UNIQUE, יכול להיות NULL                  │
-│ * current_status (FK) ⟵ ANIMAL_STATUS                           │
-└───┬─────────┬──────────┬─────────┬──────────┬──────────┬────────┘
-    │         │          │         │          │          │
-    │ M       │ M        │ M       │ M        │ M        │ M
-    │         │          │         │          │          │
-┌───┴───┐ ┌───┴────┐ ┌───┴─────┐ ┌─┴──────┐ ┌─┴──────┐ ┌─┴────────┐
-│INTAKE │ │PLACE-  │ │VACCINA- │ │ANIMAL_ │ │FOSTER  │ │DAILY_LOG │
-│       │ │MENT    │ │TION     │ │TRAIT   │ │        │ │          │
-└───┬───┘ └────────┘ └─────────┘ └───┬────┘ └────────┘ └──────────┘
-    │                                 │ M
-    │ טיפוסי משנה                     │
-    ├─ STRAY_INTAKE      (מיקום, מוצא)│ 1
-    ├─ SURRENDER_INTAKE  (בעלים, סיבה)│
-    └─ TRANSFER_INTAKE   (מקלט מקור)  ┌┴──────────┐
-                                      │ TRAIT     │
-                                      │ # trait_id│
-                                      │ * name    │
-                                      │ * category│
-                                      └───────────┘
+                          +------------------+
+                          | SPECIES          |
+                          +------------------+
+                          | # species_id     |
+                          | * name           |
+                          +--------+---------+
+                                   | 1
+                          +--------+---------+
+                          | BREED            |
+                          +------------------+
+                          | # breed_id       |
+                          | * species_id (FK)|
+                          | * name           |
+                          +--------+---------+
+                                   | 1
+                                   | M
++----------------------------------+------------------------------+
+| ANIMAL                                                          |
++-----------------------------------------------------------------+
+| # animal_id          NUMBER                                     |
+| * name               VARCHAR2(50)   default "Unnamed"           |
+| * species_id  (FK)                                              |
+| o breed_id    (FK)                  not always known            |
+| * sex         in {male, female, unknown}                        |
+| o birth_date         DATE           (!) estimated!              |
+| o birth_date_estimated  BOOLEAN                                 |
+| o chip_number        <- UNIQUE, may be NULL                     |
+| * current_status (FK) <- ANIMAL_STATUS                          |
++---+---------+----------+---------+----------+----------+--------+
+    |         |          |         |          |          |
+    | M       | M        | M       | M        | M        | M
+    |         |          |         |          |          |
++---+---+ +---+----+ +---+-----+ +-+------+ +-+------+ +-+--------+
+|INTAKE | |PLACE-  | |VACCINA- | |ANIMAL_ | |FOSTER  | |DAILY_LOG |
+|       | |MENT    | |TION     | |TRAIT   | |        | |          |
++---+---+ +--------+ +---------+ +---+----+ +--------+ +----------+
+    |                                | M
+    | SUBTYPES                       |
+    +- STRAY_INTAKE     (location, finder) 1
+    +- SURRENDER_INTAKE (owner, reason)   |
+    +- TRANSFER_INTAKE  (source shelter) ++----------+
+                                      | TRAIT     |
+                                      | # trait_id|
+                                      | * name    |
+                                      | * category|
+                                      +-----------+
 ```
 
 <div dir="rtl">
@@ -191,106 +195,106 @@
 </div>
 
 ```text
-① מיקום — היררכיה רקורסיבית
-┌────────────────────────────────┐
-│ LOCATION                       │      מבנה א'
-├────────────────────────────────┤        ├─ אגף הסגר
-│ # location_id                  │        │    ├─ כלוב 1
-│ * name                         │        │    └─ כלוב 2
-│ * level ∈ {מבנה, אגף, כלוב}    │        ├─ אגף כלבים
-│ o parent_location_id (FK) ─────┼──╮     └─ אגף חתולים
-│ o capacity                     │  │   מבנה ב'
-└────────────────────────────────┘  │     ├─ אגף כלבים גדולים
-              ▲                     │     └─ פינת ארנבים
-              ╰─────────────────────╯
+(1) LOCATION -- a recursive hierarchy
++--------------------------------+
+| LOCATION                       |      Building A
++--------------------------------+        +- Quarantine wing
+| # location_id                  |        |    +- kennel 1
+| * name                         |        |    +- kennel 2
+| * level in {building,wing,kennel}|      +- Dog wing
+| o parent_location_id (FK) -----+--.     +- Cat wing
+| o capacity                     |  |   Building B
++--------------------------------+  |     +- Large-dog wing
+              ^                     |     +- Rabbit corner
+              '---------------------'
 
-② ישות תקופה — איפה החיה, היום ואי פעם
-┌────────────────────────────────────────┐
-│ ANIMAL_PLACEMENT                       │   לונה:
-├────────────────────────────────────────┤     הסגר   14/09 ⟵ 28/09
-│ # placement_id                         │     אגף א'  28/09 ⟵ 03/11
-│ * animal_id     (FK)                   │     אגף ב'  03/11 ⟵ NULL
-│ * location_id   (FK)                   │
-│ * start_date                           │   ⟵ עונה על "מי היה
-│ o end_date      (NULL = עכשיו)         │      בכלוב הזה בחודש
-│ o move_reason                          │      האחרון?"
-└────────────────────────────────────────┘
+(2) A PERIOD ENTITY -- where the animal is, now and ever
++----------------------------------------+
+| ANIMAL_PLACEMENT                       |   Luna:
++----------------------------------------+     Quarantine 14/09 -> 28/09
+| # placement_id                         |     Wing A      28/09 -> 03/11
+| * animal_id     (FK)                   |     Wing B      03/11 -> NULL
+| * location_id   (FK)                   |
+| * start_date                           |   <- answers "who was in
+| o end_date      (NULL = now)           |      this kennel in the
+| o move_reason                          |      last month?"
++----------------------------------------+
 
-③ ⭐ הוצאות — הפתרון לחשבונית אחת לכמה חיות
-┌──────────────────┐  1      M ┌──────────────────────────┐
-│ EXPENSE          ├───────────┤ EXPENSE_ALLOCATION       │
-├──────────────────┤           ├──────────────────────────┤
-│ # expense_id     │           │ # allocation_id          │
-│ * amount NUMBER  │           │ * expense_id    (FK)     │
-│ * expense_date   │           │ * animal_id     (FK)     │
-│ * category_id(FK)│           │ * allocated_amount       │
-│ o invoice_number │           └──────────────────────────┘
-│ o supplier_id(FK)│                        │ M
-└──────────────────┘                        │
-                                            │ 1
-                                    ┌───────┴────────┐
-                                    │ ANIMAL         │
-                                    └────────────────┘
+(3) * EXPENSES -- the answer to "one invoice, several animals"
++------------------+  1      M +--------------------------+
+| EXPENSE          +-----------+ EXPENSE_ALLOCATION       |
++------------------+           +--------------------------+
+| # expense_id     |           | # allocation_id          |
+| * amount NUMBER  |           | * expense_id    (FK)     |
+| * expense_date   |           | * animal_id     (FK)     |
+| * category_id(FK)|           | * allocated_amount       |
+| o invoice_number |           +--------------------------+
+| o supplier_id(FK)|                        | M
++------------------+                        |
+                                            | 1
+                                    +-------+--------+
+                                    | ANIMAL         |
+                                    +----------------+
 
-   ⚠️ זו הישות שהסטודנטים מהסיפור ב-README פספסו.
-      חשבונית של 4,000 ₪ ל-8 חיות מתפרקת ל-8 שורות הקצאה.
-      הוצאה כללית (חשמל) — פשוט אין לה שורות הקצאה.
+   (!) This is the entity the students in the README story missed.
+       A 4,000 NIS invoice for 8 animals splits into 8 allocation rows.
+       A general expense (electricity) simply has no allocation rows.
 
-④ ⭐⭐ אומנה — הישות שרותי שכחה
-┌────────────────────────────────────────┐
-│ FOSTER                                 │
-├────────────────────────────────────────┤   ⚠️ זה *לא* אימוץ:
-│ # foster_id                            │      · החיה עדיין של המקלט
-│ * animal_id     (FK)                   │      · אין דמי אימוץ
-│ * person_id     (FK)  ⟵ משפחת האומנה   │      · יש תאריך סיום צפוי
-│ * start_date                           │      · החיה חוזרת
-│ o expected_end_date                    │
-│ o actual_end_date                      │
-│ * reason  ∈ {גורים, טיפול, התאקלמות}   │
-└────────────────────────────────────────┘
+(4) ** FOSTER -- the entity Ruti forgot
++----------------------------------------+
+| FOSTER                                 |   (!) This is NOT an adoption:
++----------------------------------------+     . the animal still belongs
+| # foster_id                            |       to the shelter
+| * animal_id     (FK)                   |     . there is no fee
+| * person_id     (FK)  <- foster family |     . there is an expected end date
+| * start_date                           |     . the animal comes back
+| o expected_end_date                    |
+| o actual_end_date                      |
+| * reason  in {pups, medical, settling} |
++----------------------------------------+
 
-⑤ תהליך האימוץ — שרשרת של ארבע ישויות
-┌──────────────────┐ 1   M ┌──────────────┐ 1   M ┌──────────────┐
-│ ADOPTION_        ├───────┤ INTERVIEW    │       │ ADOPTION     │
-│ APPLICATION      │       ├──────────────┤       ├──────────────┤
-├──────────────────┤       │ # interview  │       │ # adoption_id│
-│ # application_id │       │ * app_id (FK)│       │ * app_id (FK)│
-│ * person_id (FK) │       │ * interviewer│       │ * animal_id  │
-│ * animal_id (FK) │       │   _id   (FK) │       │ * person_id  │
-│ * applied_date   │       │ * date       │       │ * adopt_date │
-│ * status_code(FK)│       │ * result ∈   │       │ * fee_paid   │
-│ o has_yard  BOOL │       │  {מאושר,     │       │   ⟵ מוקפא!  │
-│ o children_count │       │   בתנאי,     │       │ * address_at_│
-│ o youngest_child │       │   לא מאושר}  │       │   adoption   │
-│   _age           │       │ o condition  │       │   ⟵ מוקפא!  │
-│ o other_pets     │       │ o notes      │       └──────┬───────┘
-└──────────────────┘       └──────────────┘              │ 1
-                                                         │ M
-                                                  ┌──────┴───────┐
-                                                  │ HOME_VISIT   │
-                                                  ├──────────────┤
-                                                  │ # visit_id   │
-                                                  │ * adoption_id│
-                                                  │ * visitor_id │
-                                                  │ * visit_date │
-                                                  │ * outcome    │
-                                                  └──────────────┘
+(5) THE ADOPTION PROCESS -- a chain of four entities
++------------------+ 1   M +--------------+ 1   M +--------------+
+| ADOPTION_        +-------+ INTERVIEW    |       | ADOPTION     |
+| APPLICATION      |       +--------------+       +--------------+
++------------------+       | # interview  |       | # adoption_id|
+| # application_id |       | * app_id (FK)|       | * app_id (FK)|
+| * person_id (FK) |       | * interviewer|       | * animal_id  |
+| * animal_id (FK) |       |   _id   (FK) |       | * person_id  |
+| * applied_date   |       | * date       |       | * adopt_date |
+| * status_code(FK)|       | * result in  |       | * fee_paid   |
+| o has_yard  BOOL |       |  {approved,  |       |   <- FROZEN! |
+| o children_count |       |   w/ conds,  |       | * address_at_|
+| o youngest_child |       |   rejected}  |       |   adoption   |
+|   _age           |       | o condition  |       |   <- FROZEN! |
+| o other_pets     |       | o notes      |       +------+-------+
++------------------+       +--------------+              | 1
+                                                         | M
+                                                  +------+-------+
+                                                  | HOME_VISIT   |
+                                                  +--------------+
+                                                  | # visit_id   |
+                                                  | * adoption_id|
+                                                  | * visitor_id |
+                                                  | * visit_date |
+                                                  | * outcome    |
+                                                  +--------------+
 
-⑥ ⭐⭐ ההתאמה — התכונה שהייתה "בראש של רותי"
-┌──────────────┐ 1   M ┌──────────────────┐ M   1 ┌──────────────┐
-│ ANIMAL       ├───────┤ ANIMAL_TRAIT     ├───────┤ TRAIT        │
-└──────────────┘       ├──────────────────┤       ├──────────────┤
-                       │ # animal_trait_id│       │ # trait_id   │
-                       │ * animal_id (FK) │       │ * name       │
-                       │ * trait_id  (FK) │       │ * category ∈ │
-                       │ o level ∈ {נמוך, │       │  {ילדים,     │
-                       │    בינוני, גבוה} │       │   חיות אחרות,│
-                       │ o noted_date     │       │   מרחב, רעש} │
-                       │ o noted_by  (FK) │       └──────────────┘
-                       └──────────────────┘
+(6) ** THE MATCHING -- the knowledge that lived "in Ruti's head"
++--------------+ 1   M +------------------+ M   1 +--------------+
+| ANIMAL       +-------+ ANIMAL_TRAIT     +-------+ TRAIT        |
++--------------+       +------------------+       +--------------+
+                       | # animal_trait_id|       | # trait_id   |
+                       | * animal_id (FK) |       | * name       |
+                       | * trait_id  (FK) |       | * category in|
+                       | o level in {low, |       |  {children,  |
+                       |    medium, high} |       |   other pets,|
+                       | o noted_date     |       |   space,noise}|
+                       | o noted_by  (FK) |       +--------------+
+                       +------------------+
 
-   דוגמאות ל-TRAIT:  "סבלני עם ילדים" · "מסתדר עם חתולים"
-                     "צריך הרבה מרחב" · "מפחד מרעש"
+   TRAIT examples:  "patient with children" . "gets on with cats"
+                    "needs a lot of space"  . "afraid of noise"
 ```
 
 <div dir="rtl">
@@ -312,22 +316,22 @@
 </div>
 
 ```text
-דוגמה מלאה לשאלה 3 — "משפחה עם ילד בן 4, דירה, יש חתול":
+A full example for question 3 -- "family with a 4-year-old, a flat, and a cat":
 
-  שלב 1:  קרא מהבקשה:  youngest_child_age = 4
-                        has_yard = false
-                        other_pets = "חתול"
+  STEP 1:  read from the application:  youngest_child_age = 4
+                                       has_yard = false
+                                       other_pets = "cat"
 
-  שלב 2:  פסול חיות עם:
-             TRAIT "לא מתאים לילדים קטנים"
-             TRAIT "צריך הרבה מרחב"        (כי אין חצר)
-             TRAIT "לא מסתדר עם חתולים"
+  STEP 2:  RULE OUT animals with:
+             TRAIT "not suitable for small children"
+             TRAIT "needs a lot of space"        (because there is no yard)
+             TRAIT "does not get on with cats"
 
-  שלב 3:  העדף חיות עם:
-             TRAIT "סבלני עם ילדים" ברמה גבוהה
+  STEP 3:  PREFER animals with:
+             TRAIT "patient with children" at a HIGH level
 
-  ⟵ וזו בדיוק הידיעה ש"הייתה בראש של רותי",
-     שבגלל היעדרה כלב תוקפני נמסר למשפחה עם תינוק.
+  <- and this is exactly the knowledge that "lived in Ruti's head",
+     whose absence let an aggressive dog go to a family with a baby.
 ```
 
 <div dir="rtl">
@@ -357,49 +361,26 @@
 
 ### ג. תסריט ההצגה (קטע)
 
-</div>
-
-```text
-"רותי, לפני שאני מראה משהו — בואי ניקח את לונה, הכלבה שהגיעה
- בספטמבר. נעבור איתה על כל המערכת.
-
- [מצביע] כאן לונה עצמה — השם שלה, שהיא כלבה, גיל משוער, ושבב.
-         לא היה לה שבב כשהגיעה, אז השארנו ריק ומילאנו אחר כך.
-
-         ⟵ [עוצר]
-
- [מצביע] וכאן *הכניסה* שלה — שמתנדב מצא אותה ברחוב הרצל,
-         באיזה מצב היא הייתה, ומי הביא אותה.
-         הפרדתי בין השתיים בכוונה. אמרת לי שקורה שחיה חוזרת
-         אחרי אימוץ שנכשל. אם הכול היה במקום אחד, החזרה
-         הייתה *מוחקת* את הפעם הראשונה — ואת תאבדי את התשובה
-         לשאלה כמה זמן היא באמת הייתה אצלך.
-
-         נכון שזה מה שרצית?
-
-         ⟵ [עוצר. לא ממשיך בלי תשובה.]
-
- [מצביע] כאן איפה היא שוכנת. שבועיים בהסגר, אחר כך אגף א',
-         ובנובמבר העברת אותה לאגף ב'.
-         ואם בעוד שנה תגלי מחלה בכלוב 4 — תוכלי לשאול
-         מי היה שם בחודשיים האחרונים.
-
- ⚠️ [הטעות המכוונת:]
-         "אז לפי מה שהבנתי, אם חיה חוזרת מאימוץ,
-          אנחנו מתחילים לה תיק רפואי חדש — נכון?"
-
-         ⟵ רותי אמרה במפורש שהתיק הרפואי *נשאר*.
-            אם היא מתקנת ✅ · אם היא מהנהנת ❌ עוצרים ומתחילים מחדש.
-
- [מצביע] ⭐ וכאן הדבר שהכי חשוב לך.
-         זוכרת שסיפרת שהידע על מי מתאים למי נמצא בראש שלך?
-         כאן הוא יושב. לכל חיה רשומות התכונות שלה —
-         סבלנית עם ילדים, מסתדרת עם חתולים, צריכה מרחב.
-         וכשמשפחה ממלאת טופס, המערכת יודעת להצליב.
-         גם כשאת בחופש."
-```
-
-<div dir="rtl">
+> *"רותי, לפני שאני מראה משהו — בואי ניקח את לונה, הכלבה שהגיעה בספטמבר. נעבור איתה על כל המערכת."*
+>
+> **[מצביע]** *"כאן לונה עצמה — השם שלה, שהיא כלבה, גיל משוער, ושבב. לא היה לה שבב כשהגיעה, אז השארנו ריק ומילאנו אחר כך."*
+>
+> ⟵ **[עוצר]**
+>
+> **[מצביע]** *"וכאן **הכניסה** שלה — שמתנדב מצא אותה ברחוב הרצל, באיזה מצב היא הייתה, ומי הביא אותה. הפרדתי בין השתיים בכוונה. אמרת לי שקורה שחיה חוזרת אחרי אימוץ שנכשל. אם הכול היה במקום אחד, החזרה הייתה **מוחקת** את הפעם הראשונה — ואת תאבדי את התשובה לשאלה כמה זמן היא באמת הייתה אצלך.*
+>
+> *נכון שזה מה שרצית?"*
+>
+> ⟵ **[עוצר. לא ממשיך בלי תשובה.]**
+>
+> **[מצביע]** *"כאן איפה היא שוכנת. שבועיים בהסגר, אחר כך אגף א', ובנובמבר העברת אותה לאגף ב'. ואם בעוד שנה תגלי מחלה בכלוב 4 — תוכלי לשאול מי היה שם בחודשיים האחרונים."*
+>
+> ⚠️ **[הטעות המכוונת:]**
+> *"אז לפי מה שהבנתי, אם חיה חוזרת מאימוץ, אנחנו מתחילים לה תיק רפואי חדש — נכון?"*
+>
+> ⟵ רותי אמרה במפורש שהתיק הרפואי **נשאר**. אם היא מתקנת ✅ · אם היא מהנהנת ❌ עוצרים ומתחילים מחדש.
+>
+> **[מצביע]** ⭐ *"וכאן הדבר שהכי חשוב לך. זוכרת שסיפרת שהידע על מי מתאים למי נמצא בראש שלך? כאן הוא יושב. לכל חיה רשומות התכונות שלה — סבלנית עם ילדים, מסתדרת עם חתולים, צריכה מרחב. וכשמשפחה ממלאת טופס, המערכת יודעת להצליב. גם כשאת בחופש."*
 
 ---
 
@@ -460,29 +441,16 @@
 | **ההכרעה** | ❌ **סירוב מנומק + חלופה** |
 | **הסכנה** | עמודה שמתעדכנת במקום **מוחקת את העבר לתמיד** — וזה נוגד ישירות את מה שרותי עצמה ביקשה |
 
-</div>
+**נוסחת ה"לא" בשלושה שלבים (מודול 8):**
 
-```text
-נוסחת ה"לא" בשלושה שלבים (מודול 8):
+**① הכרה בצורך:**
+> *"אני מבין לגמרי — את רוצה לראות איפה החיה בלי לחפש."*
 
-① הכרה בצורך:
-   "אני מבין לגמרי — את רוצה לראות איפה החיה בלי לחפש."
+**② התוצאה בעולם שלה:**
+> *"אבל תראי מה קורה: אמרת לי בראיון שאם מתגלה מחלה, את חייבת לדעת מי היה בכלוב הזה בחודש האחרון. עם עמודה אחת, ברגע שאני מעביר את לונה מכלוב 4 לכלוב 7 — העובדה שהיא הייתה בכלוב 4 **נמחקת**. אין גיבוי שיחזיר אותה. ביום שתהיה התפרצות, לא תדעי את מי לבדוק."*
 
-② התוצאה בעולם שלה:
-   "אבל תראי מה קורה: אמרת לי בראיון שאם מתגלה מחלה,
-    את חייבת לדעת מי היה בכלוב הזה בחודש האחרון.
-    עם עמודה אחת, ברגע שאני מעביר את לונה מכלוב 4 לכלוב 7 —
-    העובדה שהיא הייתה בכלוב 4 *נמחקת*. אין גיבוי שיחזיר אותה.
-    ביום שתהיה התפרצות, לא תדעי את מי לבדוק."
-
-③ החלופה שנותנת לה בדיוק מה שרצתה:
-   "מה שאני מציע: המסך יראה בדיוק מה שביקשת — שורה אחת,
-    'לונה, כלוב 7'. פשוט כמו שרצית.
-    ההיסטוריה יושבת מתחת ולא מפריעה לאף אחד,
-    ותהיה שם ביום שתצטרכי אותה."
-```
-
-<div dir="rtl">
+**③ החלופה שנותנת לה בדיוק מה שרצתה:**
+> *"מה שאני מציע: המסך יראה בדיוק מה שביקשת — שורה אחת, 'לונה, כלוב 7'. פשוט כמו שרצית. ההיסטוריה יושבת מתחת ולא מפריעה לאף אחד, ותהיה שם ביום שתצטרכי אותה."*
 
 > 🎓 **זהו הלקח המרכזי של שלב 5:** רותי לא ביקשה משהו טיפשי — היא ביקשה **פשטות בממשק** ותיארה אותה במונחי **מבנה**. תפקידכם לתת לה את הראשונה בלי לוותר על השנייה.
 
@@ -532,39 +500,47 @@
 </div>
 
 ```text
-┌────┬──────────┬────────────────────────────┬────────────────────┬─────────┬───────┐
-│ #  │ תאריך    │ ההחלטה                     │ הנימוק             │ מי      │ סטטוס │
-├────┼──────────┼────────────────────────────┼────────────────────┼─────────┼───────┤
-│ 1  │ 14/09    │ ANIMAL ו-INTAKE נפרדות     │ חיה חוזרת; נדרש    │ יועץ ✓  │ סגור  │
-│    │          │                            │ לחשב שהות ממוצעת   │         │       │
-│ 2  │ 14/09    │ שלושה טיפוסי משנה ל-INTAKE │ לכל מקור 4-5       │ יועץ ✓  │ סגור  │
-│    │          │                            │ מאפיינים ייחודיים  │         │       │
-│ 3  │ 16/09    │ ⭐ EXPENSE_ALLOCATION       │ חשבונית אחת ל-8    │ רותי    │ סגור  │
-│    │          │ כישות מקשרת M:M            │ חיות — אחרת אין    │         │       │
-│    │          │                            │ תשובה לשאלה 2      │         │       │
-│ 4  │ 16/09    │ ⭐ FOSTER כישות נפרדת       │ עלה מנועה; החיה    │ נועה    │ סגור  │
-│    │          │ מ-ADOPTION                 │ נשארת של המקלט     │         │       │
-│ 5  │ 16/09    │ TRAIT כישות, לא טקסט       │ ההתאמה היא         │ רותי    │ סגור  │
-│    │          │                            │ הפונקציה המרכזית   │         │       │
-│ 6  │ 16/09    │ תוצאת ראיון = 3 ערכים      │ נועה מתארת מציאות; │ יועץ ✓  │ סגור  │
-│    │          │ (כולל "בתנאי")             │ רותי לא ידעה       │         │       │
-│ 7  │ 20/09    │ דמי אימוץ + כתובת מוקפאים  │ תעריף השתנה 2024;  │ רותי    │ סגור  │
-│    │          │ ברשומת האימוץ              │ ביקורת לפי כתובת   │         │       │
-│ 8  │ 20/09    │ next_vaccination *מחושב*   │ פרוטוקול משתנה     │ יועץ ✓  │ סגור  │
-│    │          │ ולא נשמר                   │                    │         │       │
-│ 9  │ 24/09    │ ❌ נדחתה: עמודת כלוב נוכחי  │ מוחקת היסטוריה     │ יועץ +  │ סגור  │
-│    │          │ במקום ישות תקופה           │ שרותי עצמה צריכה   │ רותי ✓  │       │
-│ 10 │ 24/09    │ סוג קליטה "מקלט אחר" נשאר, │ 130 חיות מאז 2013  │ רותי ✓  │ סגור  │
-│    │          │ מוסתר בממשק                │                    │         │       │
-│ 11 │ 24/09    │ תרומות ⟵ שלב ב'            │ מערכת שנייה,       │ רותי    │ סגור  │
-│    │          │                            │ ~3 שבועות          │         │       │
-├────┼──────────┼────────────────────────────┼────────────────────┼─────────┼───────┤
-│ 12 │ 24/09    │ ⚠️ אישור אימוץ בסופ"ש?     │ רותי ונועה תיארו   │ ממתין   │ פתוח  │
-│    │          │                            │ נהלים שונים        │ להנהלה  │       │
-│ 13 │ 24/09    │ ⚠️ פקיעת בקשה תלויה        │ נועה: "עשרות       │ ממתין   │ פתוח  │
-│    │          │ אחרי כמה זמן?              │ טפסים תקועים"      │ לרותי   │       │
-│ 14 │ 24/09    │ ⚠️ כמה שנים לשמור רשומות?  │ ייתכנו דרישות חוק  │ ממתין   │ פתוח  │
-└────┴──────────┴────────────────────────────┴────────────────────┴─────────┴───────┘
++----+----------+----------------------------+--------------------+---------+--------+
+| #  | date     | DECISION                   | REASON             | WHO     | STATUS |
++----+----------+----------------------------+--------------------+---------+--------+
+| 1  | 14/09    | ANIMAL and INTAKE separate | animals return;    | cons. * | closed |
+|    |          |                            | needed to compute  |         |        |
+|    |          |                            | average stay       |         |        |
+| 2  | 14/09    | Three subtypes for INTAKE  | each source has    | cons. * | closed |
+|    |          |                            | 4-5 unique attrs   |         |        |
+| 3  | 16/09    | * EXPENSE_ALLOCATION as an | one invoice for 8  | Ruti    | closed |
+|    |          | M:M intersection entity    | animals -- else no |         |        |
+|    |          |                            | answer to Q2       |         |        |
+| 4  | 16/09    | * FOSTER separate from     | raised by Noa; the | Noa     | closed |
+|    |          | ADOPTION                   | animal stays ours  |         |        |
+| 5  | 16/09    | TRAIT as an entity, not    | matching IS the    | Ruti    | closed |
+|    |          | free text                  | core function      |         |        |
+| 6  | 16/09    | Interview result = 3 values| Noa describes      | cons. * | closed |
+|    |          | (incl. "with conditions")  | reality; Ruti      |         |        |
+|    |          |                            | didn't know        |         |        |
+| 7  | 20/09    | Fee + address FROZEN in    | rate changed 2024; | Ruti    | closed |
+|    |          | the adoption record        | visits use the     |         |        |
+|    |          |                            | address of the day |         |        |
+| 8  | 20/09    | next_vaccination COMPUTED, | the protocol       | cons. * | closed |
+|    |          | not stored                 | changes            |         |        |
+| 9  | 24/09    | [X] REJECTED: a            | erases history     | cons. + | closed |
+|    |          | "current kennel" column    | Ruti herself needs | Ruti *  |        |
+|    |          | instead of a period entity |                    |         |        |
+| 10 | 24/09    | Intake type "other shelter"| 130 animals since  | Ruti *  | closed |
+|    |          | kept, hidden in the UI     | 2013               |         |        |
+| 11 | 24/09    | Donations -> phase 2       | a second system,   | Ruti    | closed |
+|    |          |                            | ~3 weeks           |         |        |
++----+----------+----------------------------+--------------------+---------+--------+
+| 12 | 24/09    | (!) weekend adoption       | Ruti and Noa       | waiting | open   |
+|    |          | approval?                  | described          | on mgmt |        |
+|    |          |                            | different rules    |         |        |
+| 13 | 24/09    | (!) pending application    | Noa: "dozens of    | waiting | open   |
+|    |          | expires after how long?    | stuck forms"       | on Ruti |        |
+| 14 | 24/09    | (!) how many years to keep | possible legal     | waiting | open   |
+|    |          | records?                   | requirements       | on Ruti |        |
++----+----------+----------------------------+--------------------+---------+--------+
+
+   * = decided by the consultant, approved by the client
 ```
 
 <div dir="rtl">

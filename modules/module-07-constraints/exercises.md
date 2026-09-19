@@ -91,31 +91,31 @@
 </div>
 
 ```text
-א.                              ב.
-  ┌────────┐  ┌────────┐          ┌────────┐  ┌────────┐
-  │ PERSON │  │COMPANY │          │ PERSON │  │COMPANY │
-  └───┬────┘  └───┬────┘          └───┬────┘  └───┬────┘
-      │ *         │ o                 │ *         │ *
-      ╰────╮  ╭───╯                   ╰────╮  ╭───╯
-           ╰──╯                            ╰──╯
-            │                               │
-       ┌────┴────┐                     ┌────┴────┐
-       │ PAYMENT │                     │ INVOICE │
-       └─────────┘                     └─────────┘
+(a)                             (b)
+  +--------+  +--------+          +--------+  +--------+
+  | PERSON |  |COMPANY |          | PERSON |  |COMPANY |
+  +---+----+  +---+----+          +---+----+  +---+----+
+      | *         | o                 | *         | *
+      '----.  .---'                   '----.  .---'
+           '--'                            '--'
+            |                               |
+       +----+----+                     +----+----+
+       | PAYMENT |                     | INVOICE |
+       +---------+                     +---------+
 
-ג.                              ד.
-  ┌────────┐  ┌────────┐          ┌────────┐  ┌────────┐
-  │ ORDER  │  │ QUOTE  │          │ PERSON │  │COMPANY │
-  └───┬────┘  └───┬────┘          └───┬────┘  └───┬────┘
-      │1:M        │1:1                │ *         │ *
-      ╰────╮  ╭───╯                   ╰────╮  ╭───╯
-           ╰──╯                            ╰──╯
-            │                               │
-       ┌────┴────┐                     ┌────┴─────┐
-       │ INVOICE │                     │ CONTRACT │
-       └─────────┘                     └──────────┘
-                                    (הישות CONTRACT מכילה גם
-                                     שני יחסים נוספים שאינם בקשת)
+(c)                             (d)
+  +--------+  +--------+          +--------+  +--------+
+  | ORDER  |  | QUOTE  |          | PERSON |  |COMPANY |
+  +---+----+  +---+----+          +---+----+  +---+----+
+      |1:M        |1:1                | *         | *
+      '----.  .---'                   '----.  .---'
+           '--'                            '--'
+            |                               |
+       +----+----+                     +----+-----+
+       | INVOICE |                     | CONTRACT |
+       +---------+                     +----------+
+                                    (CONTRACT also has two more
+                                     relationships OUTSIDE the arc)
 ```
 
 <div dir="rtl">
@@ -145,16 +145,16 @@
 </div>
 
 ```text
-┌─────────────────────────┐
-│ VOLUNTEER               │
-├─────────────────────────┤
-│ # volunteer_id          │
-│ * name                  │
-│ * branch_id      (FK)   │  ⟵ הסניף שבו הוא מתנדב
-│ * role_id        (FK)   │  ⟵ תפקידו
-│ * weekly_hours          │  ⟵ כמה שעות בשבוע
-│ * status                │  ⟵ פעיל / בהפסקה / עזב
-└─────────────────────────┘
++-------------------------+
+| VOLUNTEER               |
++-------------------------+
+| # volunteer_id          |
+| * name                  |
+| * branch_id      (FK)   |  <- the branch they volunteer at
+| * role_id        (FK)   |  <- their role
+| * weekly_hours          |  <- hours per week
+| * status                |  <- active / on break / left
++-------------------------+
 ```
 
 <div dir="rtl">
@@ -182,16 +182,16 @@
 </div>
 
 ```text
- 1. "לכל פריט ציוד יש מספר מדבקה ייחודי"
- 2. "פריט מושאל לתלמיד או למורה — לא לשניהם"
- 3. "פריט לא יכול להיות מושאל לשניים במקביל"
- 4. "תלמיד יכול להחזיק עד 3 פריטים בו זמנית; מורה — ללא הגבלה"
- 5. "מצב הפריט: תקין, בתיקון, הושבת"
- 6. "פריט מושבת לא מושאל"
- 7. "כשפריט מוחזר רושמים באיזה מצב הוא חזר"
- 8. "המעבדה מחולקת לארונות, וארון מחולק למדפים"
- 9. "השאלה של יותר מ-14 יום דורשת אישור רכז המעבדה"
-10. "צריך לדעת בכל רגע איפה כל פריט נמצא, וגם איפה הוא היה"
+ 1. "Every item has a unique sticker number"
+ 2. "An item is loaned to a student OR a teacher -- not both"
+ 3. "An item cannot be loaned to two people at once"
+ 4. "A student may hold up to 3 items at a time; a teacher -- no limit"
+ 5. "Item condition: OK, in repair, retired"
+ 6. "A retired item is not loaned"
+ 7. "When an item is returned we record the condition it came back in"
+ 8. "The lab is divided into cabinets, and a cabinet into shelves"
+ 9. "A loan longer than 14 days needs the lab coordinator's approval"
+10. "We must know where every item is right now -- and where it has been"
 ```
 
 <div dir="rtl">

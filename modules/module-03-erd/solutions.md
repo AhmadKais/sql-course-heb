@@ -95,34 +95,34 @@ CUSTOMER ──< ORDER ──< ORDER_LINE >── PRODUCT >── PRODUCT_SUPPLI
 </div>
 
 ```text
-    ┌──────────┐                                     ┌──────────────┐
-    │ PATIENT  │───┐                             ┌───│  MEDICATION  │
-    ├──────────┤   │                             │   ├──────────────┤
-    │# patient_│   │                             │   │# medication_ │
-    │  id      │   │                             │   │  id          │
-    │* name    │   │                             │   │* drug_name   │
-    └──────────┘   │                             │   │* active_ingr │
-                   ▼                             ▼   └──────────────┘
-              ┌────────────────────────────────────────┐
-              │            PRESCRIPTION                │
-              ├────────────────────────────────────────┤
-              │ # prescription_id                      │
-              │ * patient_id       (FK)                │
-              │ * medication_id    (FK)                │
-              │ * doctor_id        (FK)                │
-              │ * dosage           "500mg"             │
-              │ * frequency        "3 פעמים ביום"      │
-              │ * start_date                           │
-              │ o end_date                             │
-              │ * status           פעיל/הופסק/הושלם    │
-              │ o notes                                │
-              └────────────────────────────────────────┘
+    +----------+                                     +--------------+
+    | PATIENT  |---+                             +---|  MEDICATION  |
+    +----------+   |                             |   +--------------+
+    |# patient_|   |                             |   |# medication_ |
+    |  id      |   |                             |   |  id          |
+    |* name    |   |                             |   |* drug_name   |
+    +----------+   |                             |   |* active_ingr |
+                   v                             v   +--------------+
+              +----------------------------------------+
+              |            PRESCRIPTION                |
+              +----------------------------------------+
+              | # prescription_id                      |
+              | * patient_id       (FK)                |
+              | * medication_id    (FK)                |
+              | * doctor_id        (FK)                |
+              | * dosage           "500mg"             |
+              | * frequency        "3 times a day"     |
+              | * start_date                           |
+              | o end_date                             |
+              | * status           active/stopped/done |
+              | o notes                                |
+              +----------------------------------------+
 
-    קריאה:
-    "כל מטופל עשוי לקבל מרשם אחד או יותר"
-    "כל מרשם חייב להיות שייך למטופל אחד ובדיוק אחד"
-    "כל תרופה עשויה להופיע במרשם אחד או יותר"
-    "כל מרשם חייב להיות לתרופה אחת ובדיוק אחת"
+    Read aloud:
+    "Each PATIENT may receive one or more PRESCRIPTIONS"
+    "Each PRESCRIPTION must belong to one and only one PATIENT"
+    "Each MEDICATION may appear in one or more PRESCRIPTIONS"
+    "Each PRESCRIPTION must be for one and only one MEDICATION"
 ```
 
 <div dir="rtl">
@@ -138,25 +138,25 @@ CUSTOMER ──< ORDER ──< ORDER_LINE >── PRODUCT >── PRODUCT_SUPPLI
 </div>
 
 ```text
-                │ MEMB │ M_TYPE│ TRAIN │ CLASS │ SESSION│ EQUIP │ ENTRY │ PAY
-    ────────────┼──────┼───────┼───────┼───────┼────────┼───────┼───────┼─────
-     MEMBER     │  —   │       │       │       │        │       │       │
-    ────────────┼──────┼───────┼───────┼───────┼────────┼───────┼───────┼─────
-     MEMB_TYPE  │ 1:M  │   —   │       │       │        │       │       │
-    ────────────┼──────┼───────┼───────┼───────┼────────┼───────┼───────┼─────
-     TRAINER    │ M:M ⚠│   —   │  🔄   │       │        │       │       │
-    ────────────┼──────┼───────┼───────┼───────┼────────┼───────┼───────┼─────
-     CLASS      │  —   │   —   │ M:M ⚠ │   —   │        │       │       │
-    ────────────┼──────┼───────┼───────┼───────┼────────┼───────┼───────┼─────
-     SESSION    │ M:M ⚠│   —   │  1:M  │  1:M  │   —    │       │       │
-    ────────────┼──────┼───────┼───────┼───────┼────────┼───────┼───────┼─────
-     EQUIPMENT  │ M:M ⚠│   —   │   —   │  M:M ⚠│   —    │   —   │       │
-    ────────────┼──────┼───────┼───────┼───────┼────────┼───────┼───────┼─────
-     ENTRY      │ 1:M  │   —   │   —   │   —   │   —    │   —   │   —   │
-    ────────────┼──────┼───────┼───────┼───────┼────────┼───────┼───────┼─────
-     PAYMENT    │ 1:M  │  ❌   │   —   │   —   │   —    │   —   │   —   │  —
+                | MEMB | M_TYPE| TRAIN | CLASS | SESSION| EQUIP | ENTRY | PAY
+    ------------+------+-------+-------+-------+--------+-------+-------+-----
+     MEMBER     |  -   |       |       |       |        |       |       |
+    ------------+------+-------+-------+-------+--------+-------+-------+-----
+     MEMB_TYPE  | 1:M  |   -   |       |       |        |       |       |
+    ------------+------+-------+-------+-------+--------+-------+-------+-----
+     TRAINER    | M:M !|   -   |  (R)  |       |        |       |       |
+    ------------+------+-------+-------+-------+--------+-------+-------+-----
+     CLASS      |  -   |   -   | M:M ! |   -   |        |       |       |
+    ------------+------+-------+-------+-------+--------+-------+-------+-----
+     SESSION    | M:M !|   -   |  1:M  |  1:M  |   -    |       |       |
+    ------------+------+-------+-------+-------+--------+-------+-------+-----
+     EQUIPMENT  | M:M !|   -   |   -   |  M:M !|   -    |   -   |       |
+    ------------+------+-------+-------+-------+--------+-------+-------+-----
+     ENTRY      | 1:M  |   -   |   -   |   -   |   -    |   -   |   -   |
+    ------------+------+-------+-------+-------+--------+-------+-------+-----
+     PAYMENT    | 1:M  |  [X]  |   -   |   -   |   -    |   -   |   -   |  -
 
-     ⚠ = M:M     🔄 = רקורסיבי     ❌ = קשר מיותר
+     ! = M:M     (R) = recursive     [X] = redundant relationship
 ```
 
 <div dir="rtl">
@@ -209,19 +209,19 @@ CUSTOMER ──< ORDER ──< ORDER_LINE >── PRODUCT >── PRODUCT_SUPPLI
 </div>
 
 ```text
-                │ TITLE │ COPY │ AUTHOR │ MEMBER │ LOAN │ RESERV │ FINE
-    ────────────┼───────┼──────┼────────┼────────┼──────┼────────┼──────
-     BOOK_TITLE │   —   │      │        │        │      │        │
-     BOOK_COPY  │  1:M  │  —   │        │        │      │        │
-     AUTHOR     │ M:M ⚠ │  —   │   —    │        │      │        │
-     MEMBER     │   —   │  —   │   —    │   —    │      │        │
-     LOAN       │  ❌   │ 1:M  │   —    │  1:M   │  —   │        │
-     RESERVATION│  1:M  │  —   │   —    │  1:M   │  —   │   —    │
-     FINE       │   —   │  —   │   —    │  1:M   │ 1:1  │   —    │  —
+                | TITLE | COPY | AUTHOR | MEMBER | LOAN | RESERV | FINE
+    ------------+-------+------+--------+--------+------+--------+------
+     BOOK_TITLE |   -   |      |        |        |      |        |
+     BOOK_COPY  |  1:M  |  -   |        |        |      |        |
+     AUTHOR     | M:M ! |  -   |   -    |        |      |        |
+     MEMBER     |   -   |  -   |   -    |   -    |      |        |
+     LOAN       |  [X]  | 1:M  |   -    |  1:M   |  -   |        |
+     RESERVATION|  1:M  |  -   |   -    |  1:M   |  -   |   -    |
+     FINE       |   -   |  -   |   -    |  1:M   | 1:1  |   -    |  -
 
-     ❌ LOAN↔TITLE מיותר — נגזר דרך COPY
-     ⚠ AUTHOR↔TITLE = M:M ⟵ AUTHORSHIP
-     💡 RESERVATION↔TITLE (ולא COPY!) — מזמינים כותר, לא עותק ספציפי
+     [X] LOAN<->TITLE is redundant -- derived through COPY
+     !   AUTHOR<->TITLE = M:M  -> AUTHORSHIP
+     (i) RESERVATION<->TITLE (not COPY!) -- you reserve a title, not a specific copy
 ```
 
 <div dir="rtl">
@@ -231,72 +231,72 @@ CUSTOMER ──< ORDER ──< ORDER_LINE >── PRODUCT >── PRODUCT_SUPPLI
 </div>
 
 ```text
-  ┌──────────────┐                      ┌────────────────────┐
-  │    AUTHOR    │──────┐          ┌────│    BOOK_TITLE      │
-  ├──────────────┤      │          │    ├────────────────────┤
-  │# author_id   │      │          │    │# title_id          │
-  │* first_name  │      │          │    │* isbn        (UQ)  │
-  │* last_name   │      ▼          ▼    │* title             │
-  │o nationality │   ┌─────────────────┐│* publish_year      │
-  │o birth_year  │   │   AUTHORSHIP    ││* publisher_id (FK) │
-  └──────────────┘   ├─────────────────┤│* is_reference ⭐   │
-                     │# authorship_id  ││o genre             │
-                     │* author_id  (FK)│└─────────┬──────────┘
-                     │* title_id   (FK)│          │ "יש לו"
-                     │* author_order   │          ▼
-                     │* role  מחבר/עורך│  ┌────────────────────┐
-                     └─────────────────┘  │     BOOK_COPY      │
-                                          ├────────────────────┤
-  ┌──────────────┐                        │# copy_id           │
-  │    SHELF     │───────────────────────<│* title_id     (FK) │
-  ├──────────────┤        "ממוקם ב"       │* shelf_id     (FK) │
-  │# shelf_id    │                        │* acquisition_date  │
-  │* shelf_code  │                        │* condition         │
-  │* floor       │                        │* status ⟵ במדף/    │
-  │* section     │                        │  מושאל/אבד/בתיקון  │
-  └──────────────┘                        └─────────┬──────────┘
-                                                    │ "מושאל ב"
-  ┌──────────────┐                                  ▼
-  │    MEMBER    │              ┌──────────────────────────────┐
-  ├──────────────┤              │            LOAN              │
-  │# member_id   │─────────────<├──────────────────────────────┤
-  │* first_name  │  "משאיל"     │# loan_id                     │
-  │* last_name   │              │* copy_id           (FK)      │
-  │* phone       │              │* member_id         (FK)      │
-  │o email       │              │* librarian_out_id  (FK)      │
-  │* join_date   │              │o librarian_in_id   (FK)      │
-  │* card_number │              │* loan_date                   │
-  │* is_active   │              │* due_date                    │
-  └───┬──────┬───┘              │o return_date                 │
-      │      │                  │* renewal_count  (0/1) ⭐     │
-      │      │                  │* status                      │
-      │      │                  └──────────┬───────────────────┘
-      │      │                             │ "גורר"
-      │      │                             ▼
-      │      │                  ┌──────────────────────────────┐
-      │      │                  │            FINE              │
-      │      │                  ├──────────────────────────────┤
-      │      └─────────────────>│# fine_id                     │
-      │        "חייב"           │* loan_id           (FK)      │
-      │                         │* member_id         (FK)      │
-      │                         │* days_late                   │
-      │                         │* daily_rate ⭐ מוקפא!        │
-      │                         │* amount                      │
-      │                         │* is_paid                     │
-      │                         │o payment_date                │
-      │                         └──────────────────────────────┘
-      │
-      │ "מזמין"      ┌──────────────────────────────┐
-      └─────────────>│        RESERVATION           │
-                     ├──────────────────────────────┤
-                     │# reservation_id              │
-                     │* title_id          (FK) ⭐   │
-                     │* member_id         (FK)      │
-                     │* reserve_date                │
-                     │* status ⟵ ממתין/הודע/הושלם  │
-                     │o notified_date               │
-                     │o expiry_date                 │
-                     └──────────────────────────────┘
+  +--------------+                      +--------------------+
+  |    AUTHOR    |------+          +----|    BOOK_TITLE      |
+  +--------------+      |          |    +--------------------+
+  |# author_id   |      |          |    |# title_id          |
+  |* first_name  |      |          |    |* isbn        (UQ)  |
+  |* last_name   |      v          v    |* title             |
+  |o nationality |   +-----------------+|* publish_year      |
+  |o birth_year  |   |   AUTHORSHIP    ||* publisher_id (FK) |
+  +--------------+   +-----------------+|* is_reference  *   |
+                     |# authorship_id  ||o genre             |
+                     |* author_id  (FK)|+---------+----------+
+                     |* title_id   (FK)|          | "has"
+                     |* author_order   |          v
+                     |* role author/editor +--------------------+
+                     +-----------------+  |     BOOK_COPY      |
+                                          +--------------------+
+  +--------------+                        |# copy_id           |
+  |    SHELF     |-----------------------<|* title_id     (FK) |
+  +--------------+       "located on"     |* shelf_id     (FK) |
+  |# shelf_id    |                        |* acquisition_date  |
+  |* shelf_code  |                        |* condition         |
+  |* floor       |                        |* status <- on shelf/|
+  |* section     |                        |  on loan/lost/repair|
+  +--------------+                        +---------+----------+
+                                                    | "loaned in"
+  +--------------+                                  v
+  |    MEMBER    |              +------------------------------+
+  +--------------+              |            LOAN              |
+  |# member_id   |-------------<+------------------------------+
+  |* first_name  |  "borrows"   |# loan_id                     |
+  |* last_name   |              |* copy_id           (FK)      |
+  |* phone       |              |* member_id         (FK)      |
+  |o email       |              |* librarian_out_id  (FK)      |
+  |* join_date   |              |o librarian_in_id   (FK)      |
+  |* card_number |              |* loan_date                   |
+  |* is_active   |              |* due_date                    |
+  +---+------+---+              |o return_date                 |
+      |      |                  |* renewal_count  (0/1)  *     |
+      |      |                  |* status                      |
+      |      |                  +----------+-------------------+
+      |      |                             | "incurs"
+      |      |                             v
+      |      |                  +------------------------------+
+      |      |                  |            FINE              |
+      |      |                  +------------------------------+
+      |      +----------------->|# fine_id                     |
+      |        "owes"           |* loan_id           (FK)      |
+      |                         |* member_id         (FK)      |
+      |                         |* days_late                   |
+      |                         |* daily_rate  * FROZEN!       |
+      |                         |* amount                      |
+      |                         |* is_paid                     |
+      |                         |o payment_date                |
+      |                         +------------------------------+
+      |
+      | "reserves"   +------------------------------+
+      +------------->|        RESERVATION           |
+                     +------------------------------+
+                     |# reservation_id              |
+                     |* title_id          (FK)  *   |
+                     |* member_id         (FK)      |
+                     |* reserve_date                |
+                     |* status <- waiting/notified/done |
+                     |o notified_date               |
+                     |o expiry_date                 |
+                     +------------------------------+
 ```
 
 <div dir="rtl">
@@ -379,28 +379,28 @@ CUSTOMER ──< ORDER ──< ORDER_LINE >── PRODUCT >── PRODUCT_SUPPLI
 </div>
 
 ```text
-  ┌──────────────┐                                    ┌──────────────┐
-  │    PLAYER    │───┐                            ┌───│     TEAM     │
-  ├──────────────┤   │                            │   ├──────────────┤
-  │# player_id   │   │                            │   │# team_id     │
-  │* first_name  │   │                            │   │* team_name   │
-  │* last_name   │   │                            │   │* city        │
-  │* birth_date  │   │                            │   │* league      │
-  │o position    │   │                            │   └──────────────┘
-  └──────────────┘   ▼                            ▼
-              ┌────────────────────────────────────────┐
-              │              CONTRACT                  │
-              ├────────────────────────────────────────┤
-              │ # contract_id                          │
-              │ * player_id       (FK)                 │
-              │ * team_id         (FK)                 │
-              │ * start_date                    ⭐     │
-              │ o end_date        (NULL = פעיל) ⭐     │
-              │ * jersey_number                        │
-              │ * salary                               │
-              │ * status  ⟵ פעיל/הסתיים/הושאל          │
-              │ o transfer_fee                         │
-              └────────────────────────────────────────┘
+  +--------------+                                    +--------------+
+  |    PLAYER    |---+                            +---|     TEAM     |
+  +--------------+   |                            |   +--------------+
+  |# player_id   |   |                            |   |# team_id     |
+  |* first_name  |   |                            |   |* team_name   |
+  |* last_name   |   |                            |   |* city        |
+  |* birth_date  |   |                            |   |* league      |
+  |o position    |   |                            |   +--------------+
+  +--------------+   v                            v
+              +----------------------------------------+
+              |              CONTRACT                  |
+              +----------------------------------------+
+              | # contract_id                          |
+              | * player_id       (FK)                 |
+              | * team_id         (FK)                 |
+              | * start_date                     *     |
+              | o end_date        (NULL = active) *    |
+              | * jersey_number                        |
+              | * salary                               |
+              | * status  <- active/ended/on loan      |
+              | o transfer_fee                         |
+              +----------------------------------------+
 ```
 
 <div dir="rtl">
@@ -493,20 +493,20 @@ WHERE  c.team_id = :team_id
 </div>
 
 ```text
-                │ CUST │ ORDER │ ORD_IT│ DISH │ CATEG│ INGRE│ EMPL │ TABLE
-    ────────────┼──────┼───────┼───────┼──────┼──────┼──────┼──────┼──────
-     CUSTOMER   │  —   │       │       │      │      │      │      │
-     ORDER      │ 1:M  │   —   │       │      │      │      │      │
-     ORDER_ITEM │  ❌  │  1:M  │   —   │      │      │      │      │
-     DISH       │  —   │  ❌   │  1:M  │  —   │      │      │      │
-     CATEGORY   │  —   │   —   │   —   │ 1:M  │  —   │      │      │
-     INGREDIENT │  —   │   —   │   —   │ M:M ⚠│  —   │  —   │      │
-     EMPLOYEE   │  —   │  1:M  │   —   │ 1:M  │  —   │  —   │  🔄  │
-     TABLE      │  —   │  1:M  │   —   │  —   │  —   │  —   │  —   │  —
+                | CUST | ORDER | ORD_IT| DISH | CATEG| INGRE| EMPL | TABLE
+    ------------+------+-------+-------+------+------+------+------+------
+     CUSTOMER   |  -   |       |       |      |      |      |      |
+     ORDER      | 1:M  |   -   |       |      |      |      |      |
+     ORDER_ITEM | [X]  |  1:M  |   -   |      |      |      |      |
+     DISH       |  -   |  [X]  |  1:M  |  -   |      |      |      |
+     CATEGORY   |  -   |   -   |   -   | 1:M  |  -   |      |      |
+     INGREDIENT |  -   |   -   |   -   | M:M !|  -   |  -   |      |
+     EMPLOYEE   |  -   |  1:M  |   -   | 1:M  |  -   |  -   | (R)  |
+     TABLE      |  -   |  1:M  |   -   |  -   |  -   |  -   |  -   |  -
 
-     ⚠ DISH↔INGREDIENT = M:M ⟵ DISH_INGREDIENT (עם כמות!)
-     🔄 EMPLOYEE רקורסיבי — מנהל משמרת
-     ❌ קשרים מיותרים — עוברים דרך ישות שלישית
+     !   DISH<->INGREDIENT = M:M  -> DISH_INGREDIENT (with quantity!)
+     (R) EMPLOYEE recursive -- shift manager
+     [X] redundant -- goes through a third entity
 ```
 
 <div dir="rtl">
@@ -516,61 +516,61 @@ WHERE  c.team_id = :team_id
 </div>
 
 ```text
-  ┌──────────────┐        ┌────────────────────┐        ┌──────────────┐
-  │   CUSTOMER   │       ┌│       ORDER        │┐       │    TABLE     │
-  ├──────────────┤       │├────────────────────┤│       ├──────────────┤
-  │# customer_id │──────<││# order_id          ││>──────│# table_id    │
-  │* first_name  │       ││* order_datetime    ││       │* table_number│
-  │* last_name   │       ││* customer_id  (FK) ││       │* seats       │
-  │* phone  (UQ) │       ││* table_id     (FK) ││       │* location    │
-  │o email       │       ││* waiter_id    (FK) ││       └──────────────┘
-  │o birth_date  │       ││* status ⭐         ││
-  │* is_active   │       ││* guest_count       ││       ┌──────────────┐
-  └──────────────┘       │└─────────┬──────────┘│       │   EMPLOYEE   │
-                         │          │           └──────>├──────────────┤
-                         │          │ "מכילה"           │# employee_id │◄─┐
-                         │          ▼                   │* first_name  │  │
-                         │  ┌────────────────────────┐  │* last_name   │  │
-                         │  │      ORDER_ITEM        │  │* role ⟵מלצר/ │  │
-                         │  ├────────────────────────┤  │  שף/מנהל     │  │
-                         │  │# order_item_id         │  │o manager_id ─┼──┘
-                         │  │* order_id       (FK)   │  │* hire_date   │ 🔄
-                         │  │* dish_id        (FK)   │  └──────────────┘
-                         │  │* quantity              │
-                         │  │* price_charged ⭐      │
-                         │  │* status ⟵ הוזמן/מוכן/  │
-                         │  │           הוגש/בוטל    │
-                         │  │o special_request       │
-                         │  └───────────┬────────────┘
-                         │              │ "של"
-                         │              ▼
-  ┌──────────────┐          ┌────────────────────────┐
-  │   CATEGORY   │─────────<│         DISH           │
-  ├──────────────┤          ├────────────────────────┤
-  │# category_id │          │# dish_id               │
-  │* cat_name    │          │* dish_name             │
-  │  ראשונה/עיקרית│          │* catalog_price         │
-  │  /קינוח/שתייה│          │* category_id     (FK)  │
-  └──────────────┘          │o chef_id         (FK)  │
-                            │* is_available          │
-                            │o description           │
-                            │o prep_time_min         │
-                            └───────────┬────────────┘
-                                        │ "מורכבת מ"
-                                        ▼
-                            ┌────────────────────────┐      ┌──────────────┐
-                            │    DISH_INGREDIENT     │>─────│  INGREDIENT  │
-                            ├────────────────────────┤      ├──────────────┤
-                            │# dish_ingredient_id    │      │# ingredient_ │
-                            │* dish_id         (FK)  │      │   id         │
-                            │* ingredient_id   (FK)  │      │* name        │
-                            │* quantity              │      │* is_allergen │
-                            │* unit_of_measure       │      │o allergen_typ│
-                            │* is_optional           │      └──────────────┘
-                            └────────────────────────┘
+  +--------------+        +--------------------+        +--------------+
+  |   CUSTOMER   |       +|       ORDER        |+       |    TABLE     |
+  +--------------+       |+--------------------+|       +--------------+
+  |# customer_id |------<||# order_id          ||>------|# table_id    |
+  |* first_name  |       ||* order_datetime    ||       |* table_number|
+  |* last_name   |       ||* customer_id  (FK) ||       |* seats       |
+  |* phone  (UQ) |       ||* table_id     (FK) ||       |* location    |
+  |o email       |       ||* waiter_id    (FK) ||       +--------------+
+  |o birth_date  |       ||* status  *         ||
+  |* is_active   |       ||* guest_count       ||       +--------------+
+  +--------------+       |+---------+----------+|       |   EMPLOYEE   |
+                         |          |           +------>+--------------+
+                         |          | "contains"        |# employee_id |<-+
+                         |          v                   |* first_name  |  |
+                         |  +------------------------+  |* last_name   |  |
+                         |  |      ORDER_ITEM        |  |* role <- waiter/ |
+                         |  +------------------------+  |  chef/manager|  |
+                         |  |# order_item_id         |  |o manager_id -+--+
+                         |  |* order_id       (FK)   |  |* hire_date   | (R)
+                         |  |* dish_id        (FK)   |  +--------------+
+                         |  |* quantity              |
+                         |  |* price_charged  *      |
+                         |  |* status <- ordered/ready/ |
+                         |  |           served/cancelled|
+                         |  |o special_request       |
+                         |  +-----------+------------+
+                         |              | "of"
+                         |              v
+  +--------------+          +------------------------+
+  |   CATEGORY   |---------<|         DISH           |
+  +--------------+          +------------------------+
+  |# category_id |          |# dish_id               |
+  |* cat_name    |          |* dish_name             |
+  |  starter/main|          |* catalog_price         |
+  |  /dessert/drink|        |* category_id     (FK)  |
+  +--------------+          |o chef_id         (FK)  |
+                            |* is_available          |
+                            |o description           |
+                            |o prep_time_min         |
+                            +-----------+------------+
+                                        | "made of"
+                                        v
+                            +------------------------+      +--------------+
+                            |    DISH_INGREDIENT     |>-----|  INGREDIENT  |
+                            +------------------------+      +--------------+
+                            |# dish_ingredient_id    |      |# ingredient_ |
+                            |* dish_id         (FK)  |      |   id         |
+                            |* ingredient_id   (FK)  |      |* name        |
+                            |* quantity              |      |* is_allergen |
+                            |* unit_of_measure       |      |o allergen_typ|
+                            |* is_optional           |      +--------------+
+                            +------------------------+
 
-     ❌ הוסרו: total_spent · visits_count · total_price · favorite_dish
-                (כולם נגזרים)
+     [X] REMOVED: total_spent . visits_count . total_price . favorite_dish
+                  (all derived)
 ```
 
 <div dir="rtl">
@@ -624,22 +624,22 @@ WHERE  c.team_id = :team_id
 </div>
 
 ```text
-             │ANIM│SPEC│INTK│PERS│VEXM│VACC│APPL│ADPT│VISIT│EXPN
-    ─────────┼────┼────┼────┼────┼────┼────┼────┼────┼─────┼─────
-     ANIMAL  │ 🔄 │    │    │    │    │    │    │    │     │
-     SPECIES │1:M │ —  │    │    │    │    │    │    │     │
-     INTAKE  │1:M │ —  │ —  │    │    │    │    │    │     │
-     PERSON  │M:M⚠│ —  │1:M │ —  │    │    │    │    │     │
-     VET_EXAM│1:M │ —  │ —  │1:M │ —  │    │    │    │     │
-     VACCIN. │1:M │ —  │ —  │1:M │ ❌ │ —  │    │    │     │
-     APPLICAT│1:M │ —  │ —  │1:M │ —  │ —  │ —  │    │     │
-     ADOPTION│1:M │ —  │ —  │1:M │ —  │ —  │1:1 │ —  │     │
-     HOME_VIS│ ❌ │ —  │ —  │1:M │ —  │ —  │ —  │1:M │  —  │
-     EXPENSE │1:M │ —  │ —  │ —  │ —  │ —  │ —  │ —  │  —  │ —
+             |ANIM|SPEC|INTK|PERS|VEXM|VACC|APPL|ADPT|VISIT|EXPN
+    ---------+----+----+----+----+----+----+----+----+-----+-----
+     ANIMAL  |(R) |    |    |    |    |    |    |    |     |
+     SPECIES |1:M | -  |    |    |    |    |    |    |     |
+     INTAKE  |1:M | -  | -  |    |    |    |    |    |     |
+     PERSON  |M:M!| -  |1:M | -  |    |    |    |    |     |
+     VET_EXAM|1:M | -  | -  |1:M | -  |    |    |    |     |
+     VACCIN. |1:M | -  | -  |1:M |[X] | -  |    |    |     |
+     APPLICAT|1:M | -  | -  |1:M | -  | -  | -  |    |     |
+     ADOPTION|1:M | -  | -  |1:M | -  | -  |1:1 | -  |     |
+     HOME_VIS|[X] | -  | -  |1:M | -  | -  | -  |1:M |  -  |
+     EXPENSE |1:M | -  | -  | -  | -  | -  | -  | -  |  -  | -
 
-     🔄 ANIMAL רקורסיבי — אמא/גורים
-     ⚠ PERSON↔ANIMAL = M:M ⟵ אבל הוא ממומש דרך ADOPTION ו-INTAKE
-     ❌ קשרים מיותרים — נגזרים דרך ישות שלישית
+     (R) ANIMAL recursive -- mother/pups
+     !   PERSON<->ANIMAL = M:M -> but realised through ADOPTION and INTAKE
+     [X] redundant -- derived through a third entity
 ```
 
 <div dir="rtl">
@@ -660,90 +660,91 @@ WHERE  c.team_id = :team_id
 </div>
 
 ```text
-  ┌───────────┐         ┌─────────────────────────────┐
-  │  SPECIES  │────────<│           ANIMAL            │◄────┐
-  ├───────────┤ "מסווג" ├─────────────────────────────┤     │ 🔄
-  │# species_ │         │ # animal_id                 │     │ "אמא של"
-  │   id      │         │ * animal_name               │     │
-  │* species_ │         │ * species_id      (FK)      │─────┘
-  │   name    │         │ o breed                     │
-  └───────────┘         │ * gender                    │
-                        │ o estimated_birth_date      │
-  ┌───────────┐         │ o color / weight_kg         │
-  │  PERSON   │         │ * status ⟵ במקלט/בטיפול/    │
-  ├───────────┤         │   זמין/מאומץ/הוחזר/נפטר     │
-  │# person_id│         │ o microchip_number    (UQ)  │
-  │* first_   │         │ o mother_animal_id    (FK)🔄│
-  │   name    │         └──┬───┬────┬────┬────┬───┬───┘
-  │* last_name│            │   │    │    │    │   │
-  │* phone    │            │   │    │    │    │   └─────────────┐
-  │o email    │            │   │    │    │    │                 │
-  │o id_number│            │   │    │    │    └──────────┐      │
-  │* is_active│            │   │    │    │               │      │
-  └─┬─┬─┬─┬─┬─┘            │   │    │    │               │      │
-    │ │ │ │ │              ▼   │    │    │               ▼      ▼
-    │ │ │ │ │   ┌──────────────────┐│    │    ┌──────────────┐┌──────────┐
-    │ │ │ │ └──>│      INTAKE      ││    │    │ ADOPTION_APP ││ EXPENSE  │
-    │ │ │ │     ├──────────────────┤│    │    ├──────────────┤├──────────┤
-    │ │ │ │     │# intake_id       ││    │    │# applicat_id ││#expense_ │
-    │ │ │ │     │* animal_id  (FK) ││    │    │* person_id FK││   id     │
-    │ │ │ │     │* intake_date     ││    │    │* animal_id FK││*animal_id│
-    │ │ │ │     │* intake_type ⟵   ││    │    │* app_date    ││*expense_ │
-    │ │ │ │     │  נמצא / נמסר     ││    │    │* status ⟵    ││   date   │
-    │ │ │ │     │  ╭────╮ ARC      ││    │    │ הוגש/רואיין/ ││* amount  │
-    │ │ │ │     │  │ o found_loc   ││    │    │ אושר/נדחה    ││* category│
-    │ │ │ │     │  │ o surrender_  ││    │    │o interview_dt││o vendor  │
-    │ │ │ │     │  ╰─ by (FK)      ││    │    │o interviewer ││          │
-    │ │ │ │     │* volunteer_id FK ││    │    └──────┬───────┘└──────────┘
-    │ │ │ │     │o reason          ││    │           │ 1:1
-    │ │ │ │     └──────────────────┘│    │           ▼
-    │ │ │ │                         │    │   ┌────────────────────┐
-    │ │ │ └────────────────────────>│    │   │      ADOPTION      │
-    │ │ │      ┌──────────────────┐ │    └──>├────────────────────┤
-    │ │ └─────>│     VET_EXAM     │<┘        │# adoption_id       │
-    │ │        ├──────────────────┤          │* application_id FK │
-    │ │        │# exam_id         │          │* animal_id     (FK)│
-    │ │        │* animal_id  (FK) │          │* adopter_id    (FK)│
-    │ │        │* vet_id     (FK) │          │* adoption_date     │
-    │ │        │* exam_date       │          │o adoption_fee      │
-    │ │        │* exam_type ⟵     │          │* status ⟵ פעיל/    │
-    │ │        │  כניסה/תקופתית   │          │  הוחזר             │
-    │ │        │o findings        │          │o return_date       │
-    │ │        │o treatment_given │          │o return_reason     │
-    │ │        └──────────────────┘          └─────────┬──────────┘
-    │ │                                                │ "נבדק ב"
-    │ │        ┌──────────────────┐                    ▼
-    │ └───────>│   VACCINATION    │        ┌────────────────────┐
-    │          ├──────────────────┤        │     HOME_VISIT     │
-    │          │# vaccination_id  │        ├────────────────────┤
-    │          │* animal_id  (FK) │        │# visit_id          │
-    │          │* vac_type_id(FK) │───┐    │* adoption_id  (FK) │
-    │          │* vet_id     (FK) │   │    │* visitor_id   (FK) │
-    │          │* vaccin_date     │   │    │* scheduled_date    │
-    │          │o batch_number    │   │    │o actual_date       │
-    │          │o next_due_date   │   │    │* status            │
-    │          └──────────────────┘   │    │o findings          │
-    │                                 │    │o is_satisfactory   │
-    │          ┌──────────────────┐   │    └────────────────────┘
-    │          │  VACCINE_TYPE    │<──┘
-    │          ├──────────────────┤         ┌──────────────────┐
-    │          │# vaccine_type_id │    ┌───>│   PERSON_ROLE    │
-    │          │* vaccine_name    │    │    ├──────────────────┤
-    │          │* species_id (FK) │    │    │# person_role_id  │
-    │          │* interval_months │    │    │* person_id  (FK) │
-    │          └──────────────────┘    │    │* role_id    (FK) │──┐
-    │                                  │    │* start_date      │  │
-    └──────────────────────────────────┘    │o end_date        │  │
-                                            │* is_active       │  │
-                                            └──────────────────┘  │
-                                            ┌──────────────────┐  │
-                                            │       ROLE       │<─┘
-                                            ├──────────────────┤
-                                            │# role_id         │
-                                            │* role_name ⟵     │
-                                            │ מתנדב/מאמץ/      │
-                                            │ בעלים קודם/וטרינר│
-                                            └──────────────────┘
+  +-----------+         +-----------------------------+
+  |  SPECIES  |--------<|           ANIMAL            |<----+
+  +-----------+"classifies"+---------------------------+     | (R)
+  |# species_ |         | # animal_id                 |     | "mother of"
+  |   id      |         | * animal_name               |     |
+  |* species_ |         | * species_id      (FK)      |-----+
+  |   name    |         | o breed                     |
+  +-----------+         | * gender                    |
+                        | o estimated_birth_date      |
+  +-----------+         | o color / weight_kg         |
+  |  PERSON   |         | * status <- in shelter/care/|
+  +-----------+         |   available/adopted/returned/deceased |
+  |# person_id|         | o microchip_number    (UQ)  |
+  |* first_   |         | o mother_animal_id    (FK)(R)|
+  |   name    |         +--+---+----+----+----+---+---+
+  |* last_name|            |   |    |    |    |   |
+  |* phone    |            |   |    |    |    |   +-------------+
+  |o email    |            |   |    |    |    |                 |
+  |o id_number|            |   |    |    |    +----------+      |
+  |* is_active|            |   |    |    |               |      |
+  +-+-+-+-+-+-+            |   |    |    |               |      |
+    | | | | |              v   |    |    |               v      v
+    | | | | |   +------------------+|    |    +--------------++----------+
+    | | | | +-->|      INTAKE      ||    |    | ADOPTION_APP || EXPENSE  |
+    | | | |     +------------------+|    |    +--------------++----------+
+    | | | |     |# intake_id       ||    |    |# applicat_id ||#expense_ |
+    | | | |     |* animal_id  (FK) ||    |    |* person_id FK||   id     |
+    | | | |     |* intake_date     ||    |    |* animal_id FK||*animal_id|
+    | | | |     |* intake_type <-  ||    |    |* app_date    ||*expense_ |
+    | | | |     |  found/surrender ||    |    |* status <-   ||   date   |
+    | | | |     |  .----. ARC      ||    |    | submitted/   ||* amount  |
+    | | | |     |  | o found_loc   ||    |    | interviewed/ ||* category|
+    | | | |     |  | o surrender_  ||    |    | approved/rejected |o vendor|
+    | | | |     |  '- by (FK)      ||    |    |o interview_dt||          |
+    | | | |     |* volunteer_id FK ||    |    |o interviewer ||          |
+    | | | |     |o reason          ||    |    +------+-------++----------+
+    | | | |     +------------------+|    |           | 1:1
+    | | | |                         |    |           v
+    | | | +------------------------>|    |   +--------------------+
+    | | |      +------------------+ |    +-->|      ADOPTION      |
+    | | +----->|     VET_EXAM     |<+        +--------------------+
+    | |        +------------------+          |# adoption_id       |
+    | |        |# exam_id         |          |* application_id FK |
+    | |        |* animal_id  (FK) |          |* animal_id     (FK)|
+    | |        |* vet_id     (FK) |          |* adopter_id    (FK)|
+    | |        |* exam_date       |          |* adoption_date     |
+    | |        |* exam_type <-    |          |o adoption_fee      |
+    | |        |  intake/periodic |          |* status <- active/ |
+    | |        |o findings        |          |  returned          |
+    | |        |o treatment_given |          |o return_date       |
+    | |        +------------------+          |o return_reason     |
+    | |                                      +---------+----------+
+    | |        +------------------+                    | "checked in"
+    | +------->|   VACCINATION    |                    v
+    |          +------------------+        +--------------------+
+    |          |# vaccination_id  |        |     HOME_VISIT     |
+    |          |* animal_id  (FK) |        +--------------------+
+    |          |* vac_type_id(FK) |---+    |# visit_id          |
+    |          |* vet_id     (FK) |   |    |* adoption_id  (FK) |
+    |          |* vaccin_date     |   |    |* visitor_id   (FK) |
+    |          |o batch_number    |   |    |* scheduled_date    |
+    |          |o next_due_date   |   |    |o actual_date       |
+    |          +------------------+   |    |* status            |
+    |                                 |    |o findings          |
+    |          +------------------+   |    |o is_satisfactory   |
+    |          |  VACCINE_TYPE    |<--+    +--------------------+
+    |          +------------------+
+    |          |# vaccine_type_id |         +------------------+
+    |          |* vaccine_name    |    +--->|   PERSON_ROLE    |
+    |          |* species_id (FK) |    |    +------------------+
+    |          |* interval_months |    |    |# person_role_id  |
+    |          +------------------+    |    |* person_id  (FK) |
+    |                                  |    |* role_id    (FK) |--+
+    +----------------------------------+    |* start_date      |  |
+                                            |o end_date        |  |
+                                            |* is_active       |  |
+                                            +------------------+  |
+                                            +------------------+  |
+                                            |       ROLE       |<-+
+                                            +------------------+
+                                            |# role_id         |
+                                            |* role_name <-    |
+                                            | volunteer/adopter/|
+                                            | prev. owner/vet  |
+                                            +------------------+
 ```
 
 <div dir="rtl">
@@ -766,19 +767,19 @@ WHERE  c.team_id = :team_id
 </div>
 
 ```text
-                ┌─────────────────────┐
-                │       ANIMAL        │
-                ├─────────────────────┤
-          ┌────>│ # animal_id         │────┐
-          │     │ * animal_name       │    │
-          │     │ o mother_animal_id  │    │
-          │     └─────────────────────┘    │
-          │                                │
-          └──── "צאצא של"  ·  "אם של" ─────┘
-                     (מקווקו!)
+                +---------------------+
+                |       ANIMAL        |
+                +---------------------+
+          +---->| # animal_id         |----+
+          |     | * animal_name       |    |
+          |     | o mother_animal_id  |    |
+          |     +---------------------+    |
+          |                                |
+          +---- "offspring of" . "mother of" +
+                     (dashed!)
 
-   "כל חיה עשויה להיות צאצא של חיה אחת"        ← רשות! ⚠️
-   "כל חיה עשויה להיות אם של חיה אחת או יותר"  ← רשות
+   "Each ANIMAL may be the offspring of one ANIMAL"       <- optional! (!)
+   "Each ANIMAL may be the mother of one or more ANIMALS" <- optional
 ```
 
 <div dir="rtl">
@@ -790,20 +791,20 @@ WHERE  c.team_id = :team_id
 </div>
 
 ```text
-            ┌───────────────┐        ┌───────────────┐
-            │ found_location│        │ surrendered_by│
-            │   (רחוב)      │        │  (FK→PERSON)  │
-            └───────┬───────┘        └───────┬───────┘
-                    │                        │
-                    ╰────────╮      ╭────────╯
-                             ╰──────╯   ← ARC
-                                │
-                        ┌───────────────┐
-                        │    INTAKE     │
-                        └───────────────┘
+            +---------------+        +---------------+
+            | found_location|        | surrendered_by|
+            |   (street)    |        |  (FK->PERSON) |
+            +-------+-------+        +-------+-------+
+                    |                        |
+                    '--------.      .--------'
+                             '------'   <- ARC
+                                |
+                        +---------------+
+                        |    INTAKE     |
+                        +---------------+
 
-   "כל קליטה חייבת להיות או מציאה במיקום, או מסירה על ידי אדם —
-    בדיוק אחד מהשניים, לעולם לא שניהם ולא אף אחד"
+   "Each INTAKE must be EITHER a find at a location, OR a surrender by a person --
+    exactly one of the two, never both, never neither"
 ```
 
 <div dir="rtl">

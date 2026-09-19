@@ -61,36 +61,36 @@
 </div>
 
 ```text
-┌────────────────────────────────────────────────────────────────────┐
-│  ① המודל הקונספטואלי  (Conceptual)          "מה?"                  │
-│     שפה: עסקית · קהל: הלקוח · תוצר: תרשים ERD                       │
-│                                                                    │
-│        ┌─────────┐   מזמין   ┌─────────┐                           │
-│        │  לקוח   │──────────►│  הזמנה  │        אין טכנולוגיה כאן.  │
-│        └─────────┘           └─────────┘        רק העסק.           │
-└────────────────────────────────────────────────────────────────────┘
-                              │
-                              │  מיפוי (פרק 12)
-                              ▼
-┌────────────────────────────────────────────────────────────────────┐
-│  ② המודל הלוגי  (Logical)                   "איך זה מיוצג?"        │
-│     שפה: רלציונית · קהל: המפתחים · תוצר: סכימה                     │
-│                                                                    │
-│     CUSTOMERS(cust_id PK, name, phone)                             │
-│     ORDERS(order_id PK, cust_id FK, order_date)                    │
-└────────────────────────────────────────────────────────────────────┘
-                              │
-                              │  מימוש
-                              ▼
-┌────────────────────────────────────────────────────────────────────┐
-│  ③ המודל הפיזי  (Physical)                  "איך זה מאוחסן?"       │
-│     שפה: של ה-DBMS · קהל: ה-DBA · תוצר: קוד DDL, קבצים, אינדקסים   │
-│                                                                    │
-│     CREATE TABLE customers (                                       │
-│       cust_id NUMBER(6) PRIMARY KEY,                               │
-│       name    VARCHAR2(50) NOT NULL ...                            │
-│     ) TABLESPACE users;                                            │
-└────────────────────────────────────────────────────────────────────┘
++--------------------------------------------------------------------+
+|  (1) CONCEPTUAL model                       "WHAT?"                |
+|      language: business . audience: client . output: ERD           |
+|                                                                    |
+|        +----------+   places   +----------+                        |
+|        | CUSTOMER |----------->|  ORDER   |     No technology here.|
+|        +----------+            +----------+     Only the business. |
++--------------------------------------------------------------------+
+                              |
+                              |  mapping (chapter 12)
+                              v
++--------------------------------------------------------------------+
+|  (2) LOGICAL model                          "HOW is it represented?"|
+|      language: relational . audience: developers . output: schema  |
+|                                                                    |
+|     CUSTOMERS(cust_id PK, name, phone)                             |
+|     ORDERS(order_id PK, cust_id FK, order_date)                    |
++--------------------------------------------------------------------+
+                              |
+                              |  implementation
+                              v
++--------------------------------------------------------------------+
+|  (3) PHYSICAL model                         "HOW is it stored?"    |
+|      language: the DBMS's . audience: DBA . output: DDL, files, indexes |
+|                                                                    |
+|     CREATE TABLE customers (                                       |
+|       cust_id NUMBER(6) PRIMARY KEY,                               |
+|       name    VARCHAR2(50) NOT NULL ...                            |
+|     ) TABLESPACE users;                                            |
++--------------------------------------------------------------------+
 ```
 
 <div dir="rtl">
@@ -134,15 +134,15 @@
 </div>
 
 ```text
-        הישות:  STUDENT                     ← סוג אחד
-        ═══════════════════
-                  │
-      ┌───────────┼───────────┬─────────────┐
-      ▼           ▼           ▼             ▼
-  ┌────────┐ ┌────────┐  ┌────────┐   ┌────────┐
-  │דנה לוי │ │עומר כהן│  │ליאור   │   │  ...   │  ← מופעים (רבים)
-  │  י"ב 3 │ │  י"א 1 │  │  י"ב 3 │   │        │
-  └────────┘ └────────┘  └────────┘   └────────┘
+        ENTITY:  STUDENT                    <- one TYPE
+        ===================
+                  |
+      +-----------+-----------+-------------+
+      v           v           v             v
+  +---------+ +----------+ +---------+  +---------+
+  |Dana Levi| |Omer Cohen| |  Lior   |  |   ...   |  <- INSTANCES (many)
+  | 12-3    | | 11-1     | |  12-3   |  |         |
+  +---------+ +----------+ +---------+  +---------+
 ```
 
 <div dir="rtl">
@@ -217,11 +217,11 @@
 </div>
 
 ```text
-       כתובת מלאה  (מורכב)
-            │
-    ┌───────┼───────┬────────┐
-    ▼       ▼       ▼        ▼
-   עיר    רחוב   מספר בית   מיקוד      ← פשוטים
+       Full address  (COMPOSITE)
+            |
+    +-------+-------+----------+
+    v       v       v          v
+   city   street  house no.  zip code     <- SIMPLE attributes
 ```
 
 <div dir="rtl">
@@ -258,19 +258,19 @@
 </div>
 
 ```text
-      ┌──────────────────────────────────┐
-      │           EMPLOYEE               │   ← שם הישות (יחיד, גדולות)
-      ├──────────────────────────────────┤
-      │  # employee_id                   │   ← # = מזהה ייחודי (UID)
-      │  * first_name                    │   ← * = חובה
-      │  * last_name                     │
-      │  * hire_date                     │
-      │  o email                         │   ← o = רשות
-      │  o mobile_phone                  │
-      │  * salary                        │
-      └──────────────────────────────────┘
+      +----------------------------------+
+      |           EMPLOYEE               |   <- entity name (singular, CAPS)
+      +----------------------------------+
+      |  # employee_id                   |   <- # = unique identifier (UID)
+      |  * first_name                    |   <- * = mandatory
+      |  * last_name                     |
+      |  * hire_date                     |
+      |  o email                         |   <- o = optional
+      |  o mobile_phone                  |
+      |  * salary                        |
+      +----------------------------------+
 
-      המקרא:   #  מזהה ייחודי      *  חובה      o  רשות
+      Legend:   #  unique id      *  mandatory      o  optional
 ```
 
 <div dir="rtl">
@@ -353,20 +353,20 @@
 </div>
 
 ```text
-① אחד לאחד  (1:1)
-   ┌────────┐              ┌──────────┐
-   │  עובד  │──────────────│ תא אישי  │      עובד אחד = תא אחד
-   └────────┘              └──────────┘
+(1) ONE-TO-ONE  (1:1)
+   +----------+              +-----------+
+   | EMPLOYEE |--------------| LOCKER    |      one employee = one locker
+   +----------+              +-----------+
 
-② אחד לרבים  (1:M)   ← הנפוץ ביותר
-   ┌────────┐              ┌──────────┐
-   │  כיתה  │─────────────<│  תלמיד   │      כיתה אחת = הרבה תלמידים
-   └────────┘              └──────────┘      תלמיד אחד = כיתה אחת
+(2) ONE-TO-MANY  (1:M)   <- the most common
+   +----------+              +-----------+
+   |  CLASS   |-------------<|  STUDENT  |      one class = many students
+   +----------+              +-----------+      one student = one class
 
-③ רבים לרבים  (M:M)
-   ┌────────┐              ┌──────────┐
-   │ סטודנט │>────────────<│   קורס   │      סטודנט לומד הרבה קורסים
-   └────────┘              └──────────┘      קורס נלמד ע"י הרבה סטודנטים
+(3) MANY-TO-MANY  (M:M)
+   +----------+              +-----------+
+   | STUDENT  |>------------<|  COURSE   |      a student takes many courses
+   +----------+              +-----------+      a course is taken by many students
 ```
 
 <div dir="rtl">
@@ -486,36 +486,36 @@
 </div>
 
 ```text
-┌──────────────────────┐        ┌──────────────────────┐
-│      STYLIST         │        │      CUSTOMER        │
-├──────────────────────┤        ├──────────────────────┤
-│ # stylist_id         │        │ # customer_id        │
-│ * first_name         │        │ * first_name         │
-│ * last_name          │        │ * last_name          │
-│ * phone              │        │ * phone              │
-│ o commission_pct     │        │ o email              │
-│ * hire_date          │        │ o birth_date         │
-└──────────────────────┘        │ o notes              │
-                                └──────────────────────┘
++----------------------+        +----------------------+
+|      STYLIST         |        |      CUSTOMER        |
++----------------------+        +----------------------+
+| # stylist_id         |        | # customer_id        |
+| * first_name         |        | * first_name         |
+| * last_name          |        | * last_name          |
+| * phone              |        | * phone              |
+| o commission_pct     |        | o email              |
+| * hire_date          |        | o birth_date         |
++----------------------+        | o notes              |
+                                +----------------------+
 
-┌──────────────────────┐        ┌──────────────────────┐
-│    APPOINTMENT       │        │      SERVICE         │
-├──────────────────────┤        ├──────────────────────┤
-│ # appointment_id     │        │ # service_id         │
-│ * appt_date          │        │ * service_name       │
-│ * appt_time          │        │ * price              │
-│ * status             │        │ * duration_min       │
-│ o cancel_reason      │        │ o description        │
-└──────────────────────┘        └──────────────────────┘
++----------------------+        +----------------------+
+|    APPOINTMENT       |        |      SERVICE         |
++----------------------+        +----------------------+
+| # appointment_id     |        | # service_id         |
+| * appt_date          |        | * service_name       |
+| * appt_time          |        | * price              |
+| * status             |        | * duration_min       |
+| o cancel_reason      |        | o description        |
++----------------------+        +----------------------+
 
-┌──────────────────────────────────────────┐
-│           APPOINTMENT_SERVICE            │  ← ישות מקשרת
-├──────────────────────────────────────────┤     (כי לתור אחד
-│ # appt_service_id                        │      יש כמה טיפולים,
-│ * price_charged   ← המחיר בפועל, "מוקפא" │      וטיפול מופיע
-│ o color_code      ← "איזה צבע עשית לי?"  │      בהרבה תורים)
-│ o stylist_notes                          │
-└──────────────────────────────────────────┘
++------------------------------------------+
+|           APPOINTMENT_SERVICE            |  <- intersection entity
++------------------------------------------+     (one appointment has
+| # appt_service_id                        |      several services, and
+| * price_charged   <- actual price, FROZEN|      a service appears in
+| o color_code      <- "which color did I get?" |  many appointments)
+| o stylist_notes                          |
++------------------------------------------+
 ```
 
 <div dir="rtl">

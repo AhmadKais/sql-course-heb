@@ -85,20 +85,20 @@
 </div>
 
 ```text
-┌────────────────────────────────────────────┐
-│                 PATIENT                    │
-├────────────────────────────────────────────┤
-│ # id_number         (ת"ז)                  │
-│ * full_name         "דנה בת שרה כהן"       │
-│ * address           "חיפה, הרצל 5 דירה 12" │
-│ o phone1                                   │
-│ o phone2                                   │
-│ o phone3                                   │
-│ o allergies         "פניצילין, אגוזים"     │
-│ * birth_date                               │
-│ * age                                      │
-│ o insurance         "כללית, מושלם"         │
-└────────────────────────────────────────────┘
++--------------------------------------------+
+|                 PATIENT                    |
++--------------------------------------------+
+| # id_number         (national ID)          |
+| * full_name         "Dana bat Sara Cohen"  |
+| * address           "Haifa, Herzl 5 apt 12"|
+| o phone1                                   |
+| o phone2                                   |
+| o phone3                                   |
+| o allergies         "penicillin, nuts"     |
+| * birth_date                               |
+| * age                                      |
+| o insurance         "Clalit, Mushlam"      |
++--------------------------------------------+
 ```
 
 <div dir="rtl">

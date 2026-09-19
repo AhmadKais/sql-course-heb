@@ -59,30 +59,30 @@
 </div>
 
 ```text
-                        ┌──────────────────┐
-                        │     אילוצים      │
-                        └────────┬─────────┘
-                 ┌───────────────┼───────────────┐
-                 ▼               ▼               ▼
-        ┌────────────────┐ ┌───────────┐ ┌──────────────────┐
-        │ אילוצי ישות    │ │  קשתות    │ │  אילוצי תחום     │
-        │ Entity         │ │  Arcs     │ │  Domain          │
-        ├────────────────┤ ├───────────┤ ├──────────────────┤
-        │ מזהה ראשי      │ │ "או-או"   │ │ סוג הנתון        │
-        │ מזהה משני      │ │ בלעדי בין │ │ טווח מותר        │
-        │ (ייחודיות)     │ │ כמה יחסים │ │ רשימת ערכים      │
-        └────────────────┘ └───────────┘ │ חובה / רשות      │
-                                          │ פורמט             │
-        ┌────────────────────────┐        └──────────────────┘
-        │ אילוצי התייחסות        │
-        │ Referential Integrity  │        ┌──────────────────┐
-        ├────────────────────────┤        │ אילוצים מורכבים  │
-        │ מפתח זר חייב להצביע    │        │ User-Defined     │
-        │ על שורה קיימת          │        ├──────────────────┤
-        │ + כללי מחיקה           │        │ "החזרה ≥ איסוף"  │
-        └────────────────────────┘        │ "סכום ההנחות     │
-                                          │  לא יעלה על 30%" │
-                                          └──────────────────┘
+                        +------------------+
+                        |   CONSTRAINTS    |
+                        +--------+---------+
+                 +---------------+---------------+
+                 v               v               v
+        +----------------+ +-----------+ +------------------+
+        | ENTITY         | |   ARCS    | | DOMAIN           |
+        | constraints    | |           | | constraints      |
+        +----------------+ +-----------+ +------------------+
+        | primary UID    | | exclusive | | data type        |
+        | secondary UID  | | "either-  | | allowed range    |
+        | (uniqueness)   | | or" among | | value list       |
+        +----------------+ | relations | | mandatory/opt.   |
+                           +-----------+ | format           |
+        +------------------------+        +------------------+
+        | REFERENTIAL            |
+        | integrity              |        +------------------+
+        +------------------------+        | COMPLEX /        |
+        | a foreign key must     |        | user-defined     |
+        | point to an existing   |        +------------------+
+        | row + delete rules     |        | "return >= pickup"|
+        +------------------------+        | "total discounts |
+                                          |  <= 30%"         |
+                                          +------------------+
 ```
 
 <div dir="rtl">
@@ -138,27 +138,27 @@
 </div>
 
 ```text
-דרך א' — רשימת ערכים מוגדרת בעמודה         דרך ב' — טבלת קוד
-┌────────────────────────────────┐         ┌──────────────────────────┐
-│ ANIMAL                         │         │ STATUS                   │
-│   status  ∈ {AVAILABLE,        │         │  # status_code           │
-│              ADOPTED,          │         │  * description           │
-│              MEDICAL,          │         │  * is_active             │
-│              QUARANTINE}       │         │  ∘ display_order         │
-└────────────────────────────────┘         └────────────┬─────────────┘
-                                                        │ 1
-      ✅ פשוט, מהיר                                     │
-      ❌ הוספת ערך = שינוי מבנה                          │ M
-      ❌ אין מקום לתיאור, סדר, צבע              ┌────────┴─────────┐
-                                                │ ANIMAL           │
-      מתאים ל: רשימה קטנה שלא תשתנה             │  * status_code   │
-      (זכר/נקבה, כן/לא)                         └──────────────────┘
+Method A -- value list defined on the column      Method B -- code table
++--------------------------------+         +--------------------------+
+| ANIMAL                         |         | STATUS                   |
+|   status  in {AVAILABLE,       |         |  # status_code           |
+|               ADOPTED,         |         |  * description           |
+|               MEDICAL,         |         |  * is_active             |
+|               QUARANTINE}      |         |  o display_order         |
++--------------------------------+         +------------+-------------+
+                                                        | 1
+      [+] simple, fast                                  |
+      [-] adding a value = schema change                | M
+      [-] no room for description, order, colour +------+-----------+
+                                                |  ANIMAL          |
+      Good for: a small list that never changes |   * status_code  |
+      (male/female, yes/no)                     +------------------+
 
-                                          ✅ הוספת ערך = שורה חדשה
-                                          ✅ אפשר תיאור, סדר, כיבוי
-                                          ❌ עוד טבלה, עוד חיבור
+                                          [+] adding a value = a new row
+                                          [+] description, order, deactivate
+                                          [-] one more table, one more join
 
-                                          מתאים ל: כל השאר
+                                          Good for: everything else
 ```
 
 <div dir="rtl">
@@ -174,24 +174,24 @@
 </div>
 
 ```text
-                    מוחקים מחלקה שיש בה 12 עובדים.
-                    מה קורה לעובדים?
+                    Delete a department that has 12 employees.
+                    What happens to the employees?
 
-  ┌──────────────────┬──────────────────┬───────────────────────────┐
-  │  RESTRICT        │  CASCADE         │  SET NULL                 │
-  │  (NO ACTION)     │                  │                           │
-  ├──────────────────┼──────────────────┼───────────────────────────┤
-  │ המחיקה נדחית.    │ 12 העובדים       │ 12 העובדים נשארים,        │
-  │ "יש עובדים       │ נמחקים גם הם.    │ אבל השדה מחלקה מתרוקן.    │
-  │  במחלקה"         │                  │                           │
-  ├──────────────────┼──────────────────┼───────────────────────────┤
-  │ ✅ הכי בטוח      │ ⚠️ מסוכן מאוד    │ ⚠️ רק אם היחס אופציונלי!  │
-  │ ברירת המחדל      │ אבל הכרחי לפעמים │                           │
-  │ הנכונה           │                  │                           │
-  ├──────────────────┼──────────────────┼───────────────────────────┤
-  │ מחלקה ⟵ עובדים  │ הזמנה ⟵ שורות    │ עובד ⟵ מנהל               │
-  │ חשבונית ⟵ לקוח  │ פוסט ⟵ תגובות    │ (המנהל עזב, העובד נשאר)   │
-  └──────────────────┴──────────────────┴───────────────────────────┘
+  +------------------+------------------+---------------------------+
+  |  RESTRICT        |  CASCADE         |  SET NULL                 |
+  |  (NO ACTION)     |                  |                           |
+  +------------------+------------------+---------------------------+
+  | Delete refused.  | The 12 employees | The 12 employees stay,    |
+  | "There are       | are deleted too. | but their department      |
+  |  employees here" |                  | field becomes empty.      |
+  +------------------+------------------+---------------------------+
+  | [+] safest       | (!) very dangerous| (!) ONLY if the relation |
+  | the correct      | but sometimes    |     is optional!          |
+  | default          | necessary        |                           |
+  +------------------+------------------+---------------------------+
+  | dept -> employees| order -> lines   | employee -> manager       |
+  | invoice -> cust. | post -> comments | (manager left, employee stays) |
+  +------------------+------------------+---------------------------+
 ```
 
 <div dir="rtl">
@@ -231,43 +231,44 @@
 </div>
 
 ```text
-העסק:  "כל תשלום מגיע מלקוח פרטי או מחברה. לעולם לא משניהם, ותמיד מאחד."
+The business:  "Every payment comes from a private person OR a company.
+                Never from both, always from one."
 
-❌ בלי קשת — שני יחסים אופציונליים:
+[X] WITHOUT an arc -- two optional relationships:
 
-   ┌────────────┐                          ┌────────────┐
-   │  PERSON    │                          │  COMPANY   │
-   └──────┬─────┘                          └─────┬──────┘
-          │ o                                    │ o
-          └──────────────┐          ┌────────────┘
-                         │          │
-                    ┌────┴──────────┴────┐
-                    │      PAYMENT       │
-                    │  ∘ person_id  (FK) │
-                    │  ∘ company_id (FK) │
-                    └────────────────────┘
+   +------------+                          +------------+
+   |  PERSON    |                          |  COMPANY   |
+   +------+-----+                          +-----+------+
+          | o                                    | o
+          +--------------+          +------------+
+                         |          |
+                    +----+----------+----+
+                    |      PAYMENT       |
+                    |  o person_id  (FK) |
+                    |  o company_id (FK) |
+                    +--------------------+
 
-   מה שהמודל הזה מתיר בפועל:
-     ✅ תשלום עם person_id בלבד        ⟵ רצוי
-     ✅ תשלום עם company_id בלבד       ⟵ רצוי
-     ❌ תשלום עם שניהם                 ⟵ אסור! למי שייך הכסף?
-     ❌ תשלום בלי אף אחד               ⟵ אסור! כסף יתום
+   What this model actually ALLOWS:
+     [OK] payment with person_id only         <- wanted
+     [OK] payment with company_id only        <- wanted
+     [X]  payment with BOTH                   <- forbidden! whose money is it?
+     [X]  payment with NEITHER                <- forbidden! orphan money
 
 
-✅ עם קשת:
+[OK] WITH an arc:
 
-   ┌────────────┐                          ┌────────────┐
-   │  PERSON    │                          │  COMPANY   │
-   └──────┬─────┘                          └─────┬──────┘
-          │                                      │
-          └──────────╮              ╭────────────┘
-                     ╰──────────────╯   ⟵ הקשת
-                            │
-                    ┌───────┴────────┐
-                    │    PAYMENT     │
-                    └────────────────┘
+   +------------+                          +------------+
+   |  PERSON    |                          |  COMPANY   |
+   +------+-----+                          +-----+------+
+          |                                      |
+          +----------.              .------------+
+                     '--------------'   <- the ARC
+                            |
+                    +-------+--------+
+                    |    PAYMENT     |
+                    +----------------+
 
-   עכשיו המודל אומר במפורש:  אחד. בדיוק אחד. תמיד.
+   Now the model says explicitly:  one. Exactly one. Always.
 ```
 
 <div dir="rtl">
@@ -289,23 +290,23 @@
 </div>
 
 ```text
-אותו עסק, שני מודלים:
+Same business, two models:
 
-מודל א' — קשת                        מודל ב' — טיפוס משנה
-┌──────────┐   ┌──────────┐          ┌───────────────────────────┐
-│ PERSON   │   │ COMPANY  │          │        PAYER              │
-└────┬─────┘   └────┬─────┘          │  # payer_id               │
-     ╰──────╮ ╭─────╯                │  * name                   │
-            ╰─╯                      │ ┌───────────┬───────────┐ │
-            │                        │ │  PERSON   │  COMPANY  │ │
-      ┌─────┴──────┐                 │ │ * id_num  │ * reg_num │ │
-      │  PAYMENT   │                 │ └───────────┴───────────┘ │
-      └────────────┘                 └─────────────┬─────────────┘
-                                                   │ 1
-                                                   │ M
-                                            ┌──────┴──────┐
-                                            │   PAYMENT   │
-                                            └─────────────┘
+Model A -- ARC                        Model B -- SUBTYPE
++----------+   +----------+          +---------------------------+
+| PERSON   |   | COMPANY  |          |        PAYER              |
++----+-----+   +----+-----+          |  # payer_id               |
+     '------.  .----'                |  * name                   |
+            '-'                      | +-----------+-----------+ |
+            |                        | |  PERSON   |  COMPANY  | |
+      +-----+------+                 | | * id_num  | * reg_num | |
+      |  PAYMENT   |                 | +-----------+-----------+ |
+      +------------+                 +-------------+-------------+
+                                                   | 1
+                                                   | M
+                                            +------+------+
+                                            |   PAYMENT   |
+                                            +-------------+
 ```
 
 <div dir="rtl">
@@ -342,34 +343,34 @@
 </div>
 
 ```text
-שיטה א' — שני מפתחות זרים + אילוץ בדיקה   ⭐ הנפוצה
-┌──────────────────────────────────────────────────────┐
-│ PAYMENT                                              │
-│   payment_id                                         │
-│   amount                                             │
-│   person_id    ∘  FK ⟶ PERSON                        │
-│   company_id   ∘  FK ⟶ COMPANY                       │
-│                                                      │
-│   CHECK ( (person_id IS NOT NULL AND company_id IS NULL)  OR
-│           (person_id IS NULL AND company_id IS NOT NULL) )│
-└──────────────────────────────────────────────────────┘
-   ✅ פשוט, המפתחות הזרים אמיתיים
-   ❌ עמודה אחת תמיד ריקה
-   ❌ עם 5 ענפים — התנאי הופך למפלצת
+Method A -- two foreign keys + a CHECK constraint   * the common one
++------------------------------------------------------+
+| PAYMENT                                              |
+|   payment_id                                         |
+|   amount                                             |
+|   person_id    o  FK -> PERSON                       |
+|   company_id   o  FK -> COMPANY                      |
+|                                                      |
+|   CHECK ( (person_id IS NOT NULL AND company_id IS NULL)  OR
+|           (person_id IS NULL AND company_id IS NOT NULL) )|
++------------------------------------------------------+
+   [+] simple, the foreign keys are real
+   [-] one column is always empty
+   [-] with 5 branches the condition becomes a monster
 
-שיטה ב' — עמודת סוג + עמודת מזהה
-┌──────────────────────────────────────────────────────┐
-│ PAYMENT                                              │
-│   payer_type   *  ∈ {PERSON, COMPANY}                │
-│   payer_id     *                                     │
-└──────────────────────────────────────────────────────┘
-   ✅ נשאר צר גם עם 10 ענפים
-   ❌ ⚠️ אין מפתח זר אמיתי! בסיס הנתונים לא יכול לאמת
-   ❌ המערכת מאבדת את אילוץ ההתייחסות — בדיוק מה שרצינו לשמור
+Method B -- a type column + an id column
++------------------------------------------------------+
+| PAYMENT                                              |
+|   payer_type   *  in {PERSON, COMPANY}               |
+|   payer_id     *                                     |
++------------------------------------------------------+
+   [+] stays narrow even with 10 branches
+   [-] (!) NO real foreign key! The database cannot validate it
+   [-] the system loses referential integrity -- exactly what we wanted to keep
 
-שיטה ג' — טיפוס על (מה שראינו למעלה)
-   ✅ מפתח זר אחד, אמיתי, נקי
-   ❌ עוד טבלה
+Method C -- a supertype (as shown above)
+   [+] one real, clean foreign key
+   [-] one more table
 ```
 
 <div dir="rtl">
@@ -387,30 +388,30 @@
 </div>
 
 ```text
-עץ ארגוני:                              המימוש — יחס רקורסיבי 1:M
+Org chart:                              Implementation -- recursive 1:M
 
-        מנכ"ל                           ┌─────────────────────────┐
-          │                             │ EMPLOYEE                │
-    ┌─────┴─────┐                       ├─────────────────────────┤
-  סמנכ"ל      סמנכ"ל                    │ # employee_id           │
-  שיווק       פיתוח                     │ * name                  │
-    │           │                       │ ∘ manager_id  (FK)  ────┼──╮
-  ┌─┴─┐      ┌──┴──┐                    └─────────────────────────┘  │
- דנה יוסי   מיה  עמית                                ▲               │
-                                                     ╰───────────────╯
-                                                  "מצביע על עובד אחר
-                                                   באותה טבלה"
+        CEO                             +-------------------------+
+         |                              | EMPLOYEE                |
+    +----+----+                         +-------------------------+
+   VP        VP                         | # employee_id           |
+ Marketing  Dev                         | * name                  |
+    |         |                         | o manager_id  (FK)  ----+--.
+  +-+-+     +-+--+                      +-------------------------+  |
+ Dana Yossi Maya Amit                                ^               |
+                                                     '---------------'
+                                                  "points to another employee
+                                                   in the SAME table"
 
-הנתונים:
-┌─────┬─────────┬────────────┐
-│ id  │ שם      │ manager_id │
-├─────┼─────────┼────────────┤
-│ 1   │ מנכ"ל   │ NULL       │  ⟵ השורש! ולכן ההפניה חייבת
-│ 2   │ סמנכ"ל  │ 1          │     להיות אופציונלית
-│ 3   │ סמנכ"ל  │ 1          │
-│ 4   │ דנה     │ 2          │
-│ 5   │ יוסי    │ 2          │
-└─────┴─────────┴────────────┘
+The data:
++-----+----------+------------+
+| id  | name     | manager_id |
++-----+----------+------------+
+| 1   | CEO      | NULL       |  <- the ROOT! so the reference MUST
+| 2   | VP Mkt   | 1          |     be optional
+| 3   | VP Dev   | 1          |
+| 4   | Dana     | 2          |
+| 5   | Yossi    | 2          |
++-----+----------+------------+
 ```
 
 <div dir="rtl">
@@ -430,16 +431,16 @@
 </div>
 
 ```text
-השאלה:  "מי כל הכפופים למנכ"ל, בכל הרמות?"
+The question:  "Who reports to the CEO, at ALL levels?"
 
-עם היררכיה רקורסיבית:
-   רמה 1:  SELECT ... WHERE manager_id = 1
-   רמה 2:  SELECT ... WHERE manager_id IN (התוצאה של רמה 1)
-   רמה 3:  SELECT ... WHERE manager_id IN (התוצאה של רמה 2)
-   ...     ומתי עוצרים? אף אחד לא יודע מראש!
+With a recursive hierarchy:
+   level 1:  SELECT ... WHERE manager_id = 1
+   level 2:  SELECT ... WHERE manager_id IN (result of level 1)
+   level 3:  SELECT ... WHERE manager_id IN (result of level 2)
+   ...       and when do you stop? Nobody knows in advance!
 
-⟵ זו "שאילתה רקורסיבית". היא אפשרית (WITH RECURSIVE / CONNECT BY),
-   אבל היא לא פשוטה ולא מהירה.
+-> This is a "recursive query". It's possible (WITH RECURSIVE / CONNECT BY),
+   but it is neither simple nor fast.
 ```
 
 <div dir="rtl">
@@ -459,22 +460,22 @@
 </div>
 
 ```text
-① היררכיה  1:M רקורסיבי               ② רשת  M:M רקורסיבי
-   "לכל אחד הורה אחד"                    "לכל אחד כמה, ולכל אחד כמה"
+(1) HIERARCHY  recursive 1:M             (2) NETWORK  recursive M:M
+   "each one has ONE parent"                "each has several, and each has several"
 
-        A                                     A ──── B
-       ╱ ╲                                    │ ╲  ╱ │
-      B   C                                   │  ╲╱  │
-     ╱ ╲                                      │  ╱╲  │
-    D   E                                     C ──── D
+        A                                     A ---- B
+       / \                                    | \  / |
+      B   C                                   |  \/  |
+     / \                                      |  /\  |
+    D   E                                     C ---- D
 
-   עובד ⟵ מנהל                          חלק ⟵ מורכב מחלקים
-   קטגוריה ⟵ קטגוריית אב                חבר ⟵ חבר
-   תיקייה ⟵ תיקיית אב                   קורס ⟵ דרישת קדם
+   employee -> manager                    part -> made of parts
+   category -> parent category            friend -> friend
+   folder -> parent folder                course -> prerequisite
 
-   מימוש: עמודה אחת (parent_id)          מימוש: טבלה מקשרת נפרדת!
+   Implementation: ONE column (parent_id)  Implementation: a separate link table!
 
-   ⟵ עץ                                  ⟵ גרף
+   -> a TREE                              -> a GRAPH
 ```
 
 <div dir="rtl">
@@ -509,16 +510,16 @@
 </div>
 
 ```text
-מודל פשוט:                    השאלות שהוא לא יכול לענות עליהן:
+The simple model:              Questions it CANNOT answer:
 
-┌──────────────────┐          ❌ "באיזו מחלקה דנה עבדה ב-2024?"
-│ EMPLOYEE         │          ❌ "מתי היא עברה?"
-├──────────────────┤          ❌ "מי היה המנהל שלה אז?"
-│ # employee_id    │          ❌ "כמה עובדים היו בשיווק לפני שנה?"
-│ * name           │          ❌ "מה היה השכר שלה כשקיבלה את הבונוס?"
-│ * salary         │
-│ * department_id  │  ⟵ העמודה הזאת מחזיקה רק את ההווה.
-└──────────────────┘     ברגע שמעדכנים אותה — העבר נמחק לתמיד.
++------------------+          [X] "Which department was Dana in during 2024?"
+| EMPLOYEE         |          [X] "When did she move?"
++------------------+          [X] "Who was her manager back then?"
+| # employee_id    |          [X] "How many employees were in Marketing a year ago?"
+| * name           |          [X] "What was her salary when she got the bonus?"
+| * salary         |
+| * department_id  |  <- this column holds ONLY the present.
++------------------+     the moment you update it -- the past is erased forever.
 ```
 
 <div dir="rtl">
@@ -530,36 +531,36 @@
 </div>
 
 ```text
-רמה 0 — בלי היסטוריה
-┌──────────────────────────┐
-│ EMPLOYEE                 │   "דנה עובדת בשיווק"
-│  department_id = 7       │   ⟵ עדכון מוחק את העבר
-└──────────────────────────┘
+LEVEL 0 -- no history
++--------------------------+
+| EMPLOYEE                 |   "Dana works in Marketing"
+|  department_id = 7       |   <- an update erases the past
++--------------------------+
 
-רמה 1 — חותמות זמן (מי ומתי שינה)
-┌──────────────────────────┐
-│ EMPLOYEE                 │   "דנה עובדת בשיווק,
-│  department_id = 7       │    השינוי האחרון: 01/03 ע"י רונית"
-│  last_modified           │   ⟵ יודעים שהיה שינוי, לא יודעים ממה
-│  last_modified_by        │
-└──────────────────────────┘
+LEVEL 1 -- timestamps (who changed it, and when)
++--------------------------+
+| EMPLOYEE                 |   "Dana works in Marketing,
+|  department_id = 7       |    last change: 01/03 by Ronit"
+|  last_modified           |   <- we know there WAS a change, not FROM what
+|  last_modified_by        |
++--------------------------+
 
-רמה 2 — ישות היסטוריה מלאה  ⭐
-┌──────────────────┐         ┌────────────────────────────┐
-│ EMPLOYEE         │    1    │ EMPLOYEE_ASSIGNMENT        │
-├──────────────────┤─────────┤────────────────────────────┤
-│ # employee_id    │    M    │ # assignment_id            │
-│ * name           │         │ * employee_id      (FK)    │
-└──────────────────┘         │ * department_id    (FK)    │
-                             │ * start_date               │
-   ⟵ המחלקה כבר לא כאן!      │ ∘ end_date    (NULL=נוכחי) │
-                             │ ∘ salary                   │
-                             └────────────────────────────┘
+LEVEL 2 -- a full history entity  *
++------------------+         +----------------------------+
+| EMPLOYEE         |    1    | EMPLOYEE_ASSIGNMENT        |
++------------------+---------+----------------------------+
+| # employee_id    |    M    | # assignment_id            |
+| * name           |         | * employee_id      (FK)    |
++------------------+         | * department_id    (FK)    |
+                             | * start_date               |
+   <- the department is      | o end_date    (NULL=current)|
+      no longer HERE!        | o salary                   |
+                             +----------------------------+
 
-   דנה:  שיווק   01/01/2023 ⟵ 31/12/2024
-         פיתוח   01/01/2025 ⟵ NULL   (הנוכחי)
+   Dana:  Marketing   01/01/2023 -> 31/12/2024
+          Development 01/01/2025 -> NULL   (current)
 
-   ✅ עכשיו כל חמש השאלות מלמעלה נענות
+   [OK] now all five questions above can be answered
 ```
 
 <div dir="rtl">
@@ -579,25 +580,25 @@
 </div>
 
 ```text
-① end_date >= start_date                    ⟵ אילוץ בדיקה פשוט
+(1) end_date >= start_date                  <- a simple CHECK constraint
 
-② אסור חפיפה בין תקופות של אותה ישות
-   ┌──────────────┐
-   │ 01/01 ⟵ 30/06│
-   └──────────────┘
-          ┌──────────────┐
-          │ 01/05 ⟵ 31/12│   ❌ דנה בשתי מחלקות במאי-יוני?
-          └──────────────┘
+(2) NO OVERLAP between periods of the same entity
+   +--------------+
+   | 01/01 -> 30/06|
+   +--------------+
+          +--------------+
+          | 01/05 -> 31/12|   [X] Dana in two departments in May-June?
+          +--------------+
 
-③ תקופה פתוחה אחת לכל היותר  (end_date IS NULL)
-   אחרת: לדנה שתי מחלקות "נוכחיות"
+(3) AT MOST ONE open period  (end_date IS NULL)
+   otherwise: Dana has two "current" departments
 
-④ אסור חורים (אם העסק דורש רצף)
-   ┌────────────┐        ┌────────────┐
-   │ 01/01⟵30/06│        │ 01/09⟵NULL │   ⟵ איפה דנה היתה ביולי-אוגוסט?
-   └────────────┘        └────────────┘
-                    ▲
-              חור של חודשיים — חוקי? תלוי בעסק. שאלו את הלקוח!
+(4) NO GAPS (if the business requires continuity)
+   +------------+        +------------+
+   | 01/01->30/06|        | 01/09->NULL |   <- where was Dana in July-August?
+   +------------+        +------------+
+                    ^
+              a two-month gap -- legal? depends on the business. ASK the client!
 ```
 
 <div dir="rtl">
@@ -636,15 +637,15 @@
 </div>
 
 ```text
-חוקי הלקוח, כפי שנאמרו בראיון:
+The client's rules, as stated in the interview:
 
-  1. "לכל מנוי יש תו חניה עם מספר ייחודי"
-  2. "מנוי שייך לתושב או לעסק — אחד מהם, לא שניהם"
-  3. "תעריף התושבים משתנה כל שנה, אבל מנוי משלם את מה שהיה כשנרשם"
-  4. "החניון מחולק לאזורים, ואזור מחולק לשורות"
-  5. "רכב לא יכול להיכנס פעמיים בלי לצאת"
-  6. "סטטוס מנוי: פעיל, מוקפא, בוטל"
-  7. "מנוי מוקפא לא יכול להיכנס"
+  1. "Every subscription has a parking permit with a unique number"
+  2. "A subscription belongs to a resident OR a business -- one of them, not both"
+  3. "The residents' rate changes every year, but a subscriber pays what it was when they signed up"
+  4. "The parking lot is divided into zones, and a zone into rows"
+  5. "A car cannot enter twice without exiting"
+  6. "Subscription status: active, frozen, cancelled"
+  7. "A frozen subscription cannot enter"
 ```
 
 <div dir="rtl">
@@ -664,39 +665,39 @@
 </div>
 
 ```text
-המודל:
+The model:
 
-┌──────────────┐         ┌──────────────┐
-│  RESIDENT    │         │  BUSINESS    │
-└───────┬──────┘         └──────┬───────┘
-        ╰──────────╮   ╭────────╯
-                   ╰───╯  ⟵ קשת: תושב או עסק
-                     │
-          ┌──────────┴─────────────────┐
-          │ SUBSCRIPTION               │
-          ├────────────────────────────┤
-          │ # subscription_id          │
-          │ * permit_number  ⟵ UNIQUE  │      ┌─────────────────────┐
-          │ * rate_paid      ⟵ קפוא!   │      │ ZONE                │
-          │ * status_code    (FK)      │      ├─────────────────────┤
-          │ * start_date               │      │ # zone_id           │
-          │ ∘ end_date                 │      │ * name              │
-          └──────────┬─────────────────┘      │ ∘ parent_zone_id ───┼─╮
-                     │ 1                      └──────────┬──────────┘ │
-                     │                             ▲     │ 1          │
-                     │ M                           ╰─────┼────────────╯
-          ┌──────────┴─────────────────┐                 │  היררכיה
-          │ PARKING_EVENT              │                 │ M
-          ├────────────────────────────┤                 │
-          │ # event_id                 │◄────────────────╯
-          │ * entry_time               │
-          │ ∘ exit_time  (NULL = בפנים)│
-          │ * zone_id       (FK)       │
-          └────────────────────────────┘
++--------------+         +--------------+
+|  RESIDENT    |         |  BUSINESS    |
++-------+------+         +------+-------+
+        '----------.   .--------'
+                   '---'  <- ARC: resident or business
+                     |
+          +----------+-----------------+
+          | SUBSCRIPTION               |
+          +----------------------------+
+          | # subscription_id          |
+          | * permit_number  <- UNIQUE |      +---------------------+
+          | * rate_paid      <- FROZEN!|      | ZONE                |
+          | * status_code    (FK)      |      +---------------------+
+          | * start_date               |      | # zone_id           |
+          | o end_date                 |      | * name              |
+          +----------+-----------------+      | o parent_zone_id ---+-.
+                     | 1                      +----------+----------+ |
+                     |                             ^     | 1          |
+                     | M                           '-----+------------'
+          +----------+-----------------+                 |  hierarchy
+          | PARKING_EVENT              |                 | M
+          +----------------------------+                 |
+          | # event_id                 |<----------------'
+          | * entry_time               |
+          | o exit_time  (NULL = inside)|
+          | * zone_id       (FK)       |
+          +----------------------------+
 
-     האילוץ שמונע כניסה כפולה:
-       "אין יותר מרשומה אחת עם exit_time IS NULL לאותו מנוי"
-       ⟵ בדיוק אותו דפוס כמו "תקופה פתוחה אחת" מסעיף 7.3!
+     The constraint that prevents double entry:
+       "no more than ONE row with exit_time IS NULL per subscription"
+       <- exactly the same pattern as "one open period" in section 7.3!
 ```
 
 <div dir="rtl">

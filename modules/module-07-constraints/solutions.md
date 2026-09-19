@@ -60,18 +60,18 @@
 </div>
 
 ```text
-הדפוס שחוזר בכל השורות:
+The pattern that repeats in every row:
 
-   CASCADE  ⟵  רק כשהילד הוא *חלק פיזי* מההורה
-                (שורת הזמנה, תגובה, פרט של כתובת)
+   CASCADE  <-  only when the child is a *physical part* of the parent
+                (order line, comment, address detail)
 
-   RESTRICT ⟵  ברירת המחדל לכל השאר.
-                עצור, תחשוב, טפל ידנית.
+   RESTRICT <-  the default for everything else.
+                Stop, think, handle it manually.
 
-   SET NULL ⟵  רק כשהיחס באמת אופציונלי מלכתחילה.
-                אם היחס חובה — SET NULL ישבור אותו!
+   SET NULL <-  only when the relationship was truly optional to begin with.
+                If it is mandatory -- SET NULL will break it!
 
-   ⚠️ וברוב המערכות העסקיות: לא מוחקים בכלל.  is_active = false
+   (!) And in most business systems: nothing is deleted at all.  is_active = false
 ```
 
 <div dir="rtl">
@@ -93,31 +93,31 @@
 </div>
 
 ```text
-❌ הפתרון השגוי — קשת אל "ישות" שלא קיימת:
+[X] THE WRONG solution -- an arc to an "entity" that doesn't exist:
 
-   ┌────────┐    ┌──────────────┐
-   │ ANIMAL │    │ "כללי"???    │   ⟵ מה זו הישות הזאת?
-   └───┬────┘    └──────┬───────┘      אין לה מופעים, אין לה מאפיינים
-       ╰────╮   ╭───────╯
-            ╰───╯
-              │
-        ┌─────┴─────┐
-        │  EXPENSE  │
-        └───────────┘
+   +--------+    +--------------+
+   | ANIMAL |    | "general"??? |   <- what IS this entity?
+   +---+----+    +------+-------+      it has no instances, no attributes
+       '----.   .------'
+            '---'
+              |
+        +-----+-----+
+        |  EXPENSE  |
+        +-----------+
 
-✅ הפתרון הנכון — מפתח זר אופציונלי:
+[OK] THE RIGHT solution -- an optional foreign key:
 
-        ┌─────────────────────────┐
-        │  EXPENSE                │
-        ├─────────────────────────┤
-        │ # expense_id            │
-        │ * amount                │
-        │ * category_id   (FK)    │  ⟵ מזון / וטרינרי / תחזוקה / חשמל
-        │ ∘ animal_id     (FK)    │  ⟵ NULL = הוצאה כללית
-        └─────────────────────────┘
+        +-------------------------+
+        |  EXPENSE                |
+        +-------------------------+
+        | # expense_id            |
+        | * amount                |
+        | * category_id   (FK)    |  <- food / vet / maintenance / electricity
+        | o animal_id     (FK)    |  <- NULL = a general expense
+        +-------------------------+
 
-        "הוצאה כללית" אינה ישות אחרת — היא **היעדר** שיוך לחיה.
-        וזה בדיוק מה ש-NULL אומר.
+        "General expense" is not another entity -- it is the ABSENCE of an animal link.
+        And that is exactly what NULL means.
 ```
 
 <div dir="rtl">
@@ -146,21 +146,21 @@
 </div>
 
 ```text
-┌───────────────────────────────┐
-│ CATEGORY                      │
-├───────────────────────────────┤
-│ # category_id                 │
-│ * name                        │
-│ ∘ parent_category_id  (FK) ───┼──╮   ⟵ אופציונלי!
-└───────────────────────────────┘  │      (לקטגוריות השורש אין אב)
-                    ▲              │
-                    ╰──────────────╯
++-------------------------------+
+| CATEGORY                      |
++-------------------------------+
+| # category_id                 |
+| * name                        |
+| o parent_category_id  (FK) ---+--.   <- optional!
++-------------------------------+  |      (root categories have no parent)
+                    ^              |
+                    '--------------'
 
-הנתונים:
-   1  אלקטרוניקה   parent = NULL   ⟵ שורש
-   2  מחשבים       parent = 1
-   3  ניידים       parent = 2
-   4  גיימינג      parent = 3
+The data:
+   1  Electronics   parent = NULL   <- root
+   2  Computers     parent = 1
+   3  Laptops       parent = 2
+   4  Gaming        parent = 3
 ```
 
 <div dir="rtl">
@@ -201,16 +201,16 @@
 </div>
 
 ```text
-לפני:   מוצר ⟵ קטגוריה אחת            עץ.   עמודה אחת.
-אחרי:   מוצר ⟵ כמה קטגוריות          גרף!  טבלה מקשרת.
+BEFORE:  product -> ONE category           a tree.   one column.
+AFTER:   product -> SEVERAL categories     a graph!  a link table.
 
-┌─────────┐          ┌────────────────────┐          ┌───────────┐
-│ PRODUCT │────1  M──┤ PRODUCT_CATEGORY   ├──M   1───┤ CATEGORY  │
-└─────────┘          ├────────────────────┤          └───────────┘
-                     │ * product_id  (FK) │
-                     │ * category_id (FK) │
-                     │ ∘ is_primary       │  ⟵ איזו היא ה"ראשית"?
-                     └────────────────────┘
++---------+          +--------------------+          +-----------+
+| PRODUCT |----1  M--+ PRODUCT_CATEGORY   +--M   1---+ CATEGORY  |
++---------+          +--------------------+          +-----------+
+                     | * product_id  (FK) |
+                     | * category_id (FK) |
+                     | o is_primary       |  <- which one is the "main" one?
+                     +--------------------+
 ```
 
 <div dir="rtl">
@@ -236,29 +236,29 @@
 </div>
 
 ```text
-┌────────────────────┐
-│ VOLUNTEER          │        ⟵ רק מה שלא משתנה לעולם
-├────────────────────┤
-│ # volunteer_id     │
-│ * name             │
-│ * join_date        │
-└─────────┬──────────┘
-          │ 1
-          ├────────────────────────┬───────────────────────┐
-          │ M                      │ M                     │ M
-┌─────────┴──────────┐  ┌──────────┴─────────┐  ┌──────────┴─────────┐
-│ ASSIGNMENT         │  │ STATUS_PERIOD      │  │ COMMITMENT         │
-├────────────────────┤  ├────────────────────┤  ├────────────────────┤
-│ # assignment_id    │  │ # period_id        │  │ # commitment_id    │
-│ * volunteer_id (FK)│  │ * volunteer_id(FK) │  │ * volunteer_id(FK) │
-│ * branch_id    (FK)│  │ * status_code (FK) │  │ * weekly_hours     │
-│ * role_id      (FK)│  │ * start_date       │  │ * start_date       │
-│ * start_date       │  │ ∘ end_date         │  │ ∘ end_date         │
-│ ∘ end_date         │  └────────────────────┘  └────────────────────┘
-└────────────────────┘
++--------------------+
+| VOLUNTEER          |        <- only what NEVER changes
++--------------------+
+| # volunteer_id     |
+| * name             |
+| * join_date        |
++---------+----------+
+          | 1
+          +------------------------+-----------------------+
+          | M                      | M                     | M
++---------+----------+  +----------+---------+  +----------+---------+
+| ASSIGNMENT         |  | STATUS_PERIOD      |  | COMMITMENT         |
++--------------------+  +--------------------+  +--------------------+
+| # assignment_id    |  | # period_id        |  | # commitment_id    |
+| * volunteer_id (FK)|  | * volunteer_id(FK) |  | * volunteer_id(FK) |
+| * branch_id    (FK)|  | * status_code (FK) |  | * weekly_hours     |
+| * role_id      (FK)|  | * start_date       |  | * start_date       |
+| * start_date       |  | o end_date         |  | o end_date         |
+| o end_date         |  +--------------------+  +--------------------+
++--------------------+
 
-שלוש ישויות תקופה — כי שלושת הערכים משתנים *באופן בלתי תלוי*:
-מתנדב יכול לעבור סניף בלי לשנות שעות, או לצאת להפסקה בלי לעזוב תפקיד.
+Three period entities -- because the three values change *independently*:
+a volunteer can change branch without changing hours, or take a break without leaving a role.
 ```
 
 <div dir="rtl">
@@ -330,36 +330,36 @@
 </div>
 
 ```text
-┌──────────┐    ┌──────────┐
-│ STUDENT  │    │ TEACHER  │
-└────┬─────┘    └────┬─────┘
-     ╰──────╮ ╭──────╯   ⟵ קשת: תלמיד או מורה
-            ╰─╯
-             │
-    ┌────────┴──────────────────────┐        ┌────────────────────────┐
-    │ LOAN                          │        │ LOCATION               │
-    ├───────────────────────────────┤        ├────────────────────────┤
-    │ # loan_id                     │        │ # location_id          │
-    │ * item_id            (FK)     │        │ * name                 │
-    │ * loan_date                   │        │ * type ∈ {ארון, מדף}   │
-    │ * due_date                    │        │ ∘ parent_location_id ──┼─╮
-    │ ∘ return_date  (NULL=בחוץ)    │        └───────────┬────────────┘ │
-    │ ∘ return_condition   (FK)     │              ▲     │              │
-    │ ∘ approved_by        (FK)     │              ╰─────┼──────────────╯
-    │ ∘ approver_role_at_time       │                    │  היררכיה
-    └───────────────┬───────────────┘                    │
-                    │ M                                  │ 1
-                    │                                    │
-    ┌───────────────┴───────────────┐                    │ M
-    │ ITEM                          │       ┌────────────┴───────────┐
-    ├───────────────────────────────┤   1   │ ITEM_LOCATION          │
-    │ # item_id                     ├───────┤────────────────────────┤
-    │ * sticker_number  ⟵ UNIQUE    │   M   │ # placement_id         │
-    │ * name                        │       │ * item_id      (FK)    │
-    │ * condition_code      (FK)    │       │ * location_id  (FK)    │
-    └───────────────────────────────┘       │ * start_date           │
-                                            │ ∘ end_date  (NULL=עכשיו)│
-                                            └────────────────────────┘
++----------+    +----------+
+| STUDENT  |    | TEACHER  |
++----+-----+    +----+-----+
+     '------.  .-----'   <- ARC: student or teacher
+            '-'
+             |
+    +--------+----------------------+        +------------------------+
+    | LOAN                          |        | LOCATION               |
+    +-------------------------------+        +------------------------+
+    | # loan_id                     |        | # location_id          |
+    | * item_id            (FK)     |        | * name                 |
+    | * loan_date                   |        | * type in {cabinet, shelf} |
+    | * due_date                    |        | o parent_location_id --+-.
+    | o return_date  (NULL=out)     |        +-----------+------------+ |
+    | o return_condition   (FK)     |              ^     |              |
+    | o approved_by        (FK)     |              '-----+--------------'
+    | o approver_role_at_time       |                    |  hierarchy
+    +---------------+---------------+                    |
+                    | M                                  | 1
+                    |                                    |
+    +---------------+---------------+                    | M
+    | ITEM                          |       +------------+-----------+
+    +-------------------------------+   1   | ITEM_LOCATION          |
+    | # item_id                     +-------+------------------------+
+    | * sticker_number  <- UNIQUE   |   M   | # placement_id         |
+    | * name                        |       | * item_id      (FK)    |
+    | * condition_code      (FK)    |       | * location_id  (FK)    |
+    +-------------------------------+       | * start_date           |
+                                            | o end_date  (NULL=now) |
+                                            +------------------------+
 ```
 
 <div dir="rtl">
@@ -395,15 +395,15 @@
 
 ```text
 BORROWER_TYPE
-┌──────────┬─────────┬────────────┐
-│ type_code│ name    │ max_items  │
-├──────────┼─────────┼────────────┤
-│ STUDENT  │ תלמיד   │ 3          │
-│ TEACHER  │ מורה    │ NULL ⟵ ללא הגבלה │
-└──────────┴─────────┴────────────┘
++-----------+---------+------------------+
+| type_code | name    | max_items        |
++-----------+---------+------------------+
+| STUDENT   | Student | 3                |
+| TEACHER   | Teacher | NULL <- no limit |
++-----------+---------+------------------+
 
-⟵ שימו לב: NULL כאן פותר את "ללא הגבלה" באלגנטיות,
-   בלי צורך במספר קסם כמו 9999.
+<- Note: NULL here solves "no limit" elegantly,
+   with no need for a magic number like 9999.
 ```
 
 <div dir="rtl">
@@ -474,46 +474,46 @@ BORROWER_TYPE
 </div>
 
 ```text
-┌────────────────────────────┐      ┌────────────────────────────┐
-│ CUSTOMER                   │      │ CITY                       │
-├────────────────────────────┤      ├────────────────────────────┤
-│ # customer_id   NUMBER     │  M   │ # city_id                  │
-│ * name          VARCHAR2   ├──────┤ * name          ⟵ UNIQUE   │
-│ * email         VARCHAR2   │  1   └────────────────────────────┘
-│                 ⟵ UNIQUE   │
-│ * city_id       (FK)       │      ┌────────────────────────────┐
-│ * status_code   (FK)       │      │ ORDER_STATUS               │
-│ * created       TIMESTAMP  │      ├────────────────────────────┤
-└─────────────┬──────────────┘      │ # status_code              │
-              │ 1                   │ * description              │
-              │                     │ * display_order            │
-              │ M                   │ * is_active                │
-┌─────────────┴──────────────┐      └─────────────┬──────────────┘
-│ ORDER                      │                    │ 1
-├────────────────────────────┤                    │
-│ # order_id                 │                    │ M
-│ * customer_id      (FK)    │◄───────────────────╯
-│ * order_date  DATE         │
-│ * status_code      (FK)    │      ┌────────────────────────────┐
-│ * created     TIMESTAMP    │  1   │ ORDER_LINE                 │
-│ ∘ discount_pct NUMBER(5,2) ├──────┤────────────────────────────┤
-│    CHECK 0..100            │  M   │ # line_id                  │
-│ ∘ approved_by      (FK)    │      │ * order_id        (FK)     │
-│ ∘ approver_role_at_time    │      │ * product_id      (FK)     │
-└────────────────────────────┘      │ * quantity  NUMBER         │
-                                    │ * unit_price NUMBER(8,2)   │
-   ⟵ שימו לב: total *נעלם*.         │       ⟵ מחיר מוקפא!        │
-      הוא מחושב משורות ההזמנה.       └────────────────────────────┘
-      (או נשמר כדה-נרמול *מודע*)
++----------------------------+      +----------------------------+
+| CUSTOMER                   |      | CITY                       |
++----------------------------+      +----------------------------+
+| # customer_id   NUMBER     |  M   | # city_id                  |
+| * name          VARCHAR2   +------+ * name          <- UNIQUE  |
+| * email         VARCHAR2   |  1   +----------------------------+
+|                 <- UNIQUE  |
+| * city_id       (FK)       |      +----------------------------+
+| * status_code   (FK)       |      | ORDER_STATUS               |
+| * created       TIMESTAMP  |      +----------------------------+
++-------------+--------------+      | # status_code              |
+              | 1                   | * description              |
+              |                     | * display_order            |
+              | M                   | * is_active                |
++-------------+--------------+      +-------------+--------------+
+| ORDER                      |                    | 1
++----------------------------+                    |
+| # order_id                 |                    | M
+| * customer_id      (FK)    |<-------------------'
+| * order_date  DATE         |
+| * status_code      (FK)    |      +----------------------------+
+| * created     TIMESTAMP    |  1   | ORDER_LINE                 |
+| o discount_pct NUMBER(5,2) +------+----------------------------+
+|    CHECK 0..100            |  M   | # line_id                  |
+| o approved_by      (FK)    |      | * order_id        (FK)     |
+| o approver_role_at_time    |      | * product_id      (FK)     |
++----------------------------+      | * quantity  NUMBER         |
+                                    | * unit_price NUMBER(8,2)   |
+   <- Note: total is GONE.          |       <- frozen price!     |
+      It is computed from the lines.+----------------------------+
+      (or stored as *deliberate* denormalization)
 
-┌────────────────────────────┐
-│ CUSTOMER_PHONE             │   ⟵ 1NF: כמה טלפונים ללקוח
-├────────────────────────────┤
-│ # phone_id                 │
-│ * customer_id      (FK)    │
-│ * phone_number             │
-│ * phone_type       (FK)    │
-└────────────────────────────┘
++----------------------------+
+| CUSTOMER_PHONE             |   <- 1NF: several phones per customer
++----------------------------+
+| # phone_id                 |
+| * customer_id      (FK)    |
+| * phone_number             |
+| * phone_type       (FK)    |
++----------------------------+
 ```
 
 <div dir="rtl">
@@ -538,30 +538,30 @@ BORROWER_TYPE
 
 ```text
 ANIMAL
-┌──────────────────┬──────────────┬──────────────────────────┬────────┬──────────┐
-│ המאפיין          │ סוג          │ טווח / רשימה             │ חובה?  │ ברירת מחדל│
-├──────────────────┼──────────────┼──────────────────────────┼────────┼──────────┤
-│ animal_id        │ NUMBER       │ רץ                       │ ✅     │ אוטומטי  │
-│ name             │ VARCHAR2(50) │ —                        │ ❌     │ "ללא שם" │
-│ species_id       │ FK           │ מטבלת SPECIES            │ ✅     │ —        │
-│ sex              │ קוד          │ {זכר, נקבה, לא ידוע}     │ ✅     │ לא ידוע  │
-│ birth_date       │ DATE         │ ⚠️ *משוער* — לא ידוע ברחוב│ ❌    │ —        │
-│ weight_kg        │ NUMBER(5,2)  │ > 0 וגם < 200            │ ❌     │ —        │
-│ chip_number      │ VARCHAR2(15) │ ⟵ UNIQUE (מזהה משני)     │ ❌     │ —        │
-│ status_code      │ FK           │ מטבלת ANIMAL_STATUS      │ ✅     │ INTAKE   │
-│ intake_date      │ DATE         │ <= היום                  │ ✅     │ SYSDATE  │
-└──────────────────┴──────────────┴──────────────────────────┴────────┴──────────┘
++------------------+--------------+------------------------------+-----------+------------+
+| attribute        | type         | range / list                 | required? | default    |
++------------------+--------------+------------------------------+-----------+------------+
+| animal_id        | NUMBER       | sequence                     | yes       | automatic  |
+| name             | VARCHAR2(50) | -                            | no        | "Unnamed"  |
+| species_id       | FK           | from SPECIES table           | yes       | -          |
+| sex              | code         | {male, female, unknown}      | yes       | unknown    |
+| birth_date       | DATE         | (!) *estimated* -- unknown for strays | no | -        |
+| weight_kg        | NUMBER(5,2)  | > 0 and < 200                | no        | -          |
+| chip_number      | VARCHAR2(15) | <- UNIQUE (secondary UID)    | no        | -          |
+| status_code      | FK           | from ANIMAL_STATUS table     | yes       | INTAKE     |
+| intake_date      | DATE         | <= today                     | yes       | SYSDATE    |
++------------------+--------------+------------------------------+-----------+------------+
 
 PERSON
-┌──────────────────┬──────────────┬──────────────────────────┬────────┬──────────┐
-│ person_id        │ NUMBER       │ רץ                       │ ✅     │ אוטומטי  │
-│ first_name       │ VARCHAR2(50) │ —                        │ ✅     │ —        │
-│ last_name        │ VARCHAR2(50) │ —                        │ ✅     │ —        │
-│ national_id      │ CHAR(9)      │ 9 ספרות ⟵ UNIQUE         │ ❌     │ —        │
-│ email            │ VARCHAR2(255)│ פורמט ⟵ UNIQUE           │ ❌     │ —        │
-│ birth_date       │ DATE         │ ⚠️ לאימוץ יש גיל מינימלי! │ ❌    │ —        │
-│ created          │ TIMESTAMP    │ —                        │ ✅     │ SYSDATE  │
-└──────────────────┴──────────────┴──────────────────────────┴────────┴──────────┘
++------------------+--------------+------------------------------+-----------+------------+
+| person_id        | NUMBER       | sequence                     | yes       | automatic  |
+| first_name       | VARCHAR2(50) | -                            | yes       | -          |
+| last_name        | VARCHAR2(50) | -                            | yes       | -          |
+| national_id      | CHAR(9)      | 9 digits <- UNIQUE           | no        | -          |
+| email            | VARCHAR2(255)| format <- UNIQUE             | no        | -          |
+| birth_date       | DATE         | (!) adoption has a minimum age! | no     | -          |
+| created          | TIMESTAMP    | -                            | yes       | SYSDATE    |
++------------------+--------------+------------------------------+-----------+------------+
 ```
 
 <div dir="rtl">
@@ -586,24 +586,24 @@ PERSON
 </div>
 
 ```text
-   ┌──────────────┐   ┌──────────────┐   ┌──────────────┐
-   │ STREET_FIND  │   │  SURRENDER   │   │ OTHER_SHELTER│
-   │ * מיקום      │   │ * בעלים קודם │   │ * שם המקלט   │
-   │ * מוצא       │   │ * סיבת מסירה │   │ * איש קשר    │
-   └──────┬───────┘   └──────┬───────┘   └──────┬───────┘
-          ╰────────╮      │      ╭──────────────╯
-                   ╰──────┴──────╯
-                          │
-                   ┌──────┴───────┐
-                   │   INTAKE     │
-                   └──────────────┘
+   +--------------+   +--------------+   +--------------+
+   | STREET_FIND  |   |  SURRENDER   |   | OTHER_SHELTER|
+   | * location   |   | * prev owner |   | * shelter    |
+   | * finder     |   | * reason     |   | * contact    |
+   +------+-------+   +------+-------+   +------+-------+
+          '--------.      |      .--------------'
+                   '------+------'
+                          |
+                   +------+-------+
+                   |   INTAKE     |
+                   +--------------+
 
-   שלושת הכללים:  אותה ישות ✅ · כולם חובה ✅ · כולם 1:M ✅
+   The three rules:  same entity [OK] . all mandatory [OK] . all 1:M [OK]
 
-   ⚠️ אבל: במודול 4 כבר החלטנו על *טיפוסי משנה* ל-INTAKE!
-   ההכרעה: טיפוס משנה נשאר עדיף — לכל סוג 4-5 מאפיינים ייחודיים,
-   וזה בדיוק הקריטריון של "הרבה מאפיינים שונים".
-   הקשת הייתה נכונה אילו לשלושת המקורות היו רק מזהים ותו לא.
+   (!) BUT: in module 4 we already chose *subtypes* for INTAKE!
+   Decision: subtypes remain better -- each source has 4-5 unique attributes,
+   which is exactly the "many different attributes" criterion.
+   An arc would have been right if the three sources had only identifiers and nothing more.
 ```
 
 <div dir="rtl">
@@ -642,37 +642,37 @@ PERSON
 </div>
 
 ```text
-① ANIMAL_PLACEMENT — איפה החיה שוכנת
-   ┌────────────────────────────────┐
-   │ * animal_id      (FK)          │   דוגמה:
-   │ * location_id    (FK)          │     לונה: הסגר   01/01 ⟵ 15/01
-   │ * start_date                   │     לונה: אגף א'  15/01 ⟵ 03/03
-   │ ∘ end_date   (NULL = עכשיו)    │     לונה: אגף ב'  03/03 ⟵ NULL
-   └────────────────────────────────┘
+(1) ANIMAL_PLACEMENT -- where the animal is housed
+   +--------------------------------+
+   | * animal_id      (FK)          |   Example:
+   | * location_id    (FK)          |     Luna: Quarantine 01/01 -> 15/01
+   | * start_date                   |     Luna: Wing A      15/01 -> 03/03
+   | o end_date   (NULL = now)      |     Luna: Wing B      03/03 -> NULL
+   +--------------------------------+
 
-② ANIMAL_HEALTH_STATUS — המצב הבריאותי לאורך זמן
-   ┌────────────────────────────────┐
-   │ * animal_id      (FK)          │     לונה: בהסגר    01/01 ⟵ 15/01
-   │ * health_code    (FK)          │     לונה: בטיפול   15/01 ⟵ 20/02
-   │ * start_date                   │     לונה: בריאה    20/02 ⟵ NULL
-   │ ∘ end_date                     │
-   └────────────────────────────────┘
+(2) ANIMAL_HEALTH_STATUS -- health condition over time
+   +--------------------------------+
+   | * animal_id      (FK)          |     Luna: Quarantined 01/01 -> 15/01
+   | * health_code    (FK)          |     Luna: In care     15/01 -> 20/02
+   | * start_date                   |     Luna: Healthy     20/02 -> NULL
+   | o end_date                     |
+   +--------------------------------+
 
-③ ANIMAL_CAREGIVER — המתנדב האחראי
-   ┌────────────────────────────────┐
-   │ * animal_id      (FK)          │
-   │ * volunteer_id   (FK)          │
-   │ * start_date                   │
-   │ ∘ end_date                     │
-   └────────────────────────────────┘
+(3) ANIMAL_CAREGIVER -- the responsible volunteer
+   +--------------------------------+
+   | * animal_id      (FK)          |
+   | * volunteer_id   (FK)          |
+   | * start_date                   |
+   | o end_date                     |
+   +--------------------------------+
 
-ארבעת האילוצים — זהים לשלושתן:
-   ① end_date >= start_date                    ⟵ ① מבנה, CHECK
-   ② אין חפיפה לאותה חיה                       ⟵ ② טריגר
-   ③ תקופה פתוחה אחת לכל היותר                 ⟵ ② טריגר
-   ④ אין חורים — ⚠️ לשאול את רותי!
-        חיה *חייבת* להיות במקום כלשהו תמיד ⟵ אין חורים ב-①
-        אבל היא *יכולה* להיות בלי מתנדב אחראי ⟵ חורים מותרים ב-③
+The four constraints -- identical for all three:
+   (1) end_date >= start_date                    <- level 1: structure, CHECK
+   (2) no overlap for the same animal            <- level 2: trigger
+   (3) at most one open period                   <- level 2: trigger
+   (4) no gaps -- (!) ASK Ruti!
+        an animal *must* always be somewhere         -> no gaps in (1)
+        but it *can* be without a caregiver          -> gaps allowed in (3)
 ```
 
 <div dir="rtl">

@@ -97,24 +97,24 @@
 </div>
 
 ```text
-   ┌────────────────────┐              ┌───────────────────────────────┐
-   │       PART         │◄─────────────│      PART_COMPOSITION         │
-   ├────────────────────┤   "מכיל"     ├───────────────────────────────┤
-   │ # part_id          │              │ # part_composition_id    ⭐   │
-   │ * part_name        │◄─────────────│ * parent_part_id    (FK)      │
-   │ * part_type ⟵      │  "חלק מ"     │ * child_part_id     (FK)      │
-   │   מוצר מוגמר /     │              │ * quantity                    │
-   │   תת-הרכבה / חומר  │              │ * assembly_order              │
-   │ * unit_cost        │              │ o assembly_notes              │
-   │ * unit_of_measure  │              │ * is_optional                 │
-   │ * is_active        │              │ * effective_from        ⭐    │
-   └────────────────────┘              │ o effective_to          ⭐    │
-                                       └───────────────────────────────┘
+   +--------------------+              +-------------------------------+
+   |       PART         |<-------------|      PART_COMPOSITION         |
+   +--------------------+  "contains"  +-------------------------------+
+   | # part_id          |              | # part_composition_id    *    |
+   | * part_name        |<-------------| * parent_part_id    (FK)      |
+   | * part_type <-     |  "part of"   | * child_part_id     (FK)      |
+   |   finished product/|              | * quantity                    |
+   |   sub-assembly/    |              | * assembly_order              |
+   |   raw material     |              | o assembly_notes              |
+   | * unit_cost        |              | * is_optional                 |
+   | * unit_of_measure  |              | * effective_from        *     |
+   | * is_active        |              | o effective_to          *     |
+   +--------------------+              +-------------------------------+
 
-   הנתונים:
-   שולחן  ⟵ משטח ×1 · רגל ×4 · בורג ×8
-   משטח   ⟵ לוח עץ ×1 · ציפוי ×1
-   רגל    ⟵ צינור מתכת ×1 · פד ×1
+   The data:
+   Table   -> top x1 . leg x4 . screw x8
+   Top     -> wood board x1 . coating x1
+   Leg     -> metal tube x1 . pad x1
 ```
 
 <div dir="rtl">
@@ -152,16 +152,16 @@
 </div>
 
 ```text
-   10 שולחנות
-     ├─ משטח ×1  → 10 משטחים
-     │    ├─ לוח עץ ×1  → 10
-     │    └─ ציפוי ×1   → 10
-     ├─ רגל ×4   → 40 רגליים
-     │    ├─ צינור ×1   → 40
-     │    └─ פד ×1      → 40
-     └─ בורג ×8  → 80 ברגים   ⭐
+   10 tables
+     +- top x1     -> 10 tops
+     |    +- wood board x1  -> 10
+     |    +- coating x1     -> 10
+     +- leg x4     -> 40 legs
+     |    +- tube x1        -> 40
+     |    +- pad x1         -> 40
+     +- screw x8   -> 80 screws   *
 
-   התשובה: 80 ברגים
+   Answer: 80 screws
 ```
 
 <div dir="rtl">
@@ -181,9 +181,9 @@
 </div>
 
 ```text
-   מורה ↔ תלמיד:       דנה↔אבי · דנה↔נועה · רון↔אבי
-   תלמיד ↔ רכב:        אבי↔מאזדה · נועה↔קיה · אבי↔קיה
-   מורה ↔ רכב:         דנה↔מאזדה · דנה↔קיה · רון↔קיה
+   INSTRUCTOR <-> STUDENT:   Dana<->Avi . Dana<->Noa . Ron<->Avi
+   STUDENT <-> VEHICLE:      Avi<->Mazda . Noa<->Kia . Avi<->Kia
+   INSTRUCTOR <-> VEHICLE:   Dana<->Mazda . Dana<->Kia . Ron<->Kia
 ```
 
 <div dir="rtl">
@@ -263,29 +263,29 @@
 </div>
 
 ```text
-   התהליך                │MEMB│MEMBER│TRAI│CLASS_│SESSION│ENTRY│PAY │EQUIP
-                         │ER  │SHIP  │NER │SESS. │BOOKING│     │MENT│MENT
-   ──────────────────────┼────┼──────┼────┼──────┼───────┼─────┼────┼─────
-    רישום מנוי חדש       │ C  │  C   │ —  │  —   │   —   │  —  │ C  │  —
-   ──────────────────────┼────┼──────┼────┼──────┼───────┼─────┼────┼─────
-    חידוש מנוי           │ R  │  C   │ —  │  —   │   —   │  —  │ C  │  —
-   ──────────────────────┼────┼──────┼────┼──────┼───────┼─────┼────┼─────
-    כניסה למכון          │ R  │  R   │ —  │  —   │   —   │  C  │ —  │  —
-   ──────────────────────┼────┼──────┼────┼──────┼───────┼─────┼────┼─────
-    הרשמה לשיעור         │ R  │  R   │ —  │ R,U  │   C   │  —  │ —  │  —
-   ──────────────────────┼────┼──────┼────┼──────┼───────┼─────┼────┼─────
-    ביטול הרשמה          │ R  │  —   │ —  │  U   │   U   │  —  │ —  │  —
-   ──────────────────────┼────┼──────┼────┼──────┼───────┼─────┼────┼─────
-    העברת שיעור          │ —  │  —   │ R  │  U   │  R,U  │  —  │ —  │ R,U
-   ──────────────────────┼────┼──────┼────┼──────┼───────┼─────┼────┼─────
-    גביית תשלום חודשי    │ R  │ R,U  │ —  │  —   │   —   │  —  │ C  │  —
-   ──────────────────────┼────┼──────┼────┼──────┼───────┼─────┼────┼─────
-    הקפאת מנוי           │ R  │  U   │ —  │  —   │   —   │  —  │ —  │  —
-   ──────────────────────┼────┼──────┼────┼──────┼───────┼─────┼────┼─────
-    הוצאת מכשיר לתיקון   │ —  │  —   │ —  │  R   │   —   │  —  │ —  │  U
-   ──────────────────────┼────┼──────┼────┼──────┼───────┼─────┼────┼─────
-    דוח הכנסות חודשי     │ R  │  R   │ R  │  R   │   R   │  R  │ R  │  —
-   ──────────────────────┴────┴──────┴────┴──────┴───────┴─────┴────┴─────
+   PROCESS                 |MEMB|MEMBER|TRAI|CLASS_|SESSION|ENTRY|PAY |EQUIP
+                           |ER  |SHIP  |NER |SESS. |BOOKING|     |MENT|MENT
+   ------------------------+----+------+----+------+-------+-----+----+-----
+    Register new member    | C  |  C   | -  |  -   |   -   |  -  | C  |  -
+   ------------------------+----+------+----+------+-------+-----+----+-----
+    Renew membership       | R  |  C   | -  |  -   |   -   |  -  | C  |  -
+   ------------------------+----+------+----+------+-------+-----+----+-----
+    Enter the gym          | R  |  R   | -  |  -   |   -   |  C  | -  |  -
+   ------------------------+----+------+----+------+-------+-----+----+-----
+    Book a class           | R  |  R   | -  | R,U  |   C   |  -  | -  |  -
+   ------------------------+----+------+----+------+-------+-----+----+-----
+    Cancel booking         | R  |  -   | -  |  U   |   U   |  -  | -  |  -
+   ------------------------+----+------+----+------+-------+-----+----+-----
+    Move a class           | -  |  -   | R  |  U   |  R,U  |  -  | -  | R,U
+   ------------------------+----+------+----+------+-------+-----+----+-----
+    Monthly billing        | R  | R,U  | -  |  -   |   -   |  -  | C  |  -
+   ------------------------+----+------+----+------+-------+-----+----+-----
+    Freeze membership      | R  |  U   | -  |  -   |   -   |  -  | -  |  -
+   ------------------------+----+------+----+------+-------+-----+----+-----
+    Send machine to repair | -  |  -   | -  |  R   |   -   |  -  | -  |  U
+   ------------------------+----+------+----+------+-------+-----+----+-----
+    Monthly revenue report | R  |  R   | R  |  R   |   R   |  R  | R  |  -
+   ------------------------+----+------+----+------+-------+-----+----+-----
 ```
 
 <div dir="rtl">
@@ -421,49 +421,49 @@
 </div>
 
 ```text
-  ┌──────────────┐                              ┌──────────────────┐
-  │   STUDENT    │                              │     TEACHER      │
-  ├──────────────┤                              ├──────────────────┤
-  │# student_id  │                              │# teacher_id      │
-  │* first_name  │                              │* first_name      │
-  │* last_name   │                              │* last_name       │
-  │* phone       │                              │* phone           │
-  │o parent_id FK│                              │* default_rate    │
-  │* is_active   │                              │* is_active       │
-  └──────┬───────┘                              └────┬────────┬────┘
-         │                                           │        │
-         │ "משתתף ב"        ◇ לא עביר                │        │ "מלמד"
-         │                                  "מעביר"  │        ▼
-         ▼                                           │   ┌────────────────────┐
-  ┌───────────────────────────────────────────┐      │   │TEACHER_INSTRUMENT  │
-  │                 LESSON                    │◄─────┘   ├────────────────────┤
-  ├───────────────────────────────────────────┤          │# teacher_instr_id  │
-  │ # lesson_id                               │          │* teacher_id  (FK)  │
-  │ * student_id           (FK) ◇             │          │* instrument_id(FK) │
-  │ * teacher_id           (FK)               │          │* skill_level       │
-  │ o original_teacher_id  (FK) ⭐            │          │* is_primary        │
-  │ * instrument_id        (FK) ◇             │          └─────────┬──────────┘
-  │ * room_id              (FK)   ✅ עביר     │                    │
-  │ * lesson_date · * start_time              │                    ▼
-  │ * duration_min · * status                 │          ┌────────────────────┐
-  │ * price_charged           ⭐              │          │    INSTRUMENT      │
-  │ o cancel_notice_time                      │◄─────────├────────────────────┤
-  │ o teacher_notes                           │          │# instrument_id     │
-  └───────────────────┬───────────────────────┘          │* instrument_name   │
-                      │                                  │* category          │
-                      │ ┌──────────────┐                 │o rental_price      │
-                      └>│     ROOM     │                 └────────────────────┘
-                        ├──────────────┤
-                        │# room_id     │        ┌────────────────────┐
-                        │* room_number │        │      PAYMENT       │
-                        │* capacity    │        ├────────────────────┤
-                        │o has_piano   │        │# payment_id        │
-                        └──────────────┘        │* student_id (FK) ◇ │
-                                                │* amount            │
-   ❌ הוסרו: total_paid (נגזר)                  │* payment_date      │
-             instrument_name (×2)               │* method            │
-             teacher_name · lesson_day/time     │o covers_lessons    │
-                                                └────────────────────┘
+  +--------------+                              +------------------+
+  |   STUDENT    |                              |     TEACHER      |
+  +--------------+                              +------------------+
+  |# student_id  |                              |# teacher_id      |
+  |* first_name  |                              |* first_name      |
+  |* last_name   |                              |* last_name       |
+  |* phone       |                              |* phone           |
+  |o parent_id FK|                              |* default_rate    |
+  |* is_active   |                              |* is_active       |
+  +------+-------+                              +----+--------+----+
+         |                                           |        |
+         | "attends"        <> non-transferable      |        | "teaches"
+         |                                  "gives"  |        v
+         v                                           |   +--------------------+
+  +-------------------------------------------+      |   |TEACHER_INSTRUMENT  |
+  |                 LESSON                    |<-----+   +--------------------+
+  +-------------------------------------------+          |# teacher_instr_id  |
+  | # lesson_id                               |          |* teacher_id  (FK)  |
+  | * student_id           (FK) <>            |          |* instrument_id(FK) |
+  | * teacher_id           (FK)               |          |* skill_level       |
+  | o original_teacher_id  (FK) *             |          |* is_primary        |
+  | * instrument_id        (FK) <>            |          +---------+----------+
+  | * room_id              (FK)   [OK] transferable |              |
+  | * lesson_date . * start_time              |                    v
+  | * duration_min . * status                 |          +--------------------+
+  | * price_charged           *               |          |    INSTRUMENT      |
+  | o cancel_notice_time                      |<---------+--------------------+
+  | o teacher_notes                           |          |# instrument_id     |
+  +-------------------+-----------------------+          |* instrument_name   |
+                      |                                  |* category          |
+                      | +--------------+                 |o rental_price      |
+                      +>|     ROOM     |                 +--------------------+
+                        +--------------+
+                        |# room_id     |        +--------------------+
+                        |* room_number |        |      PAYMENT       |
+                        |* capacity    |        +--------------------+
+                        |o has_piano   |        |# payment_id        |
+                        +--------------+        |* student_id (FK) <>|
+                                                |* amount            |
+   [X] REMOVED: total_paid (derived)            |* payment_date      |
+                instrument_name (x2)            |* method            |
+                teacher_name . lesson_day/time  |o covers_lessons    |
+                                                +--------------------+
 ```
 
 <div dir="rtl">
@@ -473,19 +473,19 @@
 </div>
 
 ```text
-   התהליך                │STUD│TEACH│INSTR│T_INS│LESSON│ROOM│PAY
-   ──────────────────────┼────┼─────┼─────┼─────┼──────┼────┼────
-    רישום תלמיד חדש      │ C  │  R  │  R  │  —  │  —   │ —  │ —
-    גיוס מורה            │ —  │  C  │  R  │  C  │  —   │ —  │ —
-    הוספת כלי לקטלוג     │ —  │  —  │  C  │  —  │  —   │ —  │ —
-    קביעת שיעור          │ R  │  R  │  R  │  R  │  C   │R,U │ —
-    ביטול שיעור          │ R  │  R  │  —  │  —  │  U   │ U  │ —
-    החלפת מורה בשיעור    │ R  │  R  │  —  │  R  │  U   │ —  │ —
-    קבלת תשלום           │ R  │  —  │  —  │  —  │  R   │ —  │ C
-    דוח שכר למורים       │ —  │  R  │  —  │  —  │  R   │ —  │ R
-   ──────────────────────┴────┴─────┴─────┴─────┴──────┴────┴────
+   PROCESS                 |STUD|TEACH|INSTR|T_INS|LESSON|ROOM|PAY
+   ------------------------+----+-----+-----+-----+------+----+----
+    Register new student   | C  |  R  |  R  |  -  |  -   | -  | -
+    Hire a teacher         | -  |  C  |  R  |  C  |  -   | -  | -
+    Add instrument to list | -  |  -  |  C  |  -  |  -   | -  | -
+    Schedule a lesson      | R  |  R  |  R  |  R  |  C   |R,U | -
+    Cancel a lesson        | R  |  R  |  -  |  -  |  U   | U  | -
+    Substitute teacher     | R  |  R  |  -  |  R  |  U   | -  | -
+    Receive payment        | R  |  -  |  -  |  -  |  R   | -  | C
+    Teacher payroll report | -  |  R  |  -  |  -  |  R   | -  | R
+   ------------------------+----+-----+-----+-----+------+----+----
 
-   ✅ כל ישות מקבלת C   ✅ כל ישות מקבלת R   ✅ אין אף D
+   [OK] every entity gets a C   [OK] every entity gets an R   [OK] no D anywhere
 ```
 
 <div dir="rtl">
@@ -531,34 +531,34 @@
 </div>
 
 ```text
-  ┌──────────────┐                              ┌──────────────────┐
-  │   CUSTOMER   │                              │      POLICY      │
-  ├──────────────┤                              ├──────────────────┤
-  │# customer_id │                              │# policy_id       │
-  │* first_name  │                              │* policy_number UQ│
-  │* last_name ⭐│  ← שינוי שם = עדכון תכונה    │* policy_type     │
-  │* national_id │                              │* start_date      │
-  │* is_active   │                              │* end_date        │
-  └──────┬───────┘                              │* premium         │
-         │                                      │* status          │
-         │                                      └────────┬─────────┘
-         │                                               │
-         │            ┌──────────────────────────────────┘
-         │            │
-         ▼            ▼
-  ┌──────────────────────────────────────────────────────────┐
-  │                    POLICY_HOLDER                         │
-  ├──────────────────────────────────────────────────────────┤
-  │ # policy_holder_id                                       │
-  │ * policy_id            (FK) ◇  לא עביר                   │
-  │ * customer_id          (FK) ◇  לא עביר                   │
-  │ * valid_from                          ⭐ ממד הזמן        │
-  │ o valid_to        (NULL = הבעלים הנוכחי)                 │
-  │ * transfer_reason ⟵ הנפקה/ירושה/מכירה/מיזוג/תיקון       │
-  │ o approved_by          (FK)                              │
-  │ * created_at                                             │
-  │ o notes                                                  │
-  └──────────────────────────────────────────────────────────┘
+  +--------------+                              +------------------+
+  |   CUSTOMER   |                              |      POLICY      |
+  +--------------+                              +------------------+
+  |# customer_id |                              |# policy_id       |
+  |* first_name  |                              |* policy_number UQ|
+  |* last_name * |  <- name change = attribute update |* policy_type |
+  |* national_id |                              |* start_date      |
+  |* is_active   |                              |* end_date        |
+  +------+-------+                              |* premium         |
+         |                                      |* status          |
+         |                                      +--------+---------+
+         |                                               |
+         |            +----------------------------------+
+         |            |
+         v            v
+  +----------------------------------------------------------+
+  |                    POLICY_HOLDER                         |
+  +----------------------------------------------------------+
+  | # policy_holder_id                                       |
+  | * policy_id            (FK) <>  non-transferable         |
+  | * customer_id          (FK) <>  non-transferable         |
+  | * valid_from                          * the time dimension|
+  | o valid_to        (NULL = current holder)                |
+  | * transfer_reason <- issue/inheritance/sale/merger/correction |
+  | o approved_by          (FK)                              |
+  | * created_at                                             |
+  | o notes                                                  |
+  +----------------------------------------------------------+
 ```
 
 <div dir="rtl">
@@ -679,30 +679,30 @@
 </div>
 
 ```text
-   אפשרות א' — שני יחסי 1:M  (פשוטה, מספיקה למקלט)
+   OPTION A -- two 1:M relationships  (simple, enough for the shelter)
 
-   ┌────────────────────────┐
-   │        ANIMAL          │
-   ├────────────────────────┤
-   │ # animal_id            │◄────┐
-   │ * animal_name          │     │  o mother_animal_id (FK)  ⟵ רשות!
-   │ o mother_animal_id (FK)│─────┤  o father_animal_id (FK)  ⟵ רשות!
-   │ o father_animal_id (FK)│─────┘
-   └────────────────────────┘
+   +------------------------+
+   |        ANIMAL          |
+   +------------------------+
+   | # animal_id            |<----+
+   | * animal_name          |     |  o mother_animal_id (FK)  <- optional!
+   | o mother_animal_id (FK)|-----+  o father_animal_id (FK)  <- optional!
+   | o father_animal_id (FK)|-----+
+   +------------------------+
 
 
-   אפשרות ב' — M:M רקורסיבי  (גמישה, לגידול מקצועי)
+   OPTION B -- recursive M:M  (flexible, for professional breeding)
 
-   ┌────────────────────┐              ┌───────────────────────────────┐
-   │      ANIMAL        │◄─────────────│       ANIMAL_PARENTAGE        │
-   ├────────────────────┤   "הורה של"  ├───────────────────────────────┤
-   │ # animal_id        │              │ # parentage_id                │
-   │ * animal_name      │◄─────────────│ * parent_animal_id  (FK) ◇    │
-   └────────────────────┘  "צאצא של"   │ * child_animal_id   (FK) ◇    │
-                                       │ * parent_role ⟵ אם / אב       │
-                                       │ * is_confirmed ⟵ ודאי/משוער   │
-                                       │ o dna_test_date               │
-                                       └───────────────────────────────┘
+   +--------------------+              +-------------------------------+
+   |      ANIMAL        |<-------------|       ANIMAL_PARENTAGE        |
+   +--------------------+  "parent of" +-------------------------------+
+   | # animal_id        |              | # parentage_id                |
+   | * animal_name      |<-------------| * parent_animal_id  (FK) <>   |
+   +--------------------+ "offspring of"| * child_animal_id   (FK) <>   |
+                                       | * parent_role <- mother/father|
+                                       | * is_confirmed <- certain/estimated |
+                                       | o dna_test_date               |
+                                       +-------------------------------+
 ```
 
 <div dir="rtl">
@@ -742,24 +742,24 @@
 </div>
 
 ```text
-   התהליך                  │ANI│SPE│INT│PER│P_RO│VET│VAC│VC_│APP│ADO│HOM│EXP
-                           │MAL│CIE│AKE│SON│LE  │EXM│CIN│TYP│LIC│PT │VIS│NSE
-   ────────────────────────┼───┼───┼───┼───┼────┼───┼───┼───┼───┼───┼───┼────
-    קליטת חיה שנמצאה       │ C │ R │ C │R,C│ R  │ — │ — │ — │ — │ — │ — │ —
-    קליטת חיה שנמסרה       │ C │ R │ C │R,C│R,C │ — │ — │ — │ — │ — │ — │ —
-    בדיקה וטרינרית         │R,U│ — │ — │ R │ R  │ C │ — │ — │ — │ — │ — │ C
-    מתן חיסון              │ R │ — │ — │ R │ R  │ — │ C │ R │ — │ — │ — │ C
-    סימון "זמין לאימוץ"    │ U │ — │ — │ — │ —  │ R │ R │ — │ — │ — │ — │ —
-    הגשת בקשת אימוץ        │ R │ — │ — │R,C│R,C │ — │ — │ — │ C │ — │ — │ —
-    ראיון מאמץ             │ R │ — │ — │ R │ R  │ — │ — │ — │ U │ — │ — │ —
-    ביצוע אימוץ            │ U │ — │ — │ R │ R  │ — │ — │ — │ U │ C │ C │ —
-    ביקורת בית             │ R │ — │ — │ R │ R  │ — │ — │ — │ — │ R │ U │ —
-    החזרת חיה ממאמץ        │ U │ — │ C │ R │ R  │ — │ — │ — │ — │ U │ — │ —
-    רישום הוצאה            │ R │ — │ — │ — │ —  │ — │ — │ — │ — │ — │ — │ C
-    גיוס מתנדב             │ — │ — │ — │R,C│ C  │ — │ — │ — │ — │ — │ — │ —
-    דוח עלות ממוצעת לחיה   │ R │ R │ R │ — │ —  │ R │ R │ — │ — │ R │ — │ R
-    דוח זמן שהייה ממוצע    │ R │ R │ R │ — │ —  │ — │ — │ — │ — │ R │ — │ —
-   ────────────────────────┴───┴───┴───┴───┴────┴───┴───┴───┴───┴───┴───┴────
+   PROCESS                   |ANI|SPE|INT|PER|P_RO|VET|VAC|VC_|APP|ADO|HOM|EXP
+                             |MAL|CIE|AKE|SON|LE  |EXM|CIN|TYP|LIC|PT |VIS|NSE
+   --------------------------+---+---+---+---+----+---+---+---+---+---+---+----
+    Intake: found animal     | C | R | C |R,C| R  | - | - | - | - | - | - | -
+    Intake: surrendered      | C | R | C |R,C|R,C | - | - | - | - | - | - | -
+    Vet examination          |R,U| - | - | R | R  | C | - | - | - | - | - | C
+    Give vaccination         | R | - | - | R | R  | - | C | R | - | - | - | C
+    Mark "available"         | U | - | - | - | -  | R | R | - | - | - | - | -
+    Submit adoption request  | R | - | - |R,C|R,C | - | - | - | C | - | - | -
+    Interview adopter        | R | - | - | R | R  | - | - | - | U | - | - | -
+    Complete adoption        | U | - | - | R | R  | - | - | - | U | C | C | -
+    Home visit               | R | - | - | R | R  | - | - | - | - | R | U | -
+    Animal returned          | U | - | C | R | R  | - | - | - | - | U | - | -
+    Record an expense        | R | - | - | - | -  | - | - | - | - | - | - | C
+    Recruit a volunteer      | - | - | - |R,C| C  | - | - | - | - | - | - | -
+    Avg cost per animal rpt  | R | R | R | - | -  | R | R | - | - | R | - | R
+    Avg length of stay rpt   | R | R | R | - | -  | - | - | - | - | R | - | -
+   --------------------------+---+---+---+---+----+---+---+---+---+---+---+----
 ```
 
 <div dir="rtl">
@@ -800,36 +800,36 @@
 ```text
    ANIMAL:
 
-   ┌─────────┐   ┌──────────┐   ┌─────────┐   ┌──────────┐
-   │  נקלטה  │──>│  בטיפול  │──>│  זמינה  │──>│  מאומצת  │
-   │         │   │  רפואי   │   │ לאימוץ  │   │          │
-   └─────────┘   └────┬─────┘   └────┬────┘   └─────┬────┘
-                      │              │              │
-                      │              │              │ החזרה
-                      │              │◄─────────────┘
-                      │              │
-                      ▼              ▼
-                 ┌─────────────────────────┐
-                 │  נפטרה / הועברה למקלט   │  ← מצב סופי
-                 └─────────────────────────┘
+   +---------+   +----------+   +---------+   +----------+
+   | INTAKE  |-->| MEDICAL  |-->|AVAILABLE|-->| ADOPTED  |
+   |         |   |  CARE    |   |         |   |          |
+   +---------+   +----+-----+   +----+----+   +-----+----+
+                      |              |              |
+                      |              |              | returned
+                      |              |<-------------+
+                      |              |
+                      v              v
+                 +-------------------------+
+                 |  DECEASED / TRANSFERRED |  <- final state
+                 +-------------------------+
 
-   ⚠️ שימו לב: "מאומצת" ⟵ "זמינה לאימוץ" הוא מעבר חוקי (החזרה)
-      אבל "נפטרה" הוא מצב סופי — אין ממנו יציאה
+   (!) note: ADOPTED -> AVAILABLE is a legal transition (a return)
+       but DECEASED is final -- no way out
 
 
    ADOPTION_APPLICATION:
 
-   ┌────────┐   ┌──────────┐   ┌────────┐   ┌────────┐
-   │ הוגשה  │──>│ בראיון   │──>│ אושרה  │──>│ הושלמה │
-   └───┬────┘   └────┬─────┘   └───┬────┘   └────────┘
-       │             │             │
-       ▼             ▼             ▼
-   ┌───────────────────────────────────┐
-   │            נדחתה / בוטלה          │  ← מצב סופי
-   └───────────────────────────────────┘
+   +---------+   +-----------+   +---------+   +---------+
+   |SUBMITTED|-->|INTERVIEWED|-->|APPROVED |-->|COMPLETED|
+   +----+----+   +-----+-----+   +----+----+   +---------+
+        |              |              |
+        v              v              v
+   +-----------------------------------+
+   |       REJECTED / CANCELLED        |  <- final state
+   +-----------------------------------+
 
-   ⚠️ "אושרה" ⟵ "בוטלה" חוקי (המאמץ התחרט לפני החתימה)
-      "הושלמה" ⟵ אין יציאה. ביטול אחרי אימוץ = החזרה, וזה תהליך אחר
+   (!) APPROVED -> CANCELLED is legal (adopter changed their mind before signing)
+       COMPLETED -> no exit. Cancelling after adoption = a RETURN, a different process
 ```
 
 <div dir="rtl">

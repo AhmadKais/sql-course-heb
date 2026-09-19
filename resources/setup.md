@@ -59,33 +59,27 @@
 </div>
 
 ```text
-כתובת:   https://www.programiz.com/sql/online-compiler/
+URL:   https://www.programiz.com/sql/online-compiler/
 
-איך זה בנוי:
-  ┌──────────────────────────┬─────────────────────────┐
-  │  חלון הקוד               │  חלון התוצאה            │
-  │  (כאן כותבים SQL)        │  (כאן מופיעות השורות)   │
-  │                          │                         │
-  │  SELECT * FROM Customers;│  ⟵ Run                  │
-  └──────────────────────────┴─────────────────────────┘
-       ולמטה/בצד: רשימת הטבלאות הקיימות ומבנה שלהן
+How it is laid out:
+  +--------------------------+-------------------------+
+  |  CODE PANE               |  RESULT PANE            |
+  |  (you write SQL here)    |  (rows appear here)     |
+  |                          |                         |
+  |  SELECT * FROM Customers;|  <- Run                 |
+  +--------------------------+-------------------------+
+       and below / to the side: the list of existing tables and their structure
 ```
 
 <div dir="rtl">
 
 ### ההתחלה — 60 שניות
 
-</div>
-
-```text
-שלב 1 ⟶  פתחו:  https://www.programiz.com/sql/online-compiler/
-שלב 2 ⟶  מחקו את הקוד לדוגמה שכבר נמצא שם
-שלב 3 ⟶  כתבו שאילתה משלכם
-שלב 4 ⟶  לחצו  Run
-שלב 5 ⟶  התוצאה מופיעה למטה. זהו.
-```
-
-<div dir="rtl">
+1. פתחו: **[programiz.com/sql/online-compiler](https://www.programiz.com/sql/online-compiler/)**
+2. מחקו את הקוד לדוגמה שכבר נמצא שם
+3. כתבו שאילתה משלכם
+4. לחצו **Run**
+5. התוצאה מופיעה למטה. זהו.
 
 ### נסו עכשיו — בנו טבלה משלכם
 
@@ -94,7 +88,7 @@
 </div>
 
 ```sql
--- בונים טבלה
+-- create a table
 CREATE TABLE animals (
   animal_id   INTEGER PRIMARY KEY,
   name        TEXT    NOT NULL,
@@ -102,12 +96,12 @@ CREATE TABLE animals (
   arrival     TEXT
 );
 
--- מכניסים נתונים
+-- insert data
 INSERT INTO animals VALUES (1, 'Luna',  'Dog', '2026-01-15');
 INSERT INTO animals VALUES (2, 'Simba', 'Cat', '2026-02-03');
 INSERT INTO animals VALUES (3, 'Rocky', 'Dog', '2026-02-20');
 
--- שולפים
+-- query it
 SELECT name, arrival
 FROM   animals
 WHERE  species = 'Dog';
@@ -242,19 +236,13 @@ Maya   | 88
 
 ### ההתקנה
 
-</div>
-
-```text
-שלב 1 ⟶ היכנסו ל-  https://sqlitebrowser.org/dl/
-שלב 2 ⟶ הורידו לפי מערכת ההפעלה:
-             Windows  ⟶  "DB Browser for SQLite - Standard installer for 64-bit Windows"
-             macOS    ⟶  קובץ .dmg
-             Linux    ⟶  sudo apt install sqlitebrowser
-שלב 3 ⟶ התקנה רגילה: Next ⟶ Next ⟶ Install ⟶ Finish
-שלב 4 ⟶ פתחו את התוכנה
-```
-
-<div dir="rtl">
+1. היכנסו ל‑**[sqlitebrowser.org/dl](https://sqlitebrowser.org/dl/)**
+2. הורידו לפי מערכת ההפעלה:
+   - **Windows** — `DB Browser for SQLite - Standard installer for 64-bit Windows`
+   - **macOS** — קובץ `.dmg`
+   - **Linux** — `sudo apt install sqlitebrowser`
+3. התקנה רגילה: Next ⟵ Next ⟵ Install ⟵ Finish
+4. פתחו את התוכנה
 
 ### הפעם הראשונה — 4 לחיצות
 
@@ -270,7 +258,7 @@ Maya   | 88
 </div>
 
 ```sql
--- יוצרים טבלה
+-- create a table
 CREATE TABLE animals (
   animal_id   INTEGER PRIMARY KEY,
   name        TEXT    NOT NULL,
@@ -278,12 +266,12 @@ CREATE TABLE animals (
   arrival     DATE
 );
 
--- מכניסים נתונים
+-- insert data
 INSERT INTO animals VALUES (1, 'Luna',  'Dog', '2026-01-15');
 INSERT INTO animals VALUES (2, 'Simba', 'Cat', '2026-02-03');
 INSERT INTO animals VALUES (3, 'Rocky', 'Dog', '2026-02-20');
 
--- שולפים
+-- query it
 SELECT * FROM animals WHERE species = 'Dog';
 ```
 
@@ -316,18 +304,12 @@ SELECT * FROM animals WHERE species = 'Dog';
 
 ### ההרשמה
 
-</div>
-
-```text
-שלב 1 ⟶ גשו ל-  https://apex.oracle.com/en/learn/getting-started/
-שלב 2 ⟶ לחצו  "Get Started for Free"  ⟵  Request a Free Workspace
-שלב 3 ⟶ מלאו: שם, אימייל אמיתי, ושם ל-Workspace (למשל  sqlcourse2026)
-שלב 4 ⟶ בדקו את המייל  ⟵  אשרו  ⟵  קבעו סיסמה
-שלב 5 ⟶ התחברו. במסך הראשי בחרו:   SQL Workshop  ⟵  SQL Commands
-שלב 6 ⟶ זהו. כותבים SQL בחלון ולוחצים  Run
-```
-
-<div dir="rtl">
+1. גשו ל‑**[apex.oracle.com](https://apex.oracle.com/en/learn/getting-started/)**
+2. לחצו **Get Started for Free** ⟵ **Request a Free Workspace**
+3. מלאו: שם, אימייל אמיתי, ושם ל‑Workspace (למשל `sqlcourse2026`)
+4. בדקו את המייל ⟵ אשרו ⟵ קבעו סיסמה
+5. התחברו. במסך הראשי בחרו: **SQL Workshop** ⟵ **SQL Commands**
+6. זהו. כותבים SQL בחלון ולוחצים **Run**
 
 ### מה שונה כאן מ‑SQLite?
 
@@ -363,18 +345,12 @@ SELECT * FROM animals WHERE species = 'Dog';
 
 ### הדרך הכי קלה: XAMPP (ל‑MySQL)
 
-</div>
-
-```text
-שלב 1 ⟶  https://www.apachefriends.org  ⟵  הורידו XAMPP
-שלב 2 ⟶  התקינו (אפשר לבטל את הסימון של Tomcat ו-Perl — לא צריך)
-שלב 3 ⟶  פתחו את XAMPP Control Panel
-שלב 4 ⟶  לחצו  Start  ליד  MySQL   (וגם ליד Apache)
-שלב 5 ⟶  בדפדפן:   http://localhost/phpmyadmin
-שלב 6 ⟶  לחצו  "New"  בצד  ⟵  תנו שם לבסיס הנתונים  ⟵  Create
-```
-
-<div dir="rtl">
+1. **[apachefriends.org](https://www.apachefriends.org)** ⟵ הורידו XAMPP
+2. התקינו (אפשר לבטל את הסימון של Tomcat ו‑Perl — לא צריך)
+3. פתחו את **XAMPP Control Panel**
+4. לחצו **Start** ליד **MySQL** (וגם ליד Apache)
+5. בדפדפן: `http://localhost/phpmyadmin`
+6. לחצו **New** בצד ⟵ תנו שם לבסיס הנתונים ⟵ **Create**
 
 עכשיו יש לכם MySQL אמיתי עם ממשק גרפי (phpMyAdmin) לעבוד איתו.
 
@@ -382,17 +358,12 @@ SELECT * FROM animals WHERE species = 'Dog';
 
 חזק יותר, מדויק יותר בסטנדרט SQL, ואהוב מאוד בתעשייה.
 
-</div>
-
-```text
-הורדה:      https://www.postgresql.org/download/
-בהתקנה:     שמרו את הסיסמה שאתם קובעים למשתמש postgres — תצטרכו אותה!
-הכלי הגרפי: pgAdmin — מותקן אוטומטית יחד עם PostgreSQL
-
-Linux:      sudo apt install postgresql postgresql-contrib
-```
-
-<div dir="rtl">
+| | |
+|---|---|
+| **הורדה** | [postgresql.org/download](https://www.postgresql.org/download/) |
+| **בהתקנה** | ⚠️ שמרו את הסיסמה שאתם קובעים למשתמש `postgres` — תצטרכו אותה! |
+| **הכלי הגרפי** | **pgAdmin** — מותקן אוטומטית יחד עם PostgreSQL |
+| **Linux** | `sudo apt install postgresql postgresql-contrib` |
 
 | ✅ יתרונות | ❌ חסרונות |
 |-----------|-----------|
@@ -412,18 +383,15 @@ Linux:      sudo apt install postgresql postgresql-contrib
 
 עורך טקסט חינמי שנוח לכתוב בו קבצי `.sql` ולשמור אותם מסודרים.
 
-</div>
+**הורדה:** [code.visualstudio.com](https://code.visualstudio.com)
 
-```text
-הורדה:  https://code.visualstudio.com
+**תוספות ששווה להתקין** (לשונית Extensions, האייקון של הקוביות):
 
-תוספות ששווה להתקין (לשונית Extensions, האייקון של הקוביות):
-  • SQLite Viewer        ⟵ פותח קבצי .db בתוך העורך
-  • SQL Formatter        ⟵ מסדר שאילתות מבולגנות בלחיצה
-  • Markdown All in One  ⟵ אם אתם כותבים סיכומים ב-Markdown
-```
-
-<div dir="rtl">
+| התוספת | מה היא עושה |
+|---------|--------------|
+| **SQLite Viewer** | פותח קבצי `.db` בתוך העורך |
+| **SQL Formatter** | מסדר שאילתות מבולגנות בלחיצה |
+| **Markdown All in One** | אם אתם כותבים סיכומים ב‑Markdown |
 
 > 💡 גם אם אתם עובדים ב‑DB Browser, שמרו כל שאילתה חשובה בקובץ `.sql` בתיקיית הקורס שלכם. בעוד חודשיים תודו לעצמכם.
 
@@ -440,21 +408,21 @@ Linux:      sudo apt install postgresql postgresql-contrib
 </div>
 
 ```text
-📁 sql-course/
-   │
-   ├── 📁 notes/              ⟵ סיכומים שלכם לכל מודול
-   │      module-01.md
-   │      module-02.md
-   │
-   ├── 📁 exercises/          ⟵ הפתרונות שלכם לתרגילים
-   │      module-01-answers.md
-   │
-   ├── 📁 project/            ⟵ פרויקט העמותה המלווה
-   │      erd.png
-   │      shelter.db
-   │      create-tables.sql
-   │
-   └── 📁 scripts/            ⟵ שאילתות שימושיות ששווה לזכור
+sql-course/
+   |
+   +-- notes/                 <- your own summaries, per module
+   |      module-01.md
+   |      module-02.md
+   |
+   +-- exercises/             <- your solutions to the exercises
+   |      module-01-answers.md
+   |
+   +-- project/               <- the running shelter project
+   |      erd.png
+   |      shelter.db
+   |      create-tables.sql
+   |
+   +-- scripts/               <- useful queries worth keeping
           joins-cheatsheet.sql
 ```
 

@@ -58,30 +58,30 @@
 </div>
 
 ```text
-              ┌─────────────────────────────────────────────┐
-              │                  VEHICLE                    │ ← טיפוס על
-              │  ═══════════════════════════════════════    │   (Supertype)
-              │   # vehicle_id                              │
-              │   * license_plate                           │   המאפיינים
-              │   * manufacturer                            │   ה"משותפים"
-              │   * model                                   │   לכולם
-              │   * year                                    │
-              │   * purchase_date                           │
-              │  ─────────────────────────────────────────  │
-              │  ┌───────────────────┐ ┌──────────────────┐ │
-              │  │   PRIVATE_CAR     │ │      TRUCK       │ │ ← טיפוסי משנה
-              │  ├───────────────────┤ ├──────────────────┤ │   (Subtypes)
-              │  │ * num_of_seats    │ │ * max_load_tons  │ │
-              │  │ * has_child_seat  │ │ * num_of_axles   │ │   מאפיינים
-              │  │ o trunk_volume    │ │ * license_class  │ │   ייחודיים
-              │  └───────────────────┘ └──────────────────┘ │
-              │  ┌───────────────────┐                      │
-              │  │   MOTORCYCLE      │                      │
-              │  ├───────────────────┤                      │
-              │  │ * engine_cc       │                      │
-              │  │ * has_sidecar     │                      │
-              │  └───────────────────┘                      │
-              └─────────────────────────────────────────────┘
+              +---------------------------------------------+
+              |                  VEHICLE                    | <- SUPERTYPE
+              |  =======================================    |
+              |   # vehicle_id                              |
+              |   * license_plate                           |   the SHARED
+              |   * manufacturer                            |   attributes
+              |   * model                                   |   (everyone has them)
+              |   * year                                    |
+              |   * purchase_date                           |
+              |  ---------------------------------------    |
+              |  +-------------------+ +------------------+ |
+              |  |   PRIVATE_CAR     | |      TRUCK       | | <- SUBTYPES
+              |  +-------------------+ +------------------+ |
+              |  | * num_of_seats    | | * max_load_tons  | |
+              |  | * has_child_seat  | | * num_of_axles   | |   UNIQUE
+              |  | o trunk_volume    | | * license_class  | |   attributes
+              |  +-------------------+ +------------------+ |
+              |  +-------------------+                      |
+              |  |   MOTORCYCLE      |                      |
+              |  +-------------------+                      |
+              |  | * engine_cc       |                      |
+              |  | * has_sidecar     |                      |
+              |  +-------------------+                      |
+              +---------------------------------------------+
 ```
 
 <div dir="rtl">
@@ -120,14 +120,14 @@
 </div>
 
 ```text
-    ┌──────────────────────────────────────────────────────┐
-    │                      VEHICLE                         │
-    │  ┌───────────┐ ┌────────┐ ┌────────────┐ ┌─────────┐ │
-    │  │PRIVATE_CAR│ │ TRUCK  │ │ MOTORCYCLE │ │  OTHER  │ │
-    │  └───────────┘ └────────┘ └────────────┘ └─────────┘ │
-    └──────────────────────────────────────────────────────┘
-                                                     ▲
-                                        טרקטור, קלנועית, מלגזה...
+    +------------------------------------------------------+
+    |                      VEHICLE                         |
+    |  +-----------+ +--------+ +------------+ +---------+ |
+    |  |PRIVATE_CAR| | TRUCK  | | MOTORCYCLE | |  OTHER  | |
+    |  +-----------+ +--------+ +------------+ +---------+ |
+    +------------------------------------------------------+
+                                                     ^
+                                        tractor, mobility scooter, forklift...
 ```
 
 <div dir="rtl">
@@ -260,13 +260,13 @@ CREATE TABLE vehicle (
   vehicle_type    VARCHAR2(20) NOT NULL,   -- 'CAR' / 'TRUCK' / 'MOTORCYCLE'
   license_plate   VARCHAR2(15) NOT NULL,
   manufacturer    VARCHAR2(50) NOT NULL,
-  -- שדות רק למכונית:
+  -- car-only columns:
   num_of_seats    NUMBER,
   has_child_seat  CHAR(1),
-  -- שדות רק למשאית:
+  -- truck-only columns:
   max_load_tons   NUMBER,
   num_of_axles    NUMBER,
-  -- שדות רק לאופנוע:
+  -- motorcycle-only columns:
   engine_cc       NUMBER
 );
 ```
@@ -288,15 +288,15 @@ CREATE TABLE vehicle (
 ```sql
 CREATE TABLE private_car (
   car_id        NUMBER PRIMARY KEY,
-  license_plate VARCHAR2(15) NOT NULL,   -- ⚠️ משוכפל
-  manufacturer  VARCHAR2(50) NOT NULL,   -- ⚠️ משוכפל
+  license_plate VARCHAR2(15) NOT NULL,   -- (!) duplicated
+  manufacturer  VARCHAR2(50) NOT NULL,   -- (!) duplicated
   num_of_seats  NUMBER       NOT NULL
 );
 
 CREATE TABLE truck (
   truck_id      NUMBER PRIMARY KEY,
-  license_plate VARCHAR2(15) NOT NULL,   -- ⚠️ משוכפל
-  manufacturer  VARCHAR2(50) NOT NULL,   -- ⚠️ משוכפל
+  license_plate VARCHAR2(15) NOT NULL,   -- (!) duplicated
+  manufacturer  VARCHAR2(50) NOT NULL,   -- (!) duplicated
   max_load_tons NUMBER       NOT NULL
 );
 ```
@@ -327,14 +327,14 @@ CREATE TABLE vehicle (
 
 CREATE TABLE private_car (
   vehicle_id     NUMBER PRIMARY KEY
-                 REFERENCES vehicle(vehicle_id),   -- ⭐ PK וגם FK
+                 REFERENCES vehicle(vehicle_id),   -- * PK AND FK
   num_of_seats   NUMBER NOT NULL,
   has_child_seat CHAR(1) NOT NULL
 );
 
 CREATE TABLE truck (
   vehicle_id    NUMBER PRIMARY KEY
-                REFERENCES vehicle(vehicle_id),    -- ⭐ PK וגם FK
+                REFERENCES vehicle(vehicle_id),    -- * PK AND FK
   max_load_tons NUMBER NOT NULL,
   num_of_axles  NUMBER NOT NULL
 );
@@ -395,23 +395,23 @@ CREATE TABLE truck (
 </div>
 
 ```text
-   ┌─────────────────────────────────────────────────────────────┐
-   │  ① במודל / במבנה הטבלה                          הכי חזק ⚡  │
-   │     PRIMARY KEY, FOREIGN KEY, NOT NULL, UNIQUE, CHECK       │
-   │     ✅ בלתי ניתן לעקיפה · ✅ אוטומטי · ❌ רק חוקים פשוטים   │
-   ├─────────────────────────────────────────────────────────────┤
-   │  ② בקוד בסיס הנתונים                                        │
-   │     Triggers, Stored Procedures                             │
-   │     ✅ חוקים מורכבים · ✅ קרוב לנתונים · ❌ קשה לדיבוג      │
-   ├─────────────────────────────────────────────────────────────┤
-   │  ③ בשכבת האפליקציה                                          │
-   │     ולידציה בקוד השרת / הלקוח                                │
-   │     ✅ הודעות שגיאה ידידותיות · ❌ ניתן לעקוף דרך ה-DB      │
-   ├─────────────────────────────────────────────────────────────┤
-   │  ④ בנוהל אנושי                            הכי חלש ⚠️        │
-   │     "לפי הנוהל, המנהל בודק כל הנחה מעל 20%"                 │
-   │     ✅ גמיש · ❌ לא נאכף · ❌ תלוי באדם                     │
-   └─────────────────────────────────────────────────────────────┘
+   +-------------------------------------------------------------+
+   |  (1) IN THE MODEL / TABLE STRUCTURE              strongest   |
+   |      PRIMARY KEY, FOREIGN KEY, NOT NULL, UNIQUE, CHECK      |
+   |      [+] cannot be bypassed  [+] automatic  [-] simple rules only |
+   +-------------------------------------------------------------+
+   |  (2) IN DATABASE CODE                                       |
+   |      Triggers, Stored Procedures                            |
+   |      [+] complex rules  [+] close to the data  [-] hard to debug |
+   +-------------------------------------------------------------+
+   |  (3) IN THE APPLICATION LAYER                               |
+   |      validation in server / client code                     |
+   |      [+] friendly error messages  [-] bypassable via the DB |
+   +-------------------------------------------------------------+
+   |  (4) HUMAN PROCEDURE                             weakest    |
+   |      "By procedure, the manager checks every discount > 20%"|
+   |      [+] flexible  [-] not enforced  [-] depends on a person|
+   +-------------------------------------------------------------+
 ```
 
 <div dir="rtl">
@@ -486,51 +486,51 @@ CREATE TABLE truck (
 </div>
 
 ```text
-  ┌──────────────────────────────────────────────────────────────┐
-  │                          CUSTOMER                            │
-  │  # customer_id · * name · * phone · * address · * join_date  │
-  │  ┌────────────────────────────┐ ┌──────────────────────────┐ │
-  │  │     INDIVIDUAL_CUSTOMER    │ │   CORPORATE_CUSTOMER     │ │
-  │  ├────────────────────────────┤ ├──────────────────────────┤ │
-  │  │ * national_id       (UQ)   │ │ * company_number   (UQ)  │ │
-  │  │ * birth_date               │ │ * contact_person_name    │ │
-  │  │ o occupation               │ │ * contact_person_phone   │ │
-  │  │ o marital_status           │ │ * industry_sector        │ │
-  │  └────────────────────────────┘ │ o num_of_employees       │ │
-  │                                 └──────────────────────────┘ │
-  └──────────────────────────────────────────────────────────────┘
-                              │
-                              │ "מחזיק"  (M:M ⟵ ACCOUNT_HOLDER)
-                              ▼
-  ┌──────────────────────────────────────────────────────────────┐
-  │                           ACCOUNT                            │
-  │  # account_id · * account_number (UQ) · * open_date          │
-  │  * balance · * status · * branch_id (FK)                     │
-  │  ┌─────────────────┐ ┌──────────────────┐ ┌────────────────┐ │
-  │  │    CHECKING     │ │     SAVINGS      │ │      LOAN      │ │
-  │  ├─────────────────┤ ├──────────────────┤ ├────────────────┤ │
-  │  │ * overdraft_lmt │ │ * interest_rate  │ │ * principal    │ │
-  │  │ * has_checkbook │ │ * lock_period_mo │ │ * monthly_pay  │ │
-  │  │ o card_number   │ │ * min_balance    │ │ * num_payments │ │
-  │  │                 │ │ o maturity_date  │ │ * loan_type    │ │
-  │  └─────────────────┘ └──────────────────┘ │ * first_pay_dt │ │
-  │                                           └────────────────┘ │
-  └──────────────────────────────────────────────────────────────┘
-                              │
-                              │ "רושם"
-                              ▼
-                  ┌──────────────────────────┐
-                  │       TRANSACTION        │
-                  ├──────────────────────────┤
-                  │ # transaction_id         │
-                  │ * account_id       (FK)  │
-                  │ * transaction_date       │
-                  │ * amount                 │
-                  │ * transaction_type       │
-                  │ * balance_after ⭐ מוקפא │
-                  │ o approved_by_teller (FK)│  ⟵ למשיכות > 10,000
-                  │ o description            │
-                  └──────────────────────────┘
+  +--------------------------------------------------------------+
+  |                          CUSTOMER                            |
+  |  # customer_id . * name . * phone . * address . * join_date  |
+  |  +----------------------------+ +--------------------------+ |
+  |  |     INDIVIDUAL_CUSTOMER    | |   CORPORATE_CUSTOMER     | |
+  |  +----------------------------+ +--------------------------+ |
+  |  | * national_id       (UQ)   | | * company_number   (UQ)  | |
+  |  | * birth_date               | | * contact_person_name    | |
+  |  | o occupation               | | * contact_person_phone   | |
+  |  | o marital_status           | | * industry_sector        | |
+  |  +----------------------------+ | o num_of_employees       | |
+  |                                 +--------------------------+ |
+  +--------------------------------------------------------------+
+                              |
+                              | "holds"  (M:M -> ACCOUNT_HOLDER)
+                              v
+  +--------------------------------------------------------------+
+  |                           ACCOUNT                            |
+  |  # account_id . * account_number (UQ) . * open_date          |
+  |  * balance . * status . * branch_id (FK)                     |
+  |  +-----------------+ +------------------+ +----------------+ |
+  |  |    CHECKING     | |     SAVINGS      | |      LOAN      | |
+  |  +-----------------+ +------------------+ +----------------+ |
+  |  | * overdraft_lmt | | * interest_rate  | | * principal    | |
+  |  | * has_checkbook | | * lock_period_mo | | * monthly_pay  | |
+  |  | o card_number   | | * min_balance    | | * num_payments | |
+  |  |                 | | o maturity_date  | | * loan_type    | |
+  |  +-----------------+ +------------------+ | * first_pay_dt | |
+  |                                           +----------------+ |
+  +--------------------------------------------------------------+
+                              |
+                              | "records"
+                              v
+                  +--------------------------+
+                  |       TRANSACTION        |
+                  +--------------------------+
+                  | # transaction_id         |
+                  | * account_id       (FK)  |
+                  | * transaction_date       |
+                  | * amount                 |
+                  | * transaction_type       |
+                  | * balance_after  * FROZEN|
+                  | o approved_by_teller (FK)|  <- for withdrawals > 10,000
+                  | o description            |
+                  +--------------------------+
 ```
 
 <div dir="rtl">
