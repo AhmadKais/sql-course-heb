@@ -231,4 +231,14 @@ Key sentences I heard:
 
 [⬅️ לתרגילים](exercises.md) · [📖 חזרה למבוא](README.md) · [🏠 דף הקורס](../../)
 
+---
+
+<div align="center">
+
+**🧭 ניווט המודול**
+
+</div>
+
+| 📖 [חזרה למבוא](README.md) | ✏️ [לתרגילים](exercises.md) | ➡️ [מודול 1](../module-01-foundations/) | 🏠 [דף הקורס](../../) |
+|---|---|---|---|
 </div>

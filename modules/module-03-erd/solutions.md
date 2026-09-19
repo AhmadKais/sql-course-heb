@@ -873,6 +873,16 @@ CONSTRAINT intake_source_arc CHECK (
 
 [⬅️ למודול](README.md) · [➡️ מודול 4 — טיפוסי משנה וטיפוסי על](../module-04-subtypes-supertypes/)
 
+---
+
+<div align="center">
+
+**🧭 ניווט המודול**
+
+</div>
+
+| 📖 [חזרה למודול](README.md) | ❓ [שאלות ותשובות](questions.md) | ✏️ [לתרגילים](exercises.md) | 🏠 [דף הקורס](../../) |
+|---|---|---|---|
 </div>
 
 </div>

@@ -612,6 +612,16 @@ o return_reason  <- an animal can be RETURNED!
 
 [⬅️ למודול](README.md) · [➡️ מודול 3 — תרשים ERD](../module-03-erd/)
 
+---
+
+<div align="center">
+
+**🧭 ניווט המודול**
+
+</div>
+
+| 📖 [חזרה למודול](README.md) | ❓ [שאלות ותשובות](questions.md) | ✏️ [לתרגילים](exercises.md) | 🏠 [דף הקורס](../../) |
+|---|---|---|---|
 </div>
 
 </div>

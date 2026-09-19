@@ -644,4 +644,14 @@ AFTER normalization:  CUSTOMER . VEHICLE . MODEL . MAKER . BRANCH . SERVICE_TYPE
 
 [⬅️ לתרגילים](exercises.md) · [📖 חזרה למודול](README.md) · [🏠 דף הקורס](../../)
 
+---
+
+<div align="center">
+
+**🧭 ניווט המודול**
+
+</div>
+
+| 📖 [חזרה למודול](README.md) | ❓ [שאלות ותשובות](questions.md) | ✏️ [לתרגילים](exercises.md) | 🏠 [דף הקורס](../../) |
+|---|---|---|---|
 </div>

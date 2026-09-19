@@ -224,6 +224,16 @@ ORDER_LINE(order_line_id #, order_id *, product_id *, quantity *)
 
 **[✅ לפתרונות](solutions.md)**
 
+---
+
+<div align="center">
+
+**🧭 ניווט המודול**
+
+</div>
+
+| 📖 [חזרה למודול](README.md) | ❓ [שאלות ותשובות](questions.md) | ✅ [לפתרונות](solutions.md) | 🏠 [דף הקורס](../../) |
+|---|---|---|---|
 </div>
 
 </div>

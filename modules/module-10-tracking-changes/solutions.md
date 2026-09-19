@@ -663,4 +663,14 @@ ANIMAL_STATUS_HISTORY  .  Luna (animal_id = 55)
 
 [⬅️ לתרגילים](exercises.md) · [📖 חזרה למודול](README.md) · [🏠 דף הקורס](../../)
 
+---
+
+<div align="center">
+
+**🧭 ניווט המודול**
+
+</div>
+
+| 📖 [חזרה למודול](README.md) | ❓ [שאלות ותשובות](questions.md) | ✏️ [לתרגילים](exercises.md) | 🏠 [דף הקורס](../../) |
+|---|---|---|---|
 </div>

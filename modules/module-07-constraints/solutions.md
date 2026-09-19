@@ -723,4 +723,14 @@ The four constraints -- identical for all three:
 
 [⬅️ לתרגילים](exercises.md) · [📖 חזרה למודול](README.md) · [🏠 דף הקורס](../../)
 
+---
+
+<div align="center">
+
+**🧭 ניווט המודול**
+
+</div>
+
+| 📖 [חזרה למודול](README.md) | ❓ [שאלות ותשובות](questions.md) | ✏️ [לתרגילים](exercises.md) | 🏠 [דף הקורס](../../) |
+|---|---|---|---|
 </div>

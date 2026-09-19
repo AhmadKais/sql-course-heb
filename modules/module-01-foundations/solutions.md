@@ -295,6 +295,16 @@ HAVING COUNT(e.entry_id) < 12;
 
 [⬅️ חזרה למודול](README.md) · [➡️ מודול 2 — מודל הנתונים](../module-02-data-model/)
 
+---
+
+<div align="center">
+
+**🧭 ניווט המודול**
+
+</div>
+
+| 📖 [חזרה למודול](README.md) | ❓ [שאלות ותשובות](questions.md) | ✏️ [לתרגילים](exercises.md) | 🏠 [דף הקורס](../../) |
+|---|---|---|---|
 </div>
 
 </div>

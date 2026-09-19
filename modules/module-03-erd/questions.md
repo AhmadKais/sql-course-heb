@@ -354,6 +354,16 @@ STUDENT --< CLASS >-- SCHOOL          [OK] correct
 
 **[⬅️ למודול](README.md) · [✏️ לתרגילים](exercises.md)**
 
+---
+
+<div align="center">
+
+**🧭 ניווט המודול**
+
+</div>
+
+| 📖 [חזרה למודול](README.md) | ✏️ [לתרגילים](exercises.md) | ✅ [פתרונות](solutions.md) | 🏠 [דף הקורס](../../) |
+|---|---|---|---|
 </div>
 
 </div>

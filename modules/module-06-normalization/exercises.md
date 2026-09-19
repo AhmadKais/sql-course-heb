@@ -308,6 +308,16 @@ Table: TIMETABLE
 
 **[✅ לפתרונות](solutions.md)** · [חזרה למודול](README.md)
 
+---
+
+<div align="center">
+
+**🧭 ניווט המודול**
+
+</div>
+
+| 📖 [חזרה למודול](README.md) | ❓ [שאלות ותשובות](questions.md) | ✅ [לפתרונות](solutions.md) | 🏠 [דף הקורס](../../) |
+|---|---|---|---|
 </div>
 
 </div>

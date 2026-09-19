@@ -936,6 +936,16 @@ CREATE TABLE coupon_redemption (
 
 [⬅️ למודול](README.md) · [➡️ מודול 5 — יחסים](../module-05-relationships/) · [🏠 לדף הקורס](../../)
 
+---
+
+<div align="center">
+
+**🧭 ניווט המודול**
+
+</div>
+
+| 📖 [חזרה למודול](README.md) | ❓ [שאלות ותשובות](questions.md) | ✏️ [לתרגילים](exercises.md) | 🏠 [דף הקורס](../../) |
+|---|---|---|---|
 </div>
 
 </div>

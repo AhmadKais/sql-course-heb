@@ -183,6 +183,16 @@ ORDER_ID | CUST_NAME  | CUST_PHONE  | CUST_CITY | PRODUCT   | PRICE | QTY | ORDE
 
 **סיימתם? ✅ [לפתרונות](solutions.md)**
 
+---
+
+<div align="center">
+
+**🧭 ניווט המודול**
+
+</div>
+
+| 📖 [חזרה למודול](README.md) | ❓ [שאלות ותשובות](questions.md) | ✅ [לפתרונות](solutions.md) | 🏠 [דף הקורס](../../) |
+|---|---|---|---|
 </div>
 
 </div>

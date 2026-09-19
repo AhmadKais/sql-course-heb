@@ -578,4 +578,14 @@ A full example for question 3 -- "family with a 4-year-old, a flat, and a cat":
 
 [⬅️ לפרויקט](exercises.md) · [❓ למבחן החזרה](questions.md) · [📖 חזרה למודול](README.md) · [🏠 דף הקורס](../../)
 
+---
+
+<div align="center">
+
+**🧭 ניווט המודול**
+
+</div>
+
+| 📖 [חזרה למודול](README.md) | ❓ [שאלות ותשובות](questions.md) | ✏️ [לתרגילים](exercises.md) | 🏠 [דף הקורס](../../) |
+|---|---|---|---|
 </div>

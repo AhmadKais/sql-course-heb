@@ -285,6 +285,16 @@ DIKW = **D**ata → **I**nformation → **K**nowledge → **W**isdom.
 
 **סיימתם? עברו ל[תרגילים](exercises.md) ✏️**
 
+---
+
+<div align="center">
+
+**🧭 ניווט המודול**
+
+</div>
+
+| 📖 [חזרה למודול](README.md) | ✏️ [לתרגילים](exercises.md) | ✅ [פתרונות](solutions.md) | 🏠 [דף הקורס](../../) |
+|---|---|---|---|
 </div>
 
 </div>
