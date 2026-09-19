@@ -618,7 +618,7 @@ ADOPTION                                   <- * and what was ACTUALLY paid
 | ✏️ | [תרגילים](exercises.md) |
 | ✅ | [פתרונות](solutions.md) |
 | ⬅️ | [מודול 9 — פרויקט I](../module-09-project-1/) |
-| ➡️ | מודול 11 — מודלים גנריים 🔜 |
+| ➡️ | [מודול 11 — מודלים גנריים](../module-11-generic-models/) |
 | 🏠 | [חזרה לדף הקורס](../../) |
 
 </div>

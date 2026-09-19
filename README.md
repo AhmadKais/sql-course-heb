@@ -35,7 +35,8 @@
 | 8 | [תפקיד היועץ](modules/module-08-consultant/) | מיהו היועץ, אפקט הפחד, הצגה ללקוח, יומן החלטות | ✅ מוכן |
 | 9 | [פרויקט I](modules/module-09-project-1/) | פרויקט מלא: ראיון ⟵ חוקים ⟵ ERD ⟵ הצגה ⟵ שילוב שינויים | ✅ מוכן |
 | 10 | [עיצוב למעקב אחר שינויים](modules/module-10-tracking-changes/) | מימד הזמן, מודל דו‑זמני, מחירים, שיטות מעקב | ✅ מוכן |
-| 11 | מודלים גנריים | מוסכמות תרשים, מודלים גנריים | 🔜 בהמשך |
+| 11 | [מודלים גנריים](modules/module-11-generic-models/) | מוסכמות פריסה, תחומי נושא, הפשטה, EAV | ✅ מוכן |
+| 12 | מעבר לבסיס הנתונים | מהמודל הקונספטואלי לטבלאות | 🔜 בהמשך |
 | … | … | ראו את [תכנית הלימודים המלאה](SYLLABUS.md) | |
 
 ---
@@ -142,7 +143,8 @@ sql-course-heb/
 │   ├── module-07-constraints/
 │   ├── module-08-consultant/
 │   ├── module-09-project-1/
-│   └── module-10-tracking-changes/
+│   ├── module-10-tracking-changes/
+│   └── module-11-generic-models/
 ├── project/
 │   └── README.md                <- running project: animal shelter
 └── resources/

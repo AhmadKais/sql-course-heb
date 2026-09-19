@@ -655,7 +655,7 @@ ANIMAL_STATUS_HISTORY  .  Luna (animal_id = 55)
 
 ---
 
-### ➡️ מודול 11 — מודלים גנריים 🔜
+### ➡️ [מודול 11 — מודלים גנריים](../module-11-generic-models/)
 
 </div>
 
