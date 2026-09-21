@@ -511,7 +511,7 @@ Bunny    available                 <- available, but NO CHIP
 
 ---
 
-### ➡️ מודול 18 — SQL: מיונים 🔜
+### ➡️ [מודול 18 — SQL: מיונים](../module-18-sql-order-by/)
 
 </div>
 

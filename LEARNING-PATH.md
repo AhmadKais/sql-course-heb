@@ -59,7 +59,7 @@ UNIT | DESIGN LESSON (chapter)              | SQL LESSON (chapter)              
 |-------|---------------|-------------|---------|
 | **1** | [מודול 0](modules/module-00-intro/) + [מודול 1](modules/module-01-foundations/) | — | |
 | **2** | [מודול 2](modules/module-02-data-model/) | [מודול 16](modules/module-16-sql-basics/) + [מודול 17](modules/module-17-sql-where/) ✅ | [בסיס הנתונים המוכן](resources/shelter-db/) |
-| **3** | [מודול 3](modules/module-03-erd/) | מודול 18 + 19 🔜 | |
+| **3** | [מודול 3](modules/module-03-erd/) | [מודול 18](modules/module-18-sql-order-by/) + מודול 19 🔜 | |
 | **4** | [מודול 4](modules/module-04-subtypes-supertypes/) | מודול 20 🔜 | |
 | **5** | [מודול 5](modules/module-05-relationships/) | מודול 21 + 22 🔜 | |
 | **6** | [מודול 6](modules/module-06-normalization/) | מודול 23 + 24 🔜 | |
