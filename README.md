@@ -151,7 +151,7 @@ sql-course-heb/
 │   ├── module-08-consultant/
 │   ├── module-09-project-1/
 │   ├── module-10-tracking-changes/
-│   └── module-11-generic-models/   (מספר המודול = הפרק בתכנית הלימודים)
+│   └── module-11-generic-models/   (module number = syllabus chapter)
 ├── project/
 │   └── README.md                <- running project: animal shelter
 └── resources/
