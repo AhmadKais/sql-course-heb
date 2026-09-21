@@ -16,6 +16,10 @@
 
 *למה בכלל צריך בסיס נתונים · מפת הקורס כולו · איך ללמוד ולא לשכוח · אין צורך בידע קודם*
 
+### 🧭 **[מסלול הלימוד המומלץ — עיצוב ו‑SQL בשילוב](LEARNING-PATH.md)**
+
+*13 יחידות · שיעור עיצוב + שיעור SQL בכל יחידה · כותבים שאילתות מהיחידה השנייה*
+
 </div>
 
 ---
@@ -53,6 +57,8 @@
 ---
 
 ## 🧭 איך לומדים כאן?
+
+> **באיזה סדר?** יש שניים: [סדר הפרקים הרשמי](SYLLABUS.md) (15 פרקי עיצוב, ואז 17 פרקי SQL) — או [**המסלול המשולב**](LEARNING-PATH.md), שבו כל יחידה מצמידה שיעור עיצוב לשיעור SQL. **לכיתה, המשולב מומלץ.**
 
 כל מודול בקורס בנוי מארבעה קבצים, וכדאי לעבור עליהם **לפי הסדר**:
 
@@ -127,7 +133,8 @@
 ```text
 sql-course-heb/
 ├── README.md                    <- you are here
-├── SYLLABUS.md                  <- full syllabus (32 chapters)
+├── LEARNING-PATH.md             <- recommended teaching order (design + SQL interleaved)
+├── SYLLABUS.md                  <- official chapter order (32 chapters)
 ├── modules/
 │   ├── module-00-intro/         <- START HERE
 │   ├── module-01-foundations/
@@ -144,12 +151,13 @@ sql-course-heb/
 │   ├── module-08-consultant/
 │   ├── module-09-project-1/
 │   ├── module-10-tracking-changes/
-│   └── module-11-generic-models/
+│   └── module-11-generic-models/   (מספר המודול = הפרק בתכנית הלימודים)
 ├── project/
 │   └── README.md                <- running project: animal shelter
 └── resources/
     ├── glossary.md              <- Hebrew-English glossary
     ├── setup.md                 <- environment setup guide
+    ├── shelter-db/              <- ready-made practice database (units 2-7)
     └── pro-data.pdf             <- original syllabus
 ```
 
