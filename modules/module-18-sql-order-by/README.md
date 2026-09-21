@@ -611,7 +611,7 @@ Coco    4           0.1                      <- parrot, unknown: last (and only)
 | ✅ | [פתרונות](solutions.md) — עם הפלט האמיתי |
 | ⬅️ | [מודול 17 — SQL: הגבלת השליפה](../module-17-sql-where/) |
 | 🧭 | [מסלול הלימוד](../../LEARNING-PATH.md) — יחידה 3 |
-| ➡️ | מודול 19 — SQL: פונקציות 🔜 |
+| ➡️ | [מודול 19 — SQL: פונקציות](../module-19-sql-functions/) |
 | 🏠 | [חזרה לדף הקורס](../../) |
 
 </div>

@@ -517,7 +517,7 @@ Charlie  adopted
 
 ---
 
-### ➡️ מודול 19 — SQL: פונקציות 🔜
+### ➡️ [מודול 19 — SQL: פונקציות](../module-19-sql-functions/)
 
 </div>
 
