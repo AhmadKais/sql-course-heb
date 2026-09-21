@@ -58,7 +58,7 @@ UNIT | DESIGN LESSON (chapter)              | SQL LESSON (chapter)              
 | יחידה | שיעור העיצוב | שיעור ה‑SQL | הקבצים |
 |-------|---------------|-------------|---------|
 | **1** | [מודול 0](modules/module-00-intro/) + [מודול 1](modules/module-01-foundations/) | — | |
-| **2** | [מודול 2](modules/module-02-data-model/) | מודול 16 + 17 🔜 | [בסיס הנתונים המוכן](resources/shelter-db/) |
+| **2** | [מודול 2](modules/module-02-data-model/) | [מודול 16](modules/module-16-sql-basics/) + מודול 17 🔜 | [בסיס הנתונים המוכן](resources/shelter-db/) |
 | **3** | [מודול 3](modules/module-03-erd/) | מודול 18 + 19 🔜 | |
 | **4** | [מודול 4](modules/module-04-subtypes-supertypes/) | מודול 20 🔜 | |
 | **5** | [מודול 5](modules/module-05-relationships/) | מודול 21 + 22 🔜 | |

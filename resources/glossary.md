@@ -212,6 +212,24 @@
 
 ---
 
+## SQL — יסודות (מודול 16)
+
+| עברית | English | הסבר |
+|-------|---------|-------|
+| שפה דקלרטיבית | Declarative Language | אומרים **מה** רוצים, לא **איך** — בסיס הנתונים מוצא את הדרך |
+| משפט / שאילתה | Statement / Query | פקודת SQL שלמה, מסתיימת ב‑`;` |
+| חלק (של משפט) | Clause | `SELECT`, `FROM`, `WHERE`… — כל אחד הוא clause |
+| קבוצת תוצאה | Result Set | הטבלה שחוזרת משאילתה |
+| כינוי | Alias | שם אחר לעמודה או לטבלה בתוצאה — `AS` |
+| חיבור מחרוזות | Concatenation | הדבקת טקסטים — `\|\|` |
+| ייחודי | `DISTINCT` | הסרת שורות כפולות מהתוצאה |
+| ערך חסר | `NULL` | "לא ידוע" — לא אפס ולא ריק; כל פעולה איתו מחזירה NULL |
+| הערה | Comment | `-- text` — טקסט שבסיס הנתונים מתעלם ממנו |
+| דיאלקט | Dialect | הגרסה של SQL בכלי מסוים (SQLite, Oracle, MySQL) |
+| `DUAL` | — | טבלה דמה באורקל לשאילתות בלי טבלה: `SELECT 1+1 FROM DUAL` |
+
+---
+
 ## ראשי תיבות
 
 | ר"ת | הפירוש | בעברית |
@@ -237,7 +255,7 @@
 
 ## 🔤 אינדקס אלפביתי (אנגלית)
 
-`Abstraction Scale` · `ACID` · `Anomaly` · `Arc` · `Attribute` · `Audit Log` · `Barker Notation` · `Bitemporal Model` · `Business Rule` · `Candidate Key` · `Cardinality` · `Cascade Delete` · `Check Constraint` · `Code Table` · `Column` · `Composite Attribute` · `Composite Key` · `Conceptual Model` · `Constraint` · `Crow's Foot` · `CRUD` · `Custom Fields` · `Data` · `Data Dictionary` · `Data Independence` · `Data Integrity` · `Data Model` · `Data Redundancy` · `Database` · `DBMS` · `DCL` · `DDL` · `Decision Log` · `Degree` · `Delete Rule` · `Denormalization` · `Derived Attribute` · `Discriminator` · `DML` · `Domain` · `EAV` · `Entity` · `Entity Integrity` · `ERD` · `Event Chain` · `Event Pattern` · `Exhaustive Rule` · `Fear Effect` · `First Normal Form` · `Foreign Key` · `Frozen Value` · `Functional Dependency` · `Generic Model` · `Handover` · `Hierarchical Model` · `Hierarchical Relationship` · `Historical Data` · `Index` · `Information` · `Inheritance` · `Instance` · `Intersection Entity` · `Knowledge` · `Layout Conventions` · `Logical Model` · `Mandatory Attribute` · `Matrix Diagram` · `Multi-tenancy` · `Multi‑valued Attribute` · `Mutually Exclusive Rule` · `Natural Key` · `Network Model` · `Normalization` · `NULL` · `OLAP` · `OLTP` · `Open Period` · `Optional Attribute` · `Optionality` · `Overview Diagram` · `Partial Dependency` · `Party Pattern` · `Physical Model` · `Playback` · `Point in Time` · `Price List` · `Price Lock` · `Primary Key` · `Query` · `Recursive Query` · `Recursive Relationship` · `Redundant Relationship` · `Referential Integrity` · `Relational Model` · `Relationship` · `Repeating Group` · `Role` · `Row` · `SCD` · `Schema` · `Scope Creep` · `SDLC` · `Second Normal Form` · `Secondary UID` · `Set Null` · `SQL` · `Stakeholders` · `Subject Area` · `Subtype` · `Supertype` · `Surrogate Key` · `Table` · `Third Normal Form` · `Time Dimension` · `Transaction` · `Transaction Time` · `Transitive Dependency` · `Trigger` · `UID` · `Valid Time` · `Versioning` · `View` · `Wisdom`
+`Abstraction Scale` · `ACID` · `Alias` · `Anomaly` · `Arc` · `Attribute` · `Audit Log` · `Barker Notation` · `Bitemporal Model` · `Business Rule` · `Candidate Key` · `Cardinality` · `Cascade Delete` · `Check Constraint` · `Clause` · `Code Table` · `Column` · `Composite Attribute` · `Composite Key` · `Concatenation` · `Conceptual Model` · `Constraint` · `Crow's Foot` · `CRUD` · `Custom Fields` · `Data` · `Data Dictionary` · `Data Independence` · `Data Integrity` · `Data Model` · `Data Redundancy` · `Database` · `DBMS` · `DCL` · `DDL` · `Decision Log` · `Declarative Language` · `Degree` · `Delete Rule` · `Denormalization` · `Derived Attribute` · `Dialect` · `Discriminator` · `DISTINCT` · `DML` · `Domain` · `DUAL` · `EAV` · `Entity` · `Entity Integrity` · `ERD` · `Event Chain` · `Event Pattern` · `Exhaustive Rule` · `Fear Effect` · `First Normal Form` · `Foreign Key` · `Frozen Value` · `Functional Dependency` · `Generic Model` · `Handover` · `Hierarchical Model` · `Hierarchical Relationship` · `Historical Data` · `Index` · `Information` · `Inheritance` · `Instance` · `Intersection Entity` · `Knowledge` · `Layout Conventions` · `Logical Model` · `Mandatory Attribute` · `Matrix Diagram` · `Multi-tenancy` · `Multi‑valued Attribute` · `Mutually Exclusive Rule` · `Natural Key` · `Network Model` · `Normalization` · `NULL` · `OLAP` · `OLTP` · `Open Period` · `Optional Attribute` · `Optionality` · `Overview Diagram` · `Partial Dependency` · `Party Pattern` · `Physical Model` · `Playback` · `Point in Time` · `Price List` · `Price Lock` · `Primary Key` · `Query` · `Recursive Query` · `Recursive Relationship` · `Redundant Relationship` · `Referential Integrity` · `Relational Model` · `Relationship` · `Repeating Group` · `Result Set` · `Role` · `Row` · `SCD` · `Schema` · `Scope Creep` · `SDLC` · `Second Normal Form` · `Secondary UID` · `Set Null` · `SQL` · `Stakeholders` · `Statement` · `Subject Area` · `Subtype` · `Supertype` · `Surrogate Key` · `Table` · `Third Normal Form` · `Time Dimension` · `Transaction` · `Transaction Time` · `Transitive Dependency` · `Trigger` · `UID` · `Valid Time` · `Versioning` · `View` · `Wisdom`
 
 ---
 
