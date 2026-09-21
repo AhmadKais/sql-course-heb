@@ -43,7 +43,8 @@
 | 12 | מעבר לבסיס הנתונים | מהמודל הקונספטואלי לטבלאות | 🔜 בהמשך |
 | … | … | פרקים 13–15 | 🔜 |
 | **16** | [SQL: המשפט הראשון](modules/module-16-sql-basics/) | `SELECT`, `FROM`, כינויים, חישובים, `DISTINCT`, NULL | ✅ מוכן |
-| 17 | SQL: הגבלת השליפה | `WHERE`, אופרטורים | 🔜 בהמשך |
+| 17 | [SQL: הגבלת השליפה](modules/module-17-sql-where/) | `WHERE`, `BETWEEN`, `IN`, `LIKE`, `IS NULL`, `AND`/`OR` | ✅ מוכן |
+| 18 | SQL: מיונים | `ORDER BY` | 🔜 בהמשך |
 | … | … | ראו את [תכנית הלימודים המלאה](SYLLABUS.md) | |
 
 ---
@@ -155,7 +156,8 @@ sql-course-heb/
 │   ├── module-09-project-1/
 │   ├── module-10-tracking-changes/
 │   ├── module-11-generic-models/
-│   └── module-16-sql-basics/       (module number = syllabus chapter)
+│   ├── module-16-sql-basics/
+│   └── module-17-sql-where/        (module number = syllabus chapter)
 ├── project/
 │   └── README.md                <- running project: animal shelter
 └── resources/
