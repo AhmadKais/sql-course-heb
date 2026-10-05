@@ -60,16 +60,16 @@ UNIT | DESIGN LESSON (chapter)              | SQL LESSON (chapter)              
 | **1** | [מודול 0](modules/module-00-intro/) + [מודול 1](modules/module-01-foundations/) | — | |
 | **2** | [מודול 2](modules/module-02-data-model/) | [מודול 16](modules/module-16-sql-basics/) + [מודול 17](modules/module-17-sql-where/) ✅ | [בסיס הנתונים המוכן](resources/shelter-db/) |
 | **3** | [מודול 3](modules/module-03-erd/) | [מודול 18](modules/module-18-sql-order-by/) + [מודול 19](modules/module-19-sql-functions/) ✅ | |
-| **4** | [מודול 4](modules/module-04-subtypes-supertypes/) | מודול 20 🔜 | |
-| **5** | [מודול 5](modules/module-05-relationships/) | מודול 21 + 22 🔜 | |
-| **6** | [מודול 6](modules/module-06-normalization/) | מודול 23 + 24 🔜 | |
-| **7** | [מודול 7](modules/module-07-constraints/) | מודול 27 🔜 | |
-| **8** | מודול 12 🔜 | מודול 26 🔜 | ⭐ מכאן — בסיס נתונים משלכם |
-| **9** | [מודול 8](modules/module-08-consultant/) + [מודול 9](modules/module-09-project-1/) | מודול 25 🔜 | |
-| **10** | [מודול 10](modules/module-10-tracking-changes/) | מודול 28 + 32 🔜 | |
-| **11** | [מודול 11](modules/module-11-generic-models/) | מודול 29 🔜 | |
-| **12** | מודול 13 + 14 🔜 | מודול 30 🔜 | |
-| **13** | מודול 15 🔜 | מודול 31 🔜 | |
+| **4** | [מודול 4](modules/module-04-subtypes-supertypes/) | [מודול 20](modules/module-20-sql-functions-2/) ✅ | |
+| **5** | [מודול 5](modules/module-05-relationships/) | [מודול 21](modules/module-21-sql-joins/) + [מודול 22](modules/module-22-sql-joins-2/) ✅ | |
+| **6** | [מודול 6](modules/module-06-normalization/) | [מודול 23](modules/module-23-sql-aggregates/) + [מודול 24](modules/module-24-sql-group-by/) ✅ | |
+| **7** | [מודול 7](modules/module-07-constraints/) | [מודול 27](modules/module-27-sql-constraints/) ✅ | |
+| **8** | [מודול 12](modules/module-12-mapping/) | [מודול 26](modules/module-26-sql-ddl/) ✅ | ⭐ מכאן — בסיס נתונים משלכם |
+| **9** | [מודול 8](modules/module-08-consultant/) + [מודול 9](modules/module-09-project-1/) | [מודול 25](modules/module-25-sql-dml/) ✅ | |
+| **10** | [מודול 10](modules/module-10-tracking-changes/) | [מודול 28](modules/module-28-sql-views/) + [מודול 32](modules/module-32-sql-transactions/) ✅ | |
+| **11** | [מודול 11](modules/module-11-generic-models/) | [מודול 29](modules/module-29-sql-objects/) ✅ | |
+| **12** | [מודול 13](modules/module-13-sql-1/) + [מודול 14](modules/module-14-sdlc/) | [מודול 30](modules/module-30-sql-users/) ✅ | |
+| **13** | [מודול 15](modules/module-15-presentation/) | [מודול 31](modules/module-31-sql-final-project/) ✅ | |
 
 ---
 

@@ -40,14 +40,27 @@
 | 9 | [פרויקט I](modules/module-09-project-1/) | פרויקט מלא: ראיון ⟵ חוקים ⟵ ERD ⟵ הצגה ⟵ שילוב שינויים | ✅ מוכן |
 | 10 | [עיצוב למעקב אחר שינויים](modules/module-10-tracking-changes/) | מימד הזמן, מודל דו‑זמני, מחירים, שיטות מעקב | ✅ מוכן |
 | 11 | [מודלים גנריים](modules/module-11-generic-models/) | מוסכמות פריסה, תחומי נושא, הפשטה, EAV | ✅ מוכן |
-| 12 | מעבר לבסיס הנתונים | מהמודל הקונספטואלי לטבלאות | 🔜 בהמשך |
-| … | … | פרקים 13–15 | 🔜 |
+| 12 | [מעבר לבסיס הנתונים](modules/module-12-mapping/) | מונחים, מיפוי ישויות ויחסים, טיפוסי משנה, APEX | ✅ מוכן |
+| 13 | [SQL I — הכרות, עבודת צוות וניהול](modules/module-13-sql-1/) | מפת SQL, תפקידים, Kanban, Git, סיכונים | ✅ מוכן |
+| 14 | [SDLC](modules/module-14-sdlc/) | שלבי הפיתוח, Waterfall מול Agile, בדיקות, טבלאות בסבבים | ✅ מוכן |
+| 15 | [המצגת](modules/module-15-presentation/) | סיפור, שקפים, הדגמה חיה, מסמך, חזרות | ✅ מוכן |
 | **16** | [SQL: המשפט הראשון](modules/module-16-sql-basics/) | `SELECT`, `FROM`, כינויים, חישובים, `DISTINCT`, NULL | ✅ מוכן |
 | 17 | [SQL: הגבלת השליפה](modules/module-17-sql-where/) | `WHERE`, `BETWEEN`, `IN`, `LIKE`, `IS NULL`, `AND`/`OR` | ✅ מוכן |
 | 18 | [SQL: מיונים](modules/module-18-sql-order-by/) | `ORDER BY`, NULL במיון, `LIMIT`, סדר הביצוע הלוגי | ✅ מוכן |
 | 19 | [SQL: פונקציות](modules/module-19-sql-functions/) | טקסט, מספרים, תאריכים, חישוב גיל, SQLite מול Oracle | ✅ מוכן |
-| 20 | SQL: פונקציות 2 | המרה, `COALESCE`, `CASE` | 🔜 בהמשך |
-| … | … | ראו את [תכנית הלימודים המלאה](SYLLABUS.md) | |
+| 20 | [SQL: פונקציות 2](modules/module-20-sql-functions-2/) | המרה, `COALESCE`, `NULLIF`, `CASE` | ✅ מוכן |
+| 21 | [SQL: איחוד טבלאות](modules/module-21-sql-joins/) | תוצר קרטזי, equi/nonequi, outer, self join, היררכיה | ✅ מוכן |
+| 22 | [SQL: איחוד טבלאות 2](modules/module-22-sql-joins-2/) | `CROSS`, `NATURAL`, `USING`, `RIGHT`/`FULL`, שרשראות | ✅ מוכן |
+| 23 | [SQL: פונקציות מצרפיות](modules/module-23-sql-aggregates/) | `COUNT`/`SUM`/`AVG`, NULL, `SUM(CASE)` | ✅ מוכן |
+| 24 | [SQL: קיבוץ ותתי‑שאילתות](modules/module-24-sql-group-by/) | `GROUP BY`, `HAVING`, `ROLLUP`, תתי‑שאילתות, `UNION` | ✅ מוכן |
+| 25 | [SQL: DML](modules/module-25-sql-dml/) | `INSERT`, `UPDATE`, `DELETE`, `DEFAULT`, `MERGE` | ✅ מוכן |
+| 26 | [SQL: DDL](modules/module-26-sql-ddl/) | `CREATE`, טיפוסים, `STRICT`, `ALTER`, `DROP` | ✅ מוכן |
+| 27 | [SQL: אילוצים](modules/module-27-sql-constraints/) | `NOT NULL`, `UNIQUE`, PK, FK, `CHECK`, קשתות | ✅ מוכן |
+| 28 | [SQL: Views](modules/module-28-sql-views/) | יצירה, אבטחה, מצב נוכחי מהיסטוריה | ✅ מוכן |
+| 29 | [SQL: אובייקטים נוספים](modules/module-29-sql-objects/) | Sequences, אינדקסים, Synonyms, ראיון בכיתה | ✅ מוכן |
+| 30 | [SQL: ניהול משתמשים](modules/module-30-sql-users/) | `GRANT`, Roles, Regex, חיפוש עבודה | ✅ מוכן |
+| 31 | [SQL: פרויקט מסכם](modules/module-31-sql-final-project/) | תוצרים, 15 שאילתות, מחוון, הגנה | ✅ מוכן |
+| 32 | [SQL: טרנזקציות](modules/module-32-sql-transactions/) | `COMMIT`, `ROLLBACK`, `SAVEPOINT`, ACID, הסמכה | ✅ מוכן |
 
 ---
 

@@ -730,7 +730,7 @@ RESTAURANT_BOOKING     SALON_APPOINTMENT      GARAGE_JOB
 | ✏️ | [תרגילים](exercises.md) |
 | ✅ | [פתרונות](solutions.md) |
 | ⬅️ | [מודול 10 — עיצוב למעקב אחר שינויים](../module-10-tracking-changes/) |
-| ➡️ | מודול 12 — מעבר לבסיס הנתונים 🔜 |
+| ➡️ | [מודול 12 — מעבר לבסיס הנתונים](../module-12-mapping/) |
 | 🏠 | [חזרה לדף הקורס](../../) |
 
 </div>

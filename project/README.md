@@ -34,8 +34,10 @@
 | **ח'** | [מודול 9](../modules/module-09-project-1/) | ⭐ פרויקט מלא: שני תמלילי ראיון · חוקים · ERD · הצגה · שילוב שינויים | [פתרון ייחוס](../modules/module-09-project-1/solutions.md) |
 | **ט'** | [מודול 10](../modules/module-10-tracking-changes/) | מימד הזמן · מודל תעריפים · שרשרת סטטוס · מה לא לעקוב | [פתרון](../modules/module-10-tracking-changes/solutions.md) |
 | **י'** | [מודול 11](../modules/module-11-generic-models/) | ביקורת הפשטה · תחומי נושא · שדות מותאמים · תרשים להצגה | [פתרון](../modules/module-11-generic-models/solutions.md) |
-| **י"א** | מודול 12 🔜 | מיפוי לטבלאות — מהמודל הקונספטואלי ללוגי | |
-| **י"ב** | מודול 13+ 🔜 | `CREATE TABLE` · הזנת נתונים · שאילתות SQL | |
+| **י"א** | [מודול 12](../modules/module-12-mapping/) + [מודול 26](../modules/module-26-sql-ddl/) | מיפוי לטבלאות · `CREATE TABLE` | [פתרון](../modules/module-12-mapping/solutions.md) |
+| **י"ב** | [מודול 27](../modules/module-27-sql-constraints/) + [מודול 25](../modules/module-25-sql-dml/) | אילוצים · הזנת נתונים | [פתרון](../modules/module-27-sql-constraints/solutions.md) |
+| **י"ג** | [מודולים 13–14](../modules/module-13-sql-1/) | עבודת צוות · SDLC · טבלאות בסבבים | [דוגמאות](../modules/module-14-sdlc/solutions.md) |
+| **י"ד** | ⭐ [מודול 31](../modules/module-31-sql-final-project/) + [מודול 15](../modules/module-15-presentation/) | 15 שאילתות · Views · מצגת והגנה | [פתרון ייחוס](../modules/module-31-sql-final-project/solutions.md) |
 
 ---
 
