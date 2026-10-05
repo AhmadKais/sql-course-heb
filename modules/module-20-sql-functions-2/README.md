@@ -565,7 +565,7 @@ intake_id  intake_type  details
 
 ```text
 +--------------------------+------------------------------+-------------------------------+
-| WHAT                     | SQLite (Programiz)           | Oracle (APEX / exam)          |
+| WHAT                     | SQLite (OneCompiler)           | Oracle (APEX / exam)          |
 +--------------------------+------------------------------+-------------------------------+
 | convert type             | CAST(x AS INTEGER/REAL/TEXT) | CAST(x AS NUMBER/VARCHAR2(n)) |
 | text -> number           | CAST(x AS INTEGER)           | TO_NUMBER(x)                  |

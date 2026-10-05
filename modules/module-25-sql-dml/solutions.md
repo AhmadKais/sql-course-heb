@@ -241,3 +241,35 @@ SELECT intake_id, animal_id, intake_type, location, reason FROM intake;
 </div>
 
 </div>
+
+<!-- exam-style:start -->
+<div dir="rtl">
+
+---
+
+## 🎓 תרגול בסגנון הבחינה: פתרונות
+
+**ב1.** ```sql
+INSERT INTO Members (Id, FirstName, LastName, CityCode, Age, JoinYear)
+VALUES (1013, "אור", "גבאי", 6, 15, 2025);
+```
+
+**ב2.** ```sql
+UPDATE Clubs SET Price = Price + 20
+WHERE Sport = "שחייה";
+```
+**2** רשומות (102 ו‑103). בבחינה כותבים `SET Clubs.Price = Clubs.Price + 20`.
+
+**ב3.** **כל** 18 הרשומות יימחקו, והטבלה תישאר ריקה. לפני `DELETE` או `UPDATE` כדאי להריץ קודם `SELECT` עם אותו `WHERE`, כדי לראות מה ייפגע.
+
+<figure dir="ltr" class="dbtable">
+
+| rows_before |
+|:---:|
+| 18 |
+
+</figure>
+
+
+</div>
+<!-- exam-style:end -->

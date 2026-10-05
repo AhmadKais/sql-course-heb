@@ -314,7 +314,7 @@ Ruti Almog   0          <- LEFT JOIN keeps her: Ruti manages, she doesn't do res
 
 | ✔ | הבדיקה |
 |---|--------|
-| ☐ | `build.sql` רץ **פעמיים ברצף** על חלון ריק ב‑Programiz / DB Browser — בלי שגיאה |
+| ☐ | `build.sql` רץ **פעמיים ברצף** על חלון ריק ב‑OneCompiler / DB Browser — בלי שגיאה |
 | ☐ | `PRAGMA foreign_keys = ON;` בשורה הראשונה |
 | ☐ | לכל טבלה `PRIMARY KEY`; לכל מפתח זר — `REFERENCES` ו‑אינדקס |
 | ☐ | לכל אילוץ שם (`pk_`, `fk_`, `uq_`, `chk_`) |

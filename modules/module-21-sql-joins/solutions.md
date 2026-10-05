@@ -529,3 +529,100 @@ step  name
 </div>
 
 </div>
+
+
+<!-- w3schools:start -->
+<div dir="rtl">
+
+---
+
+## 🌐 תרגול ב‑W3Schools: פתרונות
+
+> כל השאילתות כאן הורצו ב‑W3Schools. מספר הרשומות הוא מה שהאתר מחזיר.
+
+**W1.**
+
+```sql
+SELECT Customers.CustomerName, Orders.OrderID FROM Customers, Orders WHERE Customers.CustomerID = Orders.CustomerID AND Customers.Country = 'Germany';
+```
+
+**25** רשומות. השורה הראשונה: `Drachenblut Delikatessend · 10391`
+
+**W2.**
+
+```sql
+SELECT Products.ProductName, Categories.CategoryName FROM Products, Categories WHERE Products.CategoryID = Categories.CategoryID;
+```
+
+**77** רשומות. השורה הראשונה: `Chais · Beverages`
+
+**W3.**
+
+```sql
+SELECT Orders.OrderID, Customers.CustomerName, Shippers.ShipperName FROM Orders, Customers, Shippers WHERE Orders.CustomerID = Customers.CustomerID AND Orders.ShipperID = Shippers.ShipperID;
+```
+
+**196** רשומות. השורה הראשונה: `10248 · Wilman Kala · Federal Shipping`
+
+
+</div>
+<!-- w3schools:end -->
+
+<!-- exam-style:start -->
+<div dir="rtl">
+
+---
+
+## 🎓 תרגול בסגנון הבחינה: פתרונות
+
+**ב1.** `Cities` · `CityCode`. זו **אותה שאילתה** כמו `FROM Members JOIN Cities ON Members.CityCode = Cities.CityCode`.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | CityName |
+|:---:|:---:|
+| אדם | ירכא |
+| נור | ירכא |
+| יואב | כרמיאל |
+| מאיה | כרמיאל |
+| רוני | עכו |
+| סאלי | עכו |
+| עומר | נהריה |
+| שירה | חיפה |
+| כרים | ירכא |
+| תמר | נהריה |
+| ליאור | חיפה |
+| ג'וד | ירכא |
+
+</figure>
+
+**ב2.** **72** = 12 משתתפים × 6 ערים. זה **תוצר קרטזי**: שכחו את תנאי החיבור.
+
+<figure dir="ltr" class="dbtable">
+
+| cnt |
+|:---:|
+| 72 |
+
+</figure>
+
+**ב3.** ```sql
+SELECT Clubs.ClubName
+FROM Clubs, ClubMembers
+WHERE Clubs.ClubCode = ClubMembers.ClubCode
+  AND ClubMembers.Id = 1001;
+```
+כאן מספיקות **שתי** טבלאות, כי Id כבר נמצא ב‑ClubMembers. כדי להציג גם את **שם** המשתתף, צריך להוסיף את Members ותנאי חיבור שני.
+
+<figure dir="ltr" class="dbtable">
+
+| ClubName |
+|:---:|
+| כדורגל צעירים |
+| כדורסל |
+
+</figure>
+
+
+</div>
+<!-- exam-style:end -->

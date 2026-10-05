@@ -21,7 +21,7 @@
 | 3 | **12 ישויות — במסלול אחד** | ERD של תחום "חיה": קליטה ⟵ חיסון ⟵ אימוץ | מסבירים מסלול אחד, לא את כל התרשים | 1:00 |
 | 4 | **שומרים את המחיר ששולם — לא מחשבים** | 2023: 300 ₪ · היום: 400 ₪ | "אילו חישבנו מהמחירון, ההכנסות של 2023 היו 'גדלות' ביום שהמחיר עלה" | 0:30 |
 | 5 | **חזרה של חיה = קליטה חדשה** | ציר הזמן של לונה (מודול 31, שאילתה 13) | "כך אפשר לראות שבפעם השנייה לונה חיכתה פי 7" | 0:30 |
-| 6 | 🖥️ **הדגמה: בונים הכול מאפס** | — (Programiz) | הדבקה של `build.sql`, Run | 0:30 |
+| 6 | 🖥️ **הדגמה: בונים הכול מאפס** | — (OneCompiler) | הדבקה של `build.sql`, Run | 0:30 |
 | 7 | 🖥️ **הדגמה: מי מחכה הכי הרבה?** | — | שאילתת `in_shelter` | 1:30 |
 | 8 | 🖥️ **הדגמה: נתון שגוי לא נכנס** | — | אימוץ על ידי אדם שלא קיים ⟵ שגיאה | 1:00 |
 | 9 | **החיות מחכות שנתיים בממוצע** | גרף עמודות לפי מין | "לא מין מסוים — המקלט כולו" | 1:00 |
@@ -53,7 +53,7 @@
              shows:   FOREIGN KEY constraint failed  ->  ROLLBACK  ->  Rex still available
              says:    "the database won't let it happen. Not by mistake, not on purpose."
 
-   BACKUP:  if Programiz is down -> DB Browser (already open)
+   BACKUP:  if OneCompiler is down -> DB Browser (already open)
             if anything fails    -> "we have a screenshot" -> hidden slides 13-15
 ```
 

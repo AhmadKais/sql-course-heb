@@ -101,3 +101,17 @@
 </div>
 
 </div>
+
+<!-- w3schools:start -->
+<div dir="rtl">
+
+---
+
+## 🌐 תרגול נוסף ב‑W3Schools
+
+📖 **לקריאה ב‑W3Schools:** [אילוצים](https://www.w3schools.com/sql/sql_constraints.asp) · [PRIMARY KEY](https://www.w3schools.com/sql/sql_primarykey.asp) · [FOREIGN KEY](https://www.w3schools.com/sql/sql_foreignkey.asp)
+
+> 💻 הפקודות של השיעור הזה **משנות** נתונים או מבנה, ו‑W3Schools לא מאפשר את זה. קראו שם את ההסבר, ואת התרגול עצמו עשו ב‑OneCompiler, על בסיס הנתונים של המקלט ([הוראות](../../resources/setup.md)).
+
+</div>
+<!-- w3schools:end -->

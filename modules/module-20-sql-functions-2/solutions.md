@@ -479,3 +479,24 @@ expense_id  category  amount  priority
 </div>
 
 </div>
+
+<!-- w3schools:start -->
+<div dir="rtl">
+
+---
+
+## 🌐 תרגול ב‑W3Schools: פתרונות
+
+> כל השאילתות כאן הורצו ב‑W3Schools. מספר הרשומות הוא מה שהאתר מחזיר.
+
+**W1.**
+
+```sql
+SELECT Products.ProductName, CASE WHEN Products.Price < 20 THEN 'cheap' ELSE 'expensive' END AS PriceLevel FROM Products;
+```
+
+**77** רשומות. השורה הראשונה: `Chais · cheap`
+
+
+</div>
+<!-- w3schools:end -->

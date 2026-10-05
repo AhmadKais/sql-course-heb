@@ -12,13 +12,21 @@
 
 ## 👇 חדשים כאן? התחילו מכאן
 
-### 🚪 **[מבוא — לפני שמתחילים](modules/module-00-intro/)**
+### 🚪 **[שיעור 1: טבלאות, מפתחות והשאילתה הראשונה](modules/module-00-quick-start/)**
 
-*למה בכלל צריך בסיס נתונים · מפת הקורס כולו · איך ללמוד ולא לשכוח · אין צורך בידע קודם*
+*מפתח ראשי ומפתח זר · קשרים · תרשים DSD · השאילתה הראשונה, כבר בשיעור הראשון*
 
-### 🧭 **[מסלול הלימוד המומלץ — עיצוב ו‑SQL בשילוב](LEARNING-PATH.md)**
+### 🧭 **[סדר ההוראה: 20 שיעורים, SQL משיעור 2](LEARNING-PATH.md)**
 
-*13 יחידות · שיעור עיצוב + שיעור SQL בכל יחידה · כותבים שאילתות מהיחידה השנייה*
+*כל נושא עיצובי לצד ה‑SQL שמשתמש בו · תרגול בסגנון הבחינה בכל שיעור*
+
+### 📋 **[קובצי ה‑SQL להעתקה](SQL-FILES.md)**
+
+*כל בסיסי הנתונים של הקורס: מעתיקים בשתי לחיצות ומדביקים ב‑[OneCompiler](https://onecompiler.com/sqlite)*
+
+### 🎓 **[הכנה לבחינה (שאלון 735911)](exam-prep/)**
+
+*איך בנוי חלק בסיסי הנתונים · דף עזר להדפסה · 3 בחינות לדוגמה, עם קבצי `.sql` לבדיקה עצמית*
 
 </div>
 
@@ -28,7 +36,8 @@
 
 | # | מודול | נושא | סטטוס |
 |---|-------|------|-------|
-| **0** | [**מבוא — לפני שמתחילים**](modules/module-00-intro/) | למה בכלל צריך בסיס נתונים, מפת הקורס, איך ללמוד | ✅ מוכן |
+| **0–1** | [**שיעור 1: טבלאות, מפתחות והשאילתה הראשונה**](modules/module-00-quick-start/) | DDL/DML, PK/FK, קשרים, DSD, `SELECT` ראשון. **מחליף** בהוראה את פרקים 0–1 | ✅ חדש |
+| 0 | [מבוא, הגרסה המלאה](modules/module-00-intro/) | להרחבה בלבד | ✅ |
 | 1 | [רקע ומושגי יסוד](modules/module-01-foundations/) | נתונים מול מידע, היסטוריה של בסיסי נתונים, DBMS | ✅ מוכן |
 | 2 | [מודל הנתונים](modules/module-02-data-model/) | ישויות, מופעים, מאפיינים, מזהים | ✅ מוכן |
 | 3 | [תרשים ERD](modules/module-03-erd/) | קשרים, יחסים, מוסכמות שרטוט, דיאגרמות מטריציוניות | ✅ מוכן |
@@ -77,7 +86,7 @@
 
 ## 🧭 איך לומדים כאן?
 
-> **באיזה סדר?** יש שניים: [סדר הפרקים הרשמי](SYLLABUS.md) (15 פרקי עיצוב, ואז 17 פרקי SQL) — או [**המסלול המשולב**](LEARNING-PATH.md), שבו כל יחידה מצמידה שיעור עיצוב לשיעור SQL. **לכיתה, המשולב מומלץ.**
+> **באיזה סדר?** לפי [**סדר ההוראה**](LEARNING-PATH.md): 20 שיעורים, ו‑SQL כבר מהשיעור השני. [סדר הפרקים הרשמי](SYLLABUS.md) (15 פרקי עיצוב ואחריהם 17 פרקי SQL) נשאר רק כמפה.
 
 כל מודול בקורס בנוי מארבעה קבצים, וכדאי לעבור עליהם **לפי הסדר**:
 
@@ -133,7 +142,8 @@
 
 | כלי | למה הוא טוב | קישור |
 |-----|-------------|-------|
-| ⭐ **Programiz Online SQL** | **ברירת המחדל של הקורס** — רץ בדפדפן, אפס התקנה, מגיע עם נתוני דוגמה | [programiz.com](https://www.programiz.com/sql/online-compiler/) |
+| ⭐ **OneCompiler (SQLite)** | **ברירת המחדל של הקורס**: בדפדפן, בלי התקנה. מדביקים את `shelter.sql` או קובץ של בחינה לדוגמה, וכל הפקודות עובדות | [onecompiler.com/sqlite](https://onecompiler.com/sqlite) |
+| ⭐ **W3Schools SQL** | הסבר על כל נושא, ותרגול `SELECT` על בסיס הנתונים שלו (לקריאה בלבד, SQL Server) | [w3schools.com/sql](https://www.w3schools.com/sql/) |
 | **DB Fiddle** | חלופה בדפדפן לבדיקת שאילתה בודדת | [db-fiddle.com](https://www.db-fiddle.com) |
 | **SQLite + DB Browser** | מקומי, ללא שרת — כשרוצים לשמור פרויקט מתמשך | [sqlitebrowser.org](https://sqlitebrowser.org) |
 | **Oracle APEX** | סביבת התרגול הרשמית של תכנית הלימודים | [apex.oracle.com](https://apex.oracle.com) |
@@ -152,10 +162,12 @@
 ```text
 sql-course-heb/
 ├── README.md                    <- you are here
-├── LEARNING-PATH.md             <- recommended teaching order (design + SQL interleaved)
+├── LEARNING-PATH.md             <- teaching order (20 lessons, SQL from lesson 2)
+├── exam-prep/                   <- Ministry exam 735911: guide, cheat sheet, mock-exam databases
 ├── SYLLABUS.md                  <- official chapter order (32 chapters)
 ├── modules/
-│   ├── module-00-intro/         <- START HERE
+│   ├── module-00-quick-start/   <- START HERE (lesson 1, replaces 00 + 01 in class)
+│   ├── module-00-intro/
 │   ├── module-01-foundations/
 │   │   ├── README.md            <- full explanation
 │   │   ├── questions.md         <- Q & A
@@ -168,6 +180,7 @@ sql-course-heb/
 │   ├── module-06-normalization/
 │   ├── module-07-constraints/
 │   ├── module-08-consultant/
+│   ├── module-08-15-summary/    <- chapters 8, 13, 14, 15 condensed (project + defense)
 │   ├── module-09-project-1/
 │   ├── module-10-tracking-changes/
 │   ├── module-11-generic-models/

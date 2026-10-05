@@ -121,3 +121,52 @@
 </div>
 
 </div>
+
+
+<!-- w3schools:start -->
+<div dir="rtl">
+
+---
+
+## 🌐 תרגול נוסף ב‑W3Schools
+
+📖 **לקריאה ב‑W3Schools:** [GROUP BY](https://www.w3schools.com/sql/sql_groupby.asp) · [HAVING](https://www.w3schools.com/sql/sql_having.asp) · [IN](https://www.w3schools.com/sql/sql_in.asp)
+
+> 🌐 **פותחים את [עורך ה‑SQL של W3Schools](https://www.w3schools.com/sql/trysql.asp?filename=trysql_select_all)**, מוחקים את מה שכתוב בו, כותבים שאילתה ולוחצים **Run SQL**. בסיס הנתונים שם הוא של חברה לממכר מזון: `Customers`, `Orders`, `OrderDetails`, `Products`, `Categories`, `Suppliers`, `Shippers` ו‑`Employees`. לחיצה על שם טבלה בצד מציגה את התוכן שלה.
+>
+> ⚠️ בבסיס הנתונים של W3Schools **אפשר רק לקרוא** (`SELECT`). טקסט כותבים שם בין גרשיים **בודדים**: `'Germany'`.
+
+**W1.** מספר הלקוחות בכל ארץ, רק לארצות שיש בהן **יותר מ‑5** לקוחות.
+
+**W2.** המוצרים שהמחיר שלהם גבוה מהמחיר הממוצע (תת־שאילתה).
+
+**W3.** **בסגנון הבחינה:** הלקוחות שלא הזמינו אף פעם, הפעם עם `NOT IN`. האם יצא אותו מספר כמו בשיעור 7?
+
+
+</div>
+<!-- w3schools:end -->
+
+<!-- exam-style:start -->
+<div dir="rtl">
+
+---
+
+## 🎓 תרגול בסגנון הבחינה
+
+> 🎓 **תרגול בסגנון הבחינה (שאלון 735911).** הסעיפים כאן כתובים בדיוק כמו בבחינה: `Table.Column`, צירוף עם פסיק ומירכאות כפולות. הם רצים על בסיס הנתונים **חוגי ספורט** ([`clubs.sql`](../../exam-prep/db/clubs.sql)). פתרו על הנייר, ואחר כך טענו את הקובץ ל‑OneCompiler ובדקו.
+
+**ב1.** מה תחזיר השאילתה?
+```sql
+SELECT Members.CityCode, COUNT(Members.Id) AS cnt
+FROM Members
+GROUP BY Members.CityCode
+HAVING COUNT(Members.Id) >= 3;
+```
+
+**ב2.** כתבו שאילתה שמציגה את שמות הערים **שאף משתתף לא גר בהן** (`NOT IN`).
+
+**ב3.** כתבו שאילתה שמציגה את החוגים שהמחיר שלהם **גבוה מהמחיר הממוצע**.
+
+
+</div>
+<!-- exam-style:end -->

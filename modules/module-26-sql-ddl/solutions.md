@@ -220,3 +220,30 @@ PRAGMA table_info(walk);
 </div>
 
 </div>
+
+<!-- exam-style:start -->
+<div dir="rtl">
+
+---
+
+## 🎓 תרגול בסגנון הבחינה: פתרונות
+
+**ב1.** **3.**
+
+**ב2.** | הפקודה | מה נמחק? | הטבלה נשארת? |
+|---|---|---|
+| `DELETE ... WHERE` | רק הרשומות שעונות על התנאי | כן |
+| `DELETE FROM Clubs` | כל הרשומות | כן, ריקה |
+| `DROP TABLE Clubs` | הכול, כולל המבנה | **לא** |
+
+**ב3.** ```sql
+CREATE TABLE Halls (
+  HallCode  INTEGER PRIMARY KEY,
+  HallName  TEXT NOT NULL,
+  Capacity  INTEGER
+);
+```
+
+
+</div>
+<!-- exam-style:end -->

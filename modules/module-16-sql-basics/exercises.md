@@ -2,7 +2,7 @@
 
 # מודול 16 — תרגילים
 
-> **הנחיות:** כל התרגילים רצים על [בסיס הנתונים המוכן](../../resources/shelter-db/). טענו אותו ל‑Programiz, ופתרו **בהרצה** — לא על נייר.
+> **הנחיות:** כל התרגילים רצים על [בסיס הנתונים המוכן](../../resources/shelter-db/). טענו אותו ל‑OneCompiler, ופתרו **בהרצה** — לא על נייר.
 >
 > **כלל הזהב:** כתבו, הריצו, תקנו. **אל תעברו לתרגיל הבא לפני שהקודם רץ בלי שגיאה.**
 >
@@ -185,3 +185,47 @@ Luna | F | 18.5 kg | chip 985100001 | adopted
 |---|---|---|---|
 
 </div>
+
+
+<!-- w3schools:start -->
+<div dir="rtl">
+
+---
+
+## 🌐 תרגול נוסף ב‑W3Schools
+
+📖 **לקריאה ב‑W3Schools:** [SELECT](https://www.w3schools.com/sql/sql_select.asp) · [DISTINCT](https://www.w3schools.com/sql/sql_distinct.asp) · [כינויים (AS)](https://www.w3schools.com/sql/sql_alias.asp)
+
+> 🌐 **פותחים את [עורך ה‑SQL של W3Schools](https://www.w3schools.com/sql/trysql.asp?filename=trysql_select_all)**, מוחקים את מה שכתוב בו, כותבים שאילתה ולוחצים **Run SQL**. בסיס הנתונים שם הוא של חברה לממכר מזון: `Customers`, `Orders`, `OrderDetails`, `Products`, `Categories`, `Suppliers`, `Shippers` ו‑`Employees`. לחיצה על שם טבלה בצד מציגה את התוכן שלה.
+>
+> ⚠️ בבסיס הנתונים של W3Schools **אפשר רק לקרוא** (`SELECT`). טקסט כותבים שם בין גרשיים **בודדים**: `'Germany'`.
+
+**W1.** הציגו רק את `CustomerName` ואת `City` של כל הלקוחות.
+
+**W2.** מכמה ארצות שונות יש לקוחות? (`DISTINCT`)
+
+**W3.** הציגו את `ProductName` ואת `Price`, כשהכותרת של עמודת המחיר היא `PriceUSD`.
+
+
+</div>
+<!-- w3schools:end -->
+
+<!-- exam-style:start -->
+<div dir="rtl">
+
+---
+
+## 🎓 תרגול בסגנון הבחינה
+
+> 🎓 **תרגול בסגנון הבחינה (שאלון 735911).** הסעיפים כאן כתובים בדיוק כמו בבחינה: `Table.Column`, צירוף עם פסיק ומירכאות כפולות. הם רצים על בסיס הנתונים **חוגי ספורט** ([`clubs.sql`](../../exam-prep/db/clubs.sql)). פתרו על הנייר, ואחר כך טענו את הקובץ ל‑OneCompiler ובדקו.
+
+**ב1.** איזו פקודה מחזירה את **כל השדות** של כל הרשומות בטבלה Clubs?
+1. `SELECT All FROM Clubs`  2. `SELECT * FROM Clubs`  3. `SELECT Clubs FROM *`  4. `SELECT (ALL) FROM Clubs`
+
+**ב2.** כמה שורות תחזיר השאילתה `SELECT DISTINCT Clubs.Sport FROM Clubs;`? ומה הייתה התשובה בלי `DISTINCT`?
+
+**ב3.** כתבו בסגנון הבחינה שאילתה שמציגה את שם החוג ואת המחיר שלו, כשהכותרת של עמודת המחיר היא "מחיר חודשי".
+
+
+</div>
+<!-- exam-style:end -->

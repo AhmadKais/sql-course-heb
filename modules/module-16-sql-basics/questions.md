@@ -292,11 +292,11 @@ SELECT 'Luna FROM animal;
 ---
 
 ### שאלה 13
-**למה הקורס משתמש ב‑Programiz ולא ב‑Oracle APEX, כמו תכנית הלימודים?**
+**למה הקורס משתמש ב‑OneCompiler ולא ב‑Oracle APEX, כמו תכנית הלימודים?**
 
 <details><summary>💡 תשובה</summary>
 
-| | Programiz | Oracle APEX |
+| | OneCompiler | Oracle APEX |
 |---|-----------|-------------|
 | זמן עד לשאילתה ראשונה | 60 שניות | 10 דקות + הרשמה |
 | שומר בין ביקורים | ❌ | ✅ |
@@ -305,7 +305,7 @@ SELECT 'Luna FROM animal;
 
 **90% מהתחביר זהה.** ההבדלים (כמו `FROM DUAL`) מסומנים בכל מודול. מי שלמד כאן — עובר ל‑APEX בשעה.
 
-**ההמלצה:** Programiz ללמידה, APEX לקראת הבחינה.
+**ההמלצה:** OneCompiler ללמידה, APEX לקראת הבחינה.
 
 </details>
 

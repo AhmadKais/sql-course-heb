@@ -279,3 +279,32 @@ waiting  adoptions  income  expenses  balance
 </div>
 
 </div>
+
+<!-- w3schools:start -->
+<div dir="rtl">
+
+---
+
+## 🌐 תרגול ב‑W3Schools: פתרונות
+
+> כל השאילתות כאן הורצו ב‑W3Schools. מספר הרשומות הוא מה שהאתר מחזיר.
+
+**W1.**
+
+```sql
+SELECT AVG(Products.Price) AS AvgPrice, MAX(Products.Price) AS MaxPrice, MIN(Products.Price) AS MinPrice FROM Products;
+```
+
+**1** רשומות. השורה הראשונה: `28.866363 · 263.50 · 2.50`
+
+**W2.**
+
+```sql
+SELECT COUNT(*) AS cnt FROM Products WHERE Products.CategoryID = 1;
+```
+
+**1** רשומות. השורה הראשונה: `12`
+
+
+</div>
+<!-- w3schools:end -->

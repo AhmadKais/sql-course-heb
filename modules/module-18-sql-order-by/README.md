@@ -258,7 +258,7 @@ ORDER BY 2 DESC;                -- "the 2nd column" = weight_kg
 
 > 💡 **למה אפשר למיין לפי כינוי, אבל (בתקן) לא לסנן לפיו?** ב‑Oracle, `WHERE weight_lb > 40` **נכשל** — `ORA-00904: invalid identifier`. `ORDER BY weight_lb` **עובד**. ההסבר בסעיף 8 — סדר הביצוע.
 >
-> ⚠️ **מלכודת דיאלקט:** SQLite (Programiz) **סולח** — הוא מרשה כינוי גם ב‑`WHERE`, בניגוד לתקן. שאילתה שעובדת ב‑Programiz תיכשל ב‑APEX. **אל תסתמכו על זה.**
+> ⚠️ **מלכודת דיאלקט:** SQLite (OneCompiler) **סולח** — הוא מרשה כינוי גם ב‑`WHERE`, בניגוד לתקן. שאילתה שעובדת ב‑OneCompiler תיכשל ב‑APEX. **אל תסתמכו על זה.**
 
 ---
 
@@ -275,7 +275,7 @@ ORDER  BY birth_date;
 ```
 
 ```text
-   SQLite (Programiz):              Oracle:
+   SQLite (OneCompiler):              Oracle:
 
    name    birth_date               name    birth_date
    ------  ----------               ------  ----------
@@ -308,7 +308,7 @@ ORDER  BY birth_date;
 SELECT name, birth_date FROM animal ORDER BY birth_date NULLS LAST;
 SELECT name, birth_date FROM animal ORDER BY birth_date DESC NULLS FIRST;
 
--- SQLite (Programiz): the trick -- sort by "is it null?" first
+-- SQLite (OneCompiler): the trick -- sort by "is it null?" first
 SELECT name, birth_date
 FROM   animal
 ORDER  BY birth_date IS NULL,   -- FALSE (0) before TRUE (1): non-nulls first
@@ -318,7 +318,7 @@ ORDER  BY birth_date IS NULL,   -- FALSE (0) before TRUE (1): non-nulls first
 
 <div dir="rtl">
 
-> 🔑 **הלקח:** אם עמודה יכולה להיות NULL ואתם ממיינים לפיה — **אמרו במפורש איפה ה‑NULL**. אחרת הדוח ייראה שונה ב‑Programiz ובבחינה על APEX.
+> 🔑 **הלקח:** אם עמודה יכולה להיות NULL ואתם ממיינים לפיה — **אמרו במפורש איפה ה‑NULL**. אחרת הדוח ייראה שונה ב‑OneCompiler ובבחינה על APEX.
 
 > ⚠️ **ולמה זה חשוב עסקית:** "3 החיות הוותיקות ביותר" — `ORDER BY birth_date LIMIT 3`. ב‑SQLite תקבלו **Coco, Lily, Kiwi** — שלוש חיות **בלי** תאריך לידה. לא הוותיקות; הלא‑ידועות. הדוח שגוי לגמרי, בלי שגיאה.
 

@@ -436,3 +436,98 @@ Luna          animal
 </div>
 
 </div>
+
+
+<!-- w3schools:start -->
+<div dir="rtl">
+
+---
+
+## 🌐 תרגול ב‑W3Schools: פתרונות
+
+> כל השאילתות כאן הורצו ב‑W3Schools. מספר הרשומות הוא מה שהאתר מחזיר.
+
+**W1.**
+
+```sql
+SELECT Customers.Country, COUNT(Customers.CustomerID) AS cnt FROM Customers GROUP BY Customers.Country HAVING COUNT(Customers.CustomerID) > 5;
+```
+
+**5** רשומות. השורה הראשונה: `Brazil · 9`
+
+**W2.**
+
+```sql
+SELECT Products.ProductName, Products.Price FROM Products WHERE Products.Price > (SELECT AVG(Price) FROM Products);
+```
+
+**25** רשומות. השורה הראשונה: `Uncle Bobs Organic Dried Pears · 30.00`
+
+**W3.**
+
+```sql
+SELECT Customers.CustomerName FROM Customers WHERE Customers.CustomerID NOT IN (SELECT CustomerID FROM Orders);
+```
+
+**17** רשומות. השורה הראשונה: `Alfreds Futterkiste`
+
+
+</div>
+<!-- w3schools:end -->
+
+<!-- exam-style:start -->
+<div dir="rtl">
+
+---
+
+## 🎓 תרגול בסגנון הבחינה: פתרונות
+
+**ב1.** רק עיר 1 (ירכא), עם 4 משתתפים. לכל שאר הערים יש פחות מ‑3 משתתפים.
+
+<figure dir="ltr" class="dbtable">
+
+| CityCode | cnt |
+|:---:|:---:|
+| 1 | 4 |
+
+</figure>
+
+**ב2.** ```sql
+SELECT Cities.CityName FROM Cities
+WHERE Cities.CityCode NOT IN (SELECT CityCode FROM Members);
+```
+
+<figure dir="ltr" class="dbtable">
+
+| CityName |
+|:---:|
+| שפרעם |
+
+</figure>
+
+**ב3.** ```sql
+SELECT Clubs.ClubName, Clubs.Price FROM Clubs
+WHERE Clubs.Price > (SELECT AVG(Price) FROM Clubs);
+```
+
+<figure dir="ltr" class="dbtable">
+
+| avg_price |
+|:---:|
+| 190 |
+
+</figure>
+
+<figure dir="ltr" class="dbtable">
+
+| ClubName | Price |
+|:---:|:---:|
+| שחייה מתחילים | 220 |
+| שחייה מתקדמים | 250 |
+| טניס | 300 |
+
+</figure>
+
+
+</div>
+<!-- exam-style:end -->

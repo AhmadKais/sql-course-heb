@@ -185,7 +185,7 @@ SELECT first_name || ' ' || last_name AS full_name FROM person ORDER BY full_nam
 
 | הכלי | מה קורה |
 |------|----------|
-| **Programiz (SQLite)** | ✅ **עובד** — מחזיר Luna, Rocky, Bella, Zoe, Rex, Shadow |
+| **OneCompiler (SQLite)** | ✅ **עובד** — מחזיר Luna, Rocky, Bella, Zoe, Rex, Shadow |
 | **Oracle** | ❌ `ORA-00904: "LB": invalid identifier` |
 
 **למה Oracle נכשל:** `WHERE` רץ **לפני** `SELECT`. הכינוי `lb` עוד לא נוצר.
@@ -278,7 +278,7 @@ LIMIT    3;
 </div>
 
 ```sql
--- SQLite (Programiz)
+-- SQLite (OneCompiler)
 SELECT name, breed FROM animal ORDER BY breed IS NULL, breed;
 
 -- Oracle
@@ -533,3 +533,80 @@ Charlie  adopted
 |---|---|---|---|
 
 </div>
+
+
+<!-- w3schools:start -->
+<div dir="rtl">
+
+---
+
+## 🌐 תרגול ב‑W3Schools: פתרונות
+
+> כל השאילתות כאן הורצו ב‑W3Schools. מספר הרשומות הוא מה שהאתר מחזיר.
+
+**W1.**
+
+```sql
+SELECT Products.ProductName, Products.Price FROM Products ORDER BY Products.Price DESC;
+```
+
+**77** רשומות. השורה הראשונה: `Côte de Blaye · 263.50`
+
+**W2.**
+
+```sql
+SELECT Customers.Country, Customers.CustomerName FROM Customers ORDER BY Customers.Country, Customers.CustomerName;
+```
+
+**91** רשומות. השורה הראשונה: `Argentina · Cactus Comidas para llevar`
+
+
+</div>
+<!-- w3schools:end -->
+
+<!-- exam-style:start -->
+<div dir="rtl">
+
+---
+
+## 🎓 תרגול בסגנון הבחינה: פתרונות
+
+**ב1.** **טניס, 300.** `DESC` פירושו מהגדול לקטן.
+
+<figure dir="ltr" class="dbtable">
+
+| ClubName | Price |
+|:---:|:---:|
+| טניס | 300 |
+| שחייה מתקדמים | 250 |
+| שחייה מתחילים | 220 |
+
+</figure>
+
+**ב2.** ```sql
+SELECT Members.FirstName, Members.Age FROM Members
+ORDER BY Members.Age DESC, Members.FirstName;
+```
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | Age |
+|:---:|:---:|
+| ליאור | 17 |
+| סאלי | 17 |
+| ג'וד | 16 |
+| יואב | 16 |
+| שירה | 16 |
+| מאיה | 15 |
+| נור | 15 |
+| עומר | 15 |
+| אדם | 14 |
+| תמר | 14 |
+| כרים | 13 |
+| רוני | 13 |
+
+</figure>
+
+
+</div>
+<!-- exam-style:end -->

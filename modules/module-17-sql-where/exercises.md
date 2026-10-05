@@ -212,3 +212,58 @@ SELECT name, weight_kg FROM animal LIMIT 3;
 |---|---|---|---|
 
 </div>
+
+
+<!-- w3schools:start -->
+<div dir="rtl">
+
+---
+
+## 🌐 תרגול נוסף ב‑W3Schools
+
+📖 **לקריאה ב‑W3Schools:** [WHERE](https://www.w3schools.com/sql/sql_where.asp) · [AND](https://www.w3schools.com/sql/sql_and.asp) · [OR](https://www.w3schools.com/sql/sql_or.asp) · [NOT](https://www.w3schools.com/sql/sql_not.asp) · [LIKE](https://www.w3schools.com/sql/sql_like.asp) · [תווים כלליים](https://www.w3schools.com/sql/sql_wildcards.asp) · [IN](https://www.w3schools.com/sql/sql_in.asp) · [BETWEEN](https://www.w3schools.com/sql/sql_between.asp) · [NULL](https://www.w3schools.com/sql/sql_null_values.asp)
+
+> 🌐 **פותחים את [עורך ה‑SQL של W3Schools](https://www.w3schools.com/sql/trysql.asp?filename=trysql_select_all)**, מוחקים את מה שכתוב בו, כותבים שאילתה ולוחצים **Run SQL**. בסיס הנתונים שם הוא של חברה לממכר מזון: `Customers`, `Orders`, `OrderDetails`, `Products`, `Categories`, `Suppliers`, `Shippers` ו‑`Employees`. לחיצה על שם טבלה בצד מציגה את התוכן שלה.
+>
+> ⚠️ בבסיס הנתונים של W3Schools **אפשר רק לקרוא** (`SELECT`). טקסט כותבים שם בין גרשיים **בודדים**: `'Germany'`.
+
+**W1.** המוצרים שהמחיר שלהם בין 10 ל‑20 (כולל).
+
+**W2.** הלקוחות מגרמניה **או** מצרפת (`IN`).
+
+**W3.** הלקוחות ששמם מתחיל באות A.
+
+**W4.** הלקוחות מברלין **או** מלונדון, שהשם שלהם **לא** מתחיל באות A.
+
+
+</div>
+<!-- w3schools:end -->
+
+<!-- exam-style:start -->
+<div dir="rtl">
+
+---
+
+## 🎓 תרגול בסגנון הבחינה
+
+> 🎓 **תרגול בסגנון הבחינה (שאלון 735911).** הסעיפים כאן כתובים בדיוק כמו בבחינה: `Table.Column`, צירוף עם פסיק ומירכאות כפולות. הם רצים על בסיס הנתונים **חוגי ספורט** ([`clubs.sql`](../../exam-prep/db/clubs.sql)). פתרו על הנייר, ואחר כך טענו את הקובץ ל‑OneCompiler ובדקו.
+
+**ב1.** כמה משתתפים תחזיר השאילתה?
+```sql
+SELECT Members.FirstName FROM Members
+WHERE Members.Age BETWEEN 14 AND 16;
+```
+
+**ב2.** השלימו כך שיוצגו המשתתפים ששם המשפחה שלהם **מתחיל** באות ח:
+```sql
+SELECT Members.FirstName, Members.LastName FROM Members
+WHERE Members.LastName ________ "________";
+```
+
+**ב3.** כתבו שאילתה שמציגה את המאמנים **שאין להם טלפון**.
+
+**ב4.** מה ההבדל בין `WHERE Members.CityCode IN (1, 5)` לבין `WHERE Members.CityCode = 1 OR Members.CityCode = 5`?
+
+
+</div>
+<!-- exam-style:end -->

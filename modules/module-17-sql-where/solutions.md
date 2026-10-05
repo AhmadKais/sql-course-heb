@@ -527,3 +527,111 @@ Bunny    available                 <- available, but NO CHIP
 |---|---|---|---|
 
 </div>
+
+
+<!-- w3schools:start -->
+<div dir="rtl">
+
+---
+
+## 🌐 תרגול ב‑W3Schools: פתרונות
+
+> כל השאילתות כאן הורצו ב‑W3Schools. מספר הרשומות הוא מה שהאתר מחזיר.
+
+**W1.**
+
+```sql
+SELECT Products.ProductName, Products.Price FROM Products WHERE Products.Price BETWEEN 10 AND 20;
+```
+
+**29** רשומות. השורה הראשונה: `Chais · 18.00`
+
+**W2.**
+
+```sql
+SELECT Customers.CustomerName, Customers.Country FROM Customers WHERE Customers.Country IN ('Germany', 'France');
+```
+
+**22** רשומות. השורה הראשונה: `Alfreds Futterkiste · Germany`
+
+**W3.**
+
+```sql
+SELECT Customers.CustomerName FROM Customers WHERE Customers.CustomerName LIKE 'A%';
+```
+
+**4** רשומות. השורה הראשונה: `Alfreds Futterkiste`
+
+**W4.**
+
+```sql
+SELECT Customers.CustomerName, Customers.City FROM Customers WHERE (Customers.City = 'Berlin' OR Customers.City = 'London') AND NOT Customers.CustomerName LIKE 'A%';
+```
+
+**5** רשומות. השורה הראשונה: `Bs Beverages · London`
+
+
+</div>
+<!-- w3schools:end -->
+
+<!-- exam-style:start -->
+<div dir="rtl">
+
+---
+
+## 🎓 תרגול בסגנון הבחינה: פתרונות
+
+**ב1.** **8.** `BETWEEN` כולל את 14 ואת 16.
+
+<figure dir="ltr" class="dbtable">
+
+| cnt |
+|:---:|
+| 8 |
+
+</figure>
+
+**ב2.** `LIKE` · `ח%`
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | LastName |
+|:---:|:---:|
+| אדם | חלבי |
+| סאלי | חסון |
+| כרים | חלבי |
+
+</figure>
+
+**ב3.** ```sql
+SELECT Coaches.FirstName, Coaches.LastName FROM Coaches
+WHERE Coaches.Phone IS NULL;
+```
+לא כותבים `= NULL`.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | LastName |
+|:---:|:---:|
+| מיכל | לוי |
+
+</figure>
+
+**ב4.** אין הבדל. `IN` הוא קיצור של כמה `OR` על אותו שדה.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName |
+|:---:|
+| אדם |
+| נור |
+| עומר |
+| כרים |
+| תמר |
+| ג'וד |
+
+</figure>
+
+
+</div>
+<!-- exam-style:end -->

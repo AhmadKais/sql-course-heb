@@ -83,3 +83,42 @@
 </div>
 
 </div>
+
+
+<!-- w3schools:start -->
+<div dir="rtl">
+
+---
+
+## 🌐 תרגול נוסף ב‑W3Schools
+
+📖 **לקריאה ב‑W3Schools:** [VIEW](https://www.w3schools.com/sql/sql_view.asp)
+
+> 💻 הפקודות של השיעור הזה **משנות** נתונים או מבנה, ו‑W3Schools לא מאפשר את זה. קראו שם את ההסבר, ואת התרגול עצמו עשו ב‑OneCompiler, על בסיס הנתונים של המקלט ([הוראות](../../resources/setup.md)).
+
+</div>
+<!-- w3schools:end -->
+
+<!-- exam-style:start -->
+<div dir="rtl">
+
+---
+
+## 🎓 תרגול בסגנון הבחינה
+
+> 🎓 **תרגול בסגנון הבחינה (שאלון 735911).** הסעיפים כאן כתובים בדיוק כמו בבחינה: `Table.Column`, צירוף עם פסיק ומירכאות כפולות. הם רצים על בסיס הנתונים **חוגי ספורט** ([`clubs.sql`](../../exam-prep/db/clubs.sql)). פתרו על הנייר, ואחר כך טענו את הקובץ ל‑OneCompiler ובדקו.
+
+**ב1.** **"שאילתה שמורה" בבחינה = View.** תלמיד שמר את השאילתה Q1:
+```sql
+SELECT MIN(Clubs.Price) AS cheap FROM Clubs;
+```
+1. איזה ערך יוחזר בשדה cheap?
+2. השלימו את השאילתה שמציגה את שם החוג הזול ביותר:
+```sql
+SELECT Clubs.ClubName FROM Clubs, ________
+WHERE Clubs.Price = ________;
+```
+
+
+</div>
+<!-- exam-style:end -->

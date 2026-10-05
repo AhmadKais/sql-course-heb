@@ -103,7 +103,7 @@ FROM -> WHERE -> SELECT -> ORDER BY -> LIMIT
 
 `WHERE` רץ **לפני** `SELECT` — הכינוי עוד לא נוצר. `ORDER BY` רץ **אחרי** — הכינוי כבר קיים.
 
-⚠️ **מלכודת:** SQLite (Programiz) **מרשה** כינוי ב‑`WHERE`, בניגוד לתקן. שאילתה שעובדת ב‑Programiz תיכשל ב‑APEX עם `ORA-00904`. **כתבו לפי התקן.**
+⚠️ **מלכודת:** SQLite (OneCompiler) **מרשה** כינוי ב‑`WHERE`, בניגוד לתקן. שאילתה שעובדת ב‑OneCompiler תיכשל ב‑APEX עם `ORA-00904`. **כתבו לפי התקן.**
 
 </details>
 

@@ -236,7 +236,7 @@ SELECT name, animal_id % 2 AS is_odd FROM animal;
 
 ## 4. פונקציות תאריך
 
-זה החלק שבו הדיאלקטים נבדלים **הכי הרבה**. נלמד את SQLite (Programiz), ונראה את Oracle לצידו.
+זה החלק שבו הדיאלקטים נבדלים **הכי הרבה**. נלמד את SQLite (OneCompiler), ונראה את Oracle לצידו.
 
 ### 4.1 היום
 
@@ -498,7 +498,7 @@ Nala
 
 ```text
 +------------------------+------------------------------+------------------------------+
-| WHAT                   | SQLite (Programiz)           | Oracle (APEX / exam)         |
+| WHAT                   | SQLite (OneCompiler)           | Oracle (APEX / exam)         |
 +------------------------+------------------------------+------------------------------+
 | uppercase / lowercase  | UPPER(x) / LOWER(x)          | same                         |
 | length                 | LENGTH(x)                    | same                         |

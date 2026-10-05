@@ -403,12 +403,12 @@ WHERE  species_id IN (1, 2)
 
 <details><summary>💡 תשובה</summary>
 
-| | SQLite (Programiz) | Oracle |
+| | SQLite (OneCompiler) | Oracle |
 |---|---|---|
 | `name LIKE 'l%'` (אות קטנה) | ✅ **מוצא** את Luna | ❌ 0 שורות |
 | למה | `LIKE` לא רגיש לאותיות לטיניות כברירת מחדל | `LIKE` רגיש, כמו `=` |
 
-**ההשלכה:** שאילתה שעובדת ב‑Programiz עלולה להיכשל בבחינה על APEX.
+**ההשלכה:** שאילתה שעובדת ב‑OneCompiler עלולה להיכשל בבחינה על APEX.
 
 **הפתרון שעובד בכל מקום:** `UPPER(name) LIKE 'L%'` — מודול 19. **אל תסתמכו על סלחנות של כלי.**
 

@@ -406,7 +406,7 @@ Pup   Dog      0                                 Luna
 
 | מה APEX נותן | בקורס |
 |---------------|--------|
-| **SQL Workshop** — חלון להרצת SQL | כמו Programiz, אבל Oracle אמיתי |
+| **SQL Workshop** — חלון להרצת SQL | כמו OneCompiler, אבל Oracle אמיתי |
 | **Object Browser** — טבלאות, עמודות ואילוצים בממשק גרפי | כמו מילון הנתונים (מודול 26) |
 | **Data Workshop** — ייבוא CSV / Excel לטבלה | טעינת נתונים לפרויקט |
 | **App Builder** — טפסים ודוחות על הטבלאות | "האתר" של המקלט — בלי לתכנת |

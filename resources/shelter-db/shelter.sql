@@ -2,11 +2,11 @@
 --  "Beit Cham" animal shelter -- practice database
 --  Course: Databases & SQL (Hebrew) -- units 2-7
 --
---  Paste this WHOLE file into Programiz Online SQL
---  (https://www.programiz.com/sql/online-compiler/) and click Run.
+--  Paste this WHOLE file into OneCompiler (SQLite)
+--  (https://onecompiler.com/sqlite) and click Run.
 --  Then write your own SELECT queries below it.
 --
---  Dialect: SQLite-compatible (works in Programiz, DB Browser, DB Fiddle).
+--  Dialect: SQLite-compatible (works in OneCompiler, DB Browser, DB Fiddle).
 --  Dates are stored as TEXT in ISO format 'YYYY-MM-DD'.
 -- ============================================================
 

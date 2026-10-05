@@ -326,7 +326,7 @@ ALTER TABLE person ADD CONSTRAINT chk_phone CHECK (REGEXP_LIKE(phone, '^05[0-9]-
 
 ### 8.3 ב‑SQLite: `GLOB`
 
-ב‑SQLite אין `REGEXP_LIKE`. (האופרטור `REGEXP` קיים רק אם הכלי טוען הרחבה — בכלי שורת הפקודה `sqlite3` כן, ב‑Programiz כנראה לא.) **מה שקיים תמיד — `GLOB`**: באמצע הדרך בין `LIKE` ל‑regex.
+ב‑SQLite אין `REGEXP_LIKE`. (האופרטור `REGEXP` קיים רק אם הכלי טוען הרחבה — בכלי שורת הפקודה `sqlite3` כן, וגם ב‑OneCompiler, שבדקנו.) **מה שקיים תמיד — `GLOB`**: באמצע הדרך בין `LIKE` ל‑regex.
 
 </div>
 

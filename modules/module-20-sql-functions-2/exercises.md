@@ -100,3 +100,22 @@
 </div>
 
 </div>
+
+<!-- w3schools:start -->
+<div dir="rtl">
+
+---
+
+## 🌐 תרגול נוסף ב‑W3Schools
+
+📖 **לקריאה ב‑W3Schools:** [CASE](https://www.w3schools.com/sql/sql_case.asp) · [NULL](https://www.w3schools.com/sql/sql_null_values.asp) · [ISNULL](https://www.w3schools.com/sql/sql_isnull.asp)
+
+> 🌐 **פותחים את [עורך ה‑SQL של W3Schools](https://www.w3schools.com/sql/trysql.asp?filename=trysql_select_all)**, מוחקים את מה שכתוב בו, כותבים שאילתה ולוחצים **Run SQL**. בסיס הנתונים שם הוא של חברה לממכר מזון: `Customers`, `Orders`, `OrderDetails`, `Products`, `Categories`, `Suppliers`, `Shippers` ו‑`Employees`. לחיצה על שם טבלה בצד מציגה את התוכן שלה.
+>
+> ⚠️ בבסיס הנתונים של W3Schools **אפשר רק לקרוא** (`SELECT`). טקסט כותבים שם בין גרשיים **בודדים**: `'Germany'`.
+
+**W1.** לכל מוצר הציגו "זול" אם המחיר נמוך מ‑20, ואחרת "יקר" (`CASE`).
+
+
+</div>
+<!-- w3schools:end -->

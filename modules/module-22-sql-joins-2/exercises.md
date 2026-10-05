@@ -105,3 +105,22 @@ INSERT INTO shift_feb VALUES ('Noa'), ('Amir'), ('Tamar');
 </div>
 
 </div>
+
+<!-- w3schools:start -->
+<div dir="rtl">
+
+---
+
+## 🌐 תרגול נוסף ב‑W3Schools
+
+📖 **לקריאה ב‑W3Schools:** [LEFT JOIN](https://www.w3schools.com/sql/sql_join_left.asp)
+
+> 🌐 **פותחים את [עורך ה‑SQL של W3Schools](https://www.w3schools.com/sql/trysql.asp?filename=trysql_select_all)**, מוחקים את מה שכתוב בו, כותבים שאילתה ולוחצים **Run SQL**. בסיס הנתונים שם הוא של חברה לממכר מזון: `Customers`, `Orders`, `OrderDetails`, `Products`, `Categories`, `Suppliers`, `Shippers` ו‑`Employees`. לחיצה על שם טבלה בצד מציגה את התוכן שלה.
+>
+> ⚠️ בבסיס הנתונים של W3Schools **אפשר רק לקרוא** (`SELECT`). טקסט כותבים שם בין גרשיים **בודדים**: `'Germany'`.
+
+**W1.** הלקוחות **שלא הזמינו אף פעם** (`LEFT JOIN` + `IS NULL`).
+
+
+</div>
+<!-- w3schools:end -->

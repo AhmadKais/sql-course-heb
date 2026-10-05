@@ -166,7 +166,7 @@ SELECT name FROM animal WHERE name = 'luna';    -- 0 rows  (!)
 
 </div>
 
-זה נכון ב‑SQLite (Programiz) וגם ב‑Oracle. **המילים המפתח** של SQL (`SELECT`, `where`) לא רגישות — אבל **הערכים** כן.
+זה נכון ב‑SQLite (OneCompiler) וגם ב‑Oracle. **המילים המפתח** של SQL (`SELECT`, `where`) לא רגישות — אבל **הערכים** כן.
 
 | מה | רגיש? | דוגמה |
 |-----|-------|--------|
@@ -337,7 +337,7 @@ SELECT name FROM animal WHERE name LIKE '___';
 
 > ⚠️ **`LIKE` בלי `%` ובלי `_` הוא בדיוק `=`.** `LIKE 'Luna'` ≡ `= 'Luna'`. אם שכחתם את ה‑`%`, תקבלו התאמה מדויקת בלבד.
 
-> 💡 **הבדל דיאלקט:** ב‑Oracle, `LIKE` רגיש לאותיות כמו `=`. ב‑SQLite (Programiz) — `LIKE 'l%'` **כן** ימצא את Luna, כי `LIKE` שם לא רגיש לאותיות לטיניות. אל תסתמכו על זה: לחיפוש שעובד בכל מקום — `UPPER(name) LIKE 'L%'`, מודול 19.
+> 💡 **הבדל דיאלקט:** ב‑Oracle, `LIKE` רגיש לאותיות כמו `=`. ב‑SQLite (OneCompiler) — `LIKE 'l%'` **כן** ימצא את Luna, כי `LIKE` שם לא רגיש לאותיות לטיניות. אל תסתמכו על זה: לחיפוש שעובד בכל מקום — `UPPER(name) LIKE 'L%'`, מודול 19.
 
 ---
 
@@ -545,7 +545,7 @@ SELECT name FROM animal LIMIT 3;
 
 | הכלי | הדיאלקט |
 |------|----------|
-| `LIMIT 3` | SQLite (Programiz), MySQL, PostgreSQL |
+| `LIMIT 3` | SQLite (OneCompiler), MySQL, PostgreSQL |
 | `FETCH FIRST 3 ROWS ONLY` | Oracle 12c+ (וגם התקן) |
 | `WHERE ROWNUM <= 3` | Oracle ישן |
 

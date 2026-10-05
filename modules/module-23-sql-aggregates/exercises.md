@@ -105,3 +105,24 @@ WHERE  a.name = 'Rocky';
 </div>
 
 </div>
+
+<!-- w3schools:start -->
+<div dir="rtl">
+
+---
+
+## 🌐 תרגול נוסף ב‑W3Schools
+
+📖 **לקריאה ב‑W3Schools:** [MIN / MAX](https://www.w3schools.com/sql/sql_min_max.asp) · [COUNT](https://www.w3schools.com/sql/sql_count.asp) · [SUM](https://www.w3schools.com/sql/sql_sum.asp) · [AVG](https://www.w3schools.com/sql/sql_avg.asp)
+
+> 🌐 **פותחים את [עורך ה‑SQL של W3Schools](https://www.w3schools.com/sql/trysql.asp?filename=trysql_select_all)**, מוחקים את מה שכתוב בו, כותבים שאילתה ולוחצים **Run SQL**. בסיס הנתונים שם הוא של חברה לממכר מזון: `Customers`, `Orders`, `OrderDetails`, `Products`, `Categories`, `Suppliers`, `Shippers` ו‑`Employees`. לחיצה על שם טבלה בצד מציגה את התוכן שלה.
+>
+> ⚠️ בבסיס הנתונים של W3Schools **אפשר רק לקרוא** (`SELECT`). טקסט כותבים שם בין גרשיים **בודדים**: `'Germany'`.
+
+**W1.** המחיר הממוצע, הגבוה והנמוך של המוצרים.
+
+**W2.** כמה מוצרים יש בקטגוריה 1?
+
+
+</div>
+<!-- w3schools:end -->

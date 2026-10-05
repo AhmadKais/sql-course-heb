@@ -104,3 +104,37 @@ INSERT INTO animal (name, species_id, sex, status, chip_number) VALUES ('Copy', 
 </div>
 
 </div>
+
+
+<!-- w3schools:start -->
+<div dir="rtl">
+
+---
+
+## 🌐 תרגול נוסף ב‑W3Schools
+
+📖 **לקריאה ב‑W3Schools:** [INSERT](https://www.w3schools.com/sql/sql_insert.asp) · [UPDATE](https://www.w3schools.com/sql/sql_update.asp) · [DELETE](https://www.w3schools.com/sql/sql_delete.asp)
+
+> 💻 הפקודות של השיעור הזה **משנות** נתונים או מבנה, ו‑W3Schools לא מאפשר את זה. קראו שם את ההסבר, ואת התרגול עצמו עשו ב‑OneCompiler, על בסיס הנתונים של המקלט ([הוראות](../../resources/setup.md)).
+
+</div>
+<!-- w3schools:end -->
+
+<!-- exam-style:start -->
+<div dir="rtl">
+
+---
+
+## 🎓 תרגול בסגנון הבחינה
+
+> 🎓 **תרגול בסגנון הבחינה (שאלון 735911).** הסעיפים כאן כתובים בדיוק כמו בבחינה: `Table.Column`, צירוף עם פסיק ומירכאות כפולות. הם רצים על בסיס הנתונים **חוגי ספורט** ([`clubs.sql`](../../exam-prep/db/clubs.sql)). פתרו על הנייר, ואחר כך טענו את הקובץ ל‑OneCompiler ובדקו.
+
+**ב1.** כתבו שאילתה שמוסיפה את המשתתף: ת"ז 1013, השם "אור גבאי", עיר 6, גיל 15, שנת הצטרפות 2025.
+
+**ב2.** כל חוגי השחייה מתייקרים ב‑20 ש"ח. כתבו את פקודת העדכון. כמה רשומות יתעדכנו?
+
+**ב3.** מה יקרה אם נריץ `DELETE FROM ClubMembers;` **בלי** `WHERE`?
+
+
+</div>
+<!-- exam-style:end -->

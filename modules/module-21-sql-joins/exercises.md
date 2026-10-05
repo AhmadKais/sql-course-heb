@@ -135,3 +135,51 @@ WHERE  a.species_id = 2;
 </div>
 
 </div>
+
+
+<!-- w3schools:start -->
+<div dir="rtl">
+
+---
+
+## 🌐 תרגול נוסף ב‑W3Schools
+
+📖 **לקריאה ב‑W3Schools:** [JOIN](https://www.w3schools.com/sql/sql_join.asp) · [INNER JOIN](https://www.w3schools.com/sql/sql_join_inner.asp)
+
+> 🌐 **פותחים את [עורך ה‑SQL של W3Schools](https://www.w3schools.com/sql/trysql.asp?filename=trysql_select_all)**, מוחקים את מה שכתוב בו, כותבים שאילתה ולוחצים **Run SQL**. בסיס הנתונים שם הוא של חברה לממכר מזון: `Customers`, `Orders`, `OrderDetails`, `Products`, `Categories`, `Suppliers`, `Shippers` ו‑`Employees`. לחיצה על שם טבלה בצד מציגה את התוכן שלה.
+>
+> ⚠️ בבסיס הנתונים של W3Schools **אפשר רק לקרוא** (`SELECT`). טקסט כותבים שם בין גרשיים **בודדים**: `'Germany'`.
+
+**W1.** **בסגנון הבחינה (צירוף בפסיק):** לכל הזמנה של לקוח מגרמניה, הציגו את שם הלקוח ואת מספר ההזמנה.
+
+**W2.** לכל מוצר, הציגו את השם שלו ואת שם הקטגוריה שלו.
+
+**W3.** צירוף של 3 טבלאות: מספר ההזמנה, שם הלקוח ושם חברת המשלוחים.
+
+
+</div>
+<!-- w3schools:end -->
+
+<!-- exam-style:start -->
+<div dir="rtl">
+
+---
+
+## 🎓 תרגול בסגנון הבחינה
+
+> 🎓 **תרגול בסגנון הבחינה (שאלון 735911).** הסעיפים כאן כתובים בדיוק כמו בבחינה: `Table.Column`, צירוף עם פסיק ומירכאות כפולות. הם רצים על בסיס הנתונים **חוגי ספורט** ([`clubs.sql`](../../exam-prep/db/clubs.sql)). פתרו על הנייר, ואחר כך טענו את הקובץ ל‑OneCompiler ובדקו.
+
+**ב1.** **הצירוף בבחינה נכתב עם פסיק.** השלימו את השאילתה שמציגה לכל משתתף את השם הפרטי שלו ואת שם העיר שלו:
+```sql
+SELECT Members.FirstName, Cities.CityName
+FROM Members, ________
+WHERE Members.________ = Cities.CityCode;
+```
+
+**ב2.** כמה שורות תחזיר `SELECT * FROM Members, Cities;` (**בלי** `WHERE`)? איך קוראים לזה?
+
+**ב3.** כתבו שאילתה (צירוף של 3 טבלאות) שמציגה את שמות החוגים שהמשתתף 1001 רשום אליהם.
+
+
+</div>
+<!-- exam-style:end -->

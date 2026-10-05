@@ -513,3 +513,24 @@ Tamar Golan  2
 |---|---|---|---|
 
 </div>
+
+<!-- w3schools:start -->
+<div dir="rtl">
+
+---
+
+## 🌐 תרגול ב‑W3Schools: פתרונות
+
+> כל השאילתות כאן הורצו ב‑W3Schools. מספר הרשומות הוא מה שהאתר מחזיר.
+
+**W1.**
+
+```sql
+SELECT UPPER(Customers.CustomerName) AS Name, LEN(Customers.CustomerName) AS NameLength FROM Customers;
+```
+
+**91** רשומות. השורה הראשונה: `ALFREDS FUTTERKISTE · 19`
+
+
+</div>
+<!-- w3schools:end -->

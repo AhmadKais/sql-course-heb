@@ -368,7 +368,7 @@ SELECT NULL * 0;         -- NULL  (!)  even times zero
 | | השאילתה | מה קורה | הסבר |
 |---|----------|----------|-------|
 | a | `wieght_kg` | ❌ `no such column: wieght_kg` | כתיב. `i` ו‑`e` הפוכים |
-| b | בלי `;` | ⚠️ **תלוי בכלי.** Programiz: רץ. כלים אחרים: "incomplete input" | **תמיד** `;`. גם כשהכלי סולח |
+| b | בלי `;` | ⚠️ **תלוי בכלי.** ב‑OneCompiler השאילתה האחרונה רצה גם בלי `;`. כלים אחרים: "incomplete input" | **תמיד** `;`. גם כשהכלי סולח |
 | c | `"name"` בגרשיים כפולות | ✅ **רץ!** מחזיר את העמודה `name` | גרשיים כפולות = **שם**. `"name"` הוא שם עמודה קיים, אז זה עובד. אבל `"Luna"` היה נכשל |
 | d | `breed, FROM` | ❌ `near "FROM": syntax error` | פסיק אחרי העמודה האחרונה |
 | e | `Animal` באות גדולה | ✅ **רץ.** | SQL לא רגיש לאותיות בשמות (ב‑SQLite וב‑Oracle כאחד) |
@@ -482,3 +482,74 @@ FROM   animal;
 |---|---|---|---|
 
 </div>
+
+
+<!-- w3schools:start -->
+<div dir="rtl">
+
+---
+
+## 🌐 תרגול ב‑W3Schools: פתרונות
+
+> כל השאילתות כאן הורצו ב‑W3Schools. מספר הרשומות הוא מה שהאתר מחזיר.
+
+**W1.**
+
+```sql
+SELECT Customers.CustomerName, Customers.City FROM Customers;
+```
+
+**91** רשומות. השורה הראשונה: `Alfreds Futterkiste · Berlin`
+
+**W2.**
+
+```sql
+SELECT DISTINCT Customers.Country FROM Customers;
+```
+
+**21** רשומות. השורה הראשונה: `Argentina`
+
+**W3.**
+
+```sql
+SELECT Products.ProductName, Products.Price AS PriceUSD FROM Products;
+```
+
+**77** רשומות. השורה הראשונה: `Chais · 18.00`
+
+
+</div>
+<!-- w3schools:end -->
+
+<!-- exam-style:start -->
+<div dir="rtl">
+
+---
+
+## 🎓 תרגול בסגנון הבחינה: פתרונות
+
+**ב1.** **2.** `*` פירושו כל השדות.
+
+**ב2.** **6** שורות. כדורגל ושחייה מופיעים פעמיים ב‑Clubs, אבל `DISTINCT` מציג כל ענף פעם אחת. בלי `DISTINCT` היו מתקבלות 8 שורות.
+
+<figure dir="ltr" class="dbtable">
+
+| Sport |
+|:---:|
+| כדורגל |
+| שחייה |
+| כדורסל |
+| טניס |
+| ג'ודו |
+| יוגה |
+
+</figure>
+
+**ב3.** ```sql
+SELECT Clubs.ClubName, Clubs.Price AS "מחיר חודשי"
+FROM Clubs;
+```
+
+
+</div>
+<!-- exam-style:end -->

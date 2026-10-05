@@ -96,3 +96,44 @@
 </div>
 
 </div>
+
+
+<!-- w3schools:start -->
+<div dir="rtl">
+
+---
+
+## 🌐 תרגול נוסף ב‑W3Schools
+
+📖 **לקריאה ב‑W3Schools:** [CREATE TABLE](https://www.w3schools.com/sql/sql_create_table.asp) · [ALTER TABLE](https://www.w3schools.com/sql/sql_alter.asp) · [DROP TABLE](https://www.w3schools.com/sql/sql_drop_table.asp)
+
+> 💻 הפקודות של השיעור הזה **משנות** נתונים או מבנה, ו‑W3Schools לא מאפשר את זה. קראו שם את ההסבר, ואת התרגול עצמו עשו ב‑OneCompiler, על בסיס הנתונים של המקלט ([הוראות](../../resources/setup.md)).
+
+</div>
+<!-- w3schools:end -->
+
+<!-- exam-style:start -->
+<div dir="rtl">
+
+---
+
+## 🎓 תרגול בסגנון הבחינה
+
+> 🎓 **תרגול בסגנון הבחינה (שאלון 735911).** הסעיפים כאן כתובים בדיוק כמו בבחינה: `Table.Column`, צירוף עם פסיק ומירכאות כפולות. הם רצים על בסיס הנתונים **חוגי ספורט** ([`clubs.sql`](../../exam-prep/db/clubs.sql)). פתרו על הנייר, ואחר כך טענו את הקובץ ל‑OneCompiler ובדקו.
+
+**ב1.** איזו פקודה מוסיפה לטבלה Members שדה בשם Email?
+1. `INSERT INTO Members ADD Email Text`  2. `UPDATE Members ADD Email Text`  3. `ALTER TABLE Members ADD Email Text`  4. `ALTER TABLE Members INSERT Email Text`
+
+**ב2.** השלימו את הטבלה:
+
+| הפקודה | מה נמחק? | הטבלה נשארת? |
+|---|---|---|
+| `DELETE FROM Clubs WHERE Price > 200` | | |
+| `DELETE FROM Clubs` | | |
+| `DROP TABLE Clubs` | | |
+
+**ב3.** כתבו `CREATE TABLE` לטבלה Halls (אולמות): קוד אולם (מספר, מפתח ראשי), שם אולם (טקסט, חובה), וקיבולת (מספר).
+
+
+</div>
+<!-- exam-style:end -->

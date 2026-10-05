@@ -294,3 +294,24 @@ Tamar      february only
 </div>
 
 </div>
+
+<!-- w3schools:start -->
+<div dir="rtl">
+
+---
+
+## 🌐 תרגול ב‑W3Schools: פתרונות
+
+> כל השאילתות כאן הורצו ב‑W3Schools. מספר הרשומות הוא מה שהאתר מחזיר.
+
+**W1.**
+
+```sql
+SELECT Customers.CustomerName FROM Customers LEFT JOIN Orders ON Customers.CustomerID = Orders.CustomerID WHERE Orders.OrderID IS NULL;
+```
+
+**17** רשומות. השורה הראשונה: `Alfreds Futterkiste`
+
+
+</div>
+<!-- w3schools:end -->
