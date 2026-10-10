@@ -273,3 +273,251 @@ WHERE Sport = "שחייה";
 
 </div>
 <!-- exam-style:end -->
+
+<!-- classroom:start -->
+<div dir="rtl">
+
+---
+
+## 💪 תרגול בכיתה — פתרונות
+
+> 🏫 על [`school.sql`](../../resources/school-db/). כל הפלטים כאן **אמיתיים** — כל שאילתה הורצה על בסיס הנתונים, נכון לתאריך הייחוס `'2026-09-21'`.
+
+</div>
+
+```text
+Cities    (CityCode, CityName)
+Teachers  (TeacherCode, FirstName, LastName, Subject, HireDate, Salary, CityCode, Phone)
+Classes   (ClassCode, ClassName, Grade, TeacherCode, RoomNumber)
+Courses   (CourseCode, CourseName, TeacherCode, WeeklyHours)
+Students  (StudentId, FirstName, LastName, ClassCode, Gender, BirthDate, CityCode, EnrollDate, Phone)
+Grades    (StudentId, CourseCode, Term, Grade)          -- PK: StudentId + CourseCode + Term
+Absences  (AbsenceId, StudentId, AbsenceDate, Excused, Reason)
+```
+
+<div dir="rtl">
+
+</div>
+
+```sql
+-- ש1
+INSERT INTO Students VALUES (1019, 'תאיר', 'אביטן', 102, 'F', '2011-02-28', 3, '2026-09-20', '050-1000019');
+SELECT * FROM Students WHERE Students.StudentId = 1019;
+
+-- ש2
+INSERT INTO Students (StudentId, FirstName, LastName, Gender, EnrollDate)
+VALUES (1020, 'סיוון', 'דהן', 'F', '2026-09-21');
+SELECT * FROM Students WHERE Students.StudentId = 1020;
+
+-- ש3
+INSERT INTO Absences (AbsenceId, StudentId, AbsenceDate, Excused, Reason) VALUES
+  (17, 1019, '2026-09-21', 0, NULL),
+  (18, 1020, '2026-09-21', 1, 'מחלה');
+SELECT COUNT(*) AS TotalAbsences FROM Absences;
+
+-- ש4
+UPDATE Students SET Phone = '050-9999999' WHERE Students.StudentId = 1002;
+
+-- ש5
+UPDATE Teachers SET Salary = ROUND(Salary * 1.03);
+
+-- ש6
+UPDATE Students SET ClassCode = 102 WHERE Students.ClassCode IS NULL;
+
+-- ש7
+DELETE FROM Absences WHERE Absences.Excused = 1 AND Absences.AbsenceDate < '2026-09-05';
+
+-- ש8  השגוי, ואחריו הנכון
+UPDATE Grades SET Grade = Grade + 5 WHERE Grades.Grade IS NULL;   -- לא משנה כלום
+UPDATE Grades SET Grade = 5          WHERE Grades.Grade IS NULL;   -- או COALESCE(Grade,0) + 5
+
+-- ש9  שלושתן נכשלות בכוונה
+
+-- ש10
+CREATE TABLE AtRisk (StudentId INTEGER PRIMARY KEY, FullName TEXT, Avg1 REAL);
+INSERT INTO AtRisk (StudentId, FullName, Avg1)
+SELECT s.StudentId, s.FirstName || ' ' || s.LastName, ROUND(AVG(g.Grade),1)
+FROM   Grades g, Students s
+WHERE  g.StudentId = s.StudentId
+GROUP  BY s.StudentId, s.FirstName, s.LastName
+HAVING AVG(g.Grade) < 65;
+SELECT * FROM AtRisk ORDER BY Avg1;
+
+-- ש11
+CREATE TABLE Trips (
+  TripId      INTEGER PRIMARY KEY,
+  Destination TEXT    NOT NULL,
+  TripDate    TEXT    NOT NULL DEFAULT '2027-05-01',
+  Price       INTEGER NOT NULL DEFAULT 120
+);
+INSERT INTO Trips (TripId, Destination) VALUES (1, 'מצדה');
+INSERT INTO Trips VALUES (2, 'הכנרת', '2027-03-15', 90);
+SELECT * FROM Trips;
+
+-- ש12
+DELETE FROM AtRisk;
+```
+
+<div dir="rtl">
+
+**ש1.** `INSERT` בלי רשימת עמודות = **כל** העמודות, **בסדר שבו הוגדרו בטבלה**. זה עובד, וזה שביר: אם מישהו יוסיף עמודה ל‑`Students`, השאילתה הזאת תישבר (או, גרוע מזה, תכניס ערכים לעמודות הלא נכונות).
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId | FirstName | LastName | ClassCode | Gender | BirthDate | CityCode | EnrollDate | Phone |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| 1019 | תאיר | אביטן | 102 | F | 2011-02-28 | 3 | 2026-09-20 | 050-1000019 |
+
+</figure>
+
+**ש2.** בכל מה שלא מילאתם יש **`NULL`**.
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId | FirstName | LastName | ClassCode | Gender | BirthDate | CityCode | EnrollDate | Phone |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| 1020 | סיוון | דהן | NULL | F | NULL | NULL | 2026-09-21 | NULL |
+
+</figure>
+
+ושימו לב מה זה אומר: הצלחנו להכניס תלמידה **בלי תאריך לידה, בלי עיר ובלי כיתה** — כי אף אחת מהעמודות האלה אינה `NOT NULL`. ה‑`INSERT` עבר בשקט, ומחר מישהו ישאל "למה הדוח מראה גיל ריק?". זו לא בעיית DML; זו **בעיית עיצוב** שמטפלים בה באילוצים (שיעור 27).
+
+כתיבת רשימת עמודות מפורשת היא תמיד עדיפה: היא מתעדת מה מילאתם, והיא לא נשברת כשהטבלה משתנה.
+
+**ש3.** **18 היעדרויות.** `INSERT` אחד עם כמה `VALUES` מופרדים בפסיק — גם יעיל יותר וגם אטומי (או שכולם נכנסו, או אף אחד).
+
+**ש4.**
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId | FirstName | Phone |
+|:---:|:---:|:---:|
+| 1002 | נור | 050-9999999 |
+
+</figure>
+
+**ש5.** `UPDATE` **בלי `WHERE`** — וכאן זו הכוונה: כל 7 המורים. `SET Salary = ROUND(Salary * 1.03)` קורא את הערך הקיים בכל שורה ומחשב ממנו.
+
+<figure dir="ltr" class="dbtable">
+
+| LastName | Salary (לפני) | Salary (אחרי) |
+|:---:|:---:|:---:|
+| סרחאן | 14500 | 14935 |
+| בר-לב | 11200 | 11536 |
+| זיאד | 12800 | 13184 |
+| שמש | 15300 | 15759 |
+| חדאד | 9800 | 10094 |
+| מזרחי | 13100 | 13493 |
+| אבו-ראס | 10400 | 10712 |
+
+</figure>
+
+**ש6.** **2 שורות** — לינא (1018) **וגם סיוון (1020)**, שיצרתם בש2.
+
+זו נקודה ששווה לעצור עליה: ה‑`UPDATE` תפס תלמידה שלא חשבתם עליה, כי היא עמדה בתנאי. `WHERE … IS NULL` הוא תנאי על **מצב הנתונים כרגע**, ולא על רשימת שורות שבחרתם. לפני `UPDATE` רחב כדאי להריץ את אותו `WHERE` בתוך `SELECT` ולראות **את מי** זה הולך לתפוס.
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId | FirstName | ClassCode |
+|:---:|:---:|:---:|
+| 1018 | לינא | 102 |
+| 1020 | סיוון | 102 |
+
+</figure>
+
+**ש7.** נמחקו **3** היעדרויות, ונשארו **15** (מתוך 18). שלוש המאושרות שלפני ה‑5 בספטמבר: שתיים של יואב (2 ו‑3 בספטמבר) ואחת של איתי (4 בספטמבר).
+
+**ש8.** העדכון **כן נגע ב‑2 שורות**, ולא שינה בהן כלום. הערך נשאר `NULL`.
+
+הסיבה: `SET Grade = Grade + 5` מחשב לפי הערך **הקיים**, והערך הקיים הוא `NULL`. ו‑`NULL + 5` הוא `NULL`. בסיס הנתונים עשה בדיוק מה שביקשתם: לקח לא‑ידוע, הוסיף 5, וקיבל לא‑ידוע.
+
+זו מלכודת מסוכנת במיוחד כי הדיווח **"2 rows affected"** נראה כמו הצלחה.
+
+**התיקון** תלוי במה שהתכוונתם:
+
+</div>
+
+```sql
+UPDATE Grades SET Grade = 5 WHERE Grades.Grade IS NULL;               -- "הציון שלהם הוא 5"
+UPDATE Grades SET Grade = COALESCE(Grade, 0) + 5;                     -- "לכולם +5, וחסר נחשב 0"
+```
+
+<div dir="rtl">
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId | CourseCode | Grade |
+|:---:|:---:|:---:|
+| 1004 | 14 | NULL |
+| 1009 | 12 | NULL |
+
+</figure>
+
+**ש9.** שלוש שגיאות, שלושה אילוצים שונים:
+
+</div>
+
+```text
+א   CHECK constraint failed: Gender IN ('M','F')
+ב   FOREIGN KEY constraint failed
+ג   UNIQUE constraint failed: Students.StudentId
+```
+
+<div dir="rtl">
+
+| הסעיף | האילוץ | מה הוא מנע |
+|--------|---------|-------------|
+| **א** | `CHECK (Gender IN ('M','F'))` | `'X'` אינו ערך חוקי. האילוץ מגדיר **תחום** (domain) ושומר שלא ייכנס אליו ערך שלא תוכנן |
+| **ב** | `FOREIGN KEY (CourseCode)` | אין מקצוע `99`. האילוץ מנע **שורה יתומה** — ציון שמצביע לשום מקום |
+| **ג** | `PRIMARY KEY (StudentId)` | `1001` כבר קיים. מפתח ראשי הוא גם `UNIQUE`, ולכן אין שני תלמידים עם אותו מזהה |
+
+**ושימו לב מה קרה בכל שלוש:** השורה **לא נכנסה**. זה בדיוק הערך של אילוצים — הם דוחים נתון שגוי **ברגע הכתיבה**, במקום לתת לו לשבת בטבלה ולהתגלות בדוח חצי שנה אחר כך. ⚠️ ב‑SQLite אילוצי מפתח זר נבדקים רק אם `PRAGMA foreign_keys = ON` — ב‑OneCompiler ייתכן שסעיף ב' **יעבור** ולא ייכשל. אם זה קרה לכם, זה שיעור בפני עצמו: אילוץ שלא נאכף הוא תיעוד, לא הגנה.
+
+**ש10.** **6 תלמידים** בסיכון.
+
+`INSERT INTO … SELECT` הוא הצורה שבה ממלאים טבלה **מתוך שאילתה** — בלי לכתוב `VALUES` אפילו פעם אחת. כאן הוא לקח `GROUP BY … HAVING` שלם והפך אותו ל‑6 שורות בטבלה חדשה. אין הגבלה על מורכבות ה‑`SELECT`: `JOIN`, `GROUP BY`, תת‑שאילתות — הכול מותר.
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId | FullName | Avg1 |
+|:---:|:---:|:---:|
+| 1012 | ג'וד מנסור | 44.8 |
+| 1004 | מאיה לוי | 55 |
+| 1009 | כרים חלבי | 58.5 |
+| 1006 | סאלי חסון | 62 |
+| 1003 | יואב כהן | 63.3 |
+| 1015 | איתי גולן | 64 |
+
+</figure>
+
+> ⚠️ **אבל מה בדיוק בנינו?** "תמונת מצב" מהרגע הזה. מחר ייכנסו ציונים חדשים, והטבלה `AtRisk` תישאר כפי שהיא — **נכונה לאתמול**. זה הבדל מהותי מ‑`View` (שיעור 28), שהוא שאילתה שמורה ומתעדכן תמיד. שתיהן שימושיות; צריך לדעת מה בחרתם.
+
+**ש11.** `DEFAULT` נכנס לפעולה **רק** כשלא ציינתם את העמודה. טיול 1 קיבל `2027-05-01` ו‑`120` מברירת המחדל; טיול 2 קיבל את מה שנתנו לו.
+
+<figure dir="ltr" class="dbtable">
+
+| TripId | Destination | TripDate | Price |
+|:---:|:---:|:---:|:---:|
+| 1 | מצדה | 2027-05-01 | 120 |
+| 2 | הכנרת | 2027-03-15 | 90 |
+
+</figure>
+
+> 💡 `DEFAULT` ו‑`NOT NULL` יחד הם צמד חזק: העמודה **חייבת** ערך, ואם לא נתנו — יש לה אחד הגיוני. כך לא נוצרות שורות חלקיות כמו של סיוון בש2.
+
+**ש12.** **0 שורות נשארו.** כל 6 השורות נמחקו, בלי אישור ובלי אזהרה.
+
+`DELETE FROM טבלה;` בלי `WHERE` הוא **הפקודה המסוכנת ביותר ב‑SQL**. בבית ספר אמיתי `DELETE FROM Students;` היה מוחק את כל התלמידים — ואיתם, דרך המפתחות הזרים, גם את הציונים וההיעדרויות שלהם (או, אם האילוצים מגנים, הפקודה הייתה נכשלת, וזו עוד נקודה לזכותם).
+
+**שלושה דברים שהיו מצילים אותך:**
+
+| מה | למה זה עובד |
+|-----|--------------|
+| **להריץ `SELECT` עם אותו `WHERE` קודם** | רואים **בדיוק** אילו שורות ייעלמו, לפני שהן נעלמות. הרגל של שתי שניות |
+| **`BEGIN TRANSACTION` לפני** | אחרי המחיקה בודקים, ואם משהו לא בסדר — `ROLLBACK`, וכלום לא קרה (שיעור 32) |
+| **גיבוי** | הדבר היחיד שעוזר **אחרי** ש‑`COMMIT` נעשה. למחיקה שאושרה אין "בטל" |
+
+> 🔮 הסעיף הזה הוא ההקדמה לשיעור 32. `DELETE` בתוך טרנזקציה הוא החלטה הפיכה; `DELETE` עם `COMMIT` הוא עובדה.
+
+</div>
+<!-- classroom:end -->

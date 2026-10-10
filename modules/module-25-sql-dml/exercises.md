@@ -2,6 +2,8 @@
 
 # מודול 25 — תרגילים
 
+> 💪 **בסוף הדף — [תרגול בכיתה](#-תרגול-בכיתה--בית-הספר-עתיד):** 12 שאלות על בסיס נתונים אחר, [`school.sql`](../../resources/school-db/), שחוזר בכל שיעור SQL. מיועד לשיעור בכיתה.
+
 > **הנחיות:** הדביקו את [`shelter.sql`](../../resources/shelter-db/shelter.sql), ומיד אחריו:
 >
 > ```sql
@@ -138,3 +140,88 @@ INSERT INTO animal (name, species_id, sex, status, chip_number) VALUES ('Copy', 
 
 </div>
 <!-- exam-style:end -->
+
+<!-- classroom:start -->
+<div dir="rtl">
+
+---
+
+## 💪 תרגול בכיתה — בית הספר "עתיד"
+
+> 🏫 **בסיס נתונים אחר, 12 שאלות.** הקטע הזה חוזר בסוף התרגילים של **כל** שיעור SQL, תמיד על אותו בסיס נתונים — [`school.sql`](../../resources/school-db/): 7 טבלאות, 18 תלמידים. השאלות הן שמתקדמות בקושי משיעור לשיעור.
+>
+> **טוענים פעם אחת:** [**פתיחה להעתקה**](https://raw.githubusercontent.com/AhmadKais/sql-course-heb/main/resources/school-db/school.sql) → `Ctrl+A`, `Ctrl+C` → מדביקים ב‑[OneCompiler (SQLite)](https://onecompiler.com/sqlite) → **Run**. צריך להופיע `students_loaded = 18`.
+>
+> 📅 **תאריך הייחוס: `'2026-09-21'`** — השתמשו בו במקום `DATE('now')`. · ⚠️ ה[פתרונות](solutions.md) מחכים בסוף — אחרי שניסיתם.
+
+</div>
+
+```text
+Cities    (CityCode, CityName)
+Teachers  (TeacherCode, FirstName, LastName, Subject, HireDate, Salary, CityCode, Phone)
+Classes   (ClassCode, ClassName, Grade, TeacherCode, RoomNumber)
+Courses   (CourseCode, CourseName, TeacherCode, WeeklyHours)
+Students  (StudentId, FirstName, LastName, ClassCode, Gender, BirthDate, CityCode, EnrollDate, Phone)
+Grades    (StudentId, CourseCode, Term, Grade)          -- PK: StudentId + CourseCode + Term
+Absences  (AbsenceId, StudentId, AbsenceDate, Excused, Reason)
+```
+
+<div dir="rtl">
+
+> ⚠️ **הפעם אתם משנים נתונים.** זה בסדר: כל לחיצה על **Run** מריצה את `school.sql` מחדש, שמוחק את הטבלאות ובונה אותן מאפס. **בכל טעות — Run, ואתם נקיים.**
+>
+> 💡 אחרי כל `INSERT`/`UPDATE`/`DELETE` הריצו `SELECT` שמוכיח שזה עבד. DML לא מחזיר טבלה, אז אין דרך אחרת לדעת.
+
+**ש1.** רשמו תלמידה חדשה **עם כל העמודות**: `1019`, תאיר אביטן, כיתה 102, `F`, נולדה `2011-02-28`, עיר 3, נרשמה `2026-09-20`, טלפון `050-1000019`.
+
+**ש2.** רשמו תלמידה **עם ארבע עמודות בלבד**: `1020`, סיוון דהן, `F`, נרשמה `2026-09-21`. ⚠️ שלפו אותה — **מה יש בעמודות שלא מילאתם?**
+
+**ש3.** הוסיפו **שתי** היעדרויות ב‑`INSERT` **אחד**: `17` לתאיר (`2026-09-21`, לא מאושרת, בלי סיבה) ו‑`18` לסיוון (`2026-09-21`, מאושרת, `מחלה`). בדקו שיש 18 היעדרויות.
+
+**ש4.** נור עזאם (`1002`) מסרה טלפון: `050-9999999`. עדכנו.
+
+**ש5.** כל המורים מקבלים **העלאה של 3%**, מעוגלת לשקל. עדכנו את כולם בשאילתה אחת, ושלפו את התוצאה.
+
+**ש6.** כל התלמידים **שאין להם כיתה** שובצו לכיתה `102`. עדכנו. **כמה שורות השתנו?**
+
+**ש7.** מחקו את כל ההיעדרויות **המאושרות שלפני `'2026-09-05'`**. כמה נשארו?
+
+**ש8.** ⚠️ **העדכון שלא עשה כלום.** המנהלת ביקשה לתת 5 נקודות בונוס למי שלא נבחן. תלמיד כתב:
+
+</div>
+
+```sql
+UPDATE Grades SET Grade = Grade + 5 WHERE Grades.Grade IS NULL;
+```
+
+<div dir="rtl">
+
+הריצו, ואז שלפו את שתי השורות האלה. **העדכון דיווח ששתי שורות השתנו — ובכל זאת הציון עדיין `NULL`. הסבירו.** ואיך כותבים את זה נכון?
+
+**ש9.** ⚠️ **שלוש הכנסות שייכשלו.** הריצו כל אחת, **העתיקו את הודעת השגיאה**, והסבירו איזה אילוץ עצר אותה:
+
+</div>
+
+```sql
+-- א
+INSERT INTO Students (StudentId, FirstName, LastName, Gender, EnrollDate)
+VALUES (1021, 'באג', 'בדיקה', 'X', '2026-09-21');
+
+-- ב
+INSERT INTO Grades VALUES (1001, 99, 1, 80);
+
+-- ג
+INSERT INTO Students (StudentId, FirstName, LastName, Gender, EnrollDate)
+VALUES (1001, 'כפול', 'מזהה', 'M', '2026-09-21');
+```
+
+<div dir="rtl">
+
+**ש10.** `INSERT INTO … SELECT`. בנו טבלה `AtRisk (StudentId, FullName, Avg1)` ו**מלאו אותה בשאילתה** בכל התלמידים שהממוצע שלהם **מתחת ל‑65**. שלפו אותה מסודרת מהנמוך לגבוה.
+
+**ש11.** **`DEFAULT`.** בנו טבלה `Trips` לטיולים שנתיים: `TripId` (מפתח), `Destination` (חובה), `TripDate` (ברירת מחדל `'2027-05-01'`), `Price` (ברירת מחדל `120`). הכניסו טיול אחד **בלי** תאריך ומחיר, ואחד **עם** — ושלפו.
+
+**ש12.** ⚠️ הריצו `DELETE FROM AtRisk;` — בלי `WHERE`. כמה שורות נשארו? **מה היה קורה אם הייתם כותבים את זה על `Students` בבית ספר אמיתי**, ומה היו שלושת הדברים שהיו מצילים אותך?
+
+</div>
+<!-- classroom:end -->
