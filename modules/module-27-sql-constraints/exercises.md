@@ -2,6 +2,8 @@
 
 # מודול 27 — תרגילים
 
+> 💪 **בסוף הדף — [תרגול בכיתה](#-תרגול-בכיתה--בית-הספר-עתיד):** 12 שאלות על בסיס נתונים אחר, [`school.sql`](../../resources/school-db/), שחוזר בכל שיעור SQL. מיועד לשיעור בכיתה.
+
 > **הנחיות:** הדביקו את [`shelter.sql`](../../resources/shelter-db/shelter.sql) ואחריו `PRAGMA foreign_keys = ON;`. **כתבו ברצף.**
 >
 > 🔮 **לפני כל `INSERT` שאמור להיכשל — כתבו איזו הודעת שגיאה תתקבל.** אחר כך הריצו.
@@ -115,3 +117,96 @@
 
 </div>
 <!-- w3schools:end -->
+
+<!-- classroom:start -->
+<div dir="rtl">
+
+---
+
+## 💪 תרגול בכיתה — בית הספר "עתיד"
+
+> 🏫 **בסיס נתונים אחר, 12 שאלות.** הקטע הזה חוזר בסוף התרגילים של **כל** שיעור SQL, תמיד על אותו בסיס נתונים — [`school.sql`](../../resources/school-db/): 7 טבלאות, 18 תלמידים. השאלות הן שמתקדמות בקושי משיעור לשיעור.
+>
+> **טוענים פעם אחת:** [**פתיחה להעתקה**](https://raw.githubusercontent.com/AhmadKais/sql-course-heb/main/resources/school-db/school.sql) → `Ctrl+A`, `Ctrl+C` → מדביקים ב‑[OneCompiler (SQLite)](https://onecompiler.com/sqlite) → **Run**. צריך להופיע `students_loaded = 18`.
+>
+> 📅 **תאריך הייחוס: `'2026-09-21'`** — השתמשו בו במקום `DATE('now')`. · ⚠️ ה[פתרונות](solutions.md) מחכים בסוף — אחרי שניסיתם.
+
+</div>
+
+```text
+Cities    (CityCode, CityName)
+Teachers  (TeacherCode, FirstName, LastName, Subject, HireDate, Salary, CityCode, Phone)
+Classes   (ClassCode, ClassName, Grade, TeacherCode, RoomNumber)
+Courses   (CourseCode, CourseName, TeacherCode, WeeklyHours)
+Students  (StudentId, FirstName, LastName, ClassCode, Gender, BirthDate, CityCode, EnrollDate, Phone)
+Grades    (StudentId, CourseCode, Term, Grade)          -- PK: StudentId + CourseCode + Term
+Absences  (AbsenceId, StudentId, AbsenceDate, Excused, Reason)
+```
+
+<div dir="rtl">
+
+> ⚠️ **לפני הכול — שורה אחת חובה.** ב‑SQLite אילוצי מפתח זר **כבויים כברירת מחדל**. הדביקו את זה **מתחת** ל‑`school.sql`, לפני השאלות:
+>
+> `PRAGMA foreign_keys = ON;`
+>
+> בלעדיה סעיפים ש6, ש7 וש12 **יעברו בשקט** במקום להיכשל — ואז תגלו למה אילוץ שלא נאכף שווה כלום.
+
+**ש1.** בנו טבלה `Exams` לבחינות, עם **כל** סוגי האילוצים:
+
+| העמודה | הדרישה |
+|---------|---------|
+| `ExamId` | מפתח ראשי |
+| `CourseCode` | חובה · מפתח זר ל‑`Courses` |
+| `ExamDate` | חובה |
+| `Room` | חובה |
+| `MaxScore` | חובה · ברירת מחדל 100 · **חייב להיות בין 1 ל‑100** |
+| `Weight` | חובה · **חייב להיות גדול מ‑0 וקטן או שווה ל‑1** |
+| — | **אין שתי בחינות באותו מקצוע באותו תאריך** |
+
+הכניסו שלוש בחינות תקינות: `(1, 11, '2027-01-15', 'אולם א', 100, 0.4)`, `(2, 11, '2027-06-10', 'אולם א', 100, 0.6)`, `(3, 13, '2027-01-15', 'חדר 21', 100, 1.0)`.
+
+**ש2.–ש6.** ⚠️ **חמש הכנסות שייכשלו.** הריצו כל אחת, **העתיקו את ההודעה**, ואמרו **איזה אילוץ** עצר אותה:
+
+</div>
+
+```sql
+-- ש2
+INSERT INTO Exams VALUES (4, 12, '2027-02-01', NULL, 100, 0.5);
+-- ש3
+INSERT INTO Exams VALUES (5, 11, '2027-01-15', 'אולם ב', 100, 0.5);
+-- ש4
+INSERT INTO Exams VALUES (6, 12, '2027-03-01', 'חדר 14', 120, 0.5);
+INSERT INTO Exams VALUES (7, 12, '2027-03-01', 'חדר 14', 100, 1.5);
+-- ש5
+INSERT INTO Exams VALUES (1, 14, '2027-04-01', 'חדר 31', 100, 0.5);
+-- ש6
+INSERT INTO Exams VALUES (8, 99, '2027-04-01', 'חדר 31', 100, 0.5);
+```
+
+<div dir="rtl">
+
+**ש7.** נסו למחוק את מקצוע `11`: `DELETE FROM Courses WHERE Courses.CourseCode = 11;`. **מה קרה, ומי מנע את זה?**
+
+**ש8.** ⚠️ **`UNIQUE` ו‑`NULL`.** בנו `Lockers (LockerId מפתח, StudentId UNIQUE, Floor1)` והכניסו:
+`(1, 1001, 1)`, `(2, NULL, 1)`, `(3, NULL, 2)`, `(4, NULL, 2)`.
+
+**א.** **כל ארבע נכנסו?** אבל `StudentId` הוא `UNIQUE` ויש בו שלושה `NULL`ים — **הסבירו**.
+
+**ב.** עכשיו נסו `(5, 1001, 3)`. מה קרה?
+
+**ש9.** הכניסו בחינה **בלי** `MaxScore`: `(9, 17, '2027-05-20', 'חדר 12', Weight = 0.3)`. מה נכנס ב‑`MaxScore`? ⚠️ ה‑`CHECK` הוא `BETWEEN 1 AND 100` — האם הוא נבדק גם על ערך ברירת מחדל?
+
+**ש10.** בנו `GradesChecked (StudentId, CourseCode, Grade)` עם מפתח ראשי מורכב, שני מפתחות זרים, ו‑`CHECK (Grade BETWEEN 0 AND 100)`.
+
+**א.** הכניסו `(1001, 11, 88)` ו‑`(1002, 11, NULL)`. **שניהם עברו?** איך `NULL` עובר `CHECK` של טווח?
+
+**ב.** נסו `(1003, 11, 120)`.
+
+**ש11.** ⚠️ עכשיו הריצו על הטבלה **האמיתית**: `INSERT INTO Grades VALUES (1001, 13, 1, 120);`
+
+**האם זה עבר?** אם כן — **למה?** ומה זה אומר על `school.sql`?
+
+**ש12.** **`ON DELETE CASCADE`.** בנו `ClubReg (ClubId, StudentId)` כך שהמפתח הזר ל‑`Students` יוגדר `ON DELETE CASCADE`. הכניסו `(1, 1007)`, `(2, 1007)`, `(1, 1016)`. עכשיו מחקו את התלמיד `1007` (תצטרכו קודם למחוק את הציונים שלו). **מה קרה ל‑`ClubReg`, ולמה זה שונה ממה שקרה בש7?**
+
+</div>
+<!-- classroom:end -->
