@@ -2,6 +2,8 @@
 
 # מודול 26 — תרגילים
 
+> 💪 **בסוף הדף — [תרגול בכיתה](#-תרגול-בכיתה--בית-הספר-עתיד):** 12 שאלות על בסיס נתונים אחר, [`school.sql`](../../resources/school-db/), שחוזר בכל שיעור SQL. מיועד לשיעור בכיתה.
+
 > **הנחיות:** הדביקו את [`shelter.sql`](../../resources/shelter-db/shelter.sql) ואחריו `PRAGMA foreign_keys = ON;`. **כתבו ברצף.**
 >
 > ⚠️ אל תפתחו את [הפתרונות](solutions.md) לפני שניסיתם.
@@ -137,3 +139,93 @@
 
 </div>
 <!-- exam-style:end -->
+
+<!-- classroom:start -->
+<div dir="rtl">
+
+---
+
+## 💪 תרגול בכיתה — בית הספר "עתיד"
+
+> 🏫 **בסיס נתונים אחר, 12 שאלות.** הקטע הזה חוזר בסוף התרגילים של **כל** שיעור SQL, תמיד על אותו בסיס נתונים — [`school.sql`](../../resources/school-db/): 7 טבלאות, 18 תלמידים. השאלות הן שמתקדמות בקושי משיעור לשיעור.
+>
+> **טוענים פעם אחת:** [**פתיחה להעתקה**](https://raw.githubusercontent.com/AhmadKais/sql-course-heb/main/resources/school-db/school.sql) → `Ctrl+A`, `Ctrl+C` → מדביקים ב‑[OneCompiler (SQLite)](https://onecompiler.com/sqlite) → **Run**. צריך להופיע `students_loaded = 18`.
+>
+> 📅 **תאריך הייחוס: `'2026-09-21'`** — השתמשו בו במקום `DATE('now')`. · ⚠️ ה[פתרונות](solutions.md) מחכים בסוף — אחרי שניסיתם.
+
+</div>
+
+```text
+Cities    (CityCode, CityName)
+Teachers  (TeacherCode, FirstName, LastName, Subject, HireDate, Salary, CityCode, Phone)
+Classes   (ClassCode, ClassName, Grade, TeacherCode, RoomNumber)
+Courses   (CourseCode, CourseName, TeacherCode, WeeklyHours)
+Students  (StudentId, FirstName, LastName, ClassCode, Gender, BirthDate, CityCode, EnrollDate, Phone)
+Grades    (StudentId, CourseCode, Term, Grade)          -- PK: StudentId + CourseCode + Term
+Absences  (AbsenceId, StudentId, AbsenceDate, Excused, Reason)
+```
+
+<div dir="rtl">
+
+**עד כה שלפתם ושינתם נתונים. עכשיו אתם בונים את המבנה עצמו.**
+
+**ש1.** בית הספר פותח חוגים. בנו טבלה `Clubs` עם:
+
+| העמודה | הטיפוס | הדרישה |
+|---------|---------|---------|
+| `ClubId` | שלם | מפתח ראשי |
+| `ClubName` | טקסט | חובה, **ייחודי** |
+| `TeacherCode` | שלם | מפתח זר ל‑`Teachers` |
+| `MeetingDay` | טקסט | אופציונלי |
+| `MaxStudents` | שלם | חובה, ברירת מחדל `20` |
+| `Fee` | ממשי | חובה, ברירת מחדל `0` |
+
+**ש2.** הכניסו שלושה חוגים ושלפו את הטבלה:
+`(1, 'רובוטיקה', 3, 'שלישי')` · `(2, 'דיבייט', 4, 'חמישי', 15, 50.5)` · `(3, 'שחמט')` — השלישי **רק עם שתי העמודות הראשונות**. מה יש אצלו ב‑`MaxStudents` וב‑`Fee`, ומה ב‑`MeetingDay`? **למה זה שונה?**
+
+**ש3.** הוסיפו לטבלה עמודה `RoomNumber` (שלם). מה קיבלו שלוש השורות הקיימות?
+
+**ש4.** שנו את שם העמודה `Fee` ל‑`MonthlyFee`.
+
+**ש5.** שנו את שם הטבלה כולה ל‑`SchoolClubs`.
+
+**ש6.** בנו טבלת קשר `ClubMembers (ClubId, StudentId, JoinDate)` עם **מפתח ראשי מורכב** משני השדות הראשונים ו**שני מפתחות זרים**. הכניסו: `(1, 1007)`, `(1, 1013)`, `(2, 1016)` — כולם ב‑`'2026-09-15'`/`'2026-09-16'`.
+
+**ש7.** **`CREATE TABLE … AS SELECT`.** בנו בשורה אחת טבלה `TopStudents` שמכילה את כל התלמידים שהממוצע שלהם **90 ומעלה**, עם מזהה, שם מלא וממוצע. ⚠️ מי קבע את הטיפוסים של העמודות?
+
+**ש8.** ⚠️ **ההפתעה הגדולה של SQLite.** הריצו:
+
+</div>
+
+```sql
+INSERT INTO SchoolClubs (ClubId, ClubName, MaxStudents) VALUES (4, 'תיאטרון', 'עשרים');
+SELECT ClubId, ClubName, MaxStudents, TYPEOF(MaxStudents) AS WhatType FROM SchoolClubs;
+```
+
+<div dir="rtl">
+
+`MaxStudents` הוגדר `INTEGER`. **האם ה‑`INSERT` נכשל?** מה אומרת `TYPEOF`? ומה ההשלכה על `SUM(MaxStudents)`?
+
+**ש9.** אילו טבלאות קיימות כרגע בבסיס הנתונים? (`SELECT name, type FROM sqlite_master WHERE type = 'table';`)
+
+**ש10.** מחקו את הטבלה `TopStudents` לגמרי, וּודאו ב‑`sqlite_master` שהיא נעלמה.
+
+**ש11.** הריצו `DELETE FROM ClubMembers;` ואז חפשו את `ClubMembers` ב‑`sqlite_master`. **מה ההבדל בין `DELETE` לבין `DROP`?**
+
+**ש12.** ⚠️ **מה `ALTER TABLE` לא מרשה.** הריצו את ארבע הפקודות, ורשמו לכל אחת אם עברה או נכשלה ומה ההודעה:
+
+</div>
+
+```sql
+ALTER TABLE Students ADD COLUMN Email TEXT NOT NULL;
+ALTER TABLE Students ADD COLUMN Email TEXT NOT NULL DEFAULT 'unknown@school.il';
+ALTER TABLE Students DROP COLUMN Email;
+ALTER TABLE Students DROP COLUMN StudentId;
+```
+
+<div dir="rtl">
+
+**הסבירו את הראשונה והרביעית** — מה הייתה הבעיה בכל אחת?
+
+</div>
+<!-- classroom:end -->

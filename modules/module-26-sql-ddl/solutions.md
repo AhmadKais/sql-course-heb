@@ -247,3 +247,252 @@ CREATE TABLE Halls (
 
 </div>
 <!-- exam-style:end -->
+
+<!-- classroom:start -->
+<div dir="rtl">
+
+---
+
+## 💪 תרגול בכיתה — פתרונות
+
+> 🏫 על [`school.sql`](../../resources/school-db/). כל הפלטים כאן **אמיתיים** — כל שאילתה הורצה על בסיס הנתונים, נכון לתאריך הייחוס `'2026-09-21'`.
+
+</div>
+
+```text
+Cities    (CityCode, CityName)
+Teachers  (TeacherCode, FirstName, LastName, Subject, HireDate, Salary, CityCode, Phone)
+Classes   (ClassCode, ClassName, Grade, TeacherCode, RoomNumber)
+Courses   (CourseCode, CourseName, TeacherCode, WeeklyHours)
+Students  (StudentId, FirstName, LastName, ClassCode, Gender, BirthDate, CityCode, EnrollDate, Phone)
+Grades    (StudentId, CourseCode, Term, Grade)          -- PK: StudentId + CourseCode + Term
+Absences  (AbsenceId, StudentId, AbsenceDate, Excused, Reason)
+```
+
+<div dir="rtl">
+
+</div>
+
+```sql
+-- ש1
+CREATE TABLE Clubs (
+  ClubId      INTEGER PRIMARY KEY,
+  ClubName    TEXT    NOT NULL UNIQUE,
+  TeacherCode INTEGER REFERENCES Teachers(TeacherCode),
+  MeetingDay  TEXT,
+  MaxStudents INTEGER NOT NULL DEFAULT 20,
+  Fee         REAL    NOT NULL DEFAULT 0
+);
+
+-- ש2
+INSERT INTO Clubs (ClubId, ClubName, TeacherCode, MeetingDay) VALUES (1, 'רובוטיקה', 3, 'שלישי');
+INSERT INTO Clubs VALUES (2, 'דיבייט', 4, 'חמישי', 15, 50.5);
+INSERT INTO Clubs (ClubId, ClubName) VALUES (3, 'שחמט');
+SELECT * FROM Clubs;
+
+-- ש3
+ALTER TABLE Clubs ADD COLUMN RoomNumber INTEGER;
+
+-- ש4
+ALTER TABLE Clubs RENAME COLUMN Fee TO MonthlyFee;
+
+-- ש5
+ALTER TABLE Clubs RENAME TO SchoolClubs;
+
+-- ש6
+CREATE TABLE ClubMembers (
+  ClubId    INTEGER,
+  StudentId INTEGER,
+  JoinDate  TEXT,
+  PRIMARY KEY (ClubId, StudentId),
+  FOREIGN KEY (ClubId)    REFERENCES SchoolClubs(ClubId),
+  FOREIGN KEY (StudentId) REFERENCES Students(StudentId)
+);
+INSERT INTO ClubMembers VALUES (1, 1007, '2026-09-15'), (1, 1013, '2026-09-15'), (2, 1016, '2026-09-16');
+
+-- ש7
+CREATE TABLE TopStudents AS
+SELECT s.StudentId, s.FirstName || ' ' || s.LastName AS FullName, ROUND(AVG(g.Grade),1) AS Avg1
+FROM   Grades g, Students s WHERE g.StudentId = s.StudentId
+GROUP  BY s.StudentId, s.FirstName, s.LastName
+HAVING AVG(g.Grade) >= 90;
+
+-- ש8
+INSERT INTO SchoolClubs (ClubId, ClubName, MaxStudents) VALUES (4, 'תיאטרון', 'עשרים');
+SELECT ClubId, ClubName, MaxStudents, TYPEOF(MaxStudents) AS WhatType FROM SchoolClubs;
+
+-- ש9
+SELECT name, type FROM sqlite_master WHERE type = 'table' ORDER BY name;
+
+-- ש10
+DROP TABLE TopStudents;
+SELECT name FROM sqlite_master WHERE name = 'TopStudents';     -- 0 שורות
+
+-- ש11
+DELETE FROM ClubMembers;
+SELECT COUNT(*) AS Rows1 FROM ClubMembers;                     -- 0
+SELECT name FROM sqlite_master WHERE name = 'ClubMembers';     -- הטבלה עדיין שם
+
+-- ש12
+ALTER TABLE Students ADD COLUMN Email TEXT NOT NULL;                                -- ❌
+ALTER TABLE Students ADD COLUMN Email TEXT NOT NULL DEFAULT 'unknown@school.il';    -- ✅
+ALTER TABLE Students DROP COLUMN Email;                                             -- ✅
+ALTER TABLE Students DROP COLUMN StudentId;                                         -- ❌
+```
+
+<div dir="rtl">
+
+**ש1.** ב‑`CREATE TABLE` יש שתי שכבות: **טיפוס** (`INTEGER`, `TEXT`, `REAL`) ו**אילוצים** (`NOT NULL`, `UNIQUE`, `DEFAULT`, `PRIMARY KEY`, `REFERENCES`). הטיפוס אומר *איזה סוג ערך*; האילוץ אומר *אילו ערכים מותרים*.
+
+**ש2.**
+
+<figure dir="ltr" class="dbtable">
+
+| ClubId | ClubName | TeacherCode | MeetingDay | MaxStudents | Fee |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| 1 | רובוטיקה | 3 | שלישי | 20 | 0 |
+| 2 | דיבייט | 4 | חמישי | 15 | 50.5 |
+| 3 | שחמט | NULL | NULL | 20 | 0 |
+
+</figure>
+
+אצל שחמט: `MaxStudents = 20` ו‑`Fee = 0` — מ**ברירת המחדל**. אבל `TeacherCode` ו‑`MeetingDay` הם **`NULL`**.
+
+**למה שונה?** כי לשתי העמודות האחרונות **לא הגדרנו `DEFAULT`**. כשעמודה חסרה ב‑`INSERT`, SQL שואל: "יש לה `DEFAULT`?" — אם כן, מכניס אותו; אם לא, מכניס `NULL`. `DEFAULT` הוא לא "הערך השכיח", הוא **הערך שנכנס כשלא אמרו כלום**.
+
+**ש3.** שלוש השורות הקיימות קיבלו **`NULL`** ב‑`RoomNumber`. זה הכרחי: הטבלה כבר מכילה נתונים, ול‑SQL אין מה לשים שם. (ולכן גם אסור להוסיף עמודת `NOT NULL` בלי `DEFAULT` — ראו ש12.)
+
+<figure dir="ltr" class="dbtable">
+
+| ClubId | ClubName | TeacherCode | MeetingDay | MaxStudents | Fee | RoomNumber |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| 1 | רובוטיקה | 3 | שלישי | 20 | 0 | NULL |
+| 2 | דיבייט | 4 | חמישי | 15 | 50.5 | NULL |
+| 3 | שחמט | NULL | NULL | 20 | 0 | NULL |
+
+</figure>
+
+**ש4.** הנתונים **לא זזו** — רק השם. `RENAME COLUMN` הוא שינוי במבנה, לא בתוכן.
+
+<figure dir="ltr" class="dbtable">
+
+| ClubId | ClubName | MonthlyFee |
+|:---:|:---:|:---:|
+| 1 | רובוטיקה | 0 |
+| 2 | דיבייט | 50.5 |
+| 3 | שחמט | 0 |
+
+</figure>
+
+> ⚠️ ובכל זאת — **כל שאילתה בעולם שכתבה `Fee` נשברה עכשיו.** שינוי שם עמודה הוא הפעולה שהורסת הכי הרבה קוד קיים ביחס לכמה שהיא נראית תמימה. בעבודה אמיתית עושים את זה בשלבים: מוסיפים את החדשה, מעבירים את הקוראים, ורק אז מוחקים את הישנה.
+
+**ש5.** `RENAME TO` — 3 שורות, אותן שורות, שם אחר.
+
+**ש6.** **מפתח ראשי מורכב** הוא בדיוק הכלי לטבלת קשר M:M: הצמד `(ClubId, StudentId)` ייחודי, ולכן אי אפשר לרשום אותו תלמיד לאותו חוג פעמיים — ובכל זאת אפשר לרשום אותו לכמה חוגים, ואת אותו חוג לכמה תלמידים.
+
+<figure dir="ltr" class="dbtable">
+
+| ClubId | StudentId | JoinDate |
+|:---:|:---:|:---:|
+| 1 | 1007 | 2026-09-15 |
+| 1 | 1013 | 2026-09-15 |
+| 2 | 1016 | 2026-09-16 |
+
+</figure>
+
+**ש7.** **5 תלמידים.**
+
+`CREATE TABLE … AS SELECT` (מקוצר **CTAS**) בונה טבלה **והטיפוסים נגזרים מהשאילתה** — לא אתם קבעתם אותם, אלא בסיס הנתונים, לפי מה שהחזיר כל ביטוי. זה נוח ומסוכן: אין `PRIMARY KEY`, אין `NOT NULL`, אין אילוצים. CTAS מייצר **טבלת עבודה**, לא טבלה שראויה לשבת בבסיס הנתונים.
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId | FullName | Avg1 |
+|:---:|:---:|:---:|
+| 1016 | ראניה עבאס | 97 |
+| 1010 | תמר שושן | 96 |
+| 1002 | נור עזאם | 94.7 |
+| 1013 | דניאל פרץ | 92 |
+| 1007 | עומר ביטון | 91.3 |
+
+</figure>
+
+**ש8.** **ה‑`INSERT` לא נכשל.** המילה `'עשרים'` נכנסה לעמודה שהוגדרה `INTEGER`, ו‑`TYPEOF` מחזירה **`text`**.
+
+<figure dir="ltr" class="dbtable">
+
+| ClubId | ClubName | MaxStudents | WhatType |
+|:---:|:---:|:---:|:---:|
+| 1 | רובוטיקה | 20 | integer |
+| 2 | דיבייט | 15 | integer |
+| 3 | שחמט | 20 | integer |
+| 4 | תיאטרון | עשרים | **text** |
+
+</figure>
+
+**זו תכונה של SQLite בשם *type affinity*:** הטיפוס בהגדרת העמודה הוא **העדפה**, לא חוק. SQLite מנסה להמיר את מה שנתתם; אם לא הצליח — שומר אותו כמו שהוא. **בכל בסיס נתונים אחר** (אורקל, MySQL, SQL Server) זו שגיאה מיידית.
+
+**ההשלכה על `SUM(MaxStudents)`:** המחרוזת `'עשרים'` מומרת ל‑**0** בחישוב, ולכן הסכום יהיה 55 במקום 75 — **בלי שגיאה ובלי אזהרה**.
+
+ולכן, בשיעור הזה, זכרו שני דברים: (1) בסביבת התרגול הטיפוס לא מגן עליכם, ולכן אל תסתמכו עליו; (2) מה ש**כן** נאכף ב‑SQLite הוא **אילוצים** — `NOT NULL`, `UNIQUE`, `CHECK`, `PRIMARY KEY`. זה בדיוק מה שהופך אותם למגן האמיתי, והנושא של שיעור 27.
+
+**ש9.** `sqlite_master` היא **קטלוג המערכת** — טבלה שבה בסיס הנתונים מתאר את עצמו. שבע הטבלאות של `school.sql` ועוד שלוש שבניתם:
+
+<figure dir="ltr" class="dbtable">
+
+| name | type |
+|:---:|:---:|
+| Absences | table |
+| Cities | table |
+| Classes | table |
+| ClubMembers | table |
+| Courses | table |
+| Grades | table |
+| SchoolClubs | table |
+| Students | table |
+| Teachers | table |
+| TopStudents | table |
+
+</figure>
+
+> 💡 `SELECT sql FROM sqlite_master WHERE name = 'Students';` מחזיר את פקודת ה‑`CREATE TABLE` **המלאה** של הטבלה. באורקל המקבילות הן `USER_TABLES` ו‑`USER_TAB_COLUMNS`.
+
+**ש10.** החיפוש החזיר **0 שורות** — הטבלה נעלמה מהקטלוג.
+
+**ש11.** `COUNT(*)` מחזיר **0**, אבל `ClubMembers` **עדיין קיימת** ב‑`sqlite_master`.
+
+| הפקודה | השפה | מה נעלם | מה נשאר |
+|---------|------|----------|----------|
+| `DELETE FROM T` | **DML** | השורות | הטבלה, העמודות, האילוצים, ההרשאות |
+| `DROP TABLE T` | **DDL** | **הכול** | כלום. גם אי אפשר יותר `SELECT * FROM T` |
+| `TRUNCATE TABLE T` | DDL (לא ב‑SQLite) | השורות, מהר ובלי לוג | הטבלה — אבל **אין `ROLLBACK`** |
+
+ההבדל המעשי: אחרי `DELETE` אפשר להכניס שורות חדשות מיד. אחרי `DROP` צריך `CREATE TABLE` מההתחלה — ועם כל האילוצים, אחרת בניתם טבלה אחרת בשם זהה.
+
+**ש12.**
+
+</div>
+
+```text
+1.  ALTER TABLE Students ADD COLUMN Email TEXT NOT NULL;
+    ❌  Cannot add a NOT NULL column with default value NULL
+
+2.  ALTER TABLE Students ADD COLUMN Email TEXT NOT NULL DEFAULT 'unknown@school.il';
+    ✅  עברה — 18 השורות קיבלו 'unknown@school.il'
+
+3.  ALTER TABLE Students DROP COLUMN Email;
+    ✅  עברה
+
+4.  ALTER TABLE Students DROP COLUMN StudentId;
+    ❌  cannot drop PRIMARY KEY column: "StudentId"
+```
+
+<div dir="rtl">
+
+**הראשונה** נכשלה כי יש בטבלה **18 שורות קיימות**. העמודה החדשה חייבת ערך בכל שורה (`NOT NULL`), ואין שום ערך שבסיס הנתונים יכול לשים שם — הוא לא ממציא נתונים. השורה השנייה מוכיחה את זה: ברגע שנתנו `DEFAULT`, יש לו מה לכתוב, וזה עובד. **הכלל:** `ADD COLUMN … NOT NULL` דורש `DEFAULT` בכל טבלה שאינה ריקה.
+
+**הרביעית** נכשלה כי `StudentId` הוא **המפתח הראשי**. למחוק אותו זה למחוק את הדרך לזהות שורה — ואיתה כל המפתחות הזרים ב‑`Grades` וב‑`Absences` שמצביעים אליו. בסיס הנתונים מסרב, ובצדק: אין "טבלת תלמידים בלי מזהה תלמיד", יש רשימה.
+
+> 💡 **ל‑`ALTER TABLE` ב‑SQLite יש מגבלות נוספות** שאין באורקל: אי אפשר לשנות טיפוס של עמודה קיימת, ואי אפשר להוסיף אילוץ לטבלה קיימת. הדרך המקובלת היא "בנה חדשה, העתק, מחק, שנה שם" — וזה בדיוק מה שתעשו ידנית אם תצטרכו.
+
+</div>
+<!-- classroom:end -->
