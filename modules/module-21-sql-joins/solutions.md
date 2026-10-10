@@ -626,3 +626,285 @@ WHERE Clubs.ClubCode = ClubMembers.ClubCode
 
 </div>
 <!-- exam-style:end -->
+
+<!-- classroom:start -->
+<div dir="rtl">
+
+---
+
+## 💪 תרגול בכיתה — פתרונות
+
+> 🏫 על [`school.sql`](../../resources/school-db/). כל הפלטים כאן **אמיתיים** — כל שאילתה הורצה על בסיס הנתונים, נכון לתאריך הייחוס `'2026-09-21'`.
+
+</div>
+
+```text
+Cities    (CityCode, CityName)
+Teachers  (TeacherCode, FirstName, LastName, Subject, HireDate, Salary, CityCode, Phone)
+Classes   (ClassCode, ClassName, Grade, TeacherCode, RoomNumber)
+Courses   (CourseCode, CourseName, TeacherCode, WeeklyHours)
+Students  (StudentId, FirstName, LastName, ClassCode, Gender, BirthDate, CityCode, EnrollDate, Phone)
+Grades    (StudentId, CourseCode, Term, Grade)          -- PK: StudentId + CourseCode + Term
+Absences  (AbsenceId, StudentId, AbsenceDate, Excused, Reason)
+```
+
+<div dir="rtl">
+
+</div>
+
+```sql
+-- ש1
+SELECT Students.FirstName, Students.LastName, Classes.ClassName
+FROM   Students, Classes WHERE Students.ClassCode = Classes.ClassCode;
+
+-- ש2
+SELECT Students.FirstName, Cities.CityName
+FROM   Students, Cities WHERE Students.CityCode = Cities.CityCode;
+
+-- ש3
+SELECT Students.FirstName, Courses.CourseName, Grades.Term, Grades.Grade
+FROM   Grades, Students, Courses
+WHERE  Grades.StudentId = Students.StudentId
+  AND  Grades.CourseCode = Courses.CourseCode
+  AND  Students.StudentId = 1013
+ORDER  BY Grades.Grade DESC;
+
+-- ש4
+SELECT Courses.CourseName, Teachers.FirstName, Teachers.LastName
+FROM   Courses, Teachers WHERE Courses.TeacherCode = Teachers.TeacherCode;
+
+-- ש5
+SELECT Classes.ClassName, Classes.Grade, Teachers.FirstName || ' ' || Teachers.LastName AS Homeroom
+FROM   Classes, Teachers WHERE Classes.TeacherCode = Teachers.TeacherCode
+ORDER  BY Classes.ClassName;
+
+-- ש6
+SELECT COUNT(*) AS CartesianRows FROM Students, Classes;
+
+-- ש7
+SELECT Students.FirstName, Classes.ClassName
+FROM   Students LEFT JOIN Classes ON Students.ClassCode = Classes.ClassCode
+ORDER  BY Classes.ClassName;
+
+-- ש8
+SELECT Teachers.FirstName, Teachers.LastName, Teachers.Subject
+FROM   Teachers LEFT JOIN Courses ON Courses.TeacherCode = Teachers.TeacherCode
+WHERE  Courses.CourseCode IS NULL;
+
+-- ש9
+SELECT a.FirstName AS Student1, b.FirstName AS Student2, a.ClassCode
+FROM   Students a, Students b
+WHERE  a.ClassCode = b.ClassCode AND a.StudentId < b.StudentId AND a.ClassCode = 103;
+
+-- ש10
+SELECT t1.LastName AS Earns_More, t2.LastName AS Than
+FROM   Teachers t1, Teachers t2
+WHERE  t1.Salary > t2.Salary AND t1.TeacherCode = 3;
+
+-- ש11
+SELECT Students.FirstName, Courses.CourseName, Grades.Grade
+FROM   Grades, Students, Courses
+WHERE  Grades.StudentId = Students.StudentId
+  AND  Grades.CourseCode = Courses.CourseCode
+  AND  Students.ClassCode = 105 AND Grades.Grade >= 90
+ORDER  BY Grades.Grade DESC;
+
+-- ש12
+SELECT COUNT(*) AS n FROM Students, Classes, Cities;
+```
+
+<div dir="rtl">
+
+**ש1.** **17 שורות, לא 18. נעלמה לינא חמוד.**
+
+ה‑`ClassCode` שלה הוא `NULL`, והתנאי `Students.ClassCode = Classes.ClassCode` לא מתקיים עבורה — `NULL = 101` אינו "אמת". חיבור רגיל (`INNER JOIN`) מחזיר **רק שורות שנמצאה להן התאמה**, ולא מודיע על מה שנשר. לינא נעלמה מהדוח **בשקט**.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | LastName | ClassName |
+|:---:|:---:|:---:|
+| אדם | חלבי | י1 |
+| נור | עזאם | י1 |
+| יואב | כהן | י1 |
+| מאיה | לוי | י2 |
+| רוני | אברהם | י2 |
+| סאלי | חסון | י2 |
+| … | … | … |
+
+</figure>
+
+**ש2.** **גם כאן 17 — אבל נעלם מישהו אחר: ליאור לוי.** ל‑`CityCode` שלו אין ערך.
+
+**זו הנקודה החשובה בשיעור:** אותו `JOIN`, אותה טבלה, אותו מספר שורות — ו**תלמיד אחר** נשר בכל פעם. מי שלא ספר את השורות, לא יידע שחסר מישהו. ספירת שורות היא לא פדנטיות; היא הבדיקה.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | CityName |
+|:---:|:---:|
+| אדם | ירכא |
+| נור | ירכא |
+| יואב | כרמיאל |
+| מאיה | חיפה |
+| רוני | עכו |
+| סאלי | עכו |
+| … | … |
+
+</figure>
+
+**ש3.** **5 שורות.** שלוש טבלאות — **שני** תנאי חיבור. הכלל: `N` טבלאות דורשות **`N-1`** תנאי חיבור לפחות.
+
+שימו לב ש"מתמטיקה 5 יח"ל" מופיעה פעמיים — מחצית 1 ומחצית 2. זה לא כפילות, זה הנתון.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | CourseName | Term | Grade |
+|:---:|:---:|:---:|:---:|
+| דניאל | סדנת פרויקטים | 1 | 98 |
+| דניאל | מבוא לבסיסי נתונים | 1 | 94 |
+| דניאל | מתמטיקה 5 יח"ל | 2 | 92 |
+| דניאל | מתמטיקה 5 יח"ל | 1 | 89 |
+| דניאל | אנגלית 4 יח"ל | 1 | 87 |
+
+</figure>
+
+**ש4.** **6 שורות מתוך 7.** "סדנת פרויקטים" נעלמה — `TeacherCode` שלה `NULL`, כי טרם נקבע לה מורה.
+
+<figure dir="ltr" class="dbtable">
+
+| CourseName | FirstName | LastName |
+|:---:|:---:|:---:|
+| מתמטיקה 5 יח"ל | נביל | סרחאן |
+| אנגלית 4 יח"ל | רונית | בר-לב |
+| מבוא לבסיסי נתונים | חוסאם | זיאד |
+| היסטוריה | אורלי | שמש |
+| חינוך גופני | פאדי | חדאד |
+| מתמטיקה 3 יח"ל | גלית | מזרחי |
+
+</figure>
+
+**ש5.** כאן כל 5 הכיתות חזרו — לכולן יש מחנך/ת.
+
+<figure dir="ltr" class="dbtable">
+
+| ClassName | Grade | Homeroom |
+|:---:|:---:|:---:|
+| י1 | 10 | נביל סרחאן |
+| י2 | 10 | רונית בר-לב |
+| יא1 | 11 | חוסאם זיאד |
+| יא2 | 11 | גלית מזרחי |
+| יב1 | 12 | אורלי שמש |
+
+</figure>
+
+**ש6.** **90 שורות** = **18 × 5**.
+
+מה שחסר הוא **תנאי החיבור** — ה‑`WHERE Students.ClassCode = Classes.ClassCode`. בלעדיו בסיס הנתונים עושה בדיוק מה שביקשתם: מצמיד **כל** תלמיד ל**כל** כיתה. אדם מופיע עם י1, עם י2, עם יא1, עם יא2 ועם יב1 — חמש שורות, ארבע מהן שקר.
+
+זה נקרא **תוצר קרטזי** (Cartesian Product), והוא לא שגיאה — אין הודעה, רק תוצאה גדולה ושגויה. הסימן המזהה: **מספר השורות הוא בדיוק מכפלה של גדלי הטבלאות.**
+
+<figure dir="ltr" class="dbtable">
+
+| CartesianRows |
+|:---:|
+| 90 |
+
+</figure>
+
+**ש7.** **18 שורות — לינא חזרה**, עם `NULL` בשם הכיתה.
+
+`LEFT JOIN` אומר: "החזר את **כל** השורות מהטבלה **השמאלית** (`Students`), וכשנמצאה התאמה בימנית — צרף אותה; כשלא — שים `NULL`." ההבדל בין 17 ל‑18 הוא כל ההבדל בין "דוח כיתות" ל"דוח כל התלמידים", והוא בחירה שלכם, לא של בסיס הנתונים.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | ClassName |
+|:---:|:---:|
+| לינא | NULL |
+| אדם | י1 |
+| נור | י1 |
+| יואב | י1 |
+| נועם | י1 |
+| מאיה | י2 |
+| … | … |
+| ראניה | יב1 |
+
+</figure>
+
+**ש8.** **סמיר אבו-ראס** — מורה לביולוגיה, ובית הספר לא פתח מקצוע ביולוגיה.
+
+**התרגיל הזה הוא התבנית החשובה ביותר בשיעור:** `LEFT JOIN` ואחר כך `WHERE <עמודה מהימנית> IS NULL` = **"מי מהשמאליים לא מצא אף התאמה"**. ה‑`LEFT JOIN` מביא את כולם, וה‑`IS NULL` מסנן ומשאיר **רק** את מי שלא נמצאה לו התאמה.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | LastName | Subject |
+|:---:|:---:|:---:|
+| סמיר | אבו-ראס | ביולוגיה |
+
+</figure>
+
+**ש9.** **3 זוגות** — וזה בדיוק מה שמצפים מ‑3 תלמידים: כל אחד עם כל אחד, פעם אחת.
+
+שני התנאים עושים שני דברים שונים, וצריך את שניהם:
+
+| התנאי | מה הוא מונע |
+|--------|--------------|
+| `a.StudentId <> b.StudentId` | זיווג תלמיד **עם עצמו** (עומר-עומר) |
+| `a.StudentId < b.StudentId` | גם את זה, **וגם** את הכפילות ההפוכה (עומר-שירה **וגם** שירה-עומר) |
+
+לכן כותבים `<` ולא `<>`: הוא גם מסיר את העצמי וגם קובע סדר, וכך כל זוג מופיע פעם אחת. עם `<>` היינו מקבלים 6 שורות — כל זוג פעמיים.
+
+<figure dir="ltr" class="dbtable">
+
+| Student1 | Student2 | ClassCode |
+|:---:|:---:|:---:|
+| עומר | כרים | 103 |
+| עומר | שירה | 103 |
+| שירה | כרים | 103 |
+
+</figure>
+
+**ש10.** **3 מורים** מרוויחים פחות מחוסאם: רונית בר-לב, פאדי חדאד וסמיר אבו-ראס.
+
+זה `Nonequijoin` — תנאי החיבור הוא `>` ולא `=`. אין כאן מפתח זר ואין קשר בין השורות; מה שמחבר אותן הוא **השוואה**. הכינויים `t1` ו‑`t2` הם חובה: בלעדיהם אין דרך לומר "השכר של זה גדול מהשכר של ההוא", כי שתי הטבלאות הן אותה טבלה.
+
+<figure dir="ltr" class="dbtable">
+
+| Earns_More | Than |
+|:---:|:---:|
+| זיאד | בר-לב |
+| זיאד | חדאד |
+| זיאד | אבו-ראס |
+
+</figure>
+
+**ש11.** **9 שורות.** `JOIN` של שלוש טבלאות + `WHERE` על שתיהן + `ORDER BY` — שאילתה בגודל אמיתי. ראניה עבאס לוקחת 5 מתוך 9.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | CourseName | Grade |
+|:---:|:---:|:---:|
+| ראניה | מתמטיקה 5 יח"ל | 100 |
+| ראניה | מבוא לבסיסי נתונים | 99 |
+| דניאל | סדנת פרויקטים | 98 |
+| ראניה | מתמטיקה 5 יח"ל | 98 |
+| ראניה | סדנת פרויקטים | 95 |
+| דניאל | מבוא לבסיסי נתונים | 94 |
+| ראניה | אנגלית 4 יח"ל | 93 |
+| דניאל | מתמטיקה 5 יח"ל | 92 |
+| הדיל | סדנת פרויקטים | 90 |
+
+</figure>
+
+**ש12.** **540 שורות** = **18 × 5 × 6**. התוצר הקרטזי **מכפיל**, הוא לא מחבר.
+
+ועכשיו החשבון המפחיד: עם 10,000 תלמידים, 400 כיתות ו‑250 ערים זה **מיליארד שורות** — בסיס הנתונים ינסה לבנות אותן, השרת ייתקע, וכל מי שעובד עליו באותו רגע ירגיש. זו הסיבה שבבחינה **מורידים נקודות** על `JOIN` בלי תנאי חיבור, וזו גם הסיבה שבעבודה אמיתית בודקים את מספר השורות **לפני** שמריצים על נתוני הייצור.
+
+<figure dir="ltr" class="dbtable">
+
+| n |
+|:---:|
+| 540 |
+
+</figure>
+
+</div>
+<!-- classroom:end -->

@@ -2,6 +2,8 @@
 
 # מודול 21 — תרגילים
 
+> 💪 **בסוף הדף — [תרגול בכיתה](#-תרגול-בכיתה--בית-הספר-עתיד):** 12 שאלות על בסיס נתונים אחר, [`school.sql`](../../resources/school-db/), שחוזר בכל שיעור SQL. מיועד לשיעור בכיתה.
+
 > **הנחיות:** כל התרגילים על [בסיס הנתונים המוכן](../../resources/shelter-db/). **הריצו.**
 >
 > ⚠️ אל תפתחו את [הפתרונות](solutions.md) לפני שניסיתם.
@@ -183,3 +185,69 @@ WHERE Members.________ = Cities.CityCode;
 
 </div>
 <!-- exam-style:end -->
+
+<!-- classroom:start -->
+<div dir="rtl">
+
+---
+
+## 💪 תרגול בכיתה — בית הספר "עתיד"
+
+> 🏫 **בסיס נתונים אחר, 12 שאלות.** הקטע הזה חוזר בסוף התרגילים של **כל** שיעור SQL, תמיד על אותו בסיס נתונים — [`school.sql`](../../resources/school-db/): 7 טבלאות, 18 תלמידים. השאלות הן שמתקדמות בקושי משיעור לשיעור.
+>
+> **טוענים פעם אחת:** [**פתיחה להעתקה**](https://raw.githubusercontent.com/AhmadKais/sql-course-heb/main/resources/school-db/school.sql) → `Ctrl+A`, `Ctrl+C` → מדביקים ב‑[OneCompiler (SQLite)](https://onecompiler.com/sqlite) → **Run**. צריך להופיע `students_loaded = 18`.
+>
+> 📅 **תאריך הייחוס: `'2026-09-21'`** — השתמשו בו במקום `DATE('now')`. · ⚠️ ה[פתרונות](solutions.md) מחכים בסוף — אחרי שניסיתם.
+
+</div>
+
+```text
+Cities    (CityCode, CityName)
+Teachers  (TeacherCode, FirstName, LastName, Subject, HireDate, Salary, CityCode, Phone)
+Classes   (ClassCode, ClassName, Grade, TeacherCode, RoomNumber)
+Courses   (CourseCode, CourseName, TeacherCode, WeeklyHours)
+Students  (StudentId, FirstName, LastName, ClassCode, Gender, BirthDate, CityCode, EnrollDate, Phone)
+Grades    (StudentId, CourseCode, Term, Grade)          -- PK: StudentId + CourseCode + Term
+Absences  (AbsenceId, StudentId, AbsenceDate, Excused, Reason)
+```
+
+<div dir="rtl">
+
+**מכאן והלאה שואלים שאלות שדורשות שתי טבלאות ויותר.** כתבו בסגנון הבחינה: `FROM A, B WHERE A.Key = B.Key`.
+
+**ש1.** לכל תלמיד: שם פרטי, שם משפחה, ו**שם הכיתה** (`ClassName`). ⚠️ **כמה שורות חזרו?** יש 18 תלמידים — אם קיבלתם פחות, **מי נעלם ולמה?**
+
+**ש2.** לכל תלמיד: השם ו**שם העיר**. ⚠️ שוב — כמה שורות? מי נעלם **הפעם**?
+
+**ש3.** כל הציונים של התלמיד `1013`: שמו, **שם המקצוע**, המחצית והציון, מהגבוה לנמוך. (שלוש טבלאות.)
+
+**ש4.** לכל מקצוע: שם המקצוע ו**שם המורה** שמלמד אותו. ⚠️ יש 7 מקצועות — כמה חזרו?
+
+**ש5.** לכל כיתה: שם הכיתה, השכבה, ו**שם המחנך/ת** בעמודה אחת.
+
+**ש6.** ⚠️ **התוצר הקרטזי.** הריצו:
+
+</div>
+
+```sql
+SELECT COUNT(*) AS CartesianRows FROM Students, Classes;
+```
+
+<div dir="rtl">
+
+מה קיבלתם? **מאיפה המספר הזה**, ומה **בדיוק** חסר בשאילתה?
+
+**ש7.** **`LEFT JOIN`.** הציגו את **כל** 18 התלמידים עם שם הכיתה שלהם — כולל מי שאין לו כיתה. סדרו לפי שם הכיתה.
+
+**ש8.** אילו מורים **לא מלמדים אף מקצוע**? (רמז: `LEFT JOIN` + `IS NULL`.)
+
+**ש9.** **`Self Join`.** הציגו את כל **זוגות** התלמידים שלומדים יחד בכיתה `103`. כל זוג **פעם אחת** (לא `עומר-שירה` וגם `שירה-עומר`), ובלי לזווג תלמיד עם עצמו.
+
+**ש10.** **`Nonequijoin`.** מי מהמורים מרוויח **פחות** מחוסאם זיאד (`TeacherCode = 3`)? ענו בחיבור הטבלה **לעצמה** עם התנאי `>` — בלי לדעת מראש את השכר שלו.
+
+**ש11.** כל הציונים **מ‑90 ומעלה** של תלמידי כיתה `105`: שם התלמיד, שם המקצוע והציון, מהגבוה לנמוך.
+
+**ש12.** ⚠️ הריצו `SELECT COUNT(*) FROM Students, Classes, Cities;`. **מה קיבלתם, ומה הנוסחה?** עכשיו דמיינו 10,000 תלמידים.
+
+</div>
+<!-- classroom:end -->
