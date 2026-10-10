@@ -2,6 +2,8 @@
 
 # מודול 16 — תרגילים
 
+> 💪 **בסוף הדף — [תרגול בכיתה](#-תרגול-בכיתה--בית-הספר-עתיד):** 12 שאלות על בסיס נתונים אחר, [`school.sql`](../../resources/school-db/), שחוזר בכל שיעור SQL. מיועד לשיעור בכיתה.
+
 > **הנחיות:** כל התרגילים רצים על [בסיס הנתונים המוכן](../../resources/shelter-db/). טענו אותו ל‑OneCompiler, ופתרו **בהרצה** — לא על נייר.
 >
 > **כלל הזהב:** כתבו, הריצו, תקנו. **אל תעברו לתרגיל הבא לפני שהקודם רץ בלי שגיאה.**
@@ -229,3 +231,79 @@ Luna | F | 18.5 kg | chip 985100001 | adopted
 
 </div>
 <!-- exam-style:end -->
+
+<!-- classroom:start -->
+<div dir="rtl">
+
+---
+
+## 💪 תרגול בכיתה — בית הספר "עתיד"
+
+> 🏫 **בסיס נתונים אחר, 12 שאלות.** הקטע הזה חוזר בסוף התרגילים של **כל** שיעור SQL, תמיד על אותו בסיס נתונים — [`school.sql`](../../resources/school-db/): 7 טבלאות, 18 תלמידים. השאלות הן שמתקדמות בקושי משיעור לשיעור.
+>
+> **טוענים פעם אחת:** [**פתיחה להעתקה**](https://raw.githubusercontent.com/AhmadKais/sql-course-heb/main/resources/school-db/school.sql) → `Ctrl+A`, `Ctrl+C` → מדביקים ב‑[OneCompiler (SQLite)](https://onecompiler.com/sqlite) → **Run**. צריך להופיע `students_loaded = 18`.
+>
+> 📅 **תאריך הייחוס: `'2026-09-21'`** — השתמשו בו במקום `DATE('now')`. · ⚠️ ה[פתרונות](solutions.md) מחכים בסוף — אחרי שניסיתם.
+
+</div>
+
+```text
+Cities    (CityCode, CityName)
+Teachers  (TeacherCode, FirstName, LastName, Subject, HireDate, Salary, CityCode, Phone)
+Classes   (ClassCode, ClassName, Grade, TeacherCode, RoomNumber)
+Courses   (CourseCode, CourseName, TeacherCode, WeeklyHours)
+Students  (StudentId, FirstName, LastName, ClassCode, Gender, BirthDate, CityCode, EnrollDate, Phone)
+Grades    (StudentId, CourseCode, Term, Grade)          -- PK: StudentId + CourseCode + Term
+Absences  (AbsenceId, StudentId, AbsenceDate, Excused, Reason)
+```
+
+<div dir="rtl">
+
+**המנהלת ד"ר סמאח ביקשה דוחות מהמזכירות.** ענו בשאילתה אחת לכל סעיף.
+
+**ש1.** הציגו **את כל** העמודות של כל המורים. כמה שורות חזרו?
+
+**ש2.** הציגו **שם פרטי ושם משפחה** של כל התלמידים.
+
+**ש3.** הציגו את שם המקצוע ושעות הלימוד השבועיות, עם כינויים בעברית: `מקצוע` ו‑`שעות שבועיות`.
+
+**ש4.** אילו **מקצועות הוראה** (`Subject`) קיימים בבית הספר? כל מקצוע **פעם אחת**. ⚠️ יש 7 מורים — למה התוצאה קטנה יותר?
+
+**ש5.** אילו **שכבות** (`Grade`) יש בבית הספר? בלי כפילויות.
+
+**ש6.** הציגו לכל מורה **שם מלא** בעמודה אחת (שם פרטי, רווח, שם משפחה), בכינוי `FullName`.
+
+**ש7.** הציגו לכל מורה את שם המשפחה, השכר החודשי, ו**השכר השנתי** המחושב (×12) בכינוי `AnnualSalary`.
+
+**ש8.** שנת לימודים היא 30 שבועות. הציגו לכל מקצוע **כמה שעות לימוד בשנה**, בכינוי `YearlyHours`.
+
+**ש9.** הציגו שם פרטי וטלפון של כל התלמידים. **אצל כמה מהם** הטלפון הוא `NULL`? (ספרו בעיניים — `COUNT` נלמד בשיעור 23.)
+
+**ש10.** ⚠️ **מלכודת.** הריצו:
+
+</div>
+
+```sql
+SELECT Students.FirstName, Students.Phone || ' (בית)' AS PhoneLabel FROM Students;
+```
+
+<div dir="rtl">
+
+מה קיבלתם אצל התלמידים שאין להם טלפון? **הסבירו למה** — ולא, זו לא שגיאה.
+
+**ש11.** הציגו את **5 השורות הראשונות** של טבלת הציונים. מה אתם מסיקים על **המפתח הראשי** שלה?
+
+**ש12.** ⚠️ **קריאת שגיאה.** הריצו:
+
+</div>
+
+```sql
+SELECT Students.FirstName, Students.LastName FROM Student;
+```
+
+<div dir="rtl">
+
+מה ההודעה? מה המילה החשובה בה, ומה התיקון?
+
+</div>
+<!-- classroom:end -->

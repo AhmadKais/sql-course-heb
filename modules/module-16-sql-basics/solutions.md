@@ -553,3 +553,260 @@ FROM Clubs;
 
 </div>
 <!-- exam-style:end -->
+
+<!-- classroom:start -->
+<div dir="rtl">
+
+---
+
+## 💪 תרגול בכיתה — פתרונות
+
+> 🏫 על [`school.sql`](../../resources/school-db/). כל הפלטים כאן **אמיתיים** — כל שאילתה הורצה על בסיס הנתונים, נכון לתאריך הייחוס `'2026-09-21'`.
+
+</div>
+
+```text
+Cities    (CityCode, CityName)
+Teachers  (TeacherCode, FirstName, LastName, Subject, HireDate, Salary, CityCode, Phone)
+Classes   (ClassCode, ClassName, Grade, TeacherCode, RoomNumber)
+Courses   (CourseCode, CourseName, TeacherCode, WeeklyHours)
+Students  (StudentId, FirstName, LastName, ClassCode, Gender, BirthDate, CityCode, EnrollDate, Phone)
+Grades    (StudentId, CourseCode, Term, Grade)          -- PK: StudentId + CourseCode + Term
+Absences  (AbsenceId, StudentId, AbsenceDate, Excused, Reason)
+```
+
+<div dir="rtl">
+
+> 💡 **למורה:** אפשר להדביק את כל הבלוק הבא ב‑OneCompiler **מתחת** ל‑`school.sql` ולהריץ פעם אחת — כל 12 הפלטים יופיעו אחד אחרי השני.
+
+</div>
+
+```sql
+-- ש1
+SELECT * FROM Teachers;
+
+-- ש2
+SELECT Students.FirstName, Students.LastName FROM Students;
+
+-- ש3
+SELECT Courses.CourseName AS "מקצוע", Courses.WeeklyHours AS "שעות שבועיות" FROM Courses;
+
+-- ש4
+SELECT DISTINCT Teachers.Subject FROM Teachers;
+
+-- ש5
+SELECT DISTINCT Classes.Grade FROM Classes;
+
+-- ש6
+SELECT Teachers.FirstName || ' ' || Teachers.LastName AS FullName FROM Teachers;
+
+-- ש7
+SELECT Teachers.LastName, Teachers.Salary, Teachers.Salary * 12 AS AnnualSalary FROM Teachers;
+
+-- ש8
+SELECT Courses.CourseName, Courses.WeeklyHours * 30 AS YearlyHours FROM Courses;
+
+-- ש9
+SELECT Students.FirstName, Students.Phone FROM Students;
+
+-- ש10
+SELECT Students.FirstName, Students.Phone || ' (בית)' AS PhoneLabel FROM Students;
+
+-- ש11
+SELECT * FROM Grades LIMIT 5;
+
+-- ש12  -- ⚠️ נכשלת בכוונה
+SELECT Students.FirstName, Students.LastName FROM Student;
+```
+
+<div dir="rtl">
+
+**ש1.** **7 שורות** — 7 מורים. `*` מחזיר את כל 8 העמודות, כולל `Phone` שהוא `NULL` אצל רונית וגלית.
+
+<figure dir="ltr" class="dbtable">
+
+| TeacherCode | FirstName | LastName | Subject | HireDate | Salary | CityCode | Phone |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| 1 | נביל | סרחאן | מתמטיקה | 2012-09-01 | 14500 | 1 | 050-7010101 |
+| 2 | רונית | בר-לב | אנגלית | 2018-09-01 | 11200 | 4 | NULL |
+| 3 | חוסאם | זיאד | מחשבים | 2021-02-15 | 12800 | 6 | 054-7030303 |
+| 4 | אורלי | שמש | היסטוריה | 2009-09-01 | 15300 | 5 | 052-7040404 |
+| 5 | פאדי | חדאד | ספורט | 2023-09-01 | 9800 | 1 | 053-7050505 |
+| 6 | גלית | מזרחי | מתמטיקה | 2016-09-01 | 13100 | 3 | NULL |
+| 7 | סמיר | אבו-ראס | ביולוגיה | 2024-09-01 | 10400 | 2 | 050-7070707 |
+
+</figure>
+
+**ש2.** **18 שורות.** חמש הראשונות:
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | LastName |
+|:---:|:---:|
+| אדם | חלבי |
+| נור | עזאם |
+| יואב | כהן |
+| מאיה | לוי |
+| רוני | אברהם |
+
+</figure>
+
+**ש3.** כינוי עם רווח או עברית — בין **מירכאות כפולות**: `AS "שעות שבועיות"`.
+
+<figure dir="ltr" class="dbtable">
+
+| מקצוע | שעות שבועיות |
+|:---:|:---:|
+| מתמטיקה 5 יח"ל | 5 |
+| אנגלית 4 יח"ל | 4 |
+| מבוא לבסיסי נתונים | 3 |
+| היסטוריה | 2 |
+| חינוך גופני | 2 |
+| מתמטיקה 3 יח"ל | 3 |
+| סדנת פרויקטים | 2 |
+
+</figure>
+
+**ש4.** **6 שורות, לא 7.** נביל וגלית **שניהם** מלמדים מתמטיקה — `DISTINCT` מאחד אותם לשורה אחת. זו בדיוק המטרה שלו: הוא מתאר **אילו ערכים קיימים**, לא **כמה שורות יש**.
+
+<figure dir="ltr" class="dbtable">
+
+| Subject |
+|:---:|
+| מתמטיקה |
+| אנגלית |
+| מחשבים |
+| היסטוריה |
+| ספורט |
+| ביולוגיה |
+
+</figure>
+
+**ש5.** 5 כיתות — אבל רק **3 שכבות**.
+
+<figure dir="ltr" class="dbtable">
+
+| Grade |
+|:---:|
+| 10 |
+| 11 |
+| 12 |
+
+</figure>
+
+**ש6.** הרווח הוא מחרוזת בפני עצמה: `|| ' ' ||`. בלעדיו תקבלו `נבילסרחאן`.
+
+<figure dir="ltr" class="dbtable">
+
+| FullName |
+|:---:|
+| נביל סרחאן |
+| רונית בר-לב |
+| חוסאם זיאד |
+| אורלי שמש |
+| פאדי חדאד |
+| גלית מזרחי |
+| סמיר אבו-ראס |
+
+</figure>
+
+**ש7.** החישוב נעשה **בשליפה**; בטבלה לא נשמר כלום.
+
+<figure dir="ltr" class="dbtable">
+
+| LastName | Salary | AnnualSalary |
+|:---:|:---:|:---:|
+| סרחאן | 14500 | 174000 |
+| בר-לב | 11200 | 134400 |
+| זיאד | 12800 | 153600 |
+| שמש | 15300 | 183600 |
+| חדאד | 9800 | 117600 |
+| מזרחי | 13100 | 157200 |
+| אבו-ראס | 10400 | 124800 |
+
+</figure>
+
+**ש8.**
+
+<figure dir="ltr" class="dbtable">
+
+| CourseName | YearlyHours |
+|:---:|:---:|
+| מתמטיקה 5 יח"ל | 150 |
+| אנגלית 4 יח"ל | 120 |
+| מבוא לבסיסי נתונים | 90 |
+| היסטוריה | 60 |
+| חינוך גופני | 60 |
+| מתמטיקה 3 יח"ל | 90 |
+| סדנת פרויקטים | 60 |
+
+</figure>
+
+**ש9.** **6 תלמידים בלי טלפון:** נור, רוני, כרים, ג'וד, איתי, לינא.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | Phone |
+|:---:|:---:|
+| אדם | 050-1000001 |
+| נור | NULL |
+| יואב | 052-1000003 |
+| … | … |
+| לינא | NULL |
+
+</figure>
+
+**ש10.** אצל ששת התלמידים האלה קיבלתם **`NULL`** — ולא `(בית)`.
+
+`NULL` אינו "ריק"; הוא **"לא ידוע"**. וכל חישוב שמשתתף בו ערך לא‑ידוע — תוצאתו לא ידועה. מה זה "לא‑ידוע ועוד `' (בית)'`"? לא ידוע. לכן `NULL` **"מדביק"**: הוא בולע כל ביטוי שהוא נוגע בו, גם חיבור מחרוזות וגם חשבון.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | PhoneLabel |
+|:---:|:---:|
+| אדם | 050-1000001 (בית) |
+| נור | NULL |
+| יואב | 052-1000003 (בית) |
+| מאיה | 054-1000004 (בית) |
+| רוני | NULL |
+
+</figure>
+
+> 🔮 בשיעור 20 תפגשו את `COALESCE` — הפונקציה שמחליפה `NULL` בערך ברירת מחדל, ופותרת בדיוק את זה.
+
+**ש11.** `1001` מופיע **ארבע פעמים**, ו‑`CourseCode = 11` מופיע **פעמיים** — לכן אף אחד מהם לבדו אינו מזהה שורה. גם הצמד `(1001, 11)` חוזר פעמיים, במחצית 1 ובמחצית 2. המפתח הראשי הוא **שלושת השדות יחד**: `(StudentId, CourseCode, Term)`. זה "מפתח מורכב", והוא מה שמאפשר לשמור לאותו תלמיד ציון באותו מקצוע בשתי מחציות.
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId | CourseCode | Term | Grade |
+|:---:|:---:|:---:|:---:|
+| 1001 | 11 | 1 | 88 |
+| 1001 | 12 | 1 | 74 |
+| 1001 | 14 | 1 | 92 |
+| 1001 | 11 | 2 | 91 |
+| 1002 | 11 | 1 | 95 |
+
+</figure>
+
+**ש12.** ההודעה:
+
+</div>
+
+```text
+no such table: Student
+```
+
+<div dir="rtl">
+
+המילה החשובה היא **`Student`** — ההודעה מצטטת לכם בדיוק את מה שלא מצאה. הטבלה נקראת `Students`, **ברבים**. התיקון: `FROM Students`.
+
+שלוש הודעות שתפגשו הכי הרבה, ומה הן אומרות:
+
+| ההודעה | מה קרה | התיקון |
+|---------|---------|---------|
+| `no such table: X` | שם טבלה שגוי | בדקו רבים/יחיד ואיות |
+| `no such column: X` | שם עמודה שגוי | `Grade` או `Grades`? עמודה או טבלה? |
+| `near "FORM": syntax error` | מילה שמורה מאויתת לא נכון | המילה **לפני** המצוטטת היא בדרך כלל האשמה |
+
+</div>
+<!-- classroom:end -->
