@@ -534,3 +534,314 @@ SELECT UPPER(Customers.CustomerName) AS Name, LEN(Customers.CustomerName) AS Nam
 
 </div>
 <!-- w3schools:end -->
+
+<!-- classroom:start -->
+<div dir="rtl">
+
+---
+
+## 💪 תרגול בכיתה — פתרונות
+
+> 🏫 על [`school.sql`](../../resources/school-db/). כל הפלטים כאן **אמיתיים** — כל שאילתה הורצה על בסיס הנתונים, נכון לתאריך הייחוס `'2026-09-21'`.
+
+</div>
+
+```text
+Cities    (CityCode, CityName)
+Teachers  (TeacherCode, FirstName, LastName, Subject, HireDate, Salary, CityCode, Phone)
+Classes   (ClassCode, ClassName, Grade, TeacherCode, RoomNumber)
+Courses   (CourseCode, CourseName, TeacherCode, WeeklyHours)
+Students  (StudentId, FirstName, LastName, ClassCode, Gender, BirthDate, CityCode, EnrollDate, Phone)
+Grades    (StudentId, CourseCode, Term, Grade)          -- PK: StudentId + CourseCode + Term
+Absences  (AbsenceId, StudentId, AbsenceDate, Excused, Reason)
+```
+
+<div dir="rtl">
+
+> 💡 כל הפלטים נכונים ל‑`'2026-09-21'`.
+
+</div>
+
+```sql
+-- ש1
+SELECT Students.FirstName, LENGTH(Students.FirstName) AS Letters FROM Students
+ORDER BY Letters DESC, Students.FirstName LIMIT 6;
+
+-- ש2
+SELECT Students.FirstName || ' ' || SUBSTR(Students.LastName, 1, 1) || '.' AS ShortName FROM Students;
+
+-- ש3
+SELECT Students.FirstName, REPLACE(Students.Phone, '-', '') AS Digits FROM Students;
+
+-- ש4
+SELECT DISTINCT SUBSTR(Students.Phone, 1, 3) AS Prefix FROM Students;
+
+-- ש5
+SELECT Teachers.Subject, UPPER(Teachers.Subject) AS Upper1, LENGTH(Teachers.Subject) AS Len FROM Teachers;
+
+-- ש6
+SELECT Teachers.LastName, Teachers.Salary, ROUND(Teachers.Salary * 0.88, 2) AS NetSalary FROM Teachers;
+
+-- ש7
+SELECT Grades.StudentId, Grades.Grade, Grades.Grade - 75 AS Diff, ABS(Grades.Grade - 75) AS Gap
+FROM   Grades WHERE Grades.CourseCode = 13 ORDER BY Gap;
+
+-- ש8
+SELECT Students.FirstName, Students.BirthDate,
+       CAST((JULIANDAY('2026-09-21') - JULIANDAY(Students.BirthDate)) / 365.25 AS INTEGER) AS Age
+FROM   Students ORDER BY Age;
+
+-- ש9
+SELECT Students.FirstName, STRFTIME('%Y', Students.BirthDate) AS BirthYear FROM Students;
+
+-- ש10
+SELECT Teachers.LastName, Teachers.HireDate,
+       CAST((JULIANDAY('2026-09-21') - JULIANDAY(Teachers.HireDate)) / 365.25 AS INTEGER) AS Seniority
+FROM   Teachers ORDER BY Seniority DESC;
+
+-- ש11
+SELECT Absences.AbsenceId, Absences.AbsenceDate,
+       JULIANDAY('2026-09-21') - JULIANDAY(Absences.AbsenceDate) AS DaysAgo
+FROM   Absences ORDER BY DaysAgo DESC LIMIT 5;
+
+-- ש12  השגויה, ואחריה הנכונה
+SELECT Students.FirstName, Students.BirthDate, Students.BirthDate + 365 AS Wrong FROM Students LIMIT 4;
+SELECT Students.FirstName, Students.BirthDate, DATE(Students.BirthDate, '+365 days') AS Right1 FROM Students LIMIT 4;
+```
+
+<div dir="rtl">
+
+**ש1.** שלושה שמות באורך 5. התיקו נשבר לפי שם (`, Students.FirstName`) — בלעדיו הסדר ביניהם לא מובטח.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | Letters |
+|:---:|:---:|
+| דניאל | 5 |
+| ליאור | 5 |
+| ראניה | 5 |
+| איתי | 4 |
+| ג'וד | 4 |
+| הדיל | 4 |
+
+</figure>
+
+> 🔎 `ג'וד` באורך 4 — הגרש נספר כתו. `LENGTH` סופר **תווים**, לא "אותיות".
+
+**ש2.** `SUBSTR(טקסט, התחלה, כמה)` — כאן: מהתו הראשון, תו אחד. שימו לב שהמחרוזות הקבועות (`' '` ו‑`'.'`) מחוברות ב‑`||` בדיוק כמו עמודות.
+
+<figure dir="ltr" class="dbtable">
+
+| ShortName |
+|:---:|
+| אדם ח. |
+| נור ע. |
+| יואב כ. |
+| מאיה ל. |
+| רוני א. |
+| סאלי ח. |
+
+</figure>
+
+**ש3.** אצל ששת התלמידים בלי טלפון קיבלתם **`NULL`**, לא מחרוזת ריקה. `REPLACE(NULL, …)` הוא `NULL` — כל פונקציית טקסט שמקבלת `NULL` מחזירה `NULL`.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | Digits |
+|:---:|:---:|
+| אדם | 0501000001 |
+| נור | NULL |
+| יואב | 0521000003 |
+| מאיה | 0541000004 |
+| רוני | NULL |
+| סאלי | 0501000006 |
+
+</figure>
+
+**ש4.** **5 שורות — וארבע קידומות אמיתיות.** ⚠️ `NULL` הוא אחת מהשורות: `DISTINCT` מתייחס לכל ה‑`NULL`ים כערך **אחד**, ומחזיר אותו כשורה. זה מבלבל, כי בכל מקום אחר ב‑SQL `NULL` **אינו** שווה ל‑`NULL`.
+
+<figure dir="ltr" class="dbtable">
+
+| Prefix |
+|:---:|
+| 050 |
+| NULL |
+| 052 |
+| 054 |
+| 053 |
+
+</figure>
+
+**ש5.** `UPPER` **לא עשתה כלום** — העמודה `Upper1` זהה בדיוק ל‑`Subject`.
+
+**למה?** לאלפבית העברי (וגם לערבי) **אין אותיות גדולות וקטנות** — אין "מ גדולה". `UPPER` ו‑`LOWER` הן פונקציות שממפות תו לתו: `a→A`. לעברית אין מיפוי כזה, ולכן הן מחזירות את הקלט כמו שהוא. הן לא נכשלות ולא מזהירות — פשוט לא קורה כלום.
+
+**המשמעות המעשית:** בבסיס נתונים בעברית, `UPPER(Name) = UPPER('אדם')` **אינו** פותר בעיות של אותיות גדולות/קטנות — כי אין כאלה. מה שהוא **כן** לא פותר, ושווה לזכור: **רווחים מיותרים** (`'אדם '` מול `'אדם'`) ו**אותיות סופיות**. לרווחים הפתרון הוא `TRIM`:
+
+</div>
+
+```sql
+WHERE TRIM(Students.FirstName) = 'אדם'
+```
+
+<div dir="rtl">
+
+<figure dir="ltr" class="dbtable">
+
+| Subject | Upper1 | Len |
+|:---:|:---:|:---:|
+| מתמטיקה | מתמטיקה | 7 |
+| אנגלית | אנגלית | 6 |
+| מחשבים | מחשבים | 6 |
+| היסטוריה | היסטוריה | 8 |
+| ספורט | ספורט | 5 |
+| מתמטיקה | מתמטיקה | 7 |
+| ביולוגיה | ביולוגיה | 8 |
+
+</figure>
+
+**ש6.** `ROUND(מספר, ספרות)`. כל התוצאות כאן יצאו שלמות במקרה — 14500 × 0.88 = 12760 בדיוק.
+
+<figure dir="ltr" class="dbtable">
+
+| LastName | Salary | NetSalary |
+|:---:|:---:|:---:|
+| סרחאן | 14500 | 12760 |
+| בר-לב | 11200 | 9856 |
+| זיאד | 12800 | 11264 |
+| שמש | 15300 | 13464 |
+| חדאד | 9800 | 8624 |
+| מזרחי | 13100 | 11528 |
+| אבו-ראס | 10400 | 9152 |
+
+</figure>
+
+**ש7.** **ליאור לוי** — ציון 75 בדיוק, `Gap = 0`.
+
+הטור `Diff` הוא שלילי אצל מי שמתחת ל‑75, ו‑`ABS` "מקפל" אותו לחיובי. לכן מיון לפי `Diff` היה נותן את **הנכשלים** בראש, ומיון לפי `Gap` נותן את **הקרובים לממוצע** — שתי שאלות שונות לגמרי. שימו לב גם לשורות האחרונות: 51 ו‑99 במרחק **זהה** מ‑75, בכיוונים הפוכים.
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId | Grade | Diff | Gap |
+|:---:|:---:|:---:|:---:|
+| 1011 | 75 | 0 | 0 |
+| 1008 | 79 | 4 | 4 |
+| 1014 | 82 | 7 | 7 |
+| 1015 | 64 | -11 | 11 |
+| 1009 | 63 | -12 | 12 |
+| 1010 | 91 | 16 | 16 |
+| 1013 | 94 | 19 | 19 |
+| 1007 | 97 | 22 | 22 |
+| 1012 | 51 | -24 | 24 |
+| 1016 | 99 | 24 | 24 |
+
+</figure>
+
+**ש8.** אצל **סאלי קיבלתם `NULL`** — ואין לה תאריך לידה, אז זו התשובה הנכונה. `JULIANDAY(NULL)` הוא `NULL`, וחיסור שמשתתף בו `NULL` הוא `NULL`. בסיס הנתונים **לא ניחש** גיל, וזה בדיוק מה שאנחנו רוצים.
+
+מחלקים ב‑`365.25` ולא ב‑365, בגלל שנים מעוברות. `CAST(… AS INTEGER)` **קוטם** את השבר (14.8 → 14) — וזה הנכון לגיל: ילד בן 14 ועשרה חודשים הוא בן **14**, לא 15. `ROUND` היה מעגל אותו ל‑15 ומכניס אותו בטעות לכל רשימה של "בני 15".
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | BirthDate | Age |
+|:---:|:---:|:---:|
+| סאלי | NULL | NULL |
+| מאיה | 2011-11-30 | 14 |
+| אדם | 2011-03-14 | 15 |
+| נור | 2011-07-22 | 15 |
+| יואב | 2011-01-09 | 15 |
+| רוני | 2011-05-18 | 15 |
+| שירה | 2010-09-25 | 15 |
+| כרים | 2010-12-03 | 15 |
+| נועם | 2011-09-02 | 15 |
+| לינא | 2010-10-19 | 15 |
+| עומר | 2010-02-11 | 16 |
+| תמר | 2010-04-07 | 16 |
+| ליאור | 2010-06-16 | 16 |
+| ג'וד | 2010-08-29 | 16 |
+| הדיל | 2009-10-05 | 16 |
+| ראניה | 2009-12-12 | 16 |
+| דניאל | 2009-01-20 | 17 |
+| איתי | 2009-03-27 | 17 |
+
+</figure>
+
+**ש9.** `STRFTIME('%Y', תאריך)` מחזיר את השנה — **כטקסט**, לא כמספר. `'%m'` יחזיר חודש, `'%d'` יום.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | BirthYear |
+|:---:|:---:|
+| אדם | 2011 |
+| נור | 2011 |
+| יואב | 2011 |
+| מאיה | 2011 |
+| רוני | 2011 |
+| סאלי | NULL |
+
+</figure>
+
+**ש10.** **אורלי שמש — 17 שנות ותק**, מ‑2009. אותו חישוב בדיוק כמו גיל: בסיס נתונים לא מבדיל בין "גיל אדם" ל"ותק בעבודה", שניהם הפרש בין שני תאריכים.
+
+<figure dir="ltr" class="dbtable">
+
+| LastName | HireDate | Seniority |
+|:---:|:---:|:---:|
+| שמש | 2009-09-01 | 17 |
+| סרחאן | 2012-09-01 | 14 |
+| מזרחי | 2016-09-01 | 10 |
+| בר-לב | 2018-09-01 | 8 |
+| זיאד | 2021-02-15 | 5 |
+| חדאד | 2023-09-01 | 3 |
+| אבו-ראס | 2024-09-01 | 2 |
+
+</figure>
+
+**ש11.** `JULIANDAY` מחזיר מספר ימים, ולכן ההפרש בין שניים הוא פשוט **מספר הימים**.
+
+<figure dir="ltr" class="dbtable">
+
+| AbsenceId | AbsenceDate | DaysAgo |
+|:---:|:---:|:---:|
+| 1 | 2026-09-02 | 19 |
+| 7 | 2026-09-02 | 19 |
+| 2 | 2026-09-03 | 18 |
+| 12 | 2026-09-04 | 17 |
+| 3 | 2026-09-07 | 14 |
+
+</figure>
+
+**ש12א.** **לא קיבלתם שגיאה.** קיבלתם **`2376`** — ואת אותו מספר **אצל כל ארבעת התלמידים**, למרות שנולדו בתאריכים שונים.
+
+**ש12ב. מאיפה 2376?**
+
+`BirthDate` הוא **טקסט**: `'2011-03-14'`. כשמבקשים לחבר לו מספר, SQLite לא מתלונן — הוא **ממיר** את הטקסט למספר. ההמרה קוראת ספרות מתחילת המחרוזת ועוצרת בתו הראשון שאינו ספרה:
+
+</div>
+
+```text
+'2011-03-14'  ->  קורא "2011", נעצר ב-'-'  ->  2011
+2011 + 365    ->  2376
+```
+
+<div dir="rtl">
+
+לכן **כל** תאריך משנת 2011 נותן 2376, בלי קשר לחודש וליום. התוצאה **נראית** כמו מספר סביר, ואין שום סימן שמשהו השתבש — אין שגיאה, אין `NULL`, אין אזהרה. דוח שבנוי על החישוב הזה יהיה שגוי לחלוטין וייראה תקין לגמרי.
+
+**הכלל:** לתאריכים יש פונקציות **משלהם**. `DATE(תאריך, '+365 days')` מחזיר תאריך; `JULIANDAY` מחזיר ימים להפרשים. `+` על עמודת תאריך הוא **באג**, גם אם הוא רץ.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | BirthDate | Wrong | Right1 |
+|:---:|:---:|:---:|:---:|
+| אדם | 2011-03-14 | 2376 | 2012-03-13 |
+| נור | 2011-07-22 | 2376 | 2012-07-21 |
+| יואב | 2011-01-09 | 2376 | 2012-01-09 |
+| מאיה | 2011-11-30 | 2376 | 2012-11-29 |
+
+</figure>
+
+> 🔎 גם ב‑`Right1` יש מה לראות: 365 יום **אינם** שנה. אצל אדם התוצאה היא 13 במרץ, יום **לפני** יום ההולדת — כי 2012 היא שנה מעוברת. ל"שנה אחת" כותבים `'+1 year'`.
+
+</div>
+<!-- classroom:end -->

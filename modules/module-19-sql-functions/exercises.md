@@ -2,6 +2,8 @@
 
 # מודול 19 — תרגילים
 
+> 💪 **בסוף הדף — [תרגול בכיתה](#-תרגול-בכיתה--בית-הספר-עתיד):** 12 שאלות על בסיס נתונים אחר, [`school.sql`](../../resources/school-db/), שחוזר בכל שיעור SQL. מיועד לשיעור בכיתה.
+
 > **הנחיות:** כל התרגילים על [בסיס הנתונים המוכן](../../resources/shelter-db/). **הריצו.**
 >
 > 📅 **תאריך הייחוס בכל התרגילים: `'2026-09-21'`.** השתמשו בו במקום `DATE('now')` כדי שהפלט יתאים לפתרונות.
@@ -231,3 +233,82 @@ SELECT name FROM animal WHERE UPPER(name) = 'Luna';
 
 </div>
 <!-- w3schools:end -->
+
+<!-- classroom:start -->
+<div dir="rtl">
+
+---
+
+## 💪 תרגול בכיתה — בית הספר "עתיד"
+
+> 🏫 **בסיס נתונים אחר, 12 שאלות.** הקטע הזה חוזר בסוף התרגילים של **כל** שיעור SQL, תמיד על אותו בסיס נתונים — [`school.sql`](../../resources/school-db/): 7 טבלאות, 18 תלמידים. השאלות הן שמתקדמות בקושי משיעור לשיעור.
+>
+> **טוענים פעם אחת:** [**פתיחה להעתקה**](https://raw.githubusercontent.com/AhmadKais/sql-course-heb/main/resources/school-db/school.sql) → `Ctrl+A`, `Ctrl+C` → מדביקים ב‑[OneCompiler (SQLite)](https://onecompiler.com/sqlite) → **Run**. צריך להופיע `students_loaded = 18`.
+>
+> 📅 **תאריך הייחוס: `'2026-09-21'`** — השתמשו בו במקום `DATE('now')`. · ⚠️ ה[פתרונות](solutions.md) מחכים בסוף — אחרי שניסיתם.
+
+</div>
+
+```text
+Cities    (CityCode, CityName)
+Teachers  (TeacherCode, FirstName, LastName, Subject, HireDate, Salary, CityCode, Phone)
+Classes   (ClassCode, ClassName, Grade, TeacherCode, RoomNumber)
+Courses   (CourseCode, CourseName, TeacherCode, WeeklyHours)
+Students  (StudentId, FirstName, LastName, ClassCode, Gender, BirthDate, CityCode, EnrollDate, Phone)
+Grades    (StudentId, CourseCode, Term, Grade)          -- PK: StudentId + CourseCode + Term
+Absences  (AbsenceId, StudentId, AbsenceDate, Excused, Reason)
+```
+
+<div dir="rtl">
+
+📅 **תאריך הייחוס: `'2026-09-21'`.** השתמשו בו בכל חישוב תאריך — אחרת הפלט שלכם לא יתאים לפתרונות.
+
+**ש1.** לכל תלמיד: השם הפרטי **ואורכו באותיות**. סדרו מהארוך לקצר, 6 הראשונים.
+
+**ש2.** בנו לכל תלמיד **שם מקוצר** בצורה `אדם ח.` — שם פרטי, רווח, האות הראשונה של שם המשפחה, ונקודה. בכינוי `ShortName`.
+
+**ש3.** הציגו לכל תלמיד את הטלפון **בלי מקפים**. ⚠️ מה קרה אצל מי שאין לו טלפון?
+
+**ש4.** אילו **קידומות** (3 הספרות הראשונות של הטלפון) קיימות בקרב התלמידים? בלי כפילויות.
+
+**ש5.** ⚠️ **הפתעה.** הריצו:
+
+</div>
+
+```sql
+SELECT Teachers.Subject, UPPER(Teachers.Subject) AS Upper1, LENGTH(Teachers.Subject) AS Len FROM Teachers;
+```
+
+<div dir="rtl">
+
+מה עשתה `UPPER`? **הסבירו למה**, ומה זה אומר על השימוש ב‑`UPPER`/`LOWER` בבסיס נתונים בעברית.
+
+**ש6.** מהשכר מנוכים 12% למיסים. הציגו לכל מורה את שם המשפחה, השכר, וה**שכר נטו** מעוגל לשתי ספרות, בכינוי `NetSalary`.
+
+**ש7.** לכל ציון במקצוע `13` (מבוא לבסיסי נתונים): הציון, **ההפרש מ‑75**, ו**המרחק המוחלט** מ‑75 בכינוי `Gap`. סדרו לפי `Gap` — מי הקרוב ביותר ל‑75?
+
+**ש8.** לכל תלמיד: **הגיל בשנים שלמות** נכון לתאריך הייחוס, בכינוי `Age`. סדרו מהצעיר לוותיק. ⚠️ מה קיבלתם אצל סאלי?
+
+**ש9.** לכל תלמיד: **שנת הלידה** בלבד.
+
+**ש10.** לכל מורה: **הוותק בשנים שלמות** נכון לתאריך הייחוס. מי הוותיק ביותר?
+
+**ש11.** לכל היעדרות: **לפני כמה ימים** היא הייתה. 5 הוותיקות ביותר.
+
+**ש12.** ⚠️ **המלכודת הגדולה של התאריכים.** הריצו את שתי השאילתות:
+
+</div>
+
+```sql
+SELECT Students.FirstName, Students.BirthDate, Students.BirthDate + 365 AS Wrong FROM Students LIMIT 4;
+SELECT Students.FirstName, Students.BirthDate, DATE(Students.BirthDate, '+365 days') AS Right1 FROM Students LIMIT 4;
+```
+
+<div dir="rtl">
+
+**א.** מה החזירה הראשונה? האם קיבלתם שגיאה?
+
+**ב.** **הסבירו מאיפה הגיע המספר הזה.** זו השאלה החשובה בכל השיעור.
+
+</div>
+<!-- classroom:end -->
