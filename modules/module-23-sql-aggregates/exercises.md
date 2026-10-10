@@ -2,6 +2,8 @@
 
 # מודול 23 — תרגילים
 
+> 💪 **בסוף הדף — [תרגול בכיתה](#-תרגול-בכיתה--בית-הספר-עתיד):** 12 שאלות על בסיס נתונים אחר, [`school.sql`](../../resources/school-db/), שחוזר בכל שיעור SQL. מיועד לשיעור בכיתה.
+
 > **הנחיות:** כל התרגילים על [בסיס הנתונים המוכן](../../resources/shelter-db/). **הריצו.**
 >
 > ⚠️ אל תפתחו את [הפתרונות](solutions.md) לפני שניסיתם.
@@ -126,3 +128,76 @@ WHERE  a.name = 'Rocky';
 
 </div>
 <!-- w3schools:end -->
+
+<!-- classroom:start -->
+<div dir="rtl">
+
+---
+
+## 💪 תרגול בכיתה — בית הספר "עתיד"
+
+> 🏫 **בסיס נתונים אחר, 12 שאלות.** הקטע הזה חוזר בסוף התרגילים של **כל** שיעור SQL, תמיד על אותו בסיס נתונים — [`school.sql`](../../resources/school-db/): 7 טבלאות, 18 תלמידים. השאלות הן שמתקדמות בקושי משיעור לשיעור.
+>
+> **טוענים פעם אחת:** [**פתיחה להעתקה**](https://raw.githubusercontent.com/AhmadKais/sql-course-heb/main/resources/school-db/school.sql) → `Ctrl+A`, `Ctrl+C` → מדביקים ב‑[OneCompiler (SQLite)](https://onecompiler.com/sqlite) → **Run**. צריך להופיע `students_loaded = 18`.
+>
+> 📅 **תאריך הייחוס: `'2026-09-21'`** — השתמשו בו במקום `DATE('now')`. · ⚠️ ה[פתרונות](solutions.md) מחכים בסוף — אחרי שניסיתם.
+
+</div>
+
+```text
+Cities    (CityCode, CityName)
+Teachers  (TeacherCode, FirstName, LastName, Subject, HireDate, Salary, CityCode, Phone)
+Classes   (ClassCode, ClassName, Grade, TeacherCode, RoomNumber)
+Courses   (CourseCode, CourseName, TeacherCode, WeeklyHours)
+Students  (StudentId, FirstName, LastName, ClassCode, Gender, BirthDate, CityCode, EnrollDate, Phone)
+Grades    (StudentId, CourseCode, Term, Grade)          -- PK: StudentId + CourseCode + Term
+Absences  (AbsenceId, StudentId, AbsenceDate, Excused, Reason)
+```
+
+<div dir="rtl">
+
+**מכאן התשובות הן מספר אחד, לא רשימה.** חמש פונקציות: `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`.
+
+**ש1.** כמה תלמידים יש בבית הספר?
+
+**ש2.** בטבלת הציונים: כמה **שורות** יש, כמה מהן **עם ציון**, וכמה **חסרים**? (שלוש עמודות, שאילתה אחת.)
+
+**ש3.** **הממוצע הבית‑ספרי** מעוגל לשתי ספרות — פעמיים: פעם על הציונים כמו שהם, ופעם כש‑`NULL` הוחלף ב‑`0`. **מה ההפרש, ואיזה מהשניים נכון?**
+
+**ש4.** הציון **הנמוך** והציון **הגבוה** בבית הספר.
+
+**ש5.** על טבלת המורים בשאילתה אחת: **סך השכר** החודשי, **הממוצע**, **המינימום** וה**מקסימום**.
+
+**ש6.** כמה מורים יש, וכמה **מקצועות שונים** הם מלמדים? (`COUNT(DISTINCT …)`.)
+
+**ש7.** כמה שורות יש ב‑`Grades`, ול**כמה תלמידים שונים** יש בה ציון? ⚠️ יש 18 תלמידים — מה זה אומר על אחד מהם?
+
+**ש8.** על טבלת ההיעדרויות: **התאריך הראשון**, **התאריך האחרון**, ו**סך ההיעדרויות**. ⚠️ `MIN`/`MAX` על תאריכים — למה זה בכלל עובד?
+
+**ש9.** מה הממוצע ב**מתמטיקה 5 יח"ל** (`CourseCode = 11`), ועל כמה ציונים הוא מבוסס?
+
+**ש10.** ⚠️ **איך `AVG` באמת עובד.** בשאילתה אחת הציגו: `SUM(Grade)`, `COUNT(*)`, `COUNT(Grade)`, `SUM(Grade) / COUNT(*)`, ו‑`AVG(Grade)`.
+
+**שתי התוצאות האחרונות שונות. מצאו במה `AVG` מחלק** — ואז הסבירו במשפט אחד מה `AVG` עושה עם `NULL`.
+
+**ש11.** בשאילתה אחת על `Students`: `COUNT(*)`, `COUNT(Phone)`, `COUNT(BirthDate)`, `COUNT(ClassCode)`. **ארבעה מספרים שונים מאותה טבלה** — הסבירו כל אחד.
+
+**ש12.** ⚠️ **המלכודת שאורקל לא מרשה.** הריצו:
+
+</div>
+
+```sql
+SELECT Students.FirstName, MAX(Grades.Grade) AS Best
+FROM   Students, Grades WHERE Students.StudentId = Grades.StudentId;
+```
+
+<div dir="rtl">
+
+**א.** כמה שורות חזרו? איזה שם מופיע?
+
+**ב.** עכשיו בדקו: **כמה תלמידים בכלל קיבלו 100?** (שאילתה נפרדת.) מה זה אומר על התשובה בסעיף א'?
+
+**ג.** באורקל השאילתה הזאת **לא רצה בכלל** ומחזירה `ORA-00937`. **למה זה עדיף** על מה שקרה כאן?
+
+</div>
+<!-- classroom:end -->

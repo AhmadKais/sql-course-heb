@@ -308,3 +308,266 @@ SELECT COUNT(*) AS cnt FROM Products WHERE Products.CategoryID = 1;
 
 </div>
 <!-- w3schools:end -->
+
+<!-- classroom:start -->
+<div dir="rtl">
+
+---
+
+## 💪 תרגול בכיתה — פתרונות
+
+> 🏫 על [`school.sql`](../../resources/school-db/). כל הפלטים כאן **אמיתיים** — כל שאילתה הורצה על בסיס הנתונים, נכון לתאריך הייחוס `'2026-09-21'`.
+
+</div>
+
+```text
+Cities    (CityCode, CityName)
+Teachers  (TeacherCode, FirstName, LastName, Subject, HireDate, Salary, CityCode, Phone)
+Classes   (ClassCode, ClassName, Grade, TeacherCode, RoomNumber)
+Courses   (CourseCode, CourseName, TeacherCode, WeeklyHours)
+Students  (StudentId, FirstName, LastName, ClassCode, Gender, BirthDate, CityCode, EnrollDate, Phone)
+Grades    (StudentId, CourseCode, Term, Grade)          -- PK: StudentId + CourseCode + Term
+Absences  (AbsenceId, StudentId, AbsenceDate, Excused, Reason)
+```
+
+<div dir="rtl">
+
+</div>
+
+```sql
+-- ש1
+SELECT COUNT(*) AS Students FROM Students;
+
+-- ש2
+SELECT COUNT(*) AS AllRows, COUNT(Grades.Grade) AS WithGrade,
+       COUNT(*) - COUNT(Grades.Grade) AS Missing FROM Grades;
+
+-- ש3
+SELECT ROUND(AVG(Grades.Grade), 2) AS AvgReal,
+       ROUND(AVG(COALESCE(Grades.Grade, 0)), 2) AS AvgWithZeros FROM Grades;
+
+-- ש4
+SELECT MIN(Grades.Grade) AS Lowest, MAX(Grades.Grade) AS Highest FROM Grades;
+
+-- ש5
+SELECT SUM(Teachers.Salary) AS Payroll, ROUND(AVG(Teachers.Salary), 2) AS AvgSalary,
+       MIN(Teachers.Salary) AS Min1, MAX(Teachers.Salary) AS Max1 FROM Teachers;
+
+-- ש6
+SELECT COUNT(*) AS Teachers1, COUNT(DISTINCT Teachers.Subject) AS Subjects FROM Teachers;
+
+-- ש7
+SELECT COUNT(*) AS GradeRows, COUNT(DISTINCT Grades.StudentId) AS StudentsWithGrades FROM Grades;
+
+-- ש8
+SELECT MIN(Absences.AbsenceDate) AS First1, MAX(Absences.AbsenceDate) AS Last1,
+       COUNT(*) AS Total FROM Absences;
+
+-- ש9
+SELECT ROUND(AVG(Grades.Grade), 2) AS AvgMath5, COUNT(*) AS HowMany
+FROM   Grades WHERE Grades.CourseCode = 11;
+
+-- ש10
+SELECT SUM(Grades.Grade) AS Total, COUNT(*) AS Rows1, COUNT(Grades.Grade) AS NonNull,
+       ROUND(CAST(SUM(Grades.Grade) AS REAL) / COUNT(*), 2) AS DividedBy60,
+       ROUND(AVG(Grades.Grade), 2) AS AvgFunction FROM Grades;
+
+-- ש11
+SELECT COUNT(*) AS AllStudents, COUNT(Students.Phone) AS WithPhone,
+       COUNT(Students.BirthDate) AS WithBirthDate, COUNT(Students.ClassCode) AS WithClass
+FROM   Students;
+
+-- ש12
+SELECT Students.FirstName, MAX(Grades.Grade) AS Best
+FROM   Students, Grades WHERE Students.StudentId = Grades.StudentId;
+-- והדרך הנכונה:
+SELECT Students.FirstName, Grades.Grade FROM Students, Grades
+WHERE  Students.StudentId = Grades.StudentId
+  AND  Grades.Grade = (SELECT MAX(Grades.Grade) FROM Grades);
+```
+
+<div dir="rtl">
+
+**ש1.** **18.** `COUNT(*)` סופר **שורות**, ולא מסתכל בכלל על התוכן — לכן `NULL`ים לא מעניינים אותו.
+
+<figure dir="ltr" class="dbtable">
+
+| Students |
+|:---:|
+| 18 |
+
+</figure>
+
+**ש2.** **60 שורות, 58 ציונים, 2 חסרים.**
+
+ההבדל בין `COUNT(*)` ל‑`COUNT(עמודה)` הוא כל השיעור בשורה אחת: הראשון סופר שורות, השני סופר **ערכים שאינם `NULL`** באותה עמודה.
+
+<figure dir="ltr" class="dbtable">
+
+| AllRows | WithGrade | Missing |
+|:---:|:---:|:---:|
+| 60 | 58 | 2 |
+
+</figure>
+
+> 💡 `COUNT(*) - COUNT(עמודה)` הוא הדרך הקצרה לשאול "**כמה חסרים לי בעמודה הזאת?**" — שאילתת בדיקת איכות נתונים שכדאי לזכור.
+
+**ש3.** **77.97 מול 75.37 — הפרש של 2.6 נקודות**, משתי שורות בלבד מתוך 60.
+
+**הנכון הוא 77.97.** `AVG(Grade)` מחלק ב‑58 — מספר הציונים שקיימים. הגרסה השנייה המציאה שני אפסים, חילקה ב‑60, והורידה את הממוצע הבית‑ספרי. מאיה לא נבחנה בהיסטוריה; זה לא אומר שהיא קיבלה 0.
+
+<figure dir="ltr" class="dbtable">
+
+| AvgReal | AvgWithZeros |
+|:---:|:---:|
+| 77.97 | 75.37 |
+
+</figure>
+
+**ש4.** **39 עד 100.** המינימום הוא הציון של ג'וד מנסור במתמטיקה מחצית ב'. `MIN`/`MAX` **מתעלמות מ‑`NULL`** — אחרת המינימום היה "לא ידוע" לנצח.
+
+<figure dir="ltr" class="dbtable">
+
+| Lowest | Highest |
+|:---:|:---:|
+| 39 | 100 |
+
+</figure>
+
+**ש5.** בית הספר משלם **87,100 ₪** בחודש למורים.
+
+<figure dir="ltr" class="dbtable">
+
+| Payroll | AvgSalary | Min1 | Max1 |
+|:---:|:---:|:---:|:---:|
+| 87100 | 12442.86 | 9800 | 15300 |
+
+</figure>
+
+**ש6.** **7 מורים, 6 מקצועות** — נביל וגלית שניהם מלמדים מתמטיקה. `DISTINCT` **בתוך** הפונקציה המצרפית: קודם זורקים כפילויות, אחר כך סופרים.
+
+<figure dir="ltr" class="dbtable">
+
+| Teachers1 | Subjects |
+|:---:|:---:|
+| 7 | 6 |
+
+</figure>
+
+**ש7.** **60 שורות, 17 תלמידים.** 18 − 17 = 1: ל**תלמיד אחד אין אף ציון** — לינא חמוד, שנרשמה ב‑10 בספטמבר.
+
+שימו לב מה עשינו כאן: גילינו חסר **בלי `JOIN` ובלי `IS NULL`**, רק בהשוואת שתי ספירות. זו בדיקה שלוקחת שנייה וכדאי לעשות אותה לכל טבלת קשר.
+
+<figure dir="ltr" class="dbtable">
+
+| GradeRows | StudentsWithGrades |
+|:---:|:---:|
+| 60 | 17 |
+
+</figure>
+
+**ש8.** 16 היעדרויות, מ‑2 בספטמבר עד 18 בספטמבר.
+
+**למה `MIN`/`MAX` עובדות על תאריכים?** כי התאריכים נשמרים כטקסט בפורמט `YYYY-MM-DD`, ובפורמט הזה **הסדר האלפביתי זהה לסדר הכרונולוגי** — `'2026-09-02'` קטן מ‑`'2026-09-18'` גם כמחרוזת. זו בדיוק הסיבה שהפורמט הזה הוא התקן (ISO 8601). בפורמט `02/09/2026` זה היה נשבר מיד.
+
+<figure dir="ltr" class="dbtable">
+
+| First1 | Last1 | Total |
+|:---:|:---:|:---:|
+| 2026-09-02 | 2026-09-18 | 16 |
+
+</figure>
+
+**ש9.** **88.2 על 15 ציונים.** מתמטיקה 5 יח"ל היא המקצוע החזק בבית הספר — למעלה מ‑10 נקודות מעל הממוצע הכללי. (הסבר אפשרי: לשם נרשמים התלמידים החזקים. זו שאלה לשיעור 24.)
+
+<figure dir="ltr" class="dbtable">
+
+| AvgMath5 | HowMany |
+|:---:|:---:|
+| 88.2 | 15 |
+
+</figure>
+
+**ש10.** `AVG` מחלק ב‑**58**, לא ב‑60.
+
+<figure dir="ltr" class="dbtable">
+
+| Total | Rows1 | NonNull | DividedBy60 | AvgFunction |
+|:---:|:---:|:---:|:---:|:---:|
+| 4522 | 60 | 58 | 75.37 | 77.97 |
+
+</figure>
+
+החשבון, במפורש:
+
+</div>
+
+```text
+SUM(Grade)              = 4522      -- ה-NULLים לא נספרו בסכום
+COUNT(*)                =   60      -- כל השורות
+COUNT(Grade)            =   58      -- רק הציונים הקיימים
+
+4522 / 60  =  75.37   <- מה שחישבנו ביד
+4522 / 58  =  77.97   <- מה ש-AVG מחזיר
+```
+
+<div dir="rtl">
+
+**במשפט אחד:** `AVG` **מתעלמת** מ‑`NULL` לגמרי — לא בסכום ולא במונה. היא עונה על "מה הממוצע של הציונים **שיש**", ולא על "מה הממוצע אם נחשיב חסר כאפס". שתי השאלות לגיטימיות, אבל רק אחת מהן היא מה ש‑`AVG` עושה, וכדאי לדעת איזו.
+
+**ש11.** ארבעה מספרים, אותה טבלה:
+
+<figure dir="ltr" class="dbtable">
+
+| AllStudents | WithPhone | WithBirthDate | WithClass |
+|:---:|:---:|:---:|:---:|
+| 18 | 12 | 17 | 17 |
+
+</figure>
+
+| המספר | מה הוא אומר |
+|--------|--------------|
+| `COUNT(*) = 18` | **שורות** בטבלה — 18 תלמידים |
+| `COUNT(Phone) = 12` | ל‑6 תלמידים אין טלפון |
+| `COUNT(BirthDate) = 17` | לאחד (סאלי) חסר תאריך לידה |
+| `COUNT(ClassCode) = 17` | אחת (לינא) טרם שובצה לכיתה |
+
+**השורה התחתונה:** `COUNT(עמודה)` הוא לא "כמה תלמידים" — הוא "**כמה תלמידים עם נתון בעמודה הזאת**". מי שמדווח "יש לנו 12 תלמידים" כי הריץ `COUNT(Phone)` טעה ב‑6 תלמידים.
+
+**ש12א.** **שורה אחת: `נור · 100`.**
+
+**ש12ב.** **שלושה** תלמידים קיבלו 100 — נור עזאם, תמר שושן וראניה עבאס.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | Grade |
+|:---:|:---:|
+| נור | 100 |
+| תמר | 100 |
+| ראניה | 100 |
+
+</figure>
+
+כלומר התשובה בסעיף א' **הסתירה שתי תלמידות**. היא גם לא "שגויה" במובן הפשוט: `MAX` הוא אכן 100, ונור אכן קיבלה 100. פשוט אין שם מקום לשלושתן — `MAX` מחזיר **מספר אחד**, אז השאילתה חייבת להחזיר **שורה אחת**, ו‑SQLite בחר עבורכם איזה שם לשים בה.
+
+**ש12ג.** באורקל זו **שגיאה**: `ORA-00937: not a single-group group function`.
+
+**ולמה שגיאה עדיפה?** כי שגיאה **עוצרת אותך**. היא אומרת "עירבבת שתי רמות: `FirstName` הוא נתון של שורה, `MAX` הוא נתון של כל הטבלה — תחליט מה אתה שואל". SQLite, לעומת זה, מחזיר תוצאה שנראית תקינה לגמרי, אף אחד לא בודק אותה, והיא מגיעה לדוח של המנהלת עם שם אחד מתוך שלושה.
+
+**הדרך הנכונה** היא לשאול בשני שלבים: קודם *מה* המקסימום, ואחר כך *מי* מגיע אליו — וזו **תת‑שאילתה**:
+
+</div>
+
+```sql
+SELECT Students.FirstName, Grades.Grade
+FROM   Students, Grades
+WHERE  Students.StudentId = Grades.StudentId
+  AND  Grades.Grade = (SELECT MAX(Grades.Grade) FROM Grades);
+```
+
+<div dir="rtl">
+
+> 🔮 תת‑שאילתות הן בדיוק הנושא של שיעור 24, לצד `GROUP BY` — שיענה על "מה המקסימום של **כל** תלמיד", 17 תשובות בשאילתה אחת.
+
+</div>
+<!-- classroom:end -->
