@@ -181,3 +181,282 @@ SELECT first_name, REGEXP_REPLACE(phone, '[^0-9]', '') AS digits FROM person;
 </div>
 
 </div>
+
+<!-- classroom:start -->
+<div dir="rtl">
+
+---
+
+## 💪 תרגול בכיתה — פתרונות
+
+> 🏫 על [`school.sql`](../../resources/school-db/). כל הפלטים כאן **אמיתיים** — כל שאילתה הורצה על בסיס הנתונים, נכון לתאריך הייחוס `'2026-09-21'`.
+
+</div>
+
+```text
+Cities    (CityCode, CityName)
+Teachers  (TeacherCode, FirstName, LastName, Subject, HireDate, Salary, CityCode, Phone)
+Classes   (ClassCode, ClassName, Grade, TeacherCode, RoomNumber)
+Courses   (CourseCode, CourseName, TeacherCode, WeeklyHours)
+Students  (StudentId, FirstName, LastName, ClassCode, Gender, BirthDate, CityCode, EnrollDate, Phone)
+Grades    (StudentId, CourseCode, Term, Grade)          -- PK: StudentId + CourseCode + Term
+Absences  (AbsenceId, StudentId, AbsenceDate, Excused, Reason)
+```
+
+<div dir="rtl">
+
+</div>
+
+```sql
+-- ש1
+SELECT Students.FirstName, Students.LastName FROM Students WHERE Students.LastName LIKE 'כ%';
+SELECT Students.FirstName, Students.LastName FROM Students WHERE Students.LastName GLOB 'כ*';
+
+-- ש2
+SELECT Students.FirstName, Students.Phone FROM Students WHERE Students.Phone GLOB '05[024]-*';
+
+-- ש3
+SELECT Students.FirstName, Students.Phone FROM Students
+WHERE  Students.Phone GLOB '[0-9][0-9][0-9]-[0-9][0-9][0-9][0-9][0-9][0-9][0-9]';
+
+-- ש4
+SELECT Students.FirstName FROM Students WHERE Students.FirstName LIKE '___';
+
+-- ש5
+SELECT Students.FirstName, Students.LastName FROM Students WHERE Students.FirstName GLOB '*''*';
+
+-- ש6
+SELECT Teachers.LastName FROM Teachers WHERE Teachers.LastName GLOB '*-*';
+
+-- ש7
+SELECT Absences.AbsenceId, Absences.AbsenceDate FROM Absences
+WHERE  Absences.AbsenceDate NOT GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]';
+
+-- ש8
+SELECT Students.FirstName, Students.Phone FROM Students WHERE Students.Phone NOT LIKE '05%';
+SELECT COUNT(*) AS n FROM Students WHERE Students.Phone NOT LIKE '05%' OR Students.Phone IS NULL;
+
+-- ש9
+SELECT Courses.CourseName FROM Courses WHERE Courses.CourseName LIKE '%יח"ל%';
+
+-- ש10
+SELECT Courses.CourseName FROM Courses WHERE Courses.CourseName GLOB '*[0-9]*';
+```
+
+<div dir="rtl">
+
+**ש1.** **אותן 2 שורות בשתי הגרסאות** — יואב ושירה כהן.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | LastName |
+|:---:|:---:|
+| יואב | כהן |
+| שירה | כהן |
+
+</figure>
+
+**ההבדל בין השניים:**
+
+| | `LIKE` | `GLOB` |
+|---|--------|--------|
+| "אפס תווים או יותר" | `%` | `*` |
+| "תו אחד בדיוק" | `_` | `?` |
+| מחלקת תווים (`[0-9]`, `[אב]`) | **אין** | **יש** |
+| אותיות גדולות/קטנות | **מתעלם** (`'A' LIKE 'a'` = אמת) | **רגיש** (`'A' GLOB 'a'` = שקר) |
+| תקן | **SQL תקני** — יש בכל בסיס נתונים | **ייחודי ל‑SQLite** |
+
+כלומר `GLOB` הוא הצעד של SQLite לכיוון ביטויים רגולריים: הוא נותן מחלקות תווים, שזה בדיוק מה שחסר ב‑`LIKE`. ⚠️ **בבחינה כותבים `LIKE`** — `GLOB` לא קיים באורקל. באורקל הכלי המקביל והחזק יותר הוא `REGEXP_LIKE`.
+
+**ש2.** **10 תלמידים.** `[024]` = "אחד מהתווים האלה, בדיוק אחד". שימו לב שזה **לא** `[0-4]` — זו רשימה, לא טווח.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | Phone |
+|:---:|:---:|
+| אדם | 050-1000001 |
+| יואב | 052-1000003 |
+| מאיה | 054-1000004 |
+| סאלי | 050-1000006 |
+| שירה | 050-1000008 |
+| תמר | 052-1000010 |
+| ליאור | 050-1000011 |
+| דניאל | 054-1000013 |
+| הדיל | 050-1000014 |
+| נועם | 050-1000017 |
+
+</figure>
+
+> 🔎 עומר (053) וראניה (053) **לא** ברשימה — 3 אינו ב‑`[024]`. זו בדיוק המטרה של מחלקת תווים: לבחור במדויק.
+
+**ש3.** **12 מתוך 18.** החסרים הם **ששת התלמידים שאין להם טלפון בכלל** — `NULL GLOB '…'` הוא `NULL`, לא "שקר", ולכן הם נושרים.
+
+<figure dir="ltr" class="dbtable">
+
+| Valid |
+|:---:|
+| 12 |
+
+</figure>
+
+וזו **בדיקת איכות נתונים** אמיתית: 12 תקינים + 6 חסרים = 18, כלומר **אין אף טלפון בפורמט שגוי**. אם היינו מקבלים 11, היה לנו תלמיד אחד עם טלפון מקולקל — וזו שאילתה שכדאי להריץ אחרי כל ייבוא נתונים.
+
+**ש4.** **3 תלמידים:** אדם, נור, תמר. `_` הוא "תו אחד בדיוק", ושלושה קווים תחתונים = שלושה תווים, לא פחות ולא יותר.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName |
+|:---:|
+| אדם |
+| נור |
+| תמר |
+
+</figure>
+
+**ש5.** **ג'וד מנסור.** גרש בתוך מחרוזת כותבים **פעמיים**: `'*''*'`. הראשון "בורח" מהשני, וSQL מבין שזה תו ולא סוף המחרוזת. זה הכלל בכל בסיסי הנתונים, והוא תופס גם ב‑`INSERT`: `'ג''וד'`.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | LastName |
+|:---:|:---:|
+| ג'וד | מנסור |
+
+</figure>
+
+**ש6.** **רונית בר‑לב וסמיר אבו‑ראס.**
+
+<figure dir="ltr" class="dbtable">
+
+| LastName |
+|:---:|
+| בר-לב |
+| אבו-ראס |
+
+</figure>
+
+**ש7.** **0 שורות.**
+
+<figure dir="ltr" class="dbtable">
+
+| AbsenceId | AbsenceDate |
+|:---:|:---:|
+
+</figure>
+
+**ולמה זו תשובה טובה?** כי השאלה הייתה "מצא את השגויים", והתשובה היא "אין". **כל 16 התאריכים בפורמט התקני.**
+
+זה הדפוס שנקרא **שאילתת חריגות** (exception query): מנסחים אותה כך שתוצאה **ריקה** היא הצלחה. זה הפוך מהאינטואיציה, וזו הדרך הנכונה לבדוק תקינות — כי "כל התאריכים תקינים" דורש לקרוא 16 שורות ולהאמין לעצמך, ואילו "אין תאריכים שגויים" היא תשובה שאפשר להסתכל עליה בשנייה. על מיליון שורות, זה כל ההבדל.
+
+**ש8.** **לא, זה בכלל לא אומר את זה.** השאילתה השנייה מחזירה **6**.
+
+| השאילתה | התוצאה |
+|----------|---------|
+| `WHERE Phone NOT LIKE '05%'` | **0** |
+| `WHERE Phone NOT LIKE '05%' OR Phone IS NULL` | **6** |
+
+**ההסבר:** `NULL NOT LIKE '05%'` אינו "אמת" — הוא **`NULL`**. ו‑`WHERE` זורק כל מה שאינו אמת. לכן ששת התלמידים בלי טלפון **לא הופיעו בשתי השאילתות**: לא בזו שמחפשת "מתחיל ב‑05", ולא בזו שמחפשת "לא מתחיל ב‑05".
+
+**וזו הסכנה:** 0 שורות **נראה** כמו "הכול תקין". אבל "0 תלמידים עם טלפון שגוי" ו"0 תלמידים שהטלפון שלהם לא נבדק" הם שני דברים שונים לגמרי, ובשאילתה הראשונה הם נראים זהים.
+
+**הכלל:** בכל `NOT LIKE`, `NOT IN` או `<>` על עמודה שיכולה להיות `NULL` — שאלו את עצמכם **מה קורה ל‑`NULL`ים**, והוסיפו `OR … IS NULL` במפורש אם הם צריכים להיכלל.
+
+**ש9.** **3 מקצועות.** המירכאות הכפולות **לא מפריעות**: בתוך מחרוזת של SQL (שמוגדרת בגרשיים **בודדים**) מירכאה כפולה היא תו רגיל לכל דבר. רק הגרש הבודד צריך הכפלה (ש5).
+
+<figure dir="ltr" class="dbtable">
+
+| CourseName |
+|:---:|
+| מתמטיקה 5 יח"ל |
+| אנגלית 4 יח"ל |
+| מתמטיקה 3 יח"ל |
+
+</figure>
+
+**ש10.** **אותם 3 מקצועות** — דרך אחרת לאותה תשובה. `'*[0-9]*'` = "משהו, ספרה, משהו". זה יתר כללי: הוא יתפוס גם `כימיה 2 יח"ל` וגם `שיעור 7`, ואילו ש9 תפס רק `יח"ל`.
+
+**ש11.** טבלת ההרשאות:
+
+| המשתמש | על מה | איזו הרשאה |
+|---------|--------|-------------|
+| **מזכירות** | `Students` · `Classes` | `SELECT`, `INSERT`, `UPDATE` — **לא `DELETE`** (ראו ש12ד) |
+| **מורה מקצועי** | `Grades` · `View` של התלמידים שלו | `SELECT`, `INSERT`, `UPDATE` על `Grades` |
+| **מחנך** | **`View` בלבד** | `SELECT` |
+| **תלמיד** | **`View` בלבד** | `SELECT` |
+
+**השניים שחייבים `View`: המחנך והתלמיד** — ומסיבה אחת משותפת: שניהם צריכים לראות **חלק מהשורות**, לא חלק מהעמודות.
+
+הרשאות ב‑SQL עובדות על **אובייקטים**, לא על שורות: אפשר לומר "מותר לך לקרוא את `Grades`" או "אסור לך", אבל אין `GRANT SELECT ON Grades WHERE StudentId = 1001`. אפשר להגביל עמודות (ש12ג), אבל לא שורות.
+
+הפתרון הוא להעביר את תנאי השורות **לתוך** `View`, ולתת הרשאה עליו:
+
+</div>
+
+```sql
+CREATE VIEW MyClassGrades AS
+SELECT s.FirstName, s.LastName, c.CourseName, g.Grade, g.Term
+FROM   Grades g, Students s, Classes cl, Courses c
+WHERE  g.StudentId = s.StudentId
+  AND  s.ClassCode = cl.ClassCode
+  AND  g.CourseCode = c.CourseCode
+  AND  cl.TeacherCode = <המחנך המחובר>;      -- באורקל: USER / SYS_CONTEXT
+
+GRANT SELECT ON MyClassGrades TO homeroom_role;
+```
+
+<div dir="rtl">
+
+המחנך מקבל גישה ל‑`View` **ולא** ל‑`Grades`. אם ינסה `SELECT * FROM Grades` — שגיאת הרשאה. התנאי "רק הכיתה שלי" לא נסמך על כך שהוא לא ינסה; הוא **לא קיים** מבחינתו. (באורקל זו התבנית הקלאסית של Virtual Private Database.)
+
+**ש12.** פקודות ה‑`GRANT` (תחביר אורקל — לא רץ ב‑SQLite):
+
+</div>
+
+```sql
+-- א.  מזכירות
+GRANT SELECT, INSERT, UPDATE ON Students TO secretary;
+
+-- ב.  כל המורים — על ה-View, לא על הטבלה
+GRANT SELECT ON PublicTeachers TO teacher_role;
+
+-- ג.  חוסאם — עדכון עמודה אחת בלבד
+GRANT UPDATE (Grade) ON Grades TO husam;
+
+-- ד.  ביטול
+REVOKE DELETE ON Students FROM secretary;
+
+-- ה.  תפקיד במקום 40 משתמשים
+CREATE ROLE teacher_role;
+GRANT SELECT ON PublicTeachers TO teacher_role;
+GRANT SELECT, INSERT, UPDATE ON Grades TO teacher_role;
+GRANT teacher_role TO husam, orly, nabil;      -- ... וכל 40
+```
+
+<div dir="rtl">
+
+**ש12ב — היתרון של `GRANT` על ה‑`View`:** `PublicTeachers` לא מכיל את `Salary` ואת `Phone`. מורה שמסתכל עליו **לא יכול** לראות את שכר חבריו — לא כי הוא הוגן, אלא כי העמודה לא קיימת בשבילו. `GRANT SELECT ON Teachers` היה חושף את טבלת השכר של כל הסגל לכל הסגל.
+
+**ש12ג — `UPDATE` על עמודה:** זו ההוכחה שהרשאות יורדות לרזולוציית **עמודה**. חוסאם יכול לשנות ציון, אבל לא את `StudentId` ולא את `Term` — כלומר הוא לא יכול "להעביר" ציון מתלמיד לתלמיד.
+
+**ש12ד — למה דווקא `DELETE`:** זו ההרשאה שהנזק ממנה בלתי הפיך. מזכירות צריכה **לרשום ולעדכן**; תלמיד שעוזב אינו מקרה של מחיקה אלא של סימון (`Status = 'left'`), כי הציונים וההיסטוריה שלו חייבים להישאר. זה הכלל שנקרא **הרשאות מינימום** (least privilege): נותנים את מה שנדרש לעבודה, לא את מה שאולי יהיה נוח.
+
+**ש12ה — הבעיה ב‑40 `GRANT`‑ים והפתרון:**
+
+| הבעיה | מה קורה |
+|--------|----------|
+| **תחזוקה** | מורה חדש = לזכור את כל ההרשאות. אחת תישכח, והוא "לא רואה ציונים" ביום הראשון |
+| **שינוי מדיניות** | הוחלט לפתוח למורים גם את `Absences`? **40 פקודות**, וקל לפספס |
+| **ביקורת** | "מי יכול לעדכן ציונים?" — צריך לעבור על 40 משתמשים ולאחד את הרשימות |
+| **עזיבה** | מורה עוזב — למחוק 6 הרשאות במקום אחת |
+
+**הפתרון: `ROLE`** — "תפקיד". מגדירים **אוסף הרשאות** בשם אחד, נותנים את התפקיד למשתמשים, ומכאן:
+
+- מורה חדש → `GRANT teacher_role TO dana;` — שורה אחת
+- שינוי מדיניות → `GRANT SELECT ON Absences TO teacher_role;` — שורה אחת, ו**כל 40 מקבלים מיד**
+- ביקורת → ההרשאות מתועדות במקום אחד, ולא מפוזרות על 40 משתמשים
+
+זה בדיוק אותו עקרון של `View` משיעור 28, רק בצד השני: **`View` מרכז את "אילו נתונים", ו‑`ROLE` מרכז את "מי מורשה".** שניהם נותנים מקום **אחד** לשנות דבר שחל על הרבה.
+
+> 💡 **וכשתגיעו לראיון עבודה** — זו שאלה שנשאלת. "איך היית מנהל הרשאות ל‑40 משתמשים?" התשובה "`ROLE`, ו‑`View` לסינון שורות" היא התשובה שמחפשים.
+
+</div>
+<!-- classroom:end -->
