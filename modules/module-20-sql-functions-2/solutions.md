@@ -500,3 +500,333 @@ SELECT Products.ProductName, CASE WHEN Products.Price < 20 THEN 'cheap' ELSE 'ex
 
 </div>
 <!-- w3schools:end -->
+
+<!-- classroom:start -->
+<div dir="rtl">
+
+---
+
+## 💪 תרגול בכיתה — פתרונות
+
+> 🏫 על [`school.sql`](../../resources/school-db/). כל הפלטים כאן **אמיתיים** — כל שאילתה הורצה על בסיס הנתונים, נכון לתאריך הייחוס `'2026-09-21'`.
+
+</div>
+
+```text
+Cities    (CityCode, CityName)
+Teachers  (TeacherCode, FirstName, LastName, Subject, HireDate, Salary, CityCode, Phone)
+Classes   (ClassCode, ClassName, Grade, TeacherCode, RoomNumber)
+Courses   (CourseCode, CourseName, TeacherCode, WeeklyHours)
+Students  (StudentId, FirstName, LastName, ClassCode, Gender, BirthDate, CityCode, EnrollDate, Phone)
+Grades    (StudentId, CourseCode, Term, Grade)          -- PK: StudentId + CourseCode + Term
+Absences  (AbsenceId, StudentId, AbsenceDate, Excused, Reason)
+```
+
+<div dir="rtl">
+
+</div>
+
+```sql
+-- ש1
+SELECT Students.FirstName, COALESCE(Students.Phone, 'אין טלפון') AS Contact FROM Students;
+
+-- ש2
+SELECT Courses.CourseName, COALESCE(Courses.TeacherCode, 0) AS TeacherOrZero FROM Courses;
+
+-- ש3
+SELECT Students.FirstName,
+       COALESCE(Students.Phone, 'טרם נמסר') AS Phone1,
+       COALESCE(CAST(Students.ClassCode AS TEXT), 'טרם שובץ') AS Class1
+FROM   Students WHERE Students.StudentId IN (1001, 1002, 1018);
+
+-- ש4
+SELECT Classes.ClassName, Classes.RoomNumber, COALESCE(Classes.RoomNumber, -1) AS RoomOrMinus FROM Classes;
+
+-- ש5
+SELECT Grades.StudentId, Grades.CourseCode, Grades.Grade,
+       CASE
+         WHEN Grades.Grade IS NULL THEN 'לא נבחן'
+         WHEN Grades.Grade >= 90   THEN 'מעולה'
+         WHEN Grades.Grade >= 75   THEN 'טוב'
+         WHEN Grades.Grade >= 60   THEN 'עובר'
+         ELSE 'נכשל'
+       END AS Label
+FROM   Grades WHERE Grades.StudentId IN (1004, 1009, 1012, 1016) ORDER BY Grades.StudentId;
+
+-- ש6
+SELECT Students.FirstName,
+       CASE Students.Gender WHEN 'M' THEN 'תלמיד' WHEN 'F' THEN 'תלמידה' END AS Title
+FROM   Students;
+
+-- ש7
+SELECT Absences.AbsenceId, Absences.Excused,
+       CASE Absences.Excused WHEN 1 THEN 'מאושרת' ELSE 'לא מאושרת' END AS Status,
+       COALESCE(Absences.Reason, 'לא נמסרה סיבה') AS Reason1
+FROM   Absences;
+
+-- ש8  התיקון: להפוך את סדר שתי השורות
+SELECT Grades.StudentId, Grades.Grade,
+       CASE
+         WHEN Grades.Grade >= 90 THEN 'מעולה'
+         WHEN Grades.Grade >= 60 THEN 'עובר'
+         ELSE 'נכשל'
+       END AS Label
+FROM   Grades WHERE Grades.Grade >= 90;
+
+-- ש9
+SELECT CAST('42' AS INTEGER) + 8 AS A, CAST(95 AS TEXT) || ' נקודות' AS B,
+       CAST(Grades.Grade AS TEXT) || '/100' AS C FROM Grades LIMIT 3;
+
+-- ש10
+SELECT Teachers.LastName, Teachers.Salary / 12 AS IntDiv, Teachers.Salary / 12.0 AS RealDiv,
+       ROUND(Teachers.Salary / 12.0, 2) AS Rounded FROM Teachers;
+
+-- ש11
+SELECT Grades.StudentId, Grades.Grade, COALESCE(Grades.Grade, 0) AS AsZero
+FROM   Grades WHERE Grades.StudentId IN (1004, 1009) ORDER BY Grades.StudentId;
+SELECT Absences.StudentId, NULLIF(Absences.Excused, 0) AS OnlyExcused FROM Absences LIMIT 5;
+
+-- ש12
+SELECT Students.FirstName || ' ' || Students.LastName AS Student,
+       COALESCE(CAST(Students.ClassCode AS TEXT), 'ללא כיתה') AS Class1,
+       CASE WHEN Students.Phone IS NULL THEN 'אין קשר טלפוני' ELSE Students.Phone END AS Contact,
+       CASE WHEN Students.BirthDate IS NULL THEN 'גיל לא ידוע'
+            ELSE CAST(CAST((JULIANDAY('2026-09-21') - JULIANDAY(Students.BirthDate)) / 365.25 AS INTEGER) AS TEXT)
+       END AS Age
+FROM   Students WHERE Students.StudentId IN (1001, 1006, 1018);
+```
+
+<div dir="rtl">
+
+**ש1.** `COALESCE` מחזיר את **הארגומנט הראשון שאינו `NULL`**. שבע השורות הראשונות:
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | Contact |
+|:---:|:---:|
+| אדם | 050-1000001 |
+| נור | אין טלפון |
+| יואב | 052-1000003 |
+| מאיה | 054-1000004 |
+| רוני | אין טלפון |
+| סאלי | 050-1000006 |
+| עומר | 053-1000007 |
+
+</figure>
+
+**ש2.** **סדנת פרויקטים** — המקצוע היחיד בלי מורה.
+
+<figure dir="ltr" class="dbtable">
+
+| CourseName | TeacherOrZero |
+|:---:|:---:|
+| מתמטיקה 5 יח"ל | 1 |
+| אנגלית 4 יח"ל | 2 |
+| מבוא לבסיסי נתונים | 3 |
+| היסטוריה | 4 |
+| חינוך גופני | 5 |
+| מתמטיקה 3 יח"ל | 6 |
+| סדנת פרויקטים | 0 |
+
+</figure>
+
+> ⚠️ **אבל `0` הוא קוד מורה לא חוקי.** הוא "נראה" כמו נתון, ומישהו בהמשך ינסה לעשות לו `JOIN` ולא ימצא מורה. ראו ש4.
+
+**ש3.** צריך **`CAST`**: כל הארגומנטים של `COALESCE` צריכים להיות מאותו טיפוס, ולכן ממירים את המספר לטקסט **לפני** שמציעים טקסט כגיבוי: `COALESCE(CAST(ClassCode AS TEXT), 'טרם שובץ')`.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | Phone1 | Class1 |
+|:---:|:---:|:---:|
+| אדם | 050-1000001 | 101 |
+| נור | טרם נמסר | 101 |
+| לינא | טרם נמסר | טרם שובץ |
+
+</figure>
+
+**ש4.** `-1` עובד, והוא **רעיון רע בדרך כלל**.
+
+| מתי כן | מתי לא |
+|---------|---------|
+| בתצוגה בלבד — ובתנאי שהמשתמש מבין שזה "אין" | כשהעמודה תשמש לחישוב: `AVG` יספור את ה‑`-1` ויקלקל את הממוצע |
+| כשהערך **בלתי אפשרי** בעולם האמיתי, ולכן אי אפשר להתבלבל | כשהערך אפשרי — `0` כציון, `0` כקוד מורה |
+
+הכלל: `COALESCE` הוא כלי **לתצוגה**. הוא לא מתקן את הנתון ולא משנה את הטבלה — הוא רק מחליף את מה שמוצג במסך. אם המשכתם לחשב עם מה שהחלפתם, המצאתם נתון.
+
+<figure dir="ltr" class="dbtable">
+
+| ClassName | RoomNumber | RoomOrMinus |
+|:---:|:---:|:---:|
+| י1 | 12 | 12 |
+| י2 | 14 | 14 |
+| יא1 | 21 | 21 |
+| יא2 | NULL | -1 |
+| יב1 | 31 | 31 |
+
+</figure>
+
+**ש5.** **15 שורות.** `CASE` המחפש נבדק **מלמעלה למטה ועוצר בראשון שמתקיים**, ולכן אין צורך לכתוב `BETWEEN 75 AND 89` — אם הגענו לשורה הזאת, כבר ידוע שהציון קטן מ‑90.
+
+`WHEN Grade IS NULL` נמצא **ראשון** בכוונה: אם הוא היה בסוף, שתי השורות של "לא נבחן" היו נופלות ל‑`ELSE` ומקבלות **`נכשל`** — וזה הבדל בין "לא בא לבחינה" ל"נכשל בה".
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId | CourseCode | Grade | Label |
+|:---:|:---:|:---:|:---:|
+| 1004 | 12 | 62 | עובר |
+| 1004 | 14 | NULL | לא נבחן |
+| 1004 | 16 | 48 | נכשל |
+| 1009 | 12 | NULL | לא נבחן |
+| 1009 | 13 | 63 | עובר |
+| 1009 | 16 | 54 | נכשל |
+| 1012 | 12 | 47 | נכשל |
+| 1012 | 13 | 51 | נכשל |
+| 1012 | 16 | 42 | נכשל |
+| 1012 | 16 | 39 | נכשל |
+| 1016 | 11 | 98 | מעולה |
+| 1016 | 11 | 100 | מעולה |
+| 1016 | 12 | 93 | מעולה |
+| 1016 | 13 | 99 | מעולה |
+| 1016 | 17 | 95 | מעולה |
+
+</figure>
+
+> 🔎 ג'וד מנסור (1012) — **ארבעה "נכשל" מתוך ארבעה**. ראניה עבאס (1016) — חמישה "מעולה" מתוך חמישה.
+
+**ש6.** `CASE` הפשוט משווה עמודה **אחת** לערכים. שימו לב שאין `ELSE` — ואין צורך, כי `Gender` מוגבל ב‑`CHECK` ל‑`'M'`/`'F'`. אילו היה ערך שלישי, היינו מקבלים `NULL` בשקט.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | Title |
+|:---:|:---:|
+| אדם | תלמיד |
+| נור | תלמידה |
+| יואב | תלמיד |
+| מאיה | תלמידה |
+| רוני | תלמיד |
+
+</figure>
+
+**ש7.** שתי הפונקציות יחד: `CASE` הופך קוד לתווית, `COALESCE` ממלא את החסר.
+
+<figure dir="ltr" class="dbtable">
+
+| AbsenceId | Excused | Status | Reason1 |
+|:---:|:---:|:---:|:---:|
+| 1 | 1 | מאושרת | מחלה |
+| 2 | 1 | מאושרת | מחלה |
+| 3 | 0 | לא מאושרת | לא נמסרה סיבה |
+| 4 | 0 | לא מאושרת | לא נמסרה סיבה |
+| 5 | 0 | לא מאושרת | לא נמסרה סיבה |
+| 6 | 1 | מאושרת | תור לרופא |
+
+</figure>
+
+**ש8.** **אפס "מעולה".** כל 21 הציונים שמ‑90 ומעלה קיבלו **`עובר`**.
+
+`CASE` עוצר בתנאי הראשון שמתקיים. ציון 98 מקיים את `>= 60` — זה כתוב ראשון, הבדיקה נגמרה, והשורה `>= 90` **לעולם לא נבדקת**. היא קוד מת. אין שגיאה, אין אזהרה: רק דוח שבו כל המצטיינים מסומנים "עובר".
+
+**התיקון:** להפוך את סדר שתי השורות. ב‑`CASE` מחפש כותבים את התנאים **מהמחמיר לרחב** — מהצר לרחב, לא ההפך.
+
+חמש השורות הראשונות מתוך 21:
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId | Grade | Label (השגוי) | Label (המתוקן) |
+|:---:|:---:|:---:|:---:|
+| 1001 | 92 | עובר | מעולה |
+| 1001 | 91 | עובר | מעולה |
+| 1002 | 95 | עובר | מעולה |
+| 1002 | 100 | עובר | מעולה |
+| 1005 | 90 | עובר | מעולה |
+
+</figure>
+
+**ש9.** `CAST` עובד לשני הכיוונים: טקסט שנראה כמו מספר הופך למספר, ומספר הופך לטקסט שאפשר לחבר ב‑`||`.
+
+<figure dir="ltr" class="dbtable">
+
+| A | B | C |
+|:---:|:---:|:---:|
+| 50 | 95 נקודות | 88/100 |
+| 50 | 95 נקודות | 74/100 |
+| 50 | 95 נקודות | 92/100 |
+
+</figure>
+
+**ש10.** `Salary / 12` החזיר **1208** — ו‑`Salary / 12.0` החזיר **1208.3333333333333**.
+
+**למה?** כששני האופרנדים הם **שלמים**, החלוקה היא **חלוקה שלמה**: השבר נזרק (לא מעוגל — **נקטם**). ברגע שאחד מהם הוא מספר ממשי (`12.0`), החלוקה ממשית.
+
+</div>
+
+```sql
+Salary / 12            -- 14500 / 12  =  1208      ❌ איבדנו 4 אגורות
+Salary / 12.0          -- 14500 / 12.0 = 1208.3333  ✅
+CAST(Salary AS REAL) / 12   --                 ✅  דרך שנייה לאותו דבר
+```
+
+<div dir="rtl">
+
+<figure dir="ltr" class="dbtable">
+
+| LastName | IntDiv | RealDiv | Rounded |
+|:---:|:---:|:---:|:---:|
+| סרחאן | 1208 | 1208.3333333333333 | 1208.33 |
+| בר-לב | 933 | 933.3333333333334 | 933.33 |
+| זיאד | 1066 | 1066.6666666666667 | 1066.67 |
+| שמש | 1275 | 1275.0 | 1275.0 |
+
+</figure>
+
+> 🔎 אצל שמש יצא **`1275.0`** ולא `1275`: החלוקה הייתה מדויקת, אבל **הטיפוס** נשאר ממשי. ב‑SQLite מספר ממשי מוצג תמיד עם נקודה עשרונית, גם כשאין שבר. זה לא באג — זה הטיפוס.
+
+**ש11א.**
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId | Grade | AsZero |
+|:---:|:---:|:---:|
+| 1004 | 62 | 62 |
+| 1004 | NULL | 0 |
+| 1004 | 48 | 48 |
+| 1009 | NULL | 0 |
+| 1009 | 63 | 63 |
+| 1009 | 54 | 54 |
+
+</figure>
+
+**האם זה נכון? כמעט תמיד לא.** `0` אינו "לא נבחן" — `0` הוא **ציון**, והוא הציון הגרוע ביותר שאפשר. מאיה לא נבחנה בהיסטוריה; ברגע שהחלפנו את ה‑`NULL` באפס, הממוצע שלה צונח, היא מופיעה בכל רשימת הנכשלים, והנתון שאומר "חסר מידע" הפך לנתון שאומר "נכשלה לגמרי".
+
+זו **החלטה מדיניות, לא החלטה טכנית**: בבית ספר אמיתי, "לא נבחן" מטופל אחרת מ‑0 (מועד ב'). `NULL` הוא התיאור הנאמן של המצב, ולכן עדיף להשאיר אותו ולתייג אותו ב‑`CASE` (ש5) מאשר להמציא לו מספר.
+
+**ש11ב.** `NULLIF(a, b)` מחזיר `NULL` אם `a = b`, ואחרת את `a`. כאן הוא הפך כל `0` ל‑`NULL` — מה שמשאיר רק את ההיעדרויות המאושרות כערך "אמיתי". השימוש הקלאסי שלו הוא אחר: `a / NULLIF(b, 0)` — כך חלוקה באפס מחזירה `NULL` במקום שגיאה.
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId | OnlyExcused |
+|:---:|:---:|
+| 1003 | 1 |
+| 1003 | 1 |
+| 1004 | NULL |
+| 1009 | NULL |
+| 1009 | NULL |
+
+</figure>
+
+**ש12.** שורת דוח שלמה — **ואף `NULL` אחד**. שימו לב ל‑`CAST` הכפול בגיל: `CAST(… AS INTEGER)` כדי לקטום את השבר, ו‑`CAST(… AS TEXT)` כדי שהענף הזה יחזיר טקסט כמו הענף השני. עמודה אחת — טיפוס אחד.
+
+<figure dir="ltr" class="dbtable">
+
+| Student | Class1 | Contact | Age |
+|:---:|:---:|:---:|:---:|
+| אדם חלבי | 101 | 050-1000001 | 15 |
+| סאלי חסון | 102 | 050-1000006 | גיל לא ידוע |
+| לינא חמוד | ללא כיתה | אין קשר טלפוני | 15 |
+
+</figure>
+
+**שלוש השורות האלה הן כל השיעור:** אדם הוא המקרה הרגיל, ולסאלי וללינא חסר משהו אחר. בלי `COALESCE` ו‑`CASE` היה בדוח `NULL` במקום הכיתה, במקום הטלפון ובמקום הגיל — ומי שקורא את הדוח לא היה יודע אם הנתון חסר, אם השאילתה שבורה, או אם התלמידה לא קיימת.
+
+</div>
+<!-- classroom:end -->

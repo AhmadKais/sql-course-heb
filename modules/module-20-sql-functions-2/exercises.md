@@ -2,6 +2,8 @@
 
 # מודול 20 — תרגילים
 
+> 💪 **בסוף הדף — [תרגול בכיתה](#-תרגול-בכיתה--בית-הספר-עתיד):** 12 שאלות על בסיס נתונים אחר, [`school.sql`](../../resources/school-db/), שחוזר בכל שיעור SQL. מיועד לשיעור בכיתה.
+
 > **הנחיות:** כל התרגילים על [בסיס הנתונים המוכן](../../resources/shelter-db/). **הריצו.**
 >
 > 📅 **תאריך הייחוס בכל התרגילים: `'2026-09-21'`.**
@@ -119,3 +121,87 @@
 
 </div>
 <!-- w3schools:end -->
+
+<!-- classroom:start -->
+<div dir="rtl">
+
+---
+
+## 💪 תרגול בכיתה — בית הספר "עתיד"
+
+> 🏫 **בסיס נתונים אחר, 12 שאלות.** הקטע הזה חוזר בסוף התרגילים של **כל** שיעור SQL, תמיד על אותו בסיס נתונים — [`school.sql`](../../resources/school-db/): 7 טבלאות, 18 תלמידים. השאלות הן שמתקדמות בקושי משיעור לשיעור.
+>
+> **טוענים פעם אחת:** [**פתיחה להעתקה**](https://raw.githubusercontent.com/AhmadKais/sql-course-heb/main/resources/school-db/school.sql) → `Ctrl+A`, `Ctrl+C` → מדביקים ב‑[OneCompiler (SQLite)](https://onecompiler.com/sqlite) → **Run**. צריך להופיע `students_loaded = 18`.
+>
+> 📅 **תאריך הייחוס: `'2026-09-21'`** — השתמשו בו במקום `DATE('now')`. · ⚠️ ה[פתרונות](solutions.md) מחכים בסוף — אחרי שניסיתם.
+
+</div>
+
+```text
+Cities    (CityCode, CityName)
+Teachers  (TeacherCode, FirstName, LastName, Subject, HireDate, Salary, CityCode, Phone)
+Classes   (ClassCode, ClassName, Grade, TeacherCode, RoomNumber)
+Courses   (CourseCode, CourseName, TeacherCode, WeeklyHours)
+Students  (StudentId, FirstName, LastName, ClassCode, Gender, BirthDate, CityCode, EnrollDate, Phone)
+Grades    (StudentId, CourseCode, Term, Grade)          -- PK: StudentId + CourseCode + Term
+Absences  (AbsenceId, StudentId, AbsenceDate, Excused, Reason)
+```
+
+<div dir="rtl">
+
+**המטרה הפעם: דוח שאפשר להדפיס ולתלות.** בלי `NULL` מציקים, עם תוויות בעברית.
+
+**ש1.** לכל תלמיד: שם פרטי, ובעמודה `Contact` — הטלפון, ואם אין טלפון אז הטקסט `אין טלפון`.
+
+**ש2.** לכל מקצוע: השם, ובעמודה `TeacherOrZero` — קוד המורה, ואם אין מורה אז `0`. איזה מקצוע חזר עם 0?
+
+**ש3.** לתלמידים `1001`, `1002`, `1018` בלבד: שם, טלפון (או `טרם נמסר`), וכיתה (או `טרם שובץ`). ⚠️ `ClassCode` הוא **מספר** וה‑`טרם שובץ` הוא **טקסט** — מה צריך לעשות כדי שזה יעבוד?
+
+**ש4.** לכל כיתה: השם, מספר החדר, ומספר החדר עם `-1` במקום `NULL`. ⚠️ האם `-1` הוא רעיון טוב? מתי כן ומתי לא?
+
+**ש5.** **התווית.** לכל ציון של התלמידים `1004`, `1009`, `1012`, `1016` הוסיפו עמודה `Label`:
+
+| הציון | התווית |
+|--------|---------|
+| `NULL` | `לא נבחן` |
+| 90 ומעלה | `מעולה` |
+| 75–89 | `טוב` |
+| 60–74 | `עובר` |
+| מתחת ל‑60 | `נכשל` |
+
+**ש6.** לכל תלמיד: השם, ועמודה `Title` — `תלמיד` או `תלמידה` לפי `Gender`. השתמשו ב‑`CASE` **הפשוט** (`CASE Students.Gender WHEN …`).
+
+**ש7.** לכל היעדרות: המזהה, `מאושרת`/`לא מאושרת` לפי `Excused`, והסיבה — או `לא נמסרה סיבה`.
+
+**ש8.** ⚠️ **מלכודת הסדר.** תלמיד כתב:
+
+</div>
+
+```sql
+SELECT Grades.StudentId, Grades.Grade,
+       CASE
+         WHEN Grades.Grade >= 60 THEN 'עובר'
+         WHEN Grades.Grade >= 90 THEN 'מעולה'
+         ELSE 'נכשל'
+       END AS Label
+FROM Grades WHERE Grades.Grade >= 90;
+```
+
+<div dir="rtl">
+
+הריצו. **כמה "מעולה" קיבלתם?** הסבירו, ותקנו בשינוי של שורה אחת.
+
+**ש9.** בשאילתה אחת: `CAST('42' AS INTEGER) + 8`, `CAST(95 AS TEXT) || ' נקודות'`, ולכל ציון — `הציון/100` כטקסט.
+
+**ש10.** ⚠️ **חלוקה שלמה.** לכל מורה: השכר חלקי 12 בשלוש גרסאות — `Salary / 12`, `Salary / 12.0`, ו‑`ROUND(Salary / 12.0, 2)`. **מה ההבדל, ולמה?**
+
+**ש11.** הציונים של `1004` ו‑`1009`:
+
+**א.** הוסיפו עמודה `AsZero` = הציון, ו‑`0` במקום `NULL`. **האם זה נכון חינוכית?** נמקו.
+
+**ב.** הפוך: בעזרת `NULLIF`, הציגו את `Excused` של 5 ההיעדרויות הראשונות כך ש‑`0` יהפוך ל‑`NULL`.
+
+**ש12.** **הדוח.** לתלמידים `1001`, `1006`, `1018` בנו שורת דוח שלמה, בלי אף `NULL`: שם מלא, כיתה (או `ללא כיתה`), טלפון (או `אין קשר טלפוני`), וגיל בשנים (או `גיל לא ידוע`).
+
+</div>
+<!-- classroom:end -->
