@@ -2,6 +2,8 @@
 
 # מודול 17 — תרגילים
 
+> 💪 **בסוף הדף — [תרגול בכיתה](#-תרגול-בכיתה--בית-הספר-עתיד):** 12 שאלות על בסיס נתונים אחר, [`school.sql`](../../resources/school-db/), שחוזר בכל שיעור SQL. מיועד לשיעור בכיתה.
+
 > **הנחיות:** כל התרגילים על [בסיס הנתונים המוכן](../../resources/shelter-db/). **הריצו** כל שאילתה. רשמו כמה שורות חזרו — זו חלק מהתשובה.
 >
 > ⚠️ אל תפתחו את [הפתרונות](solutions.md) לפני שניסיתם.
@@ -267,3 +269,85 @@ WHERE Members.LastName ________ "________";
 
 </div>
 <!-- exam-style:end -->
+
+<!-- classroom:start -->
+<div dir="rtl">
+
+---
+
+## 💪 תרגול בכיתה — בית הספר "עתיד"
+
+> 🏫 **בסיס נתונים אחר, 12 שאלות.** הקטע הזה חוזר בסוף התרגילים של **כל** שיעור SQL, תמיד על אותו בסיס נתונים — [`school.sql`](../../resources/school-db/): 7 טבלאות, 18 תלמידים. השאלות הן שמתקדמות בקושי משיעור לשיעור.
+>
+> **טוענים פעם אחת:** [**פתיחה להעתקה**](https://raw.githubusercontent.com/AhmadKais/sql-course-heb/main/resources/school-db/school.sql) → `Ctrl+A`, `Ctrl+C` → מדביקים ב‑[OneCompiler (SQLite)](https://onecompiler.com/sqlite) → **Run**. צריך להופיע `students_loaded = 18`.
+>
+> 📅 **תאריך הייחוס: `'2026-09-21'`** — השתמשו בו במקום `DATE('now')`. · ⚠️ ה[פתרונות](solutions.md) מחכים בסוף — אחרי שניסיתם.
+
+</div>
+
+```text
+Cities    (CityCode, CityName)
+Teachers  (TeacherCode, FirstName, LastName, Subject, HireDate, Salary, CityCode, Phone)
+Classes   (ClassCode, ClassName, Grade, TeacherCode, RoomNumber)
+Courses   (CourseCode, CourseName, TeacherCode, WeeklyHours)
+Students  (StudentId, FirstName, LastName, ClassCode, Gender, BirthDate, CityCode, EnrollDate, Phone)
+Grades    (StudentId, CourseCode, Term, Grade)          -- PK: StudentId + CourseCode + Term
+Absences  (AbsenceId, StudentId, AbsenceDate, Excused, Reason)
+```
+
+<div dir="rtl">
+
+**המנהלת רוצה רשימות ממוקדות.** כל שאלה — שאילתה אחת עם `WHERE`. רשמו גם **כמה שורות** חזרו.
+
+**ש1.** כל התלמידים בכיתה `103` — שם פרטי ושם משפחה.
+
+**ש2.** מורים ששכרם **מעל** 13,000 ₪.
+
+**ש3.** כל הציונים **מתחת ל‑60** (הנכשלים): מזהה תלמיד, מזהה מקצוע, ציון.
+
+**ש4.** **תלמידות** (`Gender = 'F'`) שגרות **בחיפה** (`CityCode = 4`).
+
+**ש5.** כל הציונים **בטווח 70–79**, בעזרת `BETWEEN`. ⚠️ האם 70 ו‑79 נכללים?
+
+**ש6.** תלמידים מהערים `1`, `2` ו‑`6` — בעזרת `IN`. כתבו אחר כך את אותה שאילתה עם `OR`, וּודאו שהתוצאה זהה.
+
+**ש7.** תלמידים ששם המשפחה שלהם **מתחיל באות כ**.
+
+**ש8.** מורים שמספר הטלפון שלהם **מתחיל ב‑050**.
+
+**ש9.** תלמידים ש**אין להם טלפון**. ואחר כך: **כמה** תלמידים **כן** יש להם טלפון?
+
+**ש10.** ⚠️ **המלכודת הגדולה.** הריצו את שתי השאילתות:
+
+</div>
+
+```sql
+SELECT Grades.StudentId, Grades.Grade FROM Grades WHERE Grades.Grade = NULL;
+SELECT Grades.StudentId, Grades.CourseCode FROM Grades WHERE Grades.Grade IS NULL;
+```
+
+<div dir="rtl">
+
+כמה שורות החזירה כל אחת? **הסבירו את ההבדל.** איזו מהן תשתמשו בה כדי למצוא מי לא נבחן?
+
+**ש11.** ⚠️ **סדר קדימויות.** המנהלת ביקשה: *"כל ה**בנים** מכיתות 101 **או** 102."* תלמיד כתב:
+
+</div>
+
+```sql
+SELECT Students.FirstName, Students.ClassCode, Students.Gender FROM Students
+WHERE Students.ClassCode = 101 OR Students.ClassCode = 102 AND Students.Gender = 'M';
+```
+
+<div dir="rtl">
+
+הריצו. **מצאו את השורה שלא הייתה צריכה להיות שם**, הסבירו למה היא נכנסה, ותקנו.
+
+**ש12.** שאלות תאריכים:
+
+**א.** מי נרשם לבית הספר **אחרי** `'2026-09-01'`?
+
+**ב.** תלמידים שנולדו **לפני** `'2010-01-01'`. ⚠️ יש 18 תלמידים — ספרו ידנית כמה אמורים לענות על התנאי, והשוו למה שחזר. מי חסר, ולמה?
+
+</div>
+<!-- classroom:end -->

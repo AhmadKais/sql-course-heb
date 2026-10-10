@@ -635,3 +635,288 @@ WHERE Coaches.Phone IS NULL;
 
 </div>
 <!-- exam-style:end -->
+
+<!-- classroom:start -->
+<div dir="rtl">
+
+---
+
+## 💪 תרגול בכיתה — פתרונות
+
+> 🏫 על [`school.sql`](../../resources/school-db/). כל הפלטים כאן **אמיתיים** — כל שאילתה הורצה על בסיס הנתונים, נכון לתאריך הייחוס `'2026-09-21'`.
+
+</div>
+
+```text
+Cities    (CityCode, CityName)
+Teachers  (TeacherCode, FirstName, LastName, Subject, HireDate, Salary, CityCode, Phone)
+Classes   (ClassCode, ClassName, Grade, TeacherCode, RoomNumber)
+Courses   (CourseCode, CourseName, TeacherCode, WeeklyHours)
+Students  (StudentId, FirstName, LastName, ClassCode, Gender, BirthDate, CityCode, EnrollDate, Phone)
+Grades    (StudentId, CourseCode, Term, Grade)          -- PK: StudentId + CourseCode + Term
+Absences  (AbsenceId, StudentId, AbsenceDate, Excused, Reason)
+```
+
+<div dir="rtl">
+
+> 💡 **למורה:** אפשר להדביק את כל הבלוק ולהריץ פעם אחת.
+
+</div>
+
+```sql
+-- ש1
+SELECT Students.FirstName, Students.LastName FROM Students WHERE Students.ClassCode = 103;
+
+-- ש2
+SELECT Teachers.LastName, Teachers.Salary FROM Teachers WHERE Teachers.Salary > 13000;
+
+-- ש3
+SELECT Grades.StudentId, Grades.CourseCode, Grades.Grade FROM Grades WHERE Grades.Grade < 60;
+
+-- ש4
+SELECT Students.FirstName, Students.LastName FROM Students
+WHERE  Students.Gender = 'F' AND Students.CityCode = 4;
+
+-- ש5
+SELECT Grades.StudentId, Grades.Grade FROM Grades WHERE Grades.Grade BETWEEN 70 AND 79;
+
+-- ש6
+SELECT Students.FirstName, Students.CityCode FROM Students WHERE Students.CityCode IN (1, 2, 6);
+SELECT Students.FirstName, Students.CityCode FROM Students
+WHERE  Students.CityCode = 1 OR Students.CityCode = 2 OR Students.CityCode = 6;
+
+-- ש7
+SELECT Students.FirstName, Students.LastName FROM Students WHERE Students.LastName LIKE 'כ%';
+
+-- ש8
+SELECT Teachers.FirstName, Teachers.Phone FROM Teachers WHERE Teachers.Phone LIKE '050%';
+
+-- ש9
+SELECT Students.FirstName FROM Students WHERE Students.Phone IS NULL;
+SELECT COUNT(*) AS WithPhone FROM Students WHERE Students.Phone IS NOT NULL;
+
+-- ש10
+SELECT Grades.StudentId, Grades.Grade FROM Grades WHERE Grades.Grade = NULL;      -- 0 שורות
+SELECT Grades.StudentId, Grades.CourseCode FROM Grades WHERE Grades.Grade IS NULL; -- 2 שורות
+
+-- ש11  התיקון: סוגריים
+SELECT Students.FirstName, Students.ClassCode, Students.Gender FROM Students
+WHERE  (Students.ClassCode = 101 OR Students.ClassCode = 102) AND Students.Gender = 'M';
+
+-- ש12
+SELECT Students.FirstName, Students.EnrollDate FROM Students WHERE Students.EnrollDate > '2026-09-01';
+SELECT Students.FirstName, Students.BirthDate  FROM Students WHERE Students.BirthDate  < '2010-01-01';
+```
+
+<div dir="rtl">
+
+**ש1.** **3 שורות.**
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | LastName |
+|:---:|:---:|
+| עומר | ביטון |
+| שירה | כהן |
+| כרים | חלבי |
+
+</figure>
+
+**ש2.** **3 שורות.** `>` ולא `>=` — ולכן חוסאם (12,800) בחוץ.
+
+<figure dir="ltr" class="dbtable">
+
+| LastName | Salary |
+|:---:|:---:|
+| סרחאן | 14500 |
+| שמש | 15300 |
+| מזרחי | 13100 |
+
+</figure>
+
+**ש3.** **9 שורות.** ⚠️ שימו לב: **שני** הציונים שהם `NULL` **לא** הופיעו — אף שהם "לא 60 ומעלה". `NULL < 60` אינו "אמת" אלא **"לא ידוע"**, ו‑`WHERE` מחזיר רק שורות שהתנאי בהן **אמת**.
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId | CourseCode | Grade |
+|:---:|:---:|:---:|
+| 1003 | 12 | 55 |
+| 1004 | 16 | 48 |
+| 1006 | 12 | 58 |
+| 1009 | 16 | 54 |
+| 1012 | 16 | 42 |
+| 1012 | 13 | 51 |
+| 1012 | 12 | 47 |
+| 1012 | 16 | 39 |
+| 1015 | 16 | 59 |
+
+</figure>
+
+> 🔎 ג'וד מנסור (1012) מופיעה **ארבע פעמים**. זכרו אותה — בשיעור 24 היא תחזור כ"תלמידה בסיכון".
+
+**ש4.** **2 שורות.** `AND` — שני התנאים יחד.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | LastName |
+|:---:|:---:|
+| מאיה | לוי |
+| שירה | כהן |
+
+</figure>
+
+**ש5.** **9 שורות. כן — `BETWEEN` כולל את שני הקצוות.** 70 (יואב) ו‑79 (שירה) שניהם בפנים. זה שווה בדיוק ל‑`Grade >= 70 AND Grade <= 79`.
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId | Grade |
+|:---:|:---:|
+| 1001 | 74 |
+| 1003 | 70 |
+| 1005 | 77 |
+| 1008 | 72 |
+| 1008 | 79 |
+| 1011 | 75 |
+| 1014 | 76 |
+| 1015 | 71 |
+| 1017 | 73 |
+
+</figure>
+
+**ש6.** **9 שורות**, ושתי הגרסאות זהות. `IN` הוא **קיצור** של כמה `OR` על אותו שדה — לא יותר ולא פחות.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | CityCode |
+|:---:|:---:|
+| אדם | 1 |
+| נור | 1 |
+| רוני | 2 |
+| סאלי | 2 |
+| כרים | 1 |
+| ג'וד | 6 |
+| הדיל | 6 |
+| ראניה | 6 |
+| לינא | 2 |
+
+</figure>
+
+> ⚠️ ליאור לוי לא ברשימה — ה‑`CityCode` שלו הוא `NULL`. `NULL IN (1,2,6)` = לא ידוע.
+
+**ש7.** **2 שורות.** `%` = "אפס תווים או יותר". `'כ%'` = מתחיל ב‑כ; `'%כ'` היה "נגמר ב‑כ".
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | LastName |
+|:---:|:---:|
+| יואב | כהן |
+| שירה | כהן |
+
+</figure>
+
+**ש8.** **2 שורות.** שימו לב שגם כאן שתי השורות עם `Phone IS NULL` נשרו מעצמן.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | Phone |
+|:---:|:---:|
+| נביל | 050-7010101 |
+| סמיר | 050-7070707 |
+
+</figure>
+
+**ש9.** **6 בלי טלפון, 12 עם.** 6 + 12 = 18 — הכול מכוסה, כי `IS NULL` ו‑`IS NOT NULL` הם **חלוקה מלאה**. (עם `=` ו‑`<>` זה לא היה קורה.)
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName |
+|:---:|
+| נור |
+| רוני |
+| כרים |
+| ג'וד |
+| איתי |
+| לינא |
+
+</figure>
+
+**ש10.** `= NULL` החזיר **0 שורות**. `IS NULL` החזיר **2**.
+
+`NULL` אינו ערך שאפשר להשוות אליו — הוא **היעדר ערך**. השאלה "האם הציון שווה ללא‑ידוע?" אינה "כן" ואינה "לא": היא **לא ידוע**, ו‑`WHERE` זורק כל מה שאינו "כן". לכן `= NULL` **תמיד** מחזיר אפס שורות — ולא מודיע לכם על כך בשגיאה. זו הטעות השקטה והמסוכנת ביותר ב‑SQL.
+
+לחיפוש `NULL` יש אופרטור משלו, ורק הוא עובד: **`IS NULL`** / **`IS NOT NULL`**.
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId | CourseCode |
+|:---:|:---:|
+| 1004 | 14 |
+| 1009 | 12 |
+
+</figure>
+
+מאיה לוי לא נבחנה בהיסטוריה, וכרים חלבי לא נבחן באנגלית.
+
+**ש11.** השאילתה השגויה החזירה **5 שורות**; הנכונה — **4**. השורה המתפרצת היא **נור עזאם**, והיא `F`.
+
+**למה?** `AND` **גובר** על `OR`, בדיוק כמו שכפל גובר על חיבור. לכן SQL קרא את התנאי כך:
+
+</div>
+
+```text
+WHERE  ClassCode = 101
+   OR (ClassCode = 102 AND Gender = 'M')
+```
+
+<div dir="rtl">
+
+כלומר: "כל מי שבכיתה 101 — **ללא קשר למין** — או בנים מ‑102." נור בכיתה 101, ולכן עברה. הסוגריים הם לא קוסמטיקה; הם משנים את התשובה.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | ClassCode | Gender |
+|:---:|:---:|:---:|
+| אדם | 101 | M |
+| יואב | 101 | M |
+| רוני | 102 | M |
+| נועם | 101 | M |
+
+</figure>
+
+> 💡 **כלל אצבע לבחינה:** ברגע שיש גם `AND` וגם `OR` באותו `WHERE` — **שימו סוגריים**, גם אם אתם בטוחים. זה חינם, וזה מונע את הטעות הזאת.
+
+**ש12א.** **שורה אחת.** `>` ולא `>=`, ולכן ה‑15 שנרשמו בדיוק ב‑1 בספטמבר בחוץ. תאריכים בפורמט `YYYY-MM-DD` נשמרים כטקסט ומושווים נכון, כי הסדר האלפביתי שלהם זהה לסדר הכרונולוגי.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | EnrollDate |
+|:---:|:---:|
+| לינא | 2026-09-10 |
+
+</figure>
+
+**ש12ב.** **4 שורות** — דניאל, הדיל, איתי, ראניה (כל שכבת יב).
+
+**מי חסר?** **סאלי חסון.** ה‑`BirthDate` שלה הוא `NULL` — חסר בתיק. היא לא הופיעה כאן, והיא גם **לא** תופיע בשאילתה ההפוכה (`BirthDate >= '2010-01-01'`). שורה עם `NULL` נושרת משני הצדדים של התנאי. אם צריך לשלוף גם אותה, כותבים במפורש:
+
+</div>
+
+```sql
+WHERE Students.BirthDate < '2010-01-01' OR Students.BirthDate IS NULL;
+```
+
+<div dir="rtl">
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | BirthDate |
+|:---:|:---:|
+| דניאל | 2009-01-20 |
+| הדיל | 2009-10-05 |
+| איתי | 2009-03-27 |
+| ראניה | 2009-12-12 |
+
+</figure>
+
+</div>
+<!-- classroom:end -->
