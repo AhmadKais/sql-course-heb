@@ -194,6 +194,7 @@ sql-course-heb/
     ├── glossary.md              <- Hebrew-English glossary
     ├── setup.md                 <- environment setup guide
     ├── shelter-db/              <- ready-made practice database (units 2-7)
+    ├── school-db/               <- classroom practice DB (every SQL lesson)
     └── pro-data.pdf             <- original syllabus
 ```
 

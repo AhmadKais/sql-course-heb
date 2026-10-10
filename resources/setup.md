@@ -81,6 +81,7 @@
 | הקובץ | מה יש בו |
 |-------|----------|
 | [`shelter-db/shelter.sql`](shelter-db/shelter.sql) | מקלט בעלי החיים: 8 טבלאות. רוב השיעורים |
+| [`school-db/school.sql`](school-db/school.sql) | בית הספר "עתיד": 7 טבלאות. קטע **"💪 תרגול בכיתה"** בסוף התרגילים של כל שיעור SQL |
 | [`exam-prep/db/clubs.sql`](../exam-prep/db/clubs.sql) | חוגי ספורט: בחינה לדוגמה 1, ו"תרגול בסגנון הבחינה" בכל שיעור |
 | [`exam-prep/db/library.sql`](../exam-prep/db/library.sql) | ספרייה: בחינה לדוגמה 2 |
 | [`exam-prep/db/games.sql`](../exam-prep/db/games.sql) | משחקי מחשב: בחינה לדוגמה 3 |
