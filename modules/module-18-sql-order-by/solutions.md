@@ -610,3 +610,304 @@ ORDER BY Members.Age DESC, Members.FirstName;
 
 </div>
 <!-- exam-style:end -->
+
+<!-- classroom:start -->
+<div dir="rtl">
+
+---
+
+## 💪 תרגול בכיתה — פתרונות
+
+> 🏫 על [`school.sql`](../../resources/school-db/). כל הפלטים כאן **אמיתיים** — כל שאילתה הורצה על בסיס הנתונים, נכון לתאריך הייחוס `'2026-09-21'`.
+
+</div>
+
+```text
+Cities    (CityCode, CityName)
+Teachers  (TeacherCode, FirstName, LastName, Subject, HireDate, Salary, CityCode, Phone)
+Classes   (ClassCode, ClassName, Grade, TeacherCode, RoomNumber)
+Courses   (CourseCode, CourseName, TeacherCode, WeeklyHours)
+Students  (StudentId, FirstName, LastName, ClassCode, Gender, BirthDate, CityCode, EnrollDate, Phone)
+Grades    (StudentId, CourseCode, Term, Grade)          -- PK: StudentId + CourseCode + Term
+Absences  (AbsenceId, StudentId, AbsenceDate, Excused, Reason)
+```
+
+<div dir="rtl">
+
+> 💡 **למורה:** הבלוק כולו רץ בהרצה אחת (חוץ מ‑ש12, שנכשלת בכוונה).
+
+</div>
+
+```sql
+-- ש1
+SELECT Students.LastName, Students.FirstName FROM Students ORDER BY Students.LastName;
+
+-- ש2
+SELECT Teachers.LastName, Teachers.Salary FROM Teachers ORDER BY Teachers.Salary DESC;
+
+-- ש3
+SELECT Grades.StudentId, Grades.CourseCode, Grades.Grade FROM Grades
+ORDER BY Grades.Grade DESC LIMIT 5;
+
+-- ש4
+SELECT Grades.StudentId, Grades.CourseCode, Grades.Grade FROM Grades
+ORDER BY Grades.Grade LIMIT 6;
+
+-- ש5
+SELECT Students.ClassCode, Students.LastName, Students.FirstName FROM Students
+ORDER BY Students.ClassCode, Students.LastName;
+
+-- ש6
+SELECT Students.Gender, Students.FirstName, Students.BirthDate FROM Students
+ORDER BY Students.Gender, Students.BirthDate DESC;
+
+-- ש7
+SELECT Teachers.LastName, Teachers.Salary * 12 AS AnnualSalary FROM Teachers
+ORDER BY Teachers.Salary * 12 DESC;
+
+-- ש8
+SELECT Teachers.LastName, Teachers.Salary * 12 AS AnnualSalary FROM Teachers
+ORDER BY AnnualSalary DESC;
+
+-- ש9
+SELECT Courses.CourseName, Courses.WeeklyHours FROM Courses ORDER BY 2 DESC, 1;
+
+-- ש10  השגויה, ואחריה התיקון
+SELECT Students.FirstName, Students.BirthDate FROM Students ORDER BY Students.BirthDate LIMIT 3;
+SELECT Students.FirstName, Students.BirthDate FROM Students
+WHERE  Students.BirthDate IS NOT NULL ORDER BY Students.BirthDate LIMIT 3;
+
+-- ש11
+SELECT Grades.StudentId, Grades.Grade FROM Grades WHERE Grades.Grade < 60 ORDER BY Grades.Grade;
+
+-- ש12  ⚠️ נכשלת בכוונה
+SELECT Students.FirstName FROM Students ORDER BY Students.FirstName WHERE Students.ClassCode = 101;
+```
+
+<div dir="rtl">
+
+**ש1.** ראשון **אברהם רוני**, אחרון **שחר נועם**. 18 שורות, והמיון העברי תקין.
+
+<figure dir="ltr" class="dbtable">
+
+| LastName | FirstName |
+|:---:|:---:|
+| אברהם | רוני |
+| ביטון | עומר |
+| גולן | איתי |
+| חלבי | אדם |
+| חלבי | כרים |
+| … | … |
+| שושן | תמר |
+| שחר | נועם |
+
+</figure>
+
+> 🔎 **חלבי** מופיע פעמיים (אדם וכרים). אדם לפני כרים — אבל **זה לא מובטח**: לא ביקשנו מפתח שני. ראו ש3.
+
+**ש2.** **אורלי שמש** — 15,300 ₪. אחרונה: פאדי חדאד, 9,800 ₪.
+
+<figure dir="ltr" class="dbtable">
+
+| LastName | Salary |
+|:---:|:---:|
+| שמש | 15300 |
+| סרחאן | 14500 |
+| מזרחי | 13100 |
+| זיאד | 12800 |
+| בר-לב | 11200 |
+| אבו-ראס | 10400 |
+| חדאד | 9800 |
+
+</figure>
+
+**ש3.** שלושת המאיות הן של נור (ספורט), תמר ומתמטיקה, וראניה ומתמטיקה.
+
+**מי קבע את הסדר ביניהן? אף אחד.** כשיש **תיקו** במפתח המיון, בסיס הנתונים חופשי להחזיר את השורות באיזה סדר שיבחר — ואין הבטחה שההרצה הבאה תחזיר את אותו סדר. אם הסדר חשוב לכם (ולכן גם אם ה‑`LIMIT` חשוב לכם), **הוסיפו מפתח שני ששובר את התיקו**:
+
+</div>
+
+```sql
+ORDER BY Grades.Grade DESC, Grades.StudentId;
+```
+
+<div dir="rtl">
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId | CourseCode | Grade |
+|:---:|:---:|:---:|
+| 1002 | 15 | 100 |
+| 1010 | 11 | 100 |
+| 1016 | 11 | 100 |
+| 1016 | 13 | 99 |
+| 1013 | 17 | 98 |
+
+</figure>
+
+**ש4.** שני ה‑`NULL` נפלו **בהתחלה**, **לפני** הציון 39.
+
+ב‑SQLite (וגם ב‑MySQL ו‑PostgreSQL) `NULL` נחשב **הקטן מכולם** במיון עולה. ⚠️ **באורקל זה הפוך** — שם `NULL` גדול מכולם, ובמיון עולה הוא יופיע **בסוף**. זהו הבדל דיאלקט אמיתי, ולכן אל תסתמכו על מקום ה‑`NULL`: אם הוא חשוב, הוציאו אותו ב‑`WHERE` או טפלו בו במפורש.
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId | CourseCode | Grade |
+|:---:|:---:|:---:|
+| 1004 | 14 | NULL |
+| 1009 | 12 | NULL |
+| 1012 | 16 | 39 |
+| 1012 | 16 | 42 |
+| 1012 | 12 | 47 |
+| 1004 | 16 | 48 |
+
+</figure>
+
+**ש5.** **לינא ראשונה** — לפני כיתה 101. אותו כלל: `NULL` קטן מהכול במיון עולה. פתאום "התלמידה שטרם שובצה" פותחת את דוח הכיתות, וזה בדיוק סוג הבאג שמגיע לדוח מודפס.
+
+<figure dir="ltr" class="dbtable">
+
+| ClassCode | LastName | FirstName |
+|:---:|:---:|:---:|
+| NULL | חמוד | לינא |
+| 101 | חלבי | אדם |
+| 101 | כהן | יואב |
+| 101 | עזאם | נור |
+| 101 | שחר | נועם |
+| 102 | אברהם | רוני |
+| … | … | … |
+| 105 | פרץ | דניאל |
+
+</figure>
+
+**ש6.** הפעם סאלי נפלה **בסוף קבוצת ה‑F** — כי המפתח השני הוא `DESC`, ו‑`NULL` הקטן מכולם עובר לסוף. **אותו ערך `NULL`, מקום הפוך, רק כי הפכנו את כיוון המיון.**
+
+<figure dir="ltr" class="dbtable">
+
+| Gender | FirstName | BirthDate |
+|:---:|:---:|:---:|
+| F | מאיה | 2011-11-30 |
+| F | נור | 2011-07-22 |
+| F | לינא | 2010-10-19 |
+| F | שירה | 2010-09-25 |
+| F | ג'וד | 2010-08-29 |
+| F | תמר | 2010-04-07 |
+| F | ראניה | 2009-12-12 |
+| F | הדיל | 2009-10-05 |
+| F | סאלי | NULL |
+| M | נועם | 2011-09-02 |
+| M | רוני | 2011-05-18 |
+| M | אדם | 2011-03-14 |
+| M | יואב | 2011-01-09 |
+| M | כרים | 2010-12-03 |
+| M | ליאור | 2010-06-16 |
+| M | עומר | 2010-02-11 |
+| M | איתי | 2009-03-27 |
+| M | דניאל | 2009-01-20 |
+
+</figure>
+
+**ש7.** המיון זהה לש2 — ומובן: הכפלה ב‑12 היא פעולה **מונוטונית**, היא לא משנה את הסדר. אבל SQL לא יודע את זה; הוא חישב את הביטוי בכל שורה ומיין לפי התוצאה.
+
+<figure dir="ltr" class="dbtable">
+
+| LastName | AnnualSalary |
+|:---:|:---:|
+| שמש | 183600 |
+| סרחאן | 174000 |
+| מזרחי | 157200 |
+| זיאד | 153600 |
+| בר-לב | 134400 |
+| אבו-ראס | 124800 |
+| חדאד | 117600 |
+
+</figure>
+
+**ש8.** **כן, עובד** — ותוצאה זהה. ה‑`ORDER BY` הוא השלב **האחרון** בביצוע הלוגי, ובשלב הזה הכינויים כבר קיימים. (זכרו: ב‑`WHERE` הם **לא** קיימים, כי `WHERE` רץ **לפני** ה‑`SELECT`.)
+
+**ש9.** `ORDER BY 2 DESC, 1` = "לפי העמודה השנייה ברשימת ה‑`SELECT`, יורד; ואז לפי הראשונה, עולה". שימו לב שהתיקו ב‑3 שעות נשבר נכון (`מבוא לבסיסי נתונים` לפני `מתמטיקה 3 יח"ל`), וכך גם התיקו ב‑2 שעות.
+
+<figure dir="ltr" class="dbtable">
+
+| CourseName | WeeklyHours |
+|:---:|:---:|
+| מתמטיקה 5 יח"ל | 5 |
+| אנגלית 4 יח"ל | 4 |
+| מבוא לבסיסי נתונים | 3 |
+| מתמטיקה 3 יח"ל | 3 |
+| היסטוריה | 2 |
+| חינוך גופני | 2 |
+| סדנת פרויקטים | 2 |
+
+</figure>
+
+> ⚠️ **זה נוח ומסוכן.** ברגע שמישהו יוסיף עמודה ל‑`SELECT`, `ORDER BY 2` יתחיל למיין לפי משהו אחר — בשקט. בבחינה זה מותר; בקוד אמיתי כתבו שם עמודה.
+
+**ש10.** השאילתה החזירה את **סאלי חסון** במקום הראשון — ולסאלי אין תאריך לידה בכלל.
+
+זהו ש4 וש5 שחוזרים, אבל הפעם **עם `LIMIT`, וזה מה שהופך את זה למלכודת של ממש**: ה‑`NULL` לא רק נראה במקום מוזר — הוא **דחף תלמיד אמיתי מחוץ לרשימה**. הדוח טוען שלושה "ותיקים", ואחד מהם שגוי והרביעי האמיתי נעלם.
+
+**התיקון** — הוציאו את ה‑`NULL` ב‑`WHERE`, כי "הוותיק ביותר" חל רק על מי שתאריך הלידה שלו ידוע:
+
+</div>
+
+```sql
+SELECT Students.FirstName, Students.BirthDate FROM Students
+WHERE  Students.BirthDate IS NOT NULL
+ORDER  BY Students.BirthDate LIMIT 3;
+```
+
+<div dir="rtl">
+
+| | השגויה | המתוקנת |
+|---|---------|----------|
+| 1 | **סאלי · NULL** | דניאל · 2009-01-20 |
+| 2 | דניאל · 2009-01-20 | איתי · 2009-03-27 |
+| 3 | איתי · 2009-03-27 | **הדיל · 2009-10-05** |
+
+> 💡 **הכלל:** `ORDER BY` + `LIMIT` על עמודה שיכולה להיות `NULL` — **תמיד** שאלו את עצמכם איפה ה‑`NULL` נופל.
+
+**ש11.** **9 שורות.** הציון הנמוך בבית הספר הוא **39**, של ג'וד מנסור (1012) במתמטיקה 3 יח"ל, מחצית ב'. ג'וד מופיעה כאן **ארבע פעמים** — יותר מכל תלמיד אחר.
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId | Grade |
+|:---:|:---:|
+| 1012 | 39 |
+| 1012 | 42 |
+| 1012 | 47 |
+| 1004 | 48 |
+| 1012 | 51 |
+| 1009 | 54 |
+| 1003 | 55 |
+| 1006 | 58 |
+| 1015 | 59 |
+
+</figure>
+
+**ש12.** ההודעה:
+
+</div>
+
+```text
+near "WHERE": syntax error
+```
+
+<div dir="rtl">
+
+הסדר הנכון הוא תמיד:
+
+</div>
+
+```text
+SELECT   ...      -- אילו עמודות
+FROM     ...      -- מאיזו טבלה
+WHERE    ...      -- אילו שורות
+ORDER BY ...      -- באיזה סדר      <-- אחרון, תמיד
+```
+
+<div dir="rtl">
+
+**ולמה זה לא שרירותי?** כי זה גם סדר **הביצוע** המעשי: קודם שולפים את הטבלה (`FROM`), אחר כך זורקים שורות שלא עומדות בתנאי (`WHERE`), ורק את מה שנשאר יש טעם למיין (`ORDER BY`). למיין 18 שורות ואחר כך לזרוק 14 מהן זה בזבוז — ולכן השפה בכלל לא מרשה לכתוב את זה.
+
+</div>
+<!-- classroom:end -->

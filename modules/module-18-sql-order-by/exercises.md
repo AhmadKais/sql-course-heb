@@ -2,6 +2,8 @@
 
 # מודול 18 — תרגילים
 
+> 💪 **בסוף הדף — [תרגול בכיתה](#-תרגול-בכיתה--בית-הספר-עתיד):** 12 שאלות על בסיס נתונים אחר, [`school.sql`](../../resources/school-db/), שחוזר בכל שיעור SQL. מיועד לשיעור בכיתה.
+
 > **הנחיות:** כל התרגילים על [בסיס הנתונים המוכן](../../resources/shelter-db/). **הריצו.** רשמו את **השורה הראשונה והאחרונה** בכל תוצאה — זו הדרך לבדוק מיון.
 >
 > ⚠️ אל תפתחו את [הפתרונות](solutions.md) לפני שניסיתם.
@@ -238,3 +240,80 @@ ORDER BY n;
 
 </div>
 <!-- exam-style:end -->
+
+<!-- classroom:start -->
+<div dir="rtl">
+
+---
+
+## 💪 תרגול בכיתה — בית הספר "עתיד"
+
+> 🏫 **בסיס נתונים אחר, 12 שאלות.** הקטע הזה חוזר בסוף התרגילים של **כל** שיעור SQL, תמיד על אותו בסיס נתונים — [`school.sql`](../../resources/school-db/): 7 טבלאות, 18 תלמידים. השאלות הן שמתקדמות בקושי משיעור לשיעור.
+>
+> **טוענים פעם אחת:** [**פתיחה להעתקה**](https://raw.githubusercontent.com/AhmadKais/sql-course-heb/main/resources/school-db/school.sql) → `Ctrl+A`, `Ctrl+C` → מדביקים ב‑[OneCompiler (SQLite)](https://onecompiler.com/sqlite) → **Run**. צריך להופיע `students_loaded = 18`.
+>
+> 📅 **תאריך הייחוס: `'2026-09-21'`** — השתמשו בו במקום `DATE('now')`. · ⚠️ ה[פתרונות](solutions.md) מחכים בסוף — אחרי שניסיתם.
+
+</div>
+
+```text
+Cities    (CityCode, CityName)
+Teachers  (TeacherCode, FirstName, LastName, Subject, HireDate, Salary, CityCode, Phone)
+Classes   (ClassCode, ClassName, Grade, TeacherCode, RoomNumber)
+Courses   (CourseCode, CourseName, TeacherCode, WeeklyHours)
+Students  (StudentId, FirstName, LastName, ClassCode, Gender, BirthDate, CityCode, EnrollDate, Phone)
+Grades    (StudentId, CourseCode, Term, Grade)          -- PK: StudentId + CourseCode + Term
+Absences  (AbsenceId, StudentId, AbsenceDate, Excused, Reason)
+```
+
+<div dir="rtl">
+
+**בכל שאלה: רשמו את השורה הראשונה והשורה האחרונה** בתוצאה. זו הדרך לבדוק מיון.
+
+**ש1.** כל התלמידים **לפי שם משפחה**, מ‑א' עד ת'. מי ראשון? מי אחרון?
+
+**ש2.** המורים **מהשכר הגבוה לנמוך**. מי מרוויח הכי הרבה?
+
+**ש3.** **5 הציונים הגבוהים** בבית הספר. ⚠️ יש שלושה ציונים של 100 — מי מהם נבחר ראשון, ומי קבע את הסדר ביניהם?
+
+**ש4.** כל הציונים **מהנמוך לגבוה**, 6 הראשונים. **איפה נפלו שני ה‑`NULL`?** בהתחלה או בסוף?
+
+**ש5.** כל התלמידים **לפי כיתה**, ובתוך כל כיתה **לפי שם משפחה**. ⚠️ איפה נפלה לינא, שאין לה כיתה?
+
+**ש6.** כל התלמידים **לפי מין**, ובתוך כל מין **מהצעיר לוותיק**. ⚠️ איפה נפלה סאלי הפעם?
+
+**ש7.** המורים לפי **השכר השנתי** (`Salary * 12`), מהגבוה לנמוך — מיון **לפי ביטוי מחושב**.
+
+**ש8.** אותה שאילתה, אבל ה‑`ORDER BY` **לפי הכינוי** `AnnualSalary`. האם זה עובד?
+
+**ש9.** המקצועות לפי שעות שבועיות (מהרבות למעט), ובתוך אותו מספר שעות לפי שם — בעזרת **מספרי עמודות**: `ORDER BY 2 DESC, 1`.
+
+**ש10.** ⚠️ **המלכודת.** המנהלת ביקשה את *"שלושת התלמידים **הוותיקים ביותר**"*. תלמיד כתב:
+
+</div>
+
+```sql
+SELECT Students.FirstName, Students.BirthDate FROM Students
+ORDER BY Students.BirthDate LIMIT 3;
+```
+
+<div dir="rtl">
+
+הריצו. **התשובה שגויה.** מי נכנס לרשימה בטעות, למה, ואיך מתקנים?
+
+**ש11.** כל הציונים **מתחת ל‑60**, מהנמוך לגבוה. מי התלמיד עם הציון הנמוך בבית הספר?
+
+**ש12.** ⚠️ **שגיאת תחביר.** הריצו:
+
+</div>
+
+```sql
+SELECT Students.FirstName FROM Students ORDER BY Students.FirstName WHERE Students.ClassCode = 101;
+```
+
+<div dir="rtl">
+
+מה ההודעה? **מה הסדר הנכון** של חלקי המשפט, ולמה הוא לא שרירותי?
+
+</div>
+<!-- classroom:end -->
