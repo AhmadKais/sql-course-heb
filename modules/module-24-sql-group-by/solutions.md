@@ -531,3 +531,364 @@ WHERE Clubs.Price > (SELECT AVG(Price) FROM Clubs);
 
 </div>
 <!-- exam-style:end -->
+
+<!-- classroom:start -->
+<div dir="rtl">
+
+---
+
+## 💪 תרגול בכיתה — פתרונות
+
+> 🏫 על [`school.sql`](../../resources/school-db/). כל הפלטים כאן **אמיתיים** — כל שאילתה הורצה על בסיס הנתונים, נכון לתאריך הייחוס `'2026-09-21'`.
+
+</div>
+
+```text
+Cities    (CityCode, CityName)
+Teachers  (TeacherCode, FirstName, LastName, Subject, HireDate, Salary, CityCode, Phone)
+Classes   (ClassCode, ClassName, Grade, TeacherCode, RoomNumber)
+Courses   (CourseCode, CourseName, TeacherCode, WeeklyHours)
+Students  (StudentId, FirstName, LastName, ClassCode, Gender, BirthDate, CityCode, EnrollDate, Phone)
+Grades    (StudentId, CourseCode, Term, Grade)          -- PK: StudentId + CourseCode + Term
+Absences  (AbsenceId, StudentId, AbsenceDate, Excused, Reason)
+```
+
+<div dir="rtl">
+
+</div>
+
+```sql
+-- ש1
+SELECT Students.ClassCode, COUNT(*) AS HowMany FROM Students GROUP BY Students.ClassCode;
+
+-- ש2
+SELECT Grades.StudentId, COUNT(*) AS HowMany, ROUND(AVG(Grades.Grade), 1) AS Avg1
+FROM   Grades GROUP BY Grades.StudentId ORDER BY Avg1 DESC;
+
+-- ש3
+SELECT Courses.CourseName, COUNT(*) AS HowMany, ROUND(AVG(Grades.Grade), 1) AS Avg1
+FROM   Grades, Courses WHERE Grades.CourseCode = Courses.CourseCode
+GROUP  BY Courses.CourseName ORDER BY Avg1 DESC;
+
+-- ש4
+SELECT Absences.StudentId, COUNT(*) AS Absences1 FROM Absences
+GROUP  BY Absences.StudentId HAVING COUNT(*) > 2 ORDER BY Absences1 DESC;
+
+-- ש5
+SELECT Classes.ClassName, Classes.Grade, COUNT(*) AS GradeRows, ROUND(AVG(Grades.Grade), 1) AS Avg1
+FROM   Grades, Students, Classes
+WHERE  Grades.StudentId = Students.StudentId AND Students.ClassCode = Classes.ClassCode
+GROUP  BY Classes.ClassName, Classes.Grade ORDER BY Avg1 DESC;
+
+-- ש6
+SELECT Grades.CourseCode, ROUND(AVG(Grades.Grade),1) AS Avg1 FROM Grades
+WHERE  Grades.Grade >= 60 GROUP BY Grades.CourseCode;
+SELECT Grades.CourseCode, ROUND(AVG(Grades.Grade),1) AS Avg1 FROM Grades
+GROUP  BY Grades.CourseCode HAVING AVG(Grades.Grade) >= 60;
+
+-- ש7
+SELECT Grades.CourseCode, Grades.Term, COUNT(*) AS n, ROUND(AVG(Grades.Grade),1) AS Avg1
+FROM   Grades GROUP BY Grades.CourseCode, Grades.Term
+ORDER  BY Grades.CourseCode, Grades.Term;
+
+-- ש8
+SELECT Grades.StudentId, ROUND(AVG(Grades.Grade),1) AS Avg1 FROM Grades
+GROUP  BY Grades.StudentId
+HAVING AVG(Grades.Grade) > (SELECT AVG(Grades.Grade) FROM Grades)
+ORDER  BY Avg1 DESC;
+
+-- ש9
+SELECT Students.FirstName, Students.LastName FROM Students
+WHERE  Students.StudentId IN (SELECT Absences.StudentId FROM Absences WHERE Absences.Excused = 0);
+
+-- ש10
+SELECT s.FirstName, s.ClassCode, ROUND(AVG(g.Grade),1) AS MyAvg
+FROM   Grades g, Students s
+WHERE  g.StudentId = s.StudentId
+GROUP  BY s.StudentId, s.FirstName, s.ClassCode
+HAVING AVG(g.Grade) > (
+         SELECT AVG(g2.Grade) FROM Grades g2, Students s2
+         WHERE  g2.StudentId = s2.StudentId AND s2.ClassCode = s.ClassCode
+       )
+ORDER  BY s.ClassCode;
+
+-- ש11א
+SELECT Students.StudentId FROM Students WHERE Students.Phone IS NULL
+INTERSECT
+SELECT Absences.StudentId FROM Absences;
+
+-- ש11ב
+SELECT Students.StudentId FROM Students
+EXCEPT
+SELECT Grades.StudentId FROM Grades;
+
+-- ש12  התיקון: COUNT(*) -> COUNT(Absences.AbsenceId)
+SELECT Students.FirstName, COUNT(Absences.AbsenceId) AS Absences1
+FROM   Students LEFT JOIN Absences ON Absences.StudentId = Students.StudentId
+GROUP  BY Students.StudentId, Students.FirstName ORDER BY Absences1;
+```
+
+<div dir="rtl">
+
+**ש1.** **השורה השישית היא `NULL` — לינא חמוד.**
+
+`GROUP BY` מתייחס לכל ה‑`NULL`ים כ**קבוצה אחת**. זה חריג: בכל מקום אחר ב‑SQL `NULL` אינו שווה ל‑`NULL`, אבל ב‑`GROUP BY` (וב‑`DISTINCT`) הם מתאחדים. לכן "תלמידים ללא כיתה" מקבלים שורה משל עצמם — וזה מועיל, כל עוד יודעים שזה קורה.
+
+<figure dir="ltr" class="dbtable">
+
+| ClassCode | HowMany |
+|:---:|:---:|
+| NULL | 1 |
+| 101 | 4 |
+| 102 | 3 |
+| 103 | 3 |
+| 104 | 3 |
+| 105 | 4 |
+
+</figure>
+
+**ש2.** **17 שורות, לא 18.** `GROUP BY` עובד על השורות ש**יש** ב‑`Grades`, ולינא אינה שם בכלל. קבוצה ריקה פשוט לא מקבלת שורה — אין "קבוצה של אפס".
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId | HowMany | Avg1 |
+|:---:|:---:|:---:|
+| 1016 | 5 | 97 |
+| 1010 | 4 | 96 |
+| 1002 | 3 | 94.7 |
+| 1013 | 5 | 92 |
+| 1007 | 4 | 91.3 |
+| 1001 | 4 | 86.3 |
+| 1005 | 3 | 82.7 |
+| 1014 | 3 | 82.7 |
+| 1011 | 3 | 79.3 |
+| 1008 | 3 | 73 |
+| 1017 | 3 | 69 |
+| 1015 | 4 | 64 |
+| 1003 | 4 | 63.3 |
+| 1006 | 2 | 62 |
+| 1009 | 3 | 58.5 |
+| 1004 | 3 | 55 |
+| 1012 | 4 | 44.8 |
+
+</figure>
+
+> 🔎 ראניה עבאס 97, ג'וד מנסור 44.8. ההפרש בין התלמידה הראשונה לאחרונה הוא **52 נקודות**.
+
+**ש3.** **מתמטיקה 3 יח"ל — 58.1.** המקצוע היחיד שהממוצע בו מתחת ל‑60.
+
+<figure dir="ltr" class="dbtable">
+
+| CourseName | HowMany | Avg1 |
+|:---:|:---:|:---:|
+| חינוך גופני | 2 | 95 |
+| סדנת פרויקטים | 4 | 88.5 |
+| מתמטיקה 5 יח"ל | 15 | 88.2 |
+| מבוא לבסיסי נתונים | 10 | 79.5 |
+| היסטוריה | 4 | 77 |
+| אנגלית 4 יח"ל | 15 | 74.9 |
+| מתמטיקה 3 יח"ל | 10 | 58.1 |
+
+</figure>
+
+> ⚠️ **זהירות עם השורה הראשונה:** 95 בחינוך גופני מבוסס על **שני ציונים**. ממוצע של 2 ושל 15 לא שווים באמינות, ועמודת `HowMany` היא מה שמאפשר לראות את זה. דוח שמציג ממוצעים בלי מספר התצפיות מזמין טעות.
+
+**ש4.** **ג'וד מנסור (4) וכרים חלבי (3).**
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId | Absences1 |
+|:---:|:---:|
+| 1012 | 4 |
+| 1009 | 3 |
+
+</figure>
+
+**ש5.** **יב1 מובילה — 85.2.** י2 בתחתית, 68.9.
+
+שימו לב ש‑`Classes.Grade` ברשימת ה‑`GROUP BY` אף שהוא נגרר מ‑`ClassName`: **כל עמודה ב‑`SELECT` שאינה פונקציה מצרפית חייבת להופיע ב‑`GROUP BY`**. באורקל אי‑קיום שלה היא שגיאה; ב‑SQLite היא עוברת בשקט ומחזירה ערך שרירותי.
+
+<figure dir="ltr" class="dbtable">
+
+| ClassName | Grade | GradeRows | Avg1 |
+|:---:|:---:|:---:|:---:|
+| יב1 | 12 | 17 | 85.2 |
+| יא1 | 11 | 10 | 77.9 |
+| י1 | 10 | 14 | 77.8 |
+| יא2 | 11 | 11 | 72.8 |
+| י2 | 10 | 8 | 68.9 |
+
+</figure>
+
+**ש6.** **א' החזירה 7 שורות, ב' החזירה 6.** ומקצוע 16 (מתמטיקה 3 יח"ל) הוא ההבדל:
+
+| | מקצוע 16 | מה קרה |
+|---|-----------|---------|
+| **א' (`WHERE`)** | מופיע, עם ממוצע **67.8** | ה‑`WHERE` **זרק את הציונים הנכשלים** לפני הקיבוץ. הממוצע חושב על 4 ציונים מתוך 10 — ועלה ב‑9.7 נקודות |
+| **ב' (`HAVING`)** | **לא מופיע** | ה‑`HAVING` בדק את הממוצע **האמיתי** של הקבוצה (58.1), מצא שהוא מתחת ל‑60, וזרק את **הקבוצה כולה** |
+
+**מה כל אחת באמת שואלת:**
+
+</div>
+
+```text
+א'  "מה הממוצע של העוברים בכל מקצוע?"          -- WHERE  מסנן שורות לפני הקיבוץ
+ב'  "אילו מקצועות הממוצע בהם מעל 60?"           -- HAVING מסנן קבוצות אחרי הקיבוץ
+```
+
+<div dir="rtl">
+
+שתיהן תקינות, והן עונות על שאלות **שונות לגמרי**. הסכנה היא בכתיבת א' כשהתכוונתם לב': מקצוע חלש נעלם מהרדאר ובמקומו מופיע ממוצע מנופח שלו.
+
+**כלל הזיהוי:** תנאי שמכיל פונקציה מצרפית (`COUNT`, `AVG`, `SUM`) שייך ל‑`HAVING`. תנאי על **עמודה** שייך ל‑`WHERE`.
+
+<figure dir="ltr" class="dbtable">
+
+| CourseCode | Avg1 (א' WHERE) | Avg1 (ב' HAVING) |
+|:---:|:---:|:---:|
+| 11 | 88.2 | 88.2 |
+| 12 | 80.7 | 74.9 |
+| 13 | 82.7 | 79.5 |
+| 14 | 77 | 77 |
+| 15 | 95 | 95 |
+| **16** | **67.8** | *(נזרק)* |
+| 17 | 88.5 | 88.5 |
+
+</figure>
+
+**ש7.** **מקצוע 11 (מתמטיקה 5 יח"ל): 85.3 במחצית א' ו‑94 במחצית ב'** — שיפור של 8.7 נקודות. במקצוע 16 המגמה הפוכה: 59 ואז 56.
+
+<figure dir="ltr" class="dbtable">
+
+| CourseCode | Term | n | Avg1 |
+|:---:|:---:|:---:|:---:|
+| 11 | 1 | 10 | 85.3 |
+| 11 | 2 | 5 | 94 |
+| 12 | 1 | 15 | 74.9 |
+| 13 | 1 | 10 | 79.5 |
+| 14 | 1 | 4 | 77 |
+| 15 | 1 | 2 | 95 |
+| 16 | 1 | 7 | 59 |
+| 16 | 2 | 3 | 56 |
+| 17 | 1 | 4 | 88.5 |
+
+</figure>
+
+> ⚠️ ובכל זאת — במחצית ב' נבחנו רק 5 תלמידים במקצוע 11, והם **לא אותם** 10 של מחצית א'. "שיפור" או "רק החזקים נבחנו שוב"? הנתון לא יודע; הוא רק מראה שני מספרים.
+
+**ש8.** **9 תלמידים** מעל הממוצע הבית‑ספרי (77.97).
+
+התת‑שאילתה `(SELECT AVG(Grade) FROM Grades)` מחזירה **ערך בודד אחד** — 77.97 — ולכן אפשר להשתמש בה בתוך תנאי השוואה רגיל. זו "תת‑שאילתה של שורה בודדת" (Single Row Subquery), והיא רצה **פעם אחת** לפני השאילתה החיצונית.
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId | Avg1 |
+|:---:|:---:|
+| 1016 | 97 |
+| 1010 | 96 |
+| 1002 | 94.7 |
+| 1013 | 92 |
+| 1007 | 91.3 |
+| 1001 | 86.3 |
+| 1005 | 82.7 |
+| 1014 | 82.7 |
+| 1011 | 79.3 |
+
+</figure>
+
+**ש9.** **5 תלמידים.** כאן התת‑שאילתה מחזירה **רשימה** (5 מזהים), ולכן התנאי הוא `IN` ולא `=`. אם הייתם כותבים `= (SELECT …)` וההחזרה הייתה יותר משורה אחת — אורקל היה זורק `ORA-01427`.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | LastName |
+|:---:|:---:|
+| מאיה | לוי |
+| כרים | חלבי |
+| ג'וד | מנסור |
+| איתי | גולן |
+| לינא | חמוד |
+
+</figure>
+
+**ש10.** **8 תלמידים** מעל ממוצע הכיתה שלהם.
+
+זו **תת‑שאילתה מתואמת**: היא מזכירה את `s.ClassCode` — עמודה מהשאילתה **החיצונית**. לכן היא לא יכולה לרוץ פעם אחת: היא רצה **מחדש לכל קבוצה**, עם הכיתה של אותו תלמיד. זה ההבדל מש8:
+
+</div>
+
+```text
+ש8   (SELECT AVG(Grade) FROM Grades)                         -- רצה פעם אחת, 77.97 לכולם
+ש10  (SELECT AVG(...) WHERE s2.ClassCode = s.ClassCode)      -- רצה 17 פעמים, ערך אחר לכל כיתה
+                                       ^^^^^^^^^^^^^
+                                       הקישור לשאילתה החיצונית
+```
+
+<div dir="rtl">
+
+והתוצאה מעניינת: **ליאור לוי (79.3) נכנס לרשימה, אף שהממוצע הבית‑ספרי גבוה ממנו** — כי כיתתו, יא2, חלשה (72.8). לעומתו **הדיל סעיד (82.7) לא נכנסה**, אף שהיא מעל הממוצע הבית‑ספרי — כי בכיתה יב1 הממוצע הוא 85.2. "מעל הממוצע" תלוי לגמרי בשאלה **ממוצע של מה**.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | ClassCode | MyAvg |
+|:---:|:---:|:---:|
+| אדם | 101 | 86.3 |
+| נור | 101 | 94.7 |
+| רוני | 102 | 82.7 |
+| עומר | 103 | 91.3 |
+| תמר | 104 | 96 |
+| ליאור | 104 | 79.3 |
+| דניאל | 105 | 92 |
+| ראניה | 105 | 97 |
+
+</figure>
+
+**ש11א.** **4 תלמידים:** 1009 (כרים), 1012 (ג'וד), 1015 (איתי), 1018 (לינא).
+
+`INTERSECT` מחזיר את מה שמופיע **בשתי** הרשימות. הדרישה: לשתי השאילתות אותו מספר עמודות ואותם טיפוסים.
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId |
+|:---:|
+| 1009 |
+| 1012 |
+| 1015 |
+| 1018 |
+
+</figure>
+
+**ש11ב.** **1018 — לינא חמוד.** `EXCEPT` = "כל מי שבראשונה **ולא** בשנייה".
+
+שימו לב שקיבלנו את אותה תשובה בדיוק כמו עם `LEFT JOIN … IS NULL` (שיעור 22) וכמו עם השוואת שתי ספירות (שיעור 23). **שלוש דרכים, תשובה אחת** — וזה אופייני ל‑SQL: בדרך כלל יש יותר מדרך אחת, ושווה להכיר את כולן כי בבחינה לפעמים מבקשים דרך מסוימת.
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId |
+|:---:|
+| 1018 |
+
+</figure>
+
+**ש12.** **אצל נור מופיע `1`** — ונור לא נעדרה אף פעם.
+
+מה שקרה: ה‑`LEFT JOIN` יצר לנור **שורה אחת** עם `NULL`ים בכל עמודות ההיעדרות. `COUNT(*)` סופר **שורות**, והשורה הזאת היא שורה. היא לא ריקה — היא שורה שתוכנה `NULL`.
+
+**התיקון — מילה אחת:** `COUNT(*)` → `COUNT(Absences.AbsenceId)`. `COUNT(עמודה)` מתעלם מ‑`NULL`, ולכן אותה שורה נספרת כ‑**0**.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | COUNT(*) — שגוי | COUNT(AbsenceId) — נכון |
+|:---:|:---:|:---:|
+| נור | 1 | 0 |
+| רוני | 1 | 0 |
+| עומר | 1 | 0 |
+| שירה | 1 | 0 |
+| ליאור | 1 | 0 |
+| דניאל | 1 | 0 |
+
+</figure>
+
+> 💡 **הכלל לזכור לבחינה:** `LEFT JOIN` + `COUNT` = **תמיד** `COUNT(<עמודה מהטבלה הימנית>)`, לעולם לא `COUNT(*)`. זו אחת הטעויות שחוזרות הכי הרבה, והיא מסוכנת במיוחד כי "1" נראה כמו נתון סביר.
+
+</div>
+<!-- classroom:end -->

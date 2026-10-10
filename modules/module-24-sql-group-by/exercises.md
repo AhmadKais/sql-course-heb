@@ -2,6 +2,8 @@
 
 # מודול 24 — תרגילים
 
+> 💪 **בסוף הדף — [תרגול בכיתה](#-תרגול-בכיתה--בית-הספר-עתיד):** 12 שאלות על בסיס נתונים אחר, [`school.sql`](../../resources/school-db/), שחוזר בכל שיעור SQL. מיועד לשיעור בכיתה.
+
 > **הנחיות:** כל התרגילים על [בסיס הנתונים המוכן](../../resources/shelter-db/). **הריצו.**
 >
 > ⚠️ אל תפתחו את [הפתרונות](solutions.md) לפני שניסיתם.
@@ -170,3 +172,91 @@ HAVING COUNT(Members.Id) >= 3;
 
 </div>
 <!-- exam-style:end -->
+
+<!-- classroom:start -->
+<div dir="rtl">
+
+---
+
+## 💪 תרגול בכיתה — בית הספר "עתיד"
+
+> 🏫 **בסיס נתונים אחר, 12 שאלות.** הקטע הזה חוזר בסוף התרגילים של **כל** שיעור SQL, תמיד על אותו בסיס נתונים — [`school.sql`](../../resources/school-db/): 7 טבלאות, 18 תלמידים. השאלות הן שמתקדמות בקושי משיעור לשיעור.
+>
+> **טוענים פעם אחת:** [**פתיחה להעתקה**](https://raw.githubusercontent.com/AhmadKais/sql-course-heb/main/resources/school-db/school.sql) → `Ctrl+A`, `Ctrl+C` → מדביקים ב‑[OneCompiler (SQLite)](https://onecompiler.com/sqlite) → **Run**. צריך להופיע `students_loaded = 18`.
+>
+> 📅 **תאריך הייחוס: `'2026-09-21'`** — השתמשו בו במקום `DATE('now')`. · ⚠️ ה[פתרונות](solutions.md) מחכים בסוף — אחרי שניסיתם.
+
+</div>
+
+```text
+Cities    (CityCode, CityName)
+Teachers  (TeacherCode, FirstName, LastName, Subject, HireDate, Salary, CityCode, Phone)
+Classes   (ClassCode, ClassName, Grade, TeacherCode, RoomNumber)
+Courses   (CourseCode, CourseName, TeacherCode, WeeklyHours)
+Students  (StudentId, FirstName, LastName, ClassCode, Gender, BirthDate, CityCode, EnrollDate, Phone)
+Grades    (StudentId, CourseCode, Term, Grade)          -- PK: StudentId + CourseCode + Term
+Absences  (AbsenceId, StudentId, AbsenceDate, Excused, Reason)
+```
+
+<div dir="rtl">
+
+**עד עכשיו: מספר אחד לכל הטבלה. עכשיו: מספר אחד לכל קבוצה.**
+
+**ש1.** כמה תלמידים **בכל כיתה**? ⚠️ קיבלתם 6 שורות ויש 5 כיתות — **מה השורה השישית**?
+
+**ש2.** לכל תלמיד: **כמה ציונים** יש לו ו**מה הממוצע** שלו (עיגול לספרה אחת), מהגבוה לנמוך. ⚠️ כמה שורות? למה לא 18?
+
+**ש3.** לכל **מקצוע**: שם המקצוע, מספר הציונים והממוצע, מהגבוה לנמוך. **איזה מקצוע הכי חלש?**
+
+**ש4.** אילו תלמידים נעדרו **יותר מפעמיים**? (`HAVING`.)
+
+**ש5.** לכל **כיתה** (בשם, לא בקוד): השכבה, מספר הציונים והממוצע הכיתתי, מהגבוה לנמוך. **איזו כיתה מובילה?**
+
+**ש6.** ⚠️ **`WHERE` מול `HAVING`.** הריצו את שתיהן והשוו:
+
+</div>
+
+```sql
+-- א
+SELECT Grades.CourseCode, ROUND(AVG(Grades.Grade),1) AS Avg1 FROM Grades
+WHERE  Grades.Grade >= 60 GROUP BY Grades.CourseCode;
+
+-- ב
+SELECT Grades.CourseCode, ROUND(AVG(Grades.Grade),1) AS Avg1 FROM Grades
+GROUP  BY Grades.CourseCode HAVING AVG(Grades.Grade) >= 60;
+```
+
+<div dir="rtl">
+
+**כמה שורות בכל אחת? ומה קרה למקצוע 16 בכל אחת מהן?** הסבירו מה כל אחת מהן **באמת** שואלת.
+
+**ש7.** קיבוץ לפי **שני** שדות: לכל מקצוע **ולכל מחצית** — מספר הציונים והממוצע. באיזה מקצוע המחצית השנייה הייתה **טובה יותר** מהראשונה?
+
+**ש8.** **תת‑שאילתה.** אילו תלמידים הממוצע שלהם **גבוה מהממוצע הבית‑ספרי**?
+
+**ש9.** **תת‑שאילתה עם `IN`.** אילו תלמידים (שם פרטי ושם משפחה) יש להם **לפחות היעדרות אחת לא מאושרת**?
+
+**ש10.** ⭐ **תת‑שאילתה מתואמת (Correlated).** אילו תלמידים הממוצע שלהם גבוה מ**ממוצע הכיתה שלהם** — כל אחד מול הכיתה שלו, לא מול הבית‑ספרי.
+
+**ש11.** **אופרטורי קבוצות.**
+
+**א.** מי מהתלמידים **אין לו טלפון** **וגם** נעדר לפחות פעם אחת? (`INTERSECT`.)
+
+**ב.** מי מהתלמידים **אין לו אף ציון**? (`EXCEPT` — בלי `JOIN` ובלי `IS NULL`.)
+
+**ש12.** ⚠️ **`COUNT(*)` שמשקר.** המנהלת ביקשה טבלת היעדרויות לכל 18 התלמידים, כולל מי שלא נעדר. תלמיד כתב:
+
+</div>
+
+```sql
+SELECT Students.FirstName, COUNT(*) AS Absences1
+FROM   Students LEFT JOIN Absences ON Absences.StudentId = Students.StudentId
+GROUP  BY Students.StudentId, Students.FirstName ORDER BY Absences1;
+```
+
+<div dir="rtl">
+
+הריצו. **מה מופיע אצל נור, שלא נעדרה אף פעם?** הסבירו, ותקנו בשינוי של **מילה אחת**.
+
+</div>
+<!-- classroom:end -->
