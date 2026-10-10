@@ -3,6 +3,8 @@
 # 📋 קובצי ה‑SQL של הקורס: להעתיק ולהדביק
 
 > כל בסיסי הנתונים של הקורס נמצאים בדף הזה. **בוחרים קובץ, מעתיקים את כולו, ומדביקים ב‑[OneCompiler (SQLite)](https://onecompiler.com/sqlite).**
+>
+> 👁️ או ב‑[SQLite Online](https://sqliteonline.com/) — אותו SQLite, בתוספת **רשימת הטבלאות בצד**, כדי לראות מה נטען. [ההבדל בין השניים](resources/setup.md#1ג-sqlite-online--לראות-את-הטבלאות)
 
 ---
 

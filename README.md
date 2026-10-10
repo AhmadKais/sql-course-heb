@@ -144,6 +144,7 @@
 |-----|-------------|-------|
 | ⭐ **OneCompiler (SQLite)** | **ברירת המחדל של הקורס**: בדפדפן, בלי התקנה. מדביקים את `shelter.sql` או קובץ של בחינה לדוגמה, וכל הפקודות עובדות | [onecompiler.com/sqlite](https://onecompiler.com/sqlite) |
 | ⭐ **W3Schools SQL** | הסבר על כל נושא, ותרגול `SELECT` על בסיס הנתונים שלו (לקריאה בלבד, SQL Server) | [w3schools.com/sql](https://www.w3schools.com/sql/) |
+| ⭐ **SQLite Online** | אותו דבר בדפדפן, אבל **רואים את הטבלאות ברשימה בצד**, ולחיצה כפולה על טבלה מריצה לה `SELECT` | [sqliteonline.com](https://sqliteonline.com/) |
 | **DB Fiddle** | חלופה בדפדפן לבדיקת שאילתה בודדת | [db-fiddle.com](https://www.db-fiddle.com) |
 | **SQLite + DB Browser** | מקומי, ללא שרת — כשרוצים לשמור פרויקט מתמשך | [sqlitebrowser.org](https://sqlitebrowser.org) |
 | **Oracle APEX** | סביבת התרגול הרשמית של תכנית הלימודים | [apex.oracle.com](https://apex.oracle.com) |
