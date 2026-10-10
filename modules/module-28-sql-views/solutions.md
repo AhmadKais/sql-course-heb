@@ -259,3 +259,268 @@ SELECT Clubs.ClubName FROM Clubs, Q1 WHERE Clubs.Price = Q1.cheap;
 
 </div>
 <!-- exam-style:end -->
+
+<!-- classroom:start -->
+<div dir="rtl">
+
+---
+
+## 💪 תרגול בכיתה — פתרונות
+
+> 🏫 על [`school.sql`](../../resources/school-db/). כל הפלטים כאן **אמיתיים** — כל שאילתה הורצה על בסיס הנתונים, נכון לתאריך הייחוס `'2026-09-21'`.
+
+</div>
+
+```text
+Cities    (CityCode, CityName)
+Teachers  (TeacherCode, FirstName, LastName, Subject, HireDate, Salary, CityCode, Phone)
+Classes   (ClassCode, ClassName, Grade, TeacherCode, RoomNumber)
+Courses   (CourseCode, CourseName, TeacherCode, WeeklyHours)
+Students  (StudentId, FirstName, LastName, ClassCode, Gender, BirthDate, CityCode, EnrollDate, Phone)
+Grades    (StudentId, CourseCode, Term, Grade)          -- PK: StudentId + CourseCode + Term
+Absences  (AbsenceId, StudentId, AbsenceDate, Excused, Reason)
+```
+
+<div dir="rtl">
+
+</div>
+
+```sql
+-- ש1
+CREATE VIEW StudentClass AS
+SELECT s.StudentId, s.FirstName, s.LastName, c.ClassName, c.Grade AS GradeLevel
+FROM   Students s LEFT JOIN Classes c ON s.ClassCode = c.ClassCode;
+
+-- ש2
+SELECT StudentClass.FirstName, StudentClass.LastName FROM StudentClass
+WHERE  StudentClass.GradeLevel = 12 ORDER BY StudentClass.LastName;
+
+-- ש3
+CREATE VIEW ClassAverages AS
+SELECT c.ClassName, COUNT(g.Grade) AS HowMany, ROUND(AVG(g.Grade),1) AS Avg1
+FROM   Grades g, Students s, Classes c
+WHERE  g.StudentId = s.StudentId AND s.ClassCode = c.ClassCode
+GROUP  BY c.ClassName;
+
+-- ש4
+CREATE VIEW AtRiskStudents AS
+SELECT sc.StudentId, sc.FirstName || ' ' || sc.LastName AS FullName, sc.ClassName,
+       ROUND(AVG(g.Grade),1) AS Avg1
+FROM   StudentClass sc, Grades g
+WHERE  g.StudentId = sc.StudentId
+GROUP  BY sc.StudentId, sc.FirstName, sc.LastName, sc.ClassName
+HAVING AVG(g.Grade) < 65;
+
+-- ש5
+SELECT COUNT(*) AS Before1 FROM StudentClass;
+INSERT INTO Students (StudentId, FirstName, LastName, ClassCode, Gender, EnrollDate)
+VALUES (1019, 'תאיר', 'אביטן', 105, 'F', '2026-09-21');
+SELECT COUNT(*) AS After1 FROM StudentClass;
+
+-- ש6 / ש7  שתיהן נכשלות
+UPDATE StudentClass  SET FirstName = 'תאיר-לי' WHERE StudentId = 1019;
+UPDATE ClassAverages SET Avg1 = 100 WHERE ClassName = 'י1';
+
+-- ש8
+CREATE VIEW PublicTeachers AS
+SELECT Teachers.TeacherCode, Teachers.FirstName, Teachers.LastName, Teachers.Subject
+FROM   Teachers;
+SELECT PublicTeachers.Salary FROM PublicTeachers;      -- ❌
+
+-- ש9 / ש10
+SELECT name, type FROM sqlite_master WHERE type = 'view' ORDER BY name;
+SELECT sql FROM sqlite_master WHERE name = 'ClassAverages';
+
+-- ש11
+DROP VIEW AtRiskStudents;
+
+-- ש12
+CREATE TABLE AtRiskSnapshot AS SELECT * FROM ClassAverages;
+UPDATE Grades SET Grade = 100 WHERE Grades.StudentId = 1012;
+```
+
+<div dir="rtl">
+
+**ש1.** `LEFT JOIN` ולא `JOIN` — כדי שלינא, שאין לה כיתה, **תופיע** ב‑`View` עם `NULL` בשם הכיתה.
+
+זו החלטה שמתקבלת **פעם אחת**, בהגדרת ה‑`View`, ואחר כך כל מי שישלוף ממנו יקבל אותה אוטומטית. זה הערך האמיתי של `View`: הוא **מקום לשים בו החלטה** כדי שלא יצטרכו לחזור עליה, ולא ישכחו אותה.
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId | FirstName | LastName | ClassName | GradeLevel |
+|:---:|:---:|:---:|:---:|:---:|
+| 1001 | אדם | חלבי | י1 | 10 |
+| 1002 | נור | עזאם | י1 | 10 |
+| 1003 | יואב | כהן | י1 | 10 |
+| 1004 | מאיה | לוי | י2 | 10 |
+| 1005 | רוני | אברהם | י2 | 10 |
+
+</figure>
+
+**ש2.** **4 תלמידים.** ושימו לב מה קרה לשאילתה: היא נראית כמו `SELECT` מטבלה פשוטה, בלי `JOIN` ובלי כינויים. ה‑`JOIN` לא נעלם — הוא **הוסתר** בתוך ה‑`View`, ובסיס הנתונים מריץ אותו בכל שליפה.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | LastName |
+|:---:|:---:|
+| איתי | גולן |
+| הדיל | סעיד |
+| ראניה | עבאס |
+| דניאל | פרץ |
+
+</figure>
+
+**ש3.**
+
+<figure dir="ltr" class="dbtable">
+
+| ClassName | HowMany | Avg1 |
+|:---:|:---:|:---:|
+| יב1 | 17 | 85.2 |
+| יא1 | 9 | 77.9 |
+| י1 | 14 | 77.8 |
+| יא2 | 11 | 72.8 |
+| י2 | 7 | 68.9 |
+
+</figure>
+
+> 🔎 השוו ל‑ש5 של שיעור 24: שם `COUNT(*)` נתן ל‑יא1 **10** ול‑י2 **8**. כאן `COUNT(g.Grade)` נותן 9 ו‑7 — כי שני הציונים שהם `NULL` לא נספרים. אותה כיתה, שתי ספירות נכונות, שתי שאלות שונות.
+
+**ש4.** **כן, מותר ומומלץ.** `View` הוא שאילתה, ושאילתה יכולה לשלוף מ‑`View` בדיוק כמו מטבלה. כאן `AtRiskStudents` בנוי על `StudentClass`, ולכן הוא **יורש** את ה‑`LEFT JOIN` ואת הכינוי `GradeLevel` בחינם.
+
+זו הדרך לבנות שכבות: `View` בסיסי שמנקה ומחבר, ומעליו `View`‑ים שעונים על שאלות. כל תיקון בשכבה התחתונה מתקן אוטומטית את כל מה שמעליה.
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId | FullName | ClassName | Avg1 |
+|:---:|:---:|:---:|:---:|
+| 1012 | ג'וד מנסור | יא2 | 44.8 |
+| 1004 | מאיה לוי | י2 | 55 |
+| 1009 | כרים חלבי | יא1 | 58.5 |
+| 1006 | סאלי חסון | י2 | 62 |
+| 1003 | יואב כהן | י1 | 63.3 |
+| 1015 | איתי גולן | יב1 | 64 |
+
+</figure>
+
+**ש5.** **18 לפני, 19 אחרי.** תאיר מופיעה ב‑`View` מיד, עם `יב1` ו‑`12` — ולא עשינו ל‑`View` שום דבר.
+
+<figure dir="ltr" class="dbtable">
+
+| StudentId | FirstName | LastName | ClassName | GradeLevel |
+|:---:|:---:|:---:|:---:|:---:|
+| 1019 | תאיר | אביטן | יב1 | 12 |
+
+</figure>
+
+**למה?** כי ב‑`View` **אין נתונים**. הוא לא מחזיק עותק ולא "מתעדכן"; הוא שם של שאילתה. כל `SELECT … FROM StudentClass` מריץ את השאילתה **מחדש, עכשיו**, על הטבלאות כמו שהן באותו רגע. לכן אין מה לרענן ואין מה לסנכרן — ואין גם סיכון שה‑`View` "יתיישן".
+
+**ש6.–ש7.** שתיהן נכשלות באותה הודעה:
+
+</div>
+
+```text
+cannot modify StudentClass because it is a view
+cannot modify ClassAverages because it is a view
+```
+
+<div dir="rtl">
+
+**ב‑SQLite כל `View` הוא לקריאה בלבד.** (דרך לעקוף: `INSTEAD OF` trigger, מעבר להיקף השיעור.)
+
+⚠️ **ובאורקל זה שונה**, וכאן הנושא נעשה מעניין. אורקל **כן** מאפשר `UPDATE` דרך `View` — אבל רק אם הוא **"פשוט"**: טבלה אחת, בלי `GROUP BY`, בלי `DISTINCT`, בלי פונקציות מצרפיות. כלומר באורקל:
+
+| ה‑`View` | `UPDATE` דרכו |
+|-----------|----------------|
+| `PublicTeachers` (טבלה אחת, בלי קיבוץ) | **מותר** — העדכון עובר לטבלת `Teachers` |
+| `StudentClass` (שתי טבלאות) | מותר **חלקית**, ורק על הטבלה "המשמרת מפתח" |
+| `ClassAverages` (`GROUP BY` + `AVG`) | **אסור, בכל בסיס נתונים** |
+
+**ולמה האחרון אסור בכל מקום? זו השאלה בש7.** נניח שהיה מותר: `SET Avg1 = 100` לכיתה י1. הממוצע 77.8 מחושב מ‑**14 ציונים** של 4 תלמידים. איזה ציון בטבלת `Grades` צריך להשתנות כדי שהממוצע יהיה 100? כולם? רק אחד, ל‑400? **אין תשובה** — ולכן אין פעולה. הפעולה ההפוכה לקיבוץ אינה מוגדרת: אפשר לדעת את הממוצע מהציונים, אבל אי אפשר לדעת את הציונים מהממוצע.
+
+**ש8.** השליפה נכשלה: **`no such column: PublicTeachers.Salary`**.
+
+<figure dir="ltr" class="dbtable">
+
+| TeacherCode | FirstName | LastName | Subject |
+|:---:|:---:|:---:|:---:|
+| 1 | נביל | סרחאן | מתמטיקה |
+| 2 | רונית | בר-לב | אנגלית |
+| 3 | חוסאם | זיאד | מחשבים |
+
+</figure>
+
+וזה **השימוש השני בחשיבותו** ב‑`View`: **אבטחה**. במקום לתת למישהו הרשאה לטבלת `Teachers` כולה, נותנים לו הרשאה ל‑`PublicTeachers` בלבד. מבחינתו עמודת `Salary` **לא קיימת** — אין מה לנסות, אין מה לעקוף, ואין צורך לסמוך עליו שלא יסתכל.
+
+> 🔮 שיעור 30 מחבר את שני החלקים: `GRANT SELECT ON PublicTeachers TO …` — הרשאה על ה‑`View`, לא על הטבלה.
+
+**ש9.** ארבעה `View`‑ים:
+
+<figure dir="ltr" class="dbtable">
+
+| name | type |
+|:---:|:---:|
+| AtRiskStudents | view |
+| ClassAverages | view |
+| PublicTeachers | view |
+| StudentClass | view |
+
+</figure>
+
+**ש10.** חזר **הקוד עצמו**, אות באות:
+
+</div>
+
+```sql
+CREATE VIEW ClassAverages AS
+SELECT c.ClassName, COUNT(g.Grade) AS HowMany, ROUND(AVG(g.Grade),1) AS Avg1
+FROM Grades g, Students s, Classes c
+WHERE g.StudentId = s.StudentId AND s.ClassCode = c.ClassCode
+GROUP BY c.ClassName
+```
+
+<div dir="rtl">
+
+**וזה כל מה ש‑`View` מאחסן: טקסט.** לא שורות, לא עותק, לא אינדקס — **משפט `SELECT`**. זו התשובה המלאה לשאלה "מה זה `View`", ומכאן נגזר כל השאר: למה הוא תמיד מעודכן (ש5), למה אי אפשר לעדכן דרכו (ש6), ולמה `DROP VIEW` לא מוחק נתונים (ש11).
+
+**ש11.** `AtRiskStudents` נעלם מהרשימה — **ואף נתון לא נמחק.**
+
+<figure dir="ltr" class="dbtable">
+
+| name |
+|:---:|
+| ClassAverages |
+| PublicTeachers |
+| StudentClass |
+
+</figure>
+
+`DROP VIEW` מוחק **טקסט של שאילתה** מהקטלוג. הציונים, התלמידים והכיתות שלא נגעו בהם — כולם במקום. זה ההבדל מ‑`DROP TABLE`, שהוא בלתי הפיך ומוחק נתונים. `View` תמיד אפשר לבנות מחדש מהקוד; טבלה — לא.
+
+**ש12.**
+
+<figure dir="ltr" class="dbtable">
+
+| Source | ClassName | Avg1 |
+|:---:|:---:|:---:|
+| VIEW (live) | יא2 | **92.9** |
+| TABLE (frozen) | יא2 | **72.8** |
+
+</figure>
+
+**שני המספרים נכונים, והם עונים על שתי שאלות שונות:**
+
+| | מה זה | מה הוא אומר |
+|---|-------|--------------|
+| **92.9** | ה‑`View` הריץ את השאילתה **עכשיו**, אחרי שכל הציונים של ג'וד הועלו ל‑100 | "מה הממוצע **כרגע**" |
+| **72.8** | הטבלה נוצרה ב‑CTAS **לפני** העדכון, והיא עותק קפוא של אותו רגע | "מה היה הממוצע **כשצילמנו**" |
+
+**מתי רוצים כל אחד:**
+
+- **`View`** — לכל דוח שצריך להיות נכון: מצב נוכחי, רשימת תלמידים בסיכון, לוח מודעות. אין סיכון שהוא יתיישן, ואין עבודת תחזוקה.
+- **טבלה (צילום מצב)** — כשדווקא **רוצים** שהנתון יקפא: ציוני סוף שנה, דוח שהוגש למשרד החינוך, השוואה "לפני ואחרי". דוח שהוגש אסור לו להשתנות למחרת רק כי מישהו תיקן ציון.
+
+> 💡 ההבדל הזה הוא בדיוק מה שהיה חסר ב‑ש10 של שיעור 26: שם בנינו `AtRisk` כטבלה, ושאלנו "אבל מה בדיוק בנינו?". **התשובה: צילום מצב.** עכשיו יש לכם את שתי האפשרויות, והבחירה ביניהן היא שאלה אמיתית שנשאלת בכל פרויקט.
+
+</div>
+<!-- classroom:end -->

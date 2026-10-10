@@ -2,6 +2,8 @@
 
 # מודול 28 — תרגילים
 
+> 💪 **בסוף הדף — [תרגול בכיתה](#-תרגול-בכיתה--בית-הספר-עתיד):** 12 שאלות על בסיס נתונים אחר, [`school.sql`](../../resources/school-db/), שחוזר בכל שיעור SQL. מיועד לשיעור בכיתה.
+
 > **הנחיות:** הדביקו את [`shelter.sql`](../../resources/shelter-db/shelter.sql) ו**כתבו ברצף** — חלק מה‑Views משתמשים ב‑Views קודמים.
 >
 > 📅 תאריך הייחוס: `'2026-09-21'`.
@@ -122,3 +124,78 @@ WHERE Clubs.Price = ________;
 
 </div>
 <!-- exam-style:end -->
+
+<!-- classroom:start -->
+<div dir="rtl">
+
+---
+
+## 💪 תרגול בכיתה — בית הספר "עתיד"
+
+> 🏫 **בסיס נתונים אחר, 12 שאלות.** הקטע הזה חוזר בסוף התרגילים של **כל** שיעור SQL, תמיד על אותו בסיס נתונים — [`school.sql`](../../resources/school-db/): 7 טבלאות, 18 תלמידים. השאלות הן שמתקדמות בקושי משיעור לשיעור.
+>
+> **טוענים פעם אחת:** [**פתיחה להעתקה**](https://raw.githubusercontent.com/AhmadKais/sql-course-heb/main/resources/school-db/school.sql) → `Ctrl+A`, `Ctrl+C` → מדביקים ב‑[OneCompiler (SQLite)](https://onecompiler.com/sqlite) → **Run**. צריך להופיע `students_loaded = 18`.
+>
+> 📅 **תאריך הייחוס: `'2026-09-21'`** — השתמשו בו במקום `DATE('now')`. · ⚠️ ה[פתרונות](solutions.md) מחכים בסוף — אחרי שניסיתם.
+
+</div>
+
+```text
+Cities    (CityCode, CityName)
+Teachers  (TeacherCode, FirstName, LastName, Subject, HireDate, Salary, CityCode, Phone)
+Classes   (ClassCode, ClassName, Grade, TeacherCode, RoomNumber)
+Courses   (CourseCode, CourseName, TeacherCode, WeeklyHours)
+Students  (StudentId, FirstName, LastName, ClassCode, Gender, BirthDate, CityCode, EnrollDate, Phone)
+Grades    (StudentId, CourseCode, Term, Grade)          -- PK: StudentId + CourseCode + Term
+Absences  (AbsenceId, StudentId, AbsenceDate, Excused, Reason)
+```
+
+<div dir="rtl">
+
+**`View` הוא שאילתה ששמרתם בשם.** לא טבלה, לא העתק — שאילתה.
+
+**ש1.** בנו `View` בשם `StudentClass` שמחזיר לכל תלמיד: מזהה, שם פרטי, שם משפחה, **שם הכיתה** ו**השכבה** בכינוי `GradeLevel`. ⚠️ השתמשו ב‑`LEFT JOIN` — ושימו לב למה.
+
+**ש2.** עכשיו שלפו **מתוך ה‑`View`**: כל תלמידי שכבה 12, לפי שם משפחה. **שימו לב שאין בשאילתה הזאת אף `JOIN`.**
+
+**ש3.** בנו `View` בשם `ClassAverages`: לכל כיתה — השם, מספר הציונים (`COUNT(g.Grade)`) והממוצע. שלפו ממוצעים מהגבוה לנמוך.
+
+**ש4.** בנו `View` בשם `AtRiskStudents` **על גבי** `StudentClass`: תלמידים שהממוצע שלהם מתחת ל‑65, עם שם מלא, שם הכיתה והממוצע. ⚠️ `View` שמשתמש ב‑`View` — מותר?
+
+**ש5.** **ה‑`View` חי.**
+
+**א.** `SELECT COUNT(*) FROM StudentClass;` — כמה?
+
+**ב.** עכשיו הכניסו תלמידה חדשה ל**טבלה**: `(1019, 'תאיר', 'אביטן', 105, 'F', '2026-09-21')`. **בלי לגעת ב‑`View`**, הריצו שוב את הספירה ואז שלפו אותה מתוך `StudentClass`. **מה קרה, ולמה?**
+
+**ש6.** נסו לעדכן **דרך ה‑`View`**: `UPDATE StudentClass SET FirstName = 'תאיר-לי' WHERE StudentId = 1019;`. מה ההודעה?
+
+**ש7.** נסו גם: `UPDATE ClassAverages SET Avg1 = 100 WHERE ClassName = 'י1';`. ⚠️ **גם אם זה היה מותר — מה בכלל היה אמור לקרות בטבלת `Grades`?**
+
+**ש8.** **`View` כהרשאת גישה.** בנו `View` בשם `PublicTeachers` שמחזיר מורים **בלי עמודת השכר ובלי הטלפון**. ואז נסו `SELECT PublicTeachers.Salary FROM PublicTeachers;` — מה קרה?
+
+**ש9.** אילו `View`‑ים קיימים כרגע? (`sqlite_master`, `type = 'view'`.)
+
+**ש10.** שלפו את **הקוד** של `ClassAverages`: `SELECT sql FROM sqlite_master WHERE name = 'ClassAverages';`. **מה זה אומר על מה ש‑`View` באמת מאחסן?**
+
+**ש11.** מחקו את `AtRiskStudents` ב‑`DROP VIEW`, וּודאו ב‑`sqlite_master`. ⚠️ **האם נמחק נתון כלשהו?**
+
+**ש12.** ⭐ **`View` מול טבלה — ההבדל שחשוב.** הריצו:
+
+</div>
+
+```sql
+CREATE TABLE AtRiskSnapshot AS SELECT * FROM ClassAverages;
+UPDATE Grades SET Grade = 100 WHERE Grades.StudentId = 1012;
+
+SELECT 'VIEW (live)' AS Source, ClassName, Avg1 FROM ClassAverages    WHERE ClassName = 'יא2'
+UNION ALL
+SELECT 'TABLE (frozen)',        ClassName, Avg1 FROM AtRiskSnapshot   WHERE ClassName = 'יא2';
+```
+
+<div dir="rtl">
+
+**שני מספרים שונים לאותה כיתה. הסבירו את שניהם**, ואמרו מתי תרצו כל אחד מהם.
+
+</div>
+<!-- classroom:end -->
