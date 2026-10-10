@@ -2,6 +2,8 @@
 
 # מודול 22 — תרגילים
 
+> 💪 **בסוף הדף — [תרגול בכיתה](#-תרגול-בכיתה--בית-הספר-עתיד):** 12 שאלות על בסיס נתונים אחר, [`school.sql`](../../resources/school-db/), שחוזר בכל שיעור SQL. מיועד לשיעור בכיתה.
+
 > **הנחיות:** כל התרגילים על [בסיס הנתונים המוכן](../../resources/shelter-db/). **הריצו.**
 >
 > 🔢 **בכל תרגיל עם JOIN: לפני שמריצים — כתבו כמה שורות אתם מצפים לקבל.** אחר כך בדקו.
@@ -124,3 +126,87 @@ INSERT INTO shift_feb VALUES ('Noa'), ('Amir'), ('Tamar');
 
 </div>
 <!-- w3schools:end -->
+
+<!-- classroom:start -->
+<div dir="rtl">
+
+---
+
+## 💪 תרגול בכיתה — בית הספר "עתיד"
+
+> 🏫 **בסיס נתונים אחר, 12 שאלות.** הקטע הזה חוזר בסוף התרגילים של **כל** שיעור SQL, תמיד על אותו בסיס נתונים — [`school.sql`](../../resources/school-db/): 7 טבלאות, 18 תלמידים. השאלות הן שמתקדמות בקושי משיעור לשיעור.
+>
+> **טוענים פעם אחת:** [**פתיחה להעתקה**](https://raw.githubusercontent.com/AhmadKais/sql-course-heb/main/resources/school-db/school.sql) → `Ctrl+A`, `Ctrl+C` → מדביקים ב‑[OneCompiler (SQLite)](https://onecompiler.com/sqlite) → **Run**. צריך להופיע `students_loaded = 18`.
+>
+> 📅 **תאריך הייחוס: `'2026-09-21'`** — השתמשו בו במקום `DATE('now')`. · ⚠️ ה[פתרונות](solutions.md) מחכים בסוף — אחרי שניסיתם.
+
+</div>
+
+```text
+Cities    (CityCode, CityName)
+Teachers  (TeacherCode, FirstName, LastName, Subject, HireDate, Salary, CityCode, Phone)
+Classes   (ClassCode, ClassName, Grade, TeacherCode, RoomNumber)
+Courses   (CourseCode, CourseName, TeacherCode, WeeklyHours)
+Students  (StudentId, FirstName, LastName, ClassCode, Gender, BirthDate, CityCode, EnrollDate, Phone)
+Grades    (StudentId, CourseCode, Term, Grade)          -- PK: StudentId + CourseCode + Term
+Absences  (AbsenceId, StudentId, AbsenceDate, Excused, Reason)
+```
+
+<div dir="rtl">
+
+**אותם חיבורים — בתחביר ANSI.** `JOIN … ON` במקום פסיק ו‑`WHERE`, ומשם ל‑`OUTER JOIN` על שני הכיוונים.
+
+**ש1.** כתבו מחדש בתחביר `INNER JOIN … ON`: כל תלמיד עם שם הכיתה שלו.
+
+**ש2.** אותה שאילתה עם `JOIN … USING (ClassCode)`. מתי `USING` אפשרי, ומה החיסרון שלו?
+
+**ש3.** ⚠️ **`NATURAL JOIN` — המלכודת.** הריצו:
+
+</div>
+
+```sql
+SELECT * FROM Grades NATURAL JOIN Classes;
+```
+
+<div dir="rtl">
+
+**כמה שורות קיבלתם?** עכשיו הסתכלו בסכמה ו**מצאו לבד** על איזו עמודה SQL חיבר. ⚠️ הריצו גם `SELECT COUNT(*) FROM Students NATURAL JOIN Classes;` — למה **שם** זה כן עובד?
+
+**ש4.** `SELECT COUNT(*) FROM Classes CROSS JOIN Cities;` — מה קיבלתם, ומה ההבדל בין `CROSS JOIN` לבין פסיק בלי `WHERE`?
+
+**ש5.** לכל מקצוע ושם המורה שלו, פעמיים:
+
+**א.** עם `INNER JOIN` — כמה שורות?
+
+**ב.** עם `LEFT JOIN` — כמה שורות? **מה הופיע בשורה הנוספת?**
+
+**ש6.** מצאו את התשובה לשאלה ההפוכה: **איזה מורה לא מלמד כלום**. פעם אחת עם `RIGHT JOIN`, ופעם אחת — אותה תוצאה בדיוק — עם `LEFT JOIN` בלבד, על ידי **החלפת סדר הטבלאות**.
+
+**ש7.** `FULL OUTER JOIN` בין `Courses` ל‑`Teachers` — 8 שורות. **הסבירו מאיפה כל אחת מהשתיים המיוחדות.**
+
+> 💡 `RIGHT JOIN` ו‑`FULL OUTER JOIN` קיימים ב‑SQLite רק מגרסה 3.39 ומעלה. אם האתר מחזיר `syntax error` — הגרסה שלו ישנה; פתרו את ש6 וש7 **בעיפרון**, והריצו את גרסת ה‑`LEFT JOIN`.
+
+**ש8.** אילו תלמידים **לא נעדרו אף פעם**?
+
+**ש9.** אילו תלמידים **אין להם אף ציון**?
+
+**ש10.** שלוש טבלאות בתחביר ANSI: מי לא נבחן, באיזה מקצוע? (שם התלמיד + שם המקצוע, שם הציון `NULL`.)
+
+**ש11.** ⚠️ **`WHERE` שהורג `LEFT JOIN`.** המנהלת ביקשה: *"כל התלמידים, ולצד כל אחד ההיעדרויות **הלא מאושרות** שלו — גם אם אין לו."* תלמיד כתב:
+
+</div>
+
+```sql
+SELECT Students.FirstName, Absences.AbsenceDate
+FROM   Students LEFT JOIN Absences ON Absences.StudentId = Students.StudentId
+WHERE  Absences.Excused = 0;
+```
+
+<div dir="rtl">
+
+הריצו. **קיבלתם 9 שורות במקום 22.** איפה הטעות, ואיך מתקנים אותה בלי לשנות אף מילה אחרת חוץ ממקום אחד?
+
+**ש12.** סכמו בטבלה: מה מחזיר כל אחד מ‑`INNER` / `LEFT` / `RIGHT` / `FULL OUTER` / `CROSS`, ומתי תבחרו בכל אחד.
+
+</div>
+<!-- classroom:end -->

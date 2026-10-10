@@ -315,3 +315,313 @@ SELECT Customers.CustomerName FROM Customers LEFT JOIN Orders ON Customers.Custo
 
 </div>
 <!-- w3schools:end -->
+
+<!-- classroom:start -->
+<div dir="rtl">
+
+---
+
+## 💪 תרגול בכיתה — פתרונות
+
+> 🏫 על [`school.sql`](../../resources/school-db/). כל הפלטים כאן **אמיתיים** — כל שאילתה הורצה על בסיס הנתונים, נכון לתאריך הייחוס `'2026-09-21'`.
+
+</div>
+
+```text
+Cities    (CityCode, CityName)
+Teachers  (TeacherCode, FirstName, LastName, Subject, HireDate, Salary, CityCode, Phone)
+Classes   (ClassCode, ClassName, Grade, TeacherCode, RoomNumber)
+Courses   (CourseCode, CourseName, TeacherCode, WeeklyHours)
+Students  (StudentId, FirstName, LastName, ClassCode, Gender, BirthDate, CityCode, EnrollDate, Phone)
+Grades    (StudentId, CourseCode, Term, Grade)          -- PK: StudentId + CourseCode + Term
+Absences  (AbsenceId, StudentId, AbsenceDate, Excused, Reason)
+```
+
+<div dir="rtl">
+
+</div>
+
+```sql
+-- ש1
+SELECT Students.FirstName, Classes.ClassName
+FROM   Students INNER JOIN Classes ON Students.ClassCode = Classes.ClassCode;
+
+-- ש2
+SELECT Students.FirstName, Classes.ClassName
+FROM   Students JOIN Classes USING (ClassCode);
+
+-- ש3
+SELECT * FROM Grades NATURAL JOIN Classes;                    -- 0 שורות (!)
+SELECT COUNT(*) AS n FROM Students NATURAL JOIN Classes;      -- 17
+
+-- ש4
+SELECT COUNT(*) AS n FROM Classes CROSS JOIN Cities;
+
+-- ש5
+SELECT Courses.CourseName, Teachers.LastName
+FROM   Courses INNER JOIN Teachers ON Courses.TeacherCode = Teachers.TeacherCode;
+SELECT Courses.CourseName, Teachers.LastName
+FROM   Courses LEFT  JOIN Teachers ON Courses.TeacherCode = Teachers.TeacherCode;
+
+-- ש6  שתי הדרכים לאותה תשובה
+SELECT Courses.CourseName, Teachers.LastName
+FROM   Courses RIGHT JOIN Teachers ON Courses.TeacherCode = Teachers.TeacherCode;
+SELECT Courses.CourseName, Teachers.LastName
+FROM   Teachers LEFT JOIN Courses  ON Courses.TeacherCode = Teachers.TeacherCode;
+
+-- ש7
+SELECT Courses.CourseName, Teachers.LastName
+FROM   Courses FULL OUTER JOIN Teachers ON Courses.TeacherCode = Teachers.TeacherCode;
+
+-- ש8
+SELECT Students.FirstName
+FROM   Students LEFT JOIN Absences ON Absences.StudentId = Students.StudentId
+WHERE  Absences.AbsenceId IS NULL;
+
+-- ש9
+SELECT Students.FirstName
+FROM   Students LEFT JOIN Grades ON Grades.StudentId = Students.StudentId
+WHERE  Grades.StudentId IS NULL;
+
+-- ש10
+SELECT Students.FirstName, Courses.CourseName, Grades.Grade
+FROM   Grades
+JOIN   Students ON Students.StudentId  = Grades.StudentId
+JOIN   Courses  ON Courses.CourseCode  = Grades.CourseCode
+WHERE  Grades.Grade IS NULL;
+
+-- ש11  התיקון: התנאי עובר מ-WHERE ל-ON
+SELECT Students.FirstName, Absences.AbsenceDate
+FROM   Students LEFT JOIN Absences
+       ON Absences.StudentId = Students.StudentId AND Absences.Excused = 0
+ORDER  BY Students.StudentId;
+```
+
+<div dir="rtl">
+
+**ש1.** 17 שורות — **בדיוק** כמו עם פסיק ו‑`WHERE` בשיעור 21. אותה תוצאה, אותה תוכנית ביצוע; רק התחביר שונה.
+
+| התחביר | היתרון |
+|---------|---------|
+| `FROM A, B WHERE A.k = B.k` | קצר · **זה מה שמופיע בבחינה (שאלון 735911)** |
+| `FROM A JOIN B ON A.k = B.k` | תנאי החיבור **מופרד** מתנאי הסינון — קשה יותר "לשכוח" אותו, ובלעדיו תקבלו שגיאה ולא תוצר קרטזי |
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | ClassName |
+|:---:|:---:|
+| אדם | י1 |
+| נור | י1 |
+| יואב | י1 |
+| מאיה | י2 |
+| רוני | י2 |
+
+</figure>
+
+**ש2.** `USING` אפשרי רק כששמות העמודות **זהים בשתי הטבלאות** — כאן `ClassCode`. החיסרון: הוא **תלוי בשמות**. אם מישהו ישנה את העמודה ב‑`Classes` ל‑`Code`, השאילתה תישבר; ואם יתווסף שם זהה **נוסף** לשתי הטבלאות, היא תמשיך לרוץ ותחבר לפי **שתי** העמודות — ותחזיר תוצאה אחרת בשקט. התוצאה כאן זהה לש1.
+
+**ש3.** **0 שורות.**
+
+`NATURAL JOIN` לא שואל אותך על מה לחבר — הוא מחבר **לפי כל העמודות ששמן זהה בשתי הטבלאות**. ב‑`Grades` יש `Grade` (ציון), וב‑`Classes` יש `Grade` (**שכבה**: 10, 11, 12). אותו שם, שני דברים שונים לגמרי. SQL חיבר אותם:
+
+</div>
+
+```text
+Grades.Grade = Classes.Grade
+   ציון       =      שכבה
+      88      =       10     ->  לא
+      74      =       11     ->  לא
+      ...     כל 60 הציונים מול 10/11/12  ->  אף התאמה
+```
+
+<div dir="rtl">
+
+אין ציון שערכו 10, 11 או 12, ולכן התוצאה ריקה. **ואין שגיאה.** שאילתה שמחזירה אפס שורות נראית כמו "אין נתונים מתאימים", וכאן היא בכלל לא שאלה את השאלה שהתכוונו אליה.
+
+**ולמה `Students NATURAL JOIN Classes` כן עובד (17 שורות)?** כי שם העמודה המשותפת **היחידה** היא `ClassCode` — וזה במקרה בדיוק מה שרצינו. "במקרה" היא המילה החשובה: ברגע שמישהו יוסיף ל‑`Students` עמודה `RoomNumber` או `Grade`, אותה שאילתה תתחיל לחבר לפי שתי עמודות ותחזיר תוצאה אחרת — בלי שאף אחד נגע בה.
+
+> **המסקנה:** `NATURAL JOIN` חוסך הקלדה ומוסר את השליטה לשמות העמודות. **כתבו `ON` במפורש.** תמיד.
+
+**ש4.** **30 שורות** = 5 × 6. `CROSS JOIN` הוא **בדיוק** מה שפסיק בלי `WHERE` עושה — אותו תוצר קרטזי, אותו מספר שורות.
+
+ההבדל הוא בכוונה, לא בתוצאה: `CROSS JOIN` **מכריז** "התוצר הקרטזי הוא מה שאני רוצה", ולכן מי שקורא את הקוד יודע שזה לא טעות. פסיק בלי `WHERE` נראה כמו `JOIN` ששכחו בו את התנאי — וב‑99% מהמקרים זה בדיוק מה שהוא.
+
+**ש5א.** **6 שורות.** **ש5ב.** **7 שורות** — נוספה `סדנת פרויקטים`, ובעמודת שם המורה יש **`NULL`**.
+
+ה‑`NULL` הזה לא קיים באף טבלה: הוא **הומצא על ידי ה‑`JOIN`** כדי למלא את השורה הימנית שלא נמצאה. זה הדבר שמבדיל `OUTER JOIN` מ‑`INNER JOIN`.
+
+<figure dir="ltr" class="dbtable">
+
+| CourseName | LastName (INNER) | LastName (LEFT) |
+|:---:|:---:|:---:|
+| מתמטיקה 5 יח"ל | סרחאן | סרחאן |
+| אנגלית 4 יח"ל | בר-לב | בר-לב |
+| מבוא לבסיסי נתונים | זיאד | זיאד |
+| היסטוריה | שמש | שמש |
+| חינוך גופני | חדאד | חדאד |
+| מתמטיקה 3 יח"ל | מזרחי | מזרחי |
+| **סדנת פרויקטים** | *(לא הופיעה)* | **NULL** |
+
+</figure>
+
+**ש6.** **סמיר אבו-ראס.** שתי השאילתות מחזירות 7 שורות זהות.
+
+`RIGHT JOIN` = "כל השורות מהטבלה הימנית". `LEFT JOIN` = "כל השורות מהשמאלית". לכן:
+
+</div>
+
+```text
+Courses  RIGHT JOIN  Teachers     ==     Teachers  LEFT JOIN  Courses
+```
+
+<div dir="rtl">
+
+הם **אותו דבר** עם הטבלאות בסדר הפוך. לכן `RIGHT JOIN` הוא נוחות ולא יכולת: כל `RIGHT JOIN` נכתב כ‑`LEFT JOIN`, וזו הסיבה שהרבה צוותים אוסרים אותו — קל יותר לקרוא קוד שבו "הטבלה החשובה תמיד שמאלה".
+
+<figure dir="ltr" class="dbtable">
+
+| CourseName | LastName |
+|:---:|:---:|
+| מתמטיקה 5 יח"ל | סרחאן |
+| אנגלית 4 יח"ל | בר-לב |
+| מבוא לבסיסי נתונים | זיאד |
+| היסטוריה | שמש |
+| חינוך גופני | חדאד |
+| מתמטיקה 3 יח"ל | מזרחי |
+| **NULL** | **אבו-ראס** |
+
+</figure>
+
+**ש7.** **8 שורות** = 6 מותאמות + 2 חריגות, אחת מכל צד:
+
+| השורה | מאיפה היא |
+|--------|-----------|
+| `סדנת פרויקטים` · `NULL` | מקצוע **בלי מורה** — הצד השמאלי |
+| `NULL` · `אבו-ראס` | מורה **בלי מקצוע** — הצד הימני |
+
+`FULL OUTER JOIN` = `LEFT` ∪ `RIGHT`. הוא השאילתה של "**תראה לי את כל אי‑ההתאמות בשני הכיוונים**", ובעבודה אמיתית זו בדיוק שאילתת הבדיקה שמריצים אחרי ייבוא נתונים.
+
+<figure dir="ltr" class="dbtable">
+
+| CourseName | LastName |
+|:---:|:---:|
+| מתמטיקה 5 יח"ל | סרחאן |
+| אנגלית 4 יח"ל | בר-לב |
+| מבוא לבסיסי נתונים | זיאד |
+| היסטוריה | שמש |
+| חינוך גופני | חדאד |
+| מתמטיקה 3 יח"ל | מזרחי |
+| סדנת פרויקטים | NULL |
+| NULL | אבו-ראס |
+
+</figure>
+
+**ש8.** **9 תלמידים** לא נעדרו אף פעם: נור, רוני, עומר, שירה, ליאור, דניאל, הדיל, ראניה, נועם.
+
+שימו לב שבדקנו `Absences.AbsenceId IS NULL` — **עמודה שהיא `NOT NULL` בטבלה**. זה לא מקרי: אם היא `NOT NULL` בהגדרה, `NULL` בה יכול להגיע **רק** מה‑`OUTER JOIN`, כלומר רק מ"לא נמצאה התאמה". לכן תמיד בוחרים לבדיקה הזאת את המפתח הראשי של הטבלה הימנית, ולא עמודה שעשויה להיות `NULL` בפני עצמה (כמו `Reason`).
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName |
+|:---:|
+| נור |
+| רוני |
+| עומר |
+| שירה |
+| ליאור |
+| דניאל |
+| הדיל |
+| ראניה |
+| נועם |
+
+</figure>
+
+**ש9.** **לינא חמוד** — נרשמה ב‑10 בספטמבר, ואין לה עדיין אף ציון.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName |
+|:---:|
+| לינא |
+
+</figure>
+
+**ש10.** **2 שורות.** זה שונה מש9: כאן השורה **קיימת** ב‑`Grades`, אבל הציון בה `NULL`. "אין שורה" ו"יש שורה עם `NULL`" הם שני מצבים שונים לגמרי — הראשון נמצא ב‑`LEFT JOIN … IS NULL`, השני ב‑`WHERE … IS NULL` רגיל.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | CourseName | Grade |
+|:---:|:---:|:---:|
+| מאיה | היסטוריה | NULL |
+| כרים | אנגלית 4 יח"ל | NULL |
+
+</figure>
+
+**ש11.** הטעות: התנאי `Absences.Excused = 0` נמצא ב‑**`WHERE`** ולא ב‑**`ON`**.
+
+הנה מה שקרה, בסדר הביצוע:
+
+</div>
+
+```text
+1. LEFT JOIN   ->  25 שורות: כל התלמידים, כולל 9 עם NULL בהיעדרות
+2. WHERE Excused = 0
+                   עבור תלמיד בלי היעדרות, Excused הוא NULL
+                   NULL = 0  ->  לא ידוע  ->  השורה נזרקת
+3. התוצאה      ->  9 שורות בלבד
+```
+
+<div dir="rtl">
+
+כלומר ה‑`WHERE` **ביטל את ה‑`LEFT`** והפך את השאילתה ל‑`INNER JOIN` רגיל. זו הטעות הנפוצה ביותר ב‑`OUTER JOIN`, והיא לא מתגלה בשגיאה — רק בשורות שנעלמו.
+
+**התיקון — להעביר את התנאי ל‑`ON`:**
+
+</div>
+
+```sql
+FROM  Students LEFT JOIN Absences
+      ON Absences.StudentId = Students.StudentId AND Absences.Excused = 0
+```
+
+<div dir="rtl">
+
+**22 שורות.** ההבדל העקרוני:
+
+| המקום | מה הוא עושה |
+|--------|--------------|
+| `ON` | קובע **מה נחשב התאמה**. שורה שמאלית בלי התאמה עדיין חוזרת, עם `NULL` |
+| `WHERE` | מסנן את **התוצאה**, אחרי שה‑`JOIN` נגמר — וזורק גם את שורות ה‑`NULL` |
+
+**כלל אצבע:** ב‑`LEFT JOIN`, תנאי על הטבלה **הימנית** שייך ל‑`ON`. תנאי על הטבלה **השמאלית** שייך ל‑`WHERE`.
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | AbsenceDate |
+|:---:|:---:|
+| אדם | NULL |
+| נור | NULL |
+| יואב | NULL |
+| מאיה | 2026-09-07 |
+| רוני | NULL |
+| סאלי | NULL |
+| עומר | NULL |
+| שירה | NULL |
+| כרים | 2026-09-08 |
+| כרים | 2026-09-09 |
+| … | … |
+
+</figure>
+
+**ש12.** הטבלה המסכמת:
+
+| החיבור | מה חוזר | מתי להשתמש |
+|---------|----------|-------------|
+| `INNER JOIN` | רק שורות שנמצאה להן התאמה בשני הצדדים | ברירת המחדל — "תראה לי את מה שמתאים" |
+| `LEFT JOIN` | כל השמאליות + ההתאמות, `NULL` כשאין | "כל התלמידים, גם מי שאין לו…" · ולמצוא חסרים עם `IS NULL` |
+| `RIGHT JOIN` | כל הימניות + ההתאמות | אף פעם לא **צריך** — הפכו את סדר הטבלאות ו‑`LEFT` |
+| `FULL OUTER JOIN` | הכול משני הצדדים | בדיקת תקינות: "איפה הנתונים לא מסתדרים?" |
+| `CROSS JOIN` | כל צירוף אפשרי (מכפלה) | נדיר ובכוונה — למשל לבנות לוח "כל כיתה × כל יום בשבוע" |
+
+</div>
+<!-- classroom:end -->
