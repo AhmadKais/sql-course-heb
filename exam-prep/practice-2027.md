@@ -7,6 +7,8 @@
 >
 > **בסיס הנתונים:** [`db/music.sql`](db/music.sql). פתרו קודם על הנייר, כמו בבחינה, ורק אחר כך טענו את הקובץ ל‑[OneCompiler](https://onecompiler.com/sqlite) ובדקו את עצמכם. הפתרונות: [practice-2027-solutions.md](practice-2027-solutions.md).
 
+> **רמת הקושי של כל סעיף:** 🟢 בסיסי · 🟡 בינוני · 🔴 מתקדם. לא בטוחים? התחילו מה‑[דוגמאות הפתורות](examples-2027.md), ואחר כך פתרו קודם את כל הסעיפים הירוקים.
+
 ### שני כללים חדשים מההנחיות, שחשוב לזכור
 
 1. **לכל שדה בבסיס הנתונים יש שם ייחודי**, ולכן בבחינה שמות השדות מופיעים **בלי** שם הטבלה לפניהם. כותבים `WHERE HomeTown = CityCode`, ולא `WHERE Pupils.HomeTown = Cities.CityCode`.
@@ -124,7 +126,7 @@
 
 ## חלק א: מבנה בסיס הנתונים, מפתחות וקשרים (סעיפים 1–2 בהנחיות)
 
-**1.** בתרשים ה‑DSD של בסיס הנתונים יש **חמישה** קווי קשר. השלימו את הטבלה:
+**1.** 🟢 בתרשים ה‑DSD של בסיס הנתונים יש **חמישה** קווי קשר. השלימו את הטבלה:
 
 | # | צד המפתח הראשי | צד המפתח הזר |
 |:-:|:---:|:---:|
@@ -134,22 +136,22 @@
 | 4 | ________ | RegTeacher |
 | 5 | ________ | ________ |
 
-**2.** קבעו לגבי כל היגד אם הוא **נכון** או **לא נכון**, והסבירו בשורה אחת:
+**2.** 🟢 קבעו לגבי כל היגד אם הוא **נכון** או **לא נכון**, והסבירו בשורה אחת:
 1. המפתח הראשי בטבלה Registrations הוא השדה RegPupil בלבד.
 2. בטבלה Registrations יש שני מפתחות זרים, ויחד הם גם המפתח הראשי שלה.
 3. הקשר בין Pupils ל‑Teachers הוא קשר של רבים לרבים.
 4. הקשר בין Pupils ל‑Lockers הוא קשר של יחיד ליחיד.
 5. בטבלה Instruments יש מפתח זר.
 
-**3.** מהו סוג הקשר בין Instruments ל‑Teachers? באיזו טבלה נמצא צד ה"רבים"?
+**3.** 🟢 מהו סוג הקשר בין Instruments ל‑Teachers? באיזו טבלה נמצא צד ה"רבים"?
 
-**4.** למה **אי אפשר** לשמור את הרישום של תלמיד למורה בתוך הטבלה Pupils (למשל שדה TeacherCode בטבלה Pupils)?
+**4.** 🟡 למה **אי אפשר** לשמור את הרישום של תלמיד למורה בתוך הטבלה Pupils (למשל שדה TeacherCode בטבלה Pupils)?
 
 ---
 
 ## חלק ב: איזו טבלה תתקבל? אילו ערכים יוחזרו? (סעיף 3)
 
-**5.** איזו טבלה תתקבל לאחר ביצוע השאילתה?
+**5.** 🟢 איזו טבלה תתקבל לאחר ביצוע השאילתה?
 
 ```sql
 SELECT FirstName, LastName
@@ -227,7 +229,7 @@ ORDER BY LastName;
 
 
 
-**6.** איזו טבלה תתקבל לאחר ביצוע השאילתה?
+**6.** 🟡 איזו טבלה תתקבל לאחר ביצוע השאילתה?
 
 ```sql
 SELECT TeacherName, InstName
@@ -294,7 +296,7 @@ ORDER BY TeacherName;
 
 
 
-**7.** **השלמת ערכים:** כתבו את הערך שכל שאילתה תחזיר.
+**7.** 🟡 **השלמת ערכים:** כתבו את הערך שכל שאילתה תחזיר.
 
 | # | השאילתה | הערך |
 |:-:|---|:-:|
@@ -304,7 +306,7 @@ ORDER BY TeacherName;
 | 4 | `SELECT LastName FROM Pupils WHERE PupilId = (SELECT LockerPupil FROM Lockers WHERE LockerNum = 3)` | ________ |
 | 5 | `SELECT SUM(MonthlyFee) FROM Registrations WHERE RegPupil = 210` | ________ |
 
-**8.** איזו טבלה תתקבל? (צירוף של שלוש טבלאות)
+**8.** 🟡 איזו טבלה תתקבל? (צירוף של שלוש טבלאות)
 
 ```sql
 SELECT FirstName, LastName, PupilLevel
@@ -375,7 +377,7 @@ WHERE PupilId = RegPupil
 
 ## חלק ג: תנאים מורכבים, DISTINCT וכינויים (סעיפים 3 ו‑6)
 
-**9.** שלושה תלמידים כתבו שאילתה שמציגה את התלמידים שגרים **בירכא (1) או בעכו (2)**, ונולדו **לפני 2012**. מי צדק? (ייתכן שיותר מתלמיד אחד.)
+**9.** 🔴 שלושה תלמידים כתבו שאילתה שמציגה את התלמידים שגרים **בירכא (1) או בעכו (2)**, ונולדו **לפני 2012**. מי צדק? (ייתכן שיותר מתלמיד אחד.)
 
 **נועה:**
 ```sql
@@ -395,13 +397,13 @@ SELECT FirstName, LastName FROM Pupils
 WHERE HomeTown IN (1, 2) AND BirthYear < 2012;
 ```
 
-**10.** כמה שורות תחזיר כל שאילתה? ומה הן?
+**10.** 🟢 כמה שורות תחזיר כל שאילתה? ומה הן?
 1. `SELECT LastName FROM Pupils WHERE LastName LIKE "ח%"`
 2. `SELECT LastName FROM Pupils WHERE LastName LIKE "%ן"`
 3. `SELECT LastName FROM Pupils WHERE LastName LIKE "_ו%"`
 4. `SELECT TeacherName FROM Teachers WHERE TeacherName LIKE "%כהן%" OR HourRate BETWEEN 100 AND 110`
 
-**11.** מה ההבדל בין שתי השאילתות? כמה שורות תחזיר כל אחת?
+**11.** 🟢 מה ההבדל בין שתי השאילתות? כמה שורות תחזיר כל אחת?
 
 ```sql
 SELECT RegTeacher FROM Registrations WHERE RegYear BETWEEN 2024 AND 2025;
@@ -409,7 +411,7 @@ SELECT RegTeacher FROM Registrations WHERE RegYear BETWEEN 2024 AND 2025;
 SELECT DISTINCT RegTeacher FROM Registrations WHERE RegYear BETWEEN 2024 AND 2025;
 ```
 
-**12.** **כינויים (AS):** השלימו את השאילתה, כך שבכותרות של התוצאה יופיעו השמות Teacher ו‑NewRate (התשלום לשעה אחרי הנחה של 10%):
+**12.** 🟢 **כינויים (AS):** השלימו את השאילתה, כך שבכותרות של התוצאה יופיעו השמות Teacher ו‑NewRate (התשלום לשעה אחרי הנחה של 10%):
 
 ```sql
 SELECT TeacherName ________ Teacher, HourRate * 0.9 ________ NewRate
@@ -423,7 +425,7 @@ WHERE HourRate ________ 130;
 
 ## חלק ד: ניתוח פלט — איזו שאילתה הציגה את הטבלה? (סעיף 3)
 
-**13.** לאחר הרצה של שאילתה התקבלה הטבלה הזאת. איזו מבין השאילתות הציגה אותה?
+**13.** 🟡 לאחר הרצה של שאילתה התקבלה הטבלה הזאת. איזו מבין השאילתות הציגה אותה?
 
 <figure dir="ltr" class="dbtable">
 
@@ -461,7 +463,7 @@ SELECT FirstName, BirthYear FROM Pupils WHERE HomeTown = 3 OR BirthYear = 2009
 ```
 
 
-**14.** לאחר הרצה של שאילתה התקבלה הטבלה הזאת. איזו מבין השאילתות הציגה אותה? שימו לב גם **לכותרות**.
+**14.** 🔴 לאחר הרצה של שאילתה התקבלה הטבלה הזאת. איזו מבין השאילתות הציגה אותה? שימו לב גם **לכותרות**.
 
 <figure dir="ltr" class="dbtable">
 
@@ -498,7 +500,7 @@ SELECT RegTeacher, COUNT(RegPupil) AS Pupils_Count FROM Registrations WHERE RegY
 ```
 
 
-**15.** לאחר הרצה של שאילתה התקבלה הטבלה הזאת. איזו מבין השאילתות הציגה אותה?
+**15.** 🟡 לאחר הרצה של שאילתה התקבלה הטבלה הזאת. איזו מבין השאילתות הציגה אותה?
 
 <figure dir="ltr" class="dbtable">
 
@@ -539,7 +541,7 @@ SELECT DISTINCT CityName FROM Cities, Pupils WHERE CityCode = HomeTown
 
 ## חלק ה: פונקציות קיבוץ, WHERE ו‑HAVING (סעיף 4)
 
-**16.** השלימו את השאילתה שמציגה לכל רמה (PupilLevel) את מספר הרישומים ואת התשלום החודשי הממוצע. רק רישומים **משנת 2024 ואילך**, ורק רמות שיש בהן **2 רישומים לפחות**:
+**16.** 🟡 השלימו את השאילתה שמציגה לכל רמה (PupilLevel) את מספר הרישומים ואת התשלום החודשי הממוצע. רק רישומים **משנת 2024 ואילך**, ורק רמות שיש בהן **2 רישומים לפחות**:
 
 ```sql
 SELECT PupilLevel, COUNT(*) AS Regs, ________(MonthlyFee) AS AvgFee
@@ -549,9 +551,9 @@ GROUP BY ________
 ________ COUNT(*) >= 2;
 ```
 
-**17.** כתבו שאילתה שמציגה לכל מורה (RegTeacher) את **סך** התשלומים החודשיים של התלמידים שלו, רק למורים שהסכום אצלם **גדול מ‑900**.
+**17.** 🟡 כתבו שאילתה שמציגה לכל מורה (RegTeacher) את **סך** התשלומים החודשיים של התלמידים שלו, רק למורים שהסכום אצלם **גדול מ‑900**.
 
-**18.** כתבו את הערכים שהשאילתה תחזיר:
+**18.** 🟢 כתבו את הערכים שהשאילתה תחזיר:
 
 ```sql
 SELECT MIN(HourRate) AS Low, MAX(HourRate) AS High, SUM(HourRate) AS Total
@@ -563,7 +565,7 @@ WHERE TeachInst = 10;
 
 ## חלק ו: שאילתות מקוננות (סעיף 5)
 
-**19.** השלימו את השאילתה שמציגה את שמות המורים **שאין להם אף תלמיד**:
+**19.** 🟡 השלימו את השאילתה שמציגה את שמות המורים **שאין להם אף תלמיד**:
 
 ```sql
 SELECT TeacherName
@@ -571,11 +573,11 @@ FROM Teachers
 WHERE TeacherCode ________ (SELECT ________ FROM Registrations);
 ```
 
-**20.** כתבו שאילתה שמציגה את השם הפרטי ושם המשפחה של התלמידים **שאין להם לוקר**.
+**20.** 🟡 כתבו שאילתה שמציגה את השם הפרטי ושם המשפחה של התלמידים **שאין להם לוקר**.
 
-**21.** כתבו שאילתה שמציגה את המורים שהתשלום לשעה שלהם **גבוה מהממוצע** של כל המורים.
+**21.** 🟡 כתבו שאילתה שמציגה את המורים שהתשלום לשעה שלהם **גבוה מהממוצע** של כל המורים.
 
-**22.** מה תציג השאילתה? תארו במילים, ואחר כך כתבו את הרשומות.
+**22.** 🔴 מה תציג השאילתה? תארו במילים, ואחר כך כתבו את הרשומות.
 
 ```sql
 SELECT FirstName, LastName
@@ -590,7 +592,7 @@ WHERE PupilId IN (SELECT RegPupil FROM Registrations
 
 ## חלק ז: SELECT על טבלאות ועל שאילתות שמורות (סעיף 7)
 
-**23.** תלמיד שמר את השאילתה הזאת בשם **Q1**:
+**23.** 🔴 תלמיד שמר את השאילתה הזאת בשם **Q1**:
 
 ```sql
 SELECT RegTeacher, COUNT(*) AS PupilsNum
@@ -608,13 +610,13 @@ WHERE TeacherCode = ________
   AND ________ >= 3;
 ```
 
-**24.** תלמיד שמר את השאילתה **Q2**: `SELECT MAX(MonthlyFee) AS TopFee FROM Registrations`. כתבו שאילתה שמשלבת את הטבלאות Pupils ו‑Registrations ואת Q2, ומציגה את השם הפרטי של התלמיד שמשלם את התשלום החודשי **הגבוה ביותר**, ואת התשלום.
+**24.** 🔴 תלמיד שמר את השאילתה **Q2**: `SELECT MAX(MonthlyFee) AS TopFee FROM Registrations`. כתבו שאילתה שמשלבת את הטבלאות Pupils ו‑Registrations ואת Q2, ומציגה את השם הפרטי של התלמיד שמשלם את התשלום החודשי **הגבוה ביותר**, ואת התשלום.
 
 ---
 
 ## חלק ח: פקודות לשינוי נתונים ומבנה (עמוד 6 בהנחיות)
 
-**25.** התאימו לכל משימה את הפקודה:
+**25.** 🟢 התאימו לכל משימה את הפקודה:
 
 | # | המשימה | הפקודה |
 |:-:|---|:-:|
@@ -626,24 +628,202 @@ WHERE TeacherCode = ________
 | 6 | להוסיף רשומה לטבלה | ________ |
 | 7 | למחוק טבלה שלמה, כולל המבנה שלה | ________ |
 
-**26.** כל המורים לפסנתר (TeachInst = 10) מעלים את התשלום לשעה ב‑10%. כתבו את הפקודה. כמה רשומות יתעדכנו?
+**26.** 🟡 כל המורים לפסנתר (TeachInst = 10) מעלים את התשלום לשעה ב‑10%. כתבו את הפקודה. כמה רשומות יתעדכנו?
 
-**27.** בית הספר רוצה לשמור את כתובת הדוא"ל של כל תלמיד. כתבו פקודה שמוסיפה לטבלה Pupils שדה בשם Email מטיפוס טקסט.
+**27.** 🟢 בית הספר רוצה לשמור את כתובת הדוא"ל של כל תלמיד. כתבו פקודה שמוסיפה לטבלה Pupils שדה בשם Email מטיפוס טקסט.
 
-**28.** בית הספר החליט לא לשמור יותר את הטלפון של המורים. כתבו פקודה שמוחקת את השדה TeacherPhone מהטבלה Teachers.
+**28.** 🟢 בית הספר החליט לא לשמור יותר את הטלפון של המורים. כתבו פקודה שמוחקת את השדה TeacherPhone מהטבלה Teachers.
 
-**29.** כתבו פקודה שמשנה את הטיפוס של השדה PupilLevel בטבלה Registrations ל‑`VARCHAR(20)`.
+**29.** 🟡 כתבו פקודה שמשנה את הטיפוס של השדה PupilLevel בטבלה Registrations ל‑`VARCHAR(20)`.
 
-**30.** כתבו פקודה שמוחקת את כל הרישומים משנת 2021 עד שנת 2022 (כולל). כמה רשומות יימחקו?
+**30.** 🟡 כתבו פקודה שמוחקת את כל הרישומים משנת 2021 עד שנת 2022 (כולל). כמה רשומות יימחקו?
 
-**31.** תלמידה חדשה נרשמה: מספר 211, ג'וד סעב, ילידת 2013, גרה במעלות. היא תלמד אצל המורה 6 משנת 2025, ברמת "מתחיל", ותשלם 330 ש"ח בחודש. כתבו את **שתי** פקודות ה‑`INSERT`. באיזה סדר חייבים להריץ אותן, ולמה?
+**31.** 🔴 תלמידה חדשה נרשמה: מספר 211, ג'וד סעב, ילידת 2013, גרה במעלות. היא תלמד אצל המורה 6 משנת 2025, ברמת "מתחיל", ותשלם 330 ש"ח בחודש. כתבו את **שתי** פקודות ה‑`INSERT`. באיזה סדר חייבים להריץ אותן, ולמה?
 
-**32.** מה ההבדל בין `DELETE FROM Lockers;` לבין `DROP TABLE Lockers;`?
+**32.** 🟢 מה ההבדל בין `DELETE FROM Lockers;` לבין `DROP TABLE Lockers;`?
 
-**33.** איזו מבין הפקודות **כתובה נכון**?
+**33.** 🟢 איזו מבין הפקודות **כתובה נכון**?
 1. `ALTER TABLE Teachers DELETE COLUMN TeacherPhone`
 2. `DROP COLUMN TeacherPhone FROM Teachers`
 3. `ALTER TABLE Teachers DROP COLUMN TeacherPhone`
 4. `UPDATE Teachers DROP TeacherPhone`
+
+---
+
+## חלק ט: עוד תרגול, לפי רמות
+
+### 🟢 בסיסי
+
+**34.** 🟢 כתבו שאילתה שמציגה את השם הפרטי ושם המשפחה של התלמידים שגרים **בנהריה** (קוד העיר 4).
+
+**35.** 🟢 כמה שורות תחזיר השאילתה? `SELECT * FROM Instruments WHERE InstFamily <> "מיתר"`
+
+**36.** 🟢 כתבו שאילתה שמציגה את שמות המורים ואת התשלום לשעה, **מהיקר לזול**.
+
+**37.** 🟢 כתבו שאילתה שמציגה את מספרי הלוקרים ואת מספרי התלמידים של הלוקרים **בקומה 2**.
+
+**38.** 🟢 איזו פקודה מוסיפה תלמיד חדש לטבלה Pupils?
+1. `UPDATE Pupils ADD (212, "דן", "לוי", 2012, 1)`
+2. `INSERT INTO Pupils VALUES (212, "דן", "לוי", 2012, 1)`
+3. `ALTER TABLE Pupils ADD (212, "דן", "לוי", 2012, 1)`
+4. `INSERT TABLE Pupils (212, "דן", "לוי", 2012, 1)`
+
+### 🟡 בינוני
+
+**39.** 🟡 כתבו שאילתה שמציגה את השם הפרטי של כל תלמיד **שיש לו לוקר בקומה 2**. (צירוף של Pupils ו‑Lockers.)
+
+**40.** 🟡 כתבו שאילתה שמציגה לכל עיר את **שם** העיר ואת **מספר** התלמידים שגרים בה.
+
+**41.** 🟡 איזו טבלה תתקבל?
+
+```sql
+SELECT InstFamily, COUNT(*) AS Instruments_Count
+FROM Instruments
+GROUP BY InstFamily
+HAVING COUNT(*) > 1;
+```
+
+
+
+**1.**
+
+<figure dir="ltr" class="dbtable">
+
+| InstFamily | Instruments_Count |
+|:---:|:---:|
+| הקשה | 1 |
+| מיתר | 3 |
+| נשיפה | 1 |
+| קלידים | 1 |
+
+</figure>
+
+
+
+**2.**
+
+<figure dir="ltr" class="dbtable">
+
+| InstFamily | Instruments_Count |
+|:---:|:---:|
+| הקשה | 1 |
+| נשיפה | 1 |
+| קלידים | 1 |
+
+</figure>
+
+
+
+**3.**
+
+<figure dir="ltr" class="dbtable">
+
+| InstFamily | Instruments_Count |
+|:---:|:---:|
+| מיתר | 3 |
+
+</figure>
+
+
+
+**4.**
+
+<figure dir="ltr" class="dbtable">
+
+| InstFamily | Instruments_Count |
+|:---:|:---:|
+| גיטרה | 1 |
+| כינור | 1 |
+| עוד | 1 |
+
+</figure>
+
+
+
+
+**42.** 🟡 השלימו את השאילתה שמציגה את המורים שיש בשם שלהם את האות **ר**, והתשלום לשעה שלהם **בין 100 ל‑130** (כולל):
+
+```sql
+SELECT TeacherName, HourRate
+FROM Teachers
+WHERE TeacherName ________ "________"
+  ________ HourRate ________ 100 AND 130;
+```
+
+**43.** 🟡 כמה שורות תחזיר כל שאילתה?
+1. `SELECT RegYear FROM Registrations`
+2. `SELECT DISTINCT RegYear FROM Registrations`
+3. `SELECT DISTINCT RegYear, PupilLevel FROM Registrations WHERE RegYear = 2025`
+
+### 🔴 מתקדם
+
+**44.** 🔴 לאחר הרצה של שאילתה התקבלה הטבלה הזאת. איזו מבין השאילתות הציגה אותה?
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | PupilLevel |
+|:---:|:---:|
+| אדם | מתחיל |
+| תמר | ממשיך |
+| יואב | מתקדם |
+
+</figure>
+
+**1.**
+
+```sql
+SELECT FirstName, PupilLevel FROM Pupils, Registrations WHERE PupilId = RegPupil AND RegTeacher = 3
+```
+
+**2.**
+
+```sql
+SELECT FirstName, PupilLevel FROM Pupils, Registrations, Teachers WHERE PupilId = RegPupil AND RegTeacher = TeacherCode AND TeacherName = "יוסי פרץ"
+```
+
+**3.**
+
+```sql
+SELECT FirstName, RegYear FROM Pupils, Registrations, Teachers WHERE PupilId = RegPupil AND RegTeacher = TeacherCode AND TeacherName = "יוסי פרץ"
+```
+
+**4.**
+
+```sql
+SELECT FirstName, PupilLevel FROM Pupils, Registrations, Teachers WHERE PupilId = RegPupil AND RegTeacher = TeacherCode AND TeacherName LIKE "%פרץ%" AND PupilLevel = "ממשיך"
+```
+
+
+**45.** 🔴 כתבו שאילתה שמציגה את שמות כלי הנגינה **שאף מורה לא מלמד**.
+
+**46.** 🔴 כתבו שאילתה שמציגה את השם הפרטי של כל תלמיד ואת **סך** התשלומים החודשיים שלו, רק לתלמידים שמשלמים **יותר מ‑600** בחודש בסך הכול.
+
+**47.** 🔴 מוחקים את כל הרישומים של התלמידים **שגרים בעכו**. השלימו, וכתבו כמה רשומות יימחקו:
+
+```sql
+________ FROM Registrations
+WHERE RegPupil IN (SELECT ________ FROM Pupils
+                   WHERE HomeTown = (SELECT ________ FROM Cities
+                                     WHERE CityName = "עכו"));
+```
+
+**48.** 🔴 שלושה תלמידים כתבו שאילתה שמציגה **רק** את שם המורה שמקבל את התשלום לשעה **הגבוה ביותר**. מי צדק? (ייתכן שיותר מאחד.)
+
+**נועה:**
+```sql
+SELECT TeacherName FROM Teachers ORDER BY HourRate DESC;
+```
+
+**ירין:**
+```sql
+SELECT TeacherName FROM Teachers
+WHERE HourRate = (SELECT MAX(HourRate) FROM Teachers);
+```
+
+**ליאב** (השורה הראשונה שומרת את השאילתה Q3):
+```sql
+CREATE VIEW Q3 AS SELECT MAX(HourRate) AS TopRate FROM Teachers;
+SELECT TeacherName FROM Teachers, Q3 WHERE HourRate = TopRate;
+```
 
 </div>

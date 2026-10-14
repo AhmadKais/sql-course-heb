@@ -413,4 +413,163 @@ VALUES (211, 6, 2025, "מתחיל", 330);
 
 **33.** תשובה **3**. מוחקים שדה עם `ALTER TABLE ... DROP COLUMN`. אין `DELETE COLUMN` (1), `DROP` לבד מוחק טבלה ולא שדה (2), ו‑`UPDATE` משנה ערכים, לא מבנה (4).
 
+
+## חלק ט
+
+**34.**
+
+```sql
+SELECT FirstName, LastName FROM Pupils WHERE HomeTown = 4;
+```
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | LastName |
+|:---:|:---:|
+| תמר | אברהם |
+| עומר | ביטון |
+
+</figure>
+
+**35.** **3** שורות. `<>` פירושו "שונה מ": פסנתר, תופים וחליל.
+
+**36.**
+
+```sql
+SELECT TeacherName, HourRate FROM Teachers ORDER BY HourRate DESC;
+```
+
+<figure dir="ltr" class="dbtable">
+
+| TeacherName | HourRate |
+|:---:|:---:|
+| רונית לוי | 150 |
+| דנה כהן | 140 |
+| נור מנסור | 130 |
+| סמיר חלבי | 120 |
+| אמיר עזאם | 110 |
+| יוסי פרץ | 100 |
+
+</figure>
+
+**37.**
+
+```sql
+SELECT LockerNum, LockerPupil FROM Lockers WHERE LockerFloor = 2;
+```
+
+<figure dir="ltr" class="dbtable">
+
+| LockerNum | LockerPupil |
+|:---:|:---:|
+| 3 | 207 |
+| 4 | 210 |
+| 5 | 201 |
+
+</figure>
+
+**38.** תשובה **2**. מוסיפים **רשומה** עם `INSERT INTO ... VALUES`. `ALTER TABLE` משנה את **המבנה**, `UPDATE` משנה רשומות **קיימות**, ו‑`INSERT TABLE` אינו כתיב של SQL.
+
+**39.**
+
+```sql
+SELECT FirstName
+FROM Pupils, Lockers
+WHERE PupilId = LockerPupil
+  AND LockerFloor = 2;
+```
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName |
+|:---:|
+| ליאן |
+| יואב |
+| אדם |
+
+</figure>
+
+**40.**
+
+```sql
+SELECT CityName, COUNT(*) AS Pupils_Count
+FROM Cities, Pupils
+WHERE CityCode = HomeTown
+GROUP BY CityName;
+```
+
+<figure dir="ltr" class="dbtable">
+
+| CityName | Pupils_Count |
+|:---:|:---:|
+| ירכא | 3 |
+| כרמיאל | 2 |
+| נהריה | 2 |
+| עכו | 3 |
+
+</figure>
+
+מעלות לא מופיעה: אין בה אף תלמיד, ולכן אין לה אף שורה אחרי הצירוף.
+
+**41.** תשובה **3**. רק למשפחת "מיתר" יש יותר מכלי אחד. בתשובה 1 אין `HAVING`, ולכן מופיעות כל המשפחות.
+
+**42.** `LIKE` · `%ר%` · `AND` · `BETWEEN`
+
+<figure dir="ltr" class="dbtable">
+
+| TeacherName | HourRate |
+|:---:|:---:|
+| סמיר חלבי | 120 |
+| אמיר עזאם | 110 |
+| יוסי פרץ | 100 |
+| נור מנסור | 130 |
+
+</figure>
+
+**43.** 1. **14** שורות, שורה לכל רישום. 2. **5** שורות, כל שנה פעם אחת. 3. **1** (שורה אחת). `DISTINCT` על **שתי** עמודות מוריד שורה רק כששני הערכים חוזרים, וב‑2025 כל 5 הרישומים הם (2025, "מתחיל").
+
+**44.** תשובה **2**. יוסי פרץ הוא המורה **5**, ולכן תשובה 1 (מורה 3) נפסלת. בתשובה 3 הכותרת השנייה היא RegYear, ובתשובה 4 חסרים התלמידים שאינם ברמת "ממשיך".
+
+**45.**
+
+```sql
+SELECT InstName
+FROM Instruments
+WHERE InstCode NOT IN (SELECT TeachInst FROM Teachers);
+```
+
+<figure dir="ltr" class="dbtable">
+
+| InstName |
+|:---:|
+| חליל |
+
+</figure>
+
+**46.**
+
+```sql
+SELECT FirstName, SUM(MonthlyFee) AS TotalFee
+FROM Pupils, Registrations
+WHERE PupilId = RegPupil
+GROUP BY PupilId, FirstName
+HAVING SUM(MonthlyFee) > 600;
+```
+
+<figure dir="ltr" class="dbtable">
+
+| FirstName | TotalFee |
+|:---:|:---:|
+| שירה | 740 |
+| ליאן | 670 |
+| יואב | 620 |
+
+</figure>
+
+מקבצים לפי **PupilId** (ולא רק לפי השם), כי יכולים להיות שני תלמידים עם אותו שם פרטי.
+
+**47.** `DELETE` · `PupilId` · `CityCode`. יימחקו **5** רשומות (של שירה, רמי ויואב).
+
+**48.** **ירין וליאב.** שתי השאילתות מחזירות רק את רונית לוי. השאילתה של ליאב משתמשת בשאילתה שמורה במקום בתת־שאילתה, וזה אותו רעיון. נועה **מיינה** את כל המורים, ולכן קיבלה את **כולם** (6 שורות), ולא רק את הראשון.
+
 </div>
