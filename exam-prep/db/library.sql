@@ -19,10 +19,10 @@ INSERT INTO Cities VALUES (4, 'מעלות');
 INSERT INTO Cities VALUES (5, 'חיפה');
 
 CREATE TABLE Authors (
-  AuthorCode  INTEGER PRIMARY KEY,
-  FirstName   TEXT NOT NULL,
-  LastName    TEXT NOT NULL,
-  Country     TEXT
+  AuthorCode       INTEGER PRIMARY KEY,
+  AuthorFirstName  TEXT NOT NULL,
+  AuthorLastName   TEXT NOT NULL,
+  Country          TEXT
 );
 INSERT INTO Authors VALUES (1, 'עמוס',  'עוז',     'ישראל');
 INSERT INTO Authors VALUES (2, 'ג''ואן', 'רולינג',  'בריטניה');
@@ -34,7 +34,7 @@ INSERT INTO Authors VALUES (6, 'סמי',   'מיכאל',   'ישראל');
 CREATE TABLE Books (
   BookCode    INTEGER PRIMARY KEY,
   Title       TEXT NOT NULL,
-  AuthorCode  INTEGER REFERENCES Authors(AuthorCode),
+  WriterCode  INTEGER REFERENCES Authors(AuthorCode),
   Genre       TEXT,
   PubYear     INTEGER,
   Pages       INTEGER
@@ -54,7 +54,7 @@ CREATE TABLE Members (
   MemberId   INTEGER PRIMARY KEY,
   FirstName  TEXT NOT NULL,
   LastName   TEXT NOT NULL,
-  CityCode   INTEGER REFERENCES Cities(CityCode),
+  TownCode   INTEGER REFERENCES Cities(CityCode),
   BirthYear  INTEGER
 );
 INSERT INTO Members VALUES (501, 'ראניה',  'חלבי',   1, 2008);
@@ -70,8 +70,8 @@ INSERT INTO Members VALUES (510, 'רותם',   'גבאי',   4, 2009);
 
 CREATE TABLE Loans (
   LoanId      INTEGER PRIMARY KEY,
-  MemberId    INTEGER REFERENCES Members(MemberId),
-  BookCode    INTEGER REFERENCES Books(BookCode),
+  ReaderId    INTEGER REFERENCES Members(MemberId),
+  BookNum     INTEGER REFERENCES Books(BookCode),
   LoanDate    TEXT NOT NULL,          -- 'YYYY-MM-DD'
   ReturnDate  TEXT                    -- NULL = not returned yet
 );

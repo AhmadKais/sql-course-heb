@@ -220,19 +220,21 @@ SELECT name, status FROM animal WHERE status = 'available';
 
 ### איך זה נכתב בבחינה
 
-בבחינה של משרד החינוך כותבים לפני כל שדה את **שם הטבלה ונקודה**, ושמים מחרוזות בתוך **מירכאות כפולות**:
+בבחינה של משרד החינוך (לפי ההנחיות של תשפ"ז) **לכל שדה בבסיס הנתונים יש שם ייחודי**, ולכן כותבים את שמות השדות **בלי** שם הטבלה לפניהם. מחרוזות שמים בתוך **מירכאות כפולות**:
 
 </div>
 
 ```sql
-SELECT Members.FirstName, Members.LastName
+SELECT FirstName, LastName
 FROM Members
-WHERE Members.Age > 14;
+WHERE Age > 14 AND LastName = "כהן";
 ```
 
 <div dir="rtl">
 
-זו **אותה שאילתה** כמו `SELECT FirstName, LastName FROM Members WHERE Age > 14`. שם הטבלה רק מבהיר מאיפה בא כל שדה. כשמצרפים כמה טבלאות, הוא **חובה**.
+בגלל ששמות השדות ייחודיים, גם **המפתח הזר** מקבל שם משלו: בטבלה Members קוד העיר נקרא `TownCode`, והוא מפנה אל `CityCode` בטבלה Cities. כך מצרפים שתי טבלאות: `FROM Members, Cities WHERE TownCode = CityCode`.
+
+> בבחינות של שנים קודמות (תשפ"ב, תשפ"ג) נכתב שם הטבלה לפני כל שדה (`Members.FirstName`). זו **אותה שאילתה**, ותראו את הכתיב הזה כשתתרגלו על בחינות ישנות.
 
 ---
 

@@ -545,8 +545,10 @@ SELECT Products.ProductName, Products.Price AS PriceUSD FROM Products;
 
 </figure>
 
-**ב3.** ```sql
-SELECT Clubs.ClubName, Clubs.Price AS "מחיר חודשי"
+**ב3.**
+
+```sql
+SELECT ClubName, Price AS "מחיר חודשי"
 FROM Clubs;
 ```
 

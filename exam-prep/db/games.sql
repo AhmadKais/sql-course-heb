@@ -32,8 +32,8 @@ INSERT INTO Companies VALUES (50, 'Playtika',        'Israel');
 CREATE TABLE Games (
   GameCode      INTEGER PRIMARY KEY,
   GameName      TEXT NOT NULL,
-  CatCode       INTEGER REFERENCES Categories(CatCode),
-  CompCode      INTEGER REFERENCES Companies(CompCode),
+  TypeCode      INTEGER REFERENCES Categories(CatCode),
+  MakerCode     INTEGER REFERENCES Companies(CompCode),
   GameYear      INTEGER,
   PricePerHour  REAL               -- NIS per hour of play
 );
@@ -65,8 +65,8 @@ INSERT INTO Users VALUES (7, 'נאדר',  'עזאם',  NULL,             2006);
 
 CREATE TABLE Orders (
   OrderId    INTEGER PRIMARY KEY,
-  UserId     INTEGER REFERENCES Users(UserId),
-  GameCode   INTEGER REFERENCES Games(GameCode),
+  BuyerId    INTEGER REFERENCES Users(UserId),
+  GameNum    INTEGER REFERENCES Games(GameCode),
   OrderDate  TEXT NOT NULL,         -- 'YYYY-MM-DD'
   Hours      INTEGER NOT NULL
 );

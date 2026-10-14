@@ -155,14 +155,14 @@
 
 ## 🎓 תרגול בסגנון הבחינה
 
-> 🎓 **תרגול בסגנון הבחינה (שאלון 735911).** הסעיפים כאן כתובים בדיוק כמו בבחינה: `Table.Column`, צירוף עם פסיק ומירכאות כפולות. הם רצים על בסיס הנתונים **חוגי ספורט** ([`clubs.sql`](../../exam-prep/db/clubs.sql)). פתרו על הנייר, ואחר כך טענו את הקובץ ל‑OneCompiler ובדקו.
+> 🎓 **תרגול בסגנון הבחינה (שאלון 735911).** הסעיפים כאן כתובים כמו בבחינה של תשפ"ז: שמות השדות **בלי** שם הטבלה (כל שם שדה בבסיס הנתונים ייחודי), צירוף עם פסיק ומירכאות כפולות. הם רצים על בסיס הנתונים **חוגי ספורט** ([`clubs.sql`](../../exam-prep/db/clubs.sql)). פתרו על הנייר, ואחר כך טענו את הקובץ ל‑OneCompiler ובדקו.
 
 **ב1.** מה תחזיר השאילתה?
 ```sql
-SELECT Members.CityCode, COUNT(Members.Id) AS cnt
+SELECT TownCode, COUNT(MemberId) AS cnt
 FROM Members
-GROUP BY Members.CityCode
-HAVING COUNT(Members.Id) >= 3;
+GROUP BY TownCode
+HAVING COUNT(MemberId) >= 3;
 ```
 
 **ב2.** כתבו שאילתה שמציגה את שמות הערים **שאף משתתף לא גר בהן** (`NOT IN`).

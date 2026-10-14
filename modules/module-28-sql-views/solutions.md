@@ -242,10 +242,10 @@ SELECT ... WHERE a.status IN ('available', 'quarantine');
 
 ## 🎓 תרגול בסגנון הבחינה: פתרונות
 
-**ב1.** 1. **120** 2. `Q1` · `Q1.cheap`. ב‑SQL שומרים את Q1 כך:
+**ב1.** 1. **120** 2. `Q1` · `cheap`. ב‑SQL שומרים את Q1 כך:
 ```sql
-CREATE VIEW Q1 AS SELECT MIN(Clubs.Price) AS cheap FROM Clubs;
-SELECT Clubs.ClubName FROM Clubs, Q1 WHERE Clubs.Price = Q1.cheap;
+CREATE VIEW Q1 AS SELECT MIN(Price) AS cheap FROM Clubs;
+SELECT ClubName FROM Clubs, Q1 WHERE Price = cheap;
 ```
 
 <figure dir="ltr" class="dbtable">

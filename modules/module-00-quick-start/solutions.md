@@ -90,10 +90,10 @@ SELECT first_name, last_name, role FROM person;
 -- ד: שתי שורות, Dr. Ron Levi ו-Dr. Maya Nahum
 SELECT first_name, last_name, role FROM person WHERE role = 'vet';
 
--- ה: בסגנון הבחינה, אותה תוצאה
-SELECT person.first_name, person.last_name, person.role
+-- ה: בסגנון הבחינה, אותן שתי שורות (כותרת העמודה השלישית היא job)
+SELECT first_name, last_name, role AS job
 FROM person
-WHERE person.role = 'vet';
+WHERE role = "vet";
 ```
 
 <div dir="rtl">

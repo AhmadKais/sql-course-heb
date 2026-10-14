@@ -87,6 +87,7 @@
 | [`exam-prep/db/clubs.sql`](../exam-prep/db/clubs.sql) | חוגי ספורט: בחינה לדוגמה 1, ו"תרגול בסגנון הבחינה" בכל שיעור |
 | [`exam-prep/db/library.sql`](../exam-prep/db/library.sql) | ספרייה: בחינה לדוגמה 2 |
 | [`exam-prep/db/games.sql`](../exam-prep/db/games.sql) | משחקי מחשב: בחינה לדוגמה 3 |
+| [`exam-prep/db/music.sql`](../exam-prep/db/music.sql) | בית ספר למוזיקה: [תרגול לפי ההנחיות של תשפ"ז](../exam-prep/practice-2027.md) |
 
 ---
 
@@ -114,7 +115,7 @@
 | 2 | **אי אפשר לטעון את הקבצים שלנו** | המקלט והבחינות לדוגמה לא נטענים שם. ב‑W3Schools מתרגלים רק על בסיס הנתונים של W3Schools |
 | 3 | **SQL Server** | העורך רץ על SQL Server. טקסט כותבים בגרשיים **בודדים** (`'Germany'`), כי `"Germany"` נחשב שם של עמודה. אורך של מחרוזת מחשבים עם `LEN` ולא עם `LENGTH`. ובמקום `LIMIT 3` כותבים `SELECT TOP 3` |
 
-> 💡 **שאילתה בסגנון הבחינה עובדת שם יפה**, כולל `Table.Column` וצירוף בפסיק:
+> 💡 **צירוף בפסיק, כמו בבחינה, עובד שם יפה.** ב‑Northwind של W3Schools יש שדות עם **אותו שם** בשתי טבלאות (`CustomerID`), ולכן שם כותבים את שם הטבלה לפני השדה. בבחינה עצמה שמות השדות ייחודיים, ואין בזה צורך:
 > `SELECT Customers.CustomerName, Orders.OrderID FROM Customers, Orders WHERE Customers.CustomerID = Orders.CustomerID AND Customers.Country = 'Germany';` (25 רשומות)
 
 ---

@@ -248,23 +248,23 @@ SELECT name, weight_kg FROM animal LIMIT 3;
 
 ## 🎓 תרגול בסגנון הבחינה
 
-> 🎓 **תרגול בסגנון הבחינה (שאלון 735911).** הסעיפים כאן כתובים בדיוק כמו בבחינה: `Table.Column`, צירוף עם פסיק ומירכאות כפולות. הם רצים על בסיס הנתונים **חוגי ספורט** ([`clubs.sql`](../../exam-prep/db/clubs.sql)). פתרו על הנייר, ואחר כך טענו את הקובץ ל‑OneCompiler ובדקו.
+> 🎓 **תרגול בסגנון הבחינה (שאלון 735911).** הסעיפים כאן כתובים כמו בבחינה של תשפ"ז: שמות השדות **בלי** שם הטבלה (כל שם שדה בבסיס הנתונים ייחודי), צירוף עם פסיק ומירכאות כפולות. הם רצים על בסיס הנתונים **חוגי ספורט** ([`clubs.sql`](../../exam-prep/db/clubs.sql)). פתרו על הנייר, ואחר כך טענו את הקובץ ל‑OneCompiler ובדקו.
 
 **ב1.** כמה משתתפים תחזיר השאילתה?
 ```sql
-SELECT Members.FirstName FROM Members
-WHERE Members.Age BETWEEN 14 AND 16;
+SELECT FirstName FROM Members
+WHERE Age BETWEEN 14 AND 16;
 ```
 
 **ב2.** השלימו כך שיוצגו המשתתפים ששם המשפחה שלהם **מתחיל** באות ח:
 ```sql
-SELECT Members.FirstName, Members.LastName FROM Members
-WHERE Members.LastName ________ "________";
+SELECT FirstName, LastName FROM Members
+WHERE LastName ________ "________";
 ```
 
 **ב3.** כתבו שאילתה שמציגה את המאמנים **שאין להם טלפון**.
 
-**ב4.** מה ההבדל בין `WHERE Members.CityCode IN (1, 5)` לבין `WHERE Members.CityCode = 1 OR Members.CityCode = 5`?
+**ב4.** מה ההבדל בין `WHERE TownCode IN (1, 5)` לבין `WHERE TownCode = 1 OR TownCode = 5`?
 
 
 </div>

@@ -603,15 +603,17 @@ SELECT Customers.CustomerName, Customers.City FROM Customers WHERE (Customers.Ci
 
 </figure>
 
-**ב3.** ```sql
-SELECT Coaches.FirstName, Coaches.LastName FROM Coaches
-WHERE Coaches.Phone IS NULL;
+**ב3.**
+
+```sql
+SELECT CoachFirstName, CoachLastName FROM Coaches
+WHERE Phone IS NULL;
 ```
 לא כותבים `= NULL`.
 
 <figure dir="ltr" class="dbtable">
 
-| FirstName | LastName |
+| CoachFirstName | CoachLastName |
 |:---:|:---:|
 | מיכל | לוי |
 

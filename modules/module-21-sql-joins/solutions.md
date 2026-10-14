@@ -575,7 +575,7 @@ SELECT Orders.OrderID, Customers.CustomerName, Shippers.ShipperName FROM Orders,
 
 ## 🎓 תרגול בסגנון הבחינה: פתרונות
 
-**ב1.** `Cities` · `CityCode`. זו **אותה שאילתה** כמו `FROM Members JOIN Cities ON Members.CityCode = Cities.CityCode`.
+**ב1.** `Cities` · `TownCode`. זו **אותה שאילתה** כמו `FROM Members JOIN Cities ON TownCode = CityCode`.
 
 <figure dir="ltr" class="dbtable">
 
@@ -606,13 +606,15 @@ SELECT Orders.OrderID, Customers.CustomerName, Shippers.ShipperName FROM Orders,
 
 </figure>
 
-**ב3.** ```sql
-SELECT Clubs.ClubName
+**ב3.**
+
+```sql
+SELECT ClubName
 FROM Clubs, ClubMembers
-WHERE Clubs.ClubCode = ClubMembers.ClubCode
-  AND ClubMembers.Id = 1001;
+WHERE ClubCode = ClubNum
+  AND MemberNum = 1001;
 ```
-כאן מספיקות **שתי** טבלאות, כי Id כבר נמצא ב‑ClubMembers. כדי להציג גם את **שם** המשתתף, צריך להוסיף את Members ותנאי חיבור שני.
+כאן מספיקות **שתי** טבלאות, כי מספר המשתתף (MemberNum) כבר נמצא ב‑ClubMembers. כדי להציג גם את **שם** המשתתף, צריך להוסיף את Members ותנאי חיבור שני.
 
 <figure dir="ltr" class="dbtable">
 

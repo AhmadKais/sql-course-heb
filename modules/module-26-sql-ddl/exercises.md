@@ -121,7 +121,7 @@
 
 ## 🎓 תרגול בסגנון הבחינה
 
-> 🎓 **תרגול בסגנון הבחינה (שאלון 735911).** הסעיפים כאן כתובים בדיוק כמו בבחינה: `Table.Column`, צירוף עם פסיק ומירכאות כפולות. הם רצים על בסיס הנתונים **חוגי ספורט** ([`clubs.sql`](../../exam-prep/db/clubs.sql)). פתרו על הנייר, ואחר כך טענו את הקובץ ל‑OneCompiler ובדקו.
+> 🎓 **תרגול בסגנון הבחינה (שאלון 735911).** הסעיפים כאן כתובים כמו בבחינה של תשפ"ז: שמות השדות **בלי** שם הטבלה (כל שם שדה בבסיס הנתונים ייחודי), צירוף עם פסיק ומירכאות כפולות. הם רצים על בסיס הנתונים **חוגי ספורט** ([`clubs.sql`](../../exam-prep/db/clubs.sql)). פתרו על הנייר, ואחר כך טענו את הקובץ ל‑OneCompiler ובדקו.
 
 **ב1.** איזו פקודה מוסיפה לטבלה Members שדה בשם Email?
 1. `INSERT INTO Members ADD Email Text`  2. `UPDATE Members ADD Email Text`  3. `ALTER TABLE Members ADD Email Text`  4. `ALTER TABLE Members INSERT Email Text`
@@ -135,6 +135,11 @@
 | `DROP TABLE Clubs` | | |
 
 **ב3.** כתבו `CREATE TABLE` לטבלה Halls (אולמות): קוד אולם (מספר, מפתח ראשי), שם אולם (טקסט, חובה), וקיבולת (מספר).
+
+**ב4.** איזו פקודה **מוחקת את השדה** Phone מהטבלה Coaches?
+1. `DELETE Phone FROM Coaches`  2. `ALTER TABLE Coaches DROP COLUMN Phone`  3. `DROP COLUMN Phone FROM Coaches`  4. `UPDATE Coaches DROP Phone`
+
+**ב5.** כתבו פקודה שמשנה את **הטיפוס** של השדה ClubName בטבלה Clubs ל‑`VARCHAR(40)`.
 
 
 </div>

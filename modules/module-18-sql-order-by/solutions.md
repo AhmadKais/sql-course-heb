@@ -583,9 +583,11 @@ SELECT Customers.Country, Customers.CustomerName FROM Customers ORDER BY Custome
 
 </figure>
 
-**ב2.** ```sql
-SELECT Members.FirstName, Members.Age FROM Members
-ORDER BY Members.Age DESC, Members.FirstName;
+**ב2.**
+
+```sql
+SELECT FirstName, Age FROM Members
+ORDER BY Age DESC, FirstName;
 ```
 
 <figure dir="ltr" class="dbtable">

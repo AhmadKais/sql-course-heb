@@ -20,10 +20,10 @@ INSERT INTO Cities VALUES (5, 'נהריה');
 INSERT INTO Cities VALUES (6, 'שפרעם');
 
 CREATE TABLE Coaches (
-  CoachCode  INTEGER PRIMARY KEY,
-  FirstName  TEXT NOT NULL,
-  LastName   TEXT NOT NULL,
-  Phone      TEXT                 -- NULL = no phone number
+  CoachCode       INTEGER PRIMARY KEY,
+  CoachFirstName  TEXT NOT NULL,
+  CoachLastName   TEXT NOT NULL,
+  Phone           TEXT                 -- NULL = no phone number
 );
 INSERT INTO Coaches VALUES (1, 'סאמר', 'חלבי',   '050-1111111');
 INSERT INTO Coaches VALUES (2, 'מיכל', 'לוי',    NULL);
@@ -32,11 +32,11 @@ INSERT INTO Coaches VALUES (4, 'דנה',  'כהן',    '050-4444444');
 INSERT INTO Coaches VALUES (5, 'יוסי', 'אברהם',  '053-5555555');
 
 CREATE TABLE Clubs (
-  ClubCode   INTEGER PRIMARY KEY,
-  ClubName   TEXT NOT NULL,
-  Sport      TEXT NOT NULL,
-  CoachCode  INTEGER REFERENCES Coaches(CoachCode),
-  Price      INTEGER NOT NULL                          -- monthly price in NIS
+  ClubCode     INTEGER PRIMARY KEY,
+  ClubName     TEXT NOT NULL,
+  Sport        TEXT NOT NULL,
+  TrainerCode  INTEGER REFERENCES Coaches(CoachCode),
+  Price        INTEGER NOT NULL                          -- monthly price in NIS
 );
 INSERT INTO Clubs VALUES (100, 'כדורגל צעירים',  'כדורגל',  1,    150);
 INSERT INTO Clubs VALUES (101, 'כדורגל בוגרים',  'כדורגל',  1,    180);
@@ -48,10 +48,10 @@ INSERT INTO Clubs VALUES (106, 'ג''ודו',          'ג''ודו',   3,    140)
 INSERT INTO Clubs VALUES (107, 'יוגה',           'יוגה',    4,    120);
 
 CREATE TABLE Members (
-  Id         INTEGER PRIMARY KEY,
+  MemberId   INTEGER PRIMARY KEY,
   FirstName  TEXT NOT NULL,
   LastName   TEXT NOT NULL,
-  CityCode   INTEGER REFERENCES Cities(CityCode),
+  TownCode   INTEGER REFERENCES Cities(CityCode),
   Age        INTEGER,
   JoinYear   INTEGER
 );
@@ -69,9 +69,9 @@ INSERT INTO Members VALUES (1011, 'ליאור', 'לוי',   4, 17, 2024);
 INSERT INTO Members VALUES (1012, 'ג''וד',  'מנסור', 1, 16, 2025);
 
 CREATE TABLE ClubMembers (
-  Id        INTEGER REFERENCES Members(Id),
-  ClubCode  INTEGER REFERENCES Clubs(ClubCode),
-  PRIMARY KEY (Id, ClubCode)
+  MemberNum  INTEGER REFERENCES Members(MemberId),
+  ClubNum    INTEGER REFERENCES Clubs(ClubCode),
+  PRIMARY KEY (MemberNum, ClubNum)
 );
 INSERT INTO ClubMembers VALUES (1001, 100);
 INSERT INTO ClubMembers VALUES (1001, 104);

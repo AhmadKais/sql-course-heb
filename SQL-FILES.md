@@ -33,6 +33,7 @@
 | [`clubs.sql`](exam-prep/db/clubs.sql) | ⚽ חוגי ספורט עירוניים: 5 טבלאות | בחינה לדוגמה 1, ו"🎓 תרגול בסגנון הבחינה" בסוף התרגילים של כל שיעור | [פתיחה להעתקה](https://raw.githubusercontent.com/AhmadKais/sql-course-heb/main/exam-prep/db/clubs.sql) |
 | [`library.sql`](exam-prep/db/library.sql) | 📚 ספרייה עירונית: 5 טבלאות | בחינה לדוגמה 2 | [פתיחה להעתקה](https://raw.githubusercontent.com/AhmadKais/sql-course-heb/main/exam-prep/db/library.sql) |
 | [`games.sql`](exam-prep/db/games.sql) | 🎮 חנות משחקי מחשב: 5 טבלאות | בחינה לדוגמה 3 | [פתיחה להעתקה](https://raw.githubusercontent.com/AhmadKais/sql-course-heb/main/exam-prep/db/games.sql) |
+| [`music.sql`](exam-prep/db/music.sql) | 🎵 בית הספר למוזיקה "צלילים": 3 טבלאות ראשיות ו‑3 טבלאות עזר | [תרגול לפי ההנחיות של תשפ"ז](exam-prep/practice-2027.md) | [פתיחה להעתקה](https://raw.githubusercontent.com/AhmadKais/sql-course-heb/main/exam-prep/db/music.sql) |
 
 **איך יודעים שהכול נטען?** אחרי Run, הדבר הראשון שמופיע ב‑**Output** הוא מספר:
 
@@ -43,6 +44,7 @@
 | `clubs.sql` | `members_loaded = 12` |
 | `library.sql` | `loans_loaded = 14` |
 | `games.sql` | `orders_loaded = 13` |
+| `music.sql` | `registrations_loaded = 14` |
 
 ---
 

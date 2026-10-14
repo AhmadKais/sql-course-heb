@@ -236,13 +236,21 @@ PRAGMA table_info(walk);
 | `DELETE FROM Clubs` | כל הרשומות | כן, ריקה |
 | `DROP TABLE Clubs` | הכול, כולל המבנה | **לא** |
 
-**ב3.** ```sql
+**ב3.**
+
+```sql
 CREATE TABLE Halls (
   HallCode  INTEGER PRIMARY KEY,
   HallName  TEXT NOT NULL,
   Capacity  INTEGER
 );
 ```
+
+**ב4.** **2.** שדה (עמודה) מוחקים עם `ALTER TABLE ... DROP COLUMN`. `DELETE` מוחק **רשומות**, ו‑`UPDATE` משנה **ערכים**.
+
+**ב5.** `ALTER TABLE Clubs MODIFY COLUMN ClubName VARCHAR(40);`
+
+זו פקודה של MySQL, והיא מופיעה ברשימת הפקודות שמשרד החינוך ביקש לתרגל. ב‑SQLite אין `MODIFY COLUMN`; כדי להריץ אותה בחרו ב‑OneCompiler את [MySQL](https://onecompiler.com/mysql).
 
 
 </div>

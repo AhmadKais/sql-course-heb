@@ -486,15 +486,17 @@ SELECT Customers.CustomerName FROM Customers WHERE Customers.CustomerID NOT IN (
 
 <figure dir="ltr" class="dbtable">
 
-| CityCode | cnt |
+| TownCode | cnt |
 |:---:|:---:|
 | 1 | 4 |
 
 </figure>
 
-**ב2.** ```sql
-SELECT Cities.CityName FROM Cities
-WHERE Cities.CityCode NOT IN (SELECT CityCode FROM Members);
+**ב2.**
+
+```sql
+SELECT CityName FROM Cities
+WHERE CityCode NOT IN (SELECT TownCode FROM Members);
 ```
 
 <figure dir="ltr" class="dbtable">
@@ -505,9 +507,11 @@ WHERE Cities.CityCode NOT IN (SELECT CityCode FROM Members);
 
 </figure>
 
-**ב3.** ```sql
-SELECT Clubs.ClubName, Clubs.Price FROM Clubs
-WHERE Clubs.Price > (SELECT AVG(Price) FROM Clubs);
+**ב3.**
+
+```sql
+SELECT ClubName, Price FROM Clubs
+WHERE Price > (SELECT AVG(Price) FROM Clubs);
 ```
 
 <figure dir="ltr" class="dbtable">
