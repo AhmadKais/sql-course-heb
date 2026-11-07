@@ -32,44 +32,51 @@
 
 ---
 
-## 📚 מבנה הקורס
+## 📚 מבנה הקורס — לפי סדר ההוראה
 
-| # | מודול | נושא | סטטוס |
-|---|-------|------|-------|
-| **0–1** | [**שיעור 1: טבלאות, מפתחות והשאילתה הראשונה**](modules/module-00-quick-start/) | DDL/DML, PK/FK, קשרים, DSD, `SELECT` ראשון. **מחליף** בהוראה את פרקים 0–1 | ✅ חדש |
-| 0 | [מבוא, הגרסה המלאה](modules/module-00-intro/) | להרחבה בלבד | ✅ |
-| 1 | [רקע ומושגי יסוד](modules/module-01-foundations/) | נתונים מול מידע, היסטוריה של בסיסי נתונים, DBMS | ✅ מוכן |
-| 2 | [מודל הנתונים](modules/module-02-data-model/) | ישויות, מופעים, מאפיינים, מזהים | ✅ מוכן |
-| 3 | [תרשים ERD](modules/module-03-erd/) | קשרים, יחסים, מוסכמות שרטוט, דיאגרמות מטריציוניות | ✅ מוכן |
-| 4 | [טיפוסי משנה וטיפוסי על](modules/module-04-subtypes-supertypes/) | Subtypes, Supertypes, תיעוד חוקים עסקיים | ✅ מוכן |
-| 5 | [יחסים](modules/module-05-relationships/) | יחסים עבירים, סוגי יחסים, פתרון M:M, CRUD | ✅ מוכן |
-| 6 | [נרמול](modules/module-06-normalization/) | מזהים מלאכותיים/מורכבים/משניים, 1NF, 2NF, 3NF | ✅ מוכן |
-| 7 | [אילוצים](modules/module-07-constraints/) | תחומים, קשתות, היררכיות, כללי מחיקה, מידע היסטורי | ✅ מוכן |
-| 8 | [תפקיד היועץ](modules/module-08-consultant/) | מיהו היועץ, אפקט הפחד, הצגה ללקוח, יומן החלטות | ✅ מוכן |
-| 9 | [פרויקט I](modules/module-09-project-1/) | פרויקט מלא: ראיון ⟵ חוקים ⟵ ERD ⟵ הצגה ⟵ שילוב שינויים | ✅ מוכן |
-| 10 | [עיצוב למעקב אחר שינויים](modules/module-10-tracking-changes/) | מימד הזמן, מודל דו‑זמני, מחירים, שיטות מעקב | ✅ מוכן |
-| 11 | [מודלים גנריים](modules/module-11-generic-models/) | מוסכמות פריסה, תחומי נושא, הפשטה, EAV | ✅ מוכן |
-| 12 | [מעבר לבסיס הנתונים](modules/module-12-mapping/) | מונחים, מיפוי ישויות ויחסים, טיפוסי משנה, APEX | ✅ מוכן |
-| 13 | [SQL I — הכרות, עבודת צוות וניהול](modules/module-13-sql-1/) | מפת SQL, תפקידים, Kanban, Git, סיכונים | ✅ מוכן |
-| 14 | [SDLC](modules/module-14-sdlc/) | שלבי הפיתוח, Waterfall מול Agile, בדיקות, טבלאות בסבבים | ✅ מוכן |
-| 15 | [המצגת](modules/module-15-presentation/) | סיפור, שקפים, הדגמה חיה, מסמך, חזרות | ✅ מוכן |
-| **16** | [SQL: המשפט הראשון](modules/module-16-sql-basics/) | `SELECT`, `FROM`, כינויים, חישובים, `DISTINCT`, NULL | ✅ מוכן |
-| 17 | [SQL: הגבלת השליפה](modules/module-17-sql-where/) | `WHERE`, `BETWEEN`, `IN`, `LIKE`, `IS NULL`, `AND`/`OR` | ✅ מוכן |
-| 18 | [SQL: מיונים](modules/module-18-sql-order-by/) | `ORDER BY`, NULL במיון, `LIMIT`, סדר הביצוע הלוגי | ✅ מוכן |
-| 19 | [SQL: פונקציות](modules/module-19-sql-functions/) | טקסט, מספרים, תאריכים, חישוב גיל, SQLite מול Oracle | ✅ מוכן |
-| 20 | [SQL: פונקציות 2](modules/module-20-sql-functions-2/) | המרה, `COALESCE`, `NULLIF`, `CASE` | ✅ מוכן |
-| 21 | [SQL: איחוד טבלאות](modules/module-21-sql-joins/) | תוצר קרטזי, equi/nonequi, outer, self join, היררכיה | ✅ מוכן |
-| 22 | [SQL: איחוד טבלאות 2](modules/module-22-sql-joins-2/) | `CROSS`, `NATURAL`, `USING`, `RIGHT`/`FULL`, שרשראות | ✅ מוכן |
-| 23 | [SQL: פונקציות מצרפיות](modules/module-23-sql-aggregates/) | `COUNT`/`SUM`/`AVG`, NULL, `SUM(CASE)` | ✅ מוכן |
-| 24 | [SQL: קיבוץ ותתי‑שאילתות](modules/module-24-sql-group-by/) | `GROUP BY`, `HAVING`, `ROLLUP`, תתי‑שאילתות, `UNION` | ✅ מוכן |
-| 25 | [SQL: DML](modules/module-25-sql-dml/) | `INSERT`, `UPDATE`, `DELETE`, `DEFAULT`, `MERGE` | ✅ מוכן |
-| 26 | [SQL: DDL](modules/module-26-sql-ddl/) | `CREATE`, טיפוסים, `STRICT`, `ALTER`, `DROP` | ✅ מוכן |
-| 27 | [SQL: אילוצים](modules/module-27-sql-constraints/) | `NOT NULL`, `UNIQUE`, PK, FK, `CHECK`, קשתות | ✅ מוכן |
-| 28 | [SQL: Views](modules/module-28-sql-views/) | יצירה, אבטחה, מצב נוכחי מהיסטוריה | ✅ מוכן |
-| 29 | [SQL: אובייקטים נוספים](modules/module-29-sql-objects/) | Sequences, אינדקסים, Synonyms, ראיון בכיתה | ✅ מוכן |
-| 30 | [SQL: ניהול משתמשים](modules/module-30-sql-users/) | `GRANT`, Roles, Regex, חיפוש עבודה | ✅ מוכן |
-| 31 | [SQL: פרויקט מסכם](modules/module-31-sql-final-project/) | תוצרים, 15 שאילתות, מחוון, הגנה | ✅ מוכן |
-| 32 | [SQL: טרנזקציות](modules/module-32-sql-transactions/) | `COMMIT`, `ROLLBACK`, `SAVEPOINT`, ACID, הסמכה | ✅ מוכן |
+> 📖 הטבלה מסודרת **לפי סדר השיעורים**: מתחילים בשיעור 1 ויורדים שורה־שורה עד 20. אין צורך לקפוץ.
+>
+> מספרי התיקיות (`module-NN`) **הם מספרי הפרקים של משרד החינוך**, ולכן הם לא רצים ברצף — `module-21` הוא פרק 21 גם כשמלמדים אותו בשיעור 6. זה בכוונה, כדי שתמיד אפשר יהיה להצליב מול [תכנית הלימודים הרשמית](SYLLABUS.md). **לכו לפי עמודת "שיעור".**
+
+| שיעור | הנושא | התיקיות ללמד מהן | פרק |
+|:-----:|-------|------------------|:---:|
+| **1** | טבלאות, מפתחות, קשרים והשאילתה הראשונה | [quick-start](modules/module-00-quick-start/) | 0–1 |
+| **2** | SQL: המשפט הראשון — `SELECT` | [16 sql-basics](modules/module-16-sql-basics/) | 16 |
+| **3** | SQL: הגבלת השליפה — `WHERE` | [17 sql-where](modules/module-17-sql-where/) | 17 |
+| **4** | SQL: מיונים — `ORDER BY` | [18 sql-order-by](modules/module-18-sql-order-by/) | 18 |
+| **5** | מודל הנתונים ו‑ERD | [2 data-model](modules/module-02-data-model/) · [3 erd](modules/module-03-erd/) | 2, 3 |
+| **6** | יחסים + איחוד טבלאות (`JOIN`) | [5 relationships](modules/module-05-relationships/) · [21 sql-joins](modules/module-21-sql-joins/) | 5, 21 |
+| **7** | איחוד טבלאות 2 — `LEFT JOIN`, 3 טבלאות | [22 sql-joins-2](modules/module-22-sql-joins-2/) | 22 |
+| **8** | SQL: פונקציות | [19 sql-functions](modules/module-19-sql-functions/) | 19 |
+| **9** | SQL: `CASE` ו‑NULL | [20 sql-functions-2](modules/module-20-sql-functions-2/) | 20 |
+| **10** | SQL: פונקציות מצרפיות | [23 sql-aggregates](modules/module-23-sql-aggregates/) | 23 |
+| **11** | SQL: `GROUP BY` ותתי‑שאילתות | [24 sql-group-by](modules/module-24-sql-group-by/) | 24 |
+| **12** | SQL: DML — `INSERT`, `UPDATE`, `DELETE` | [25 sql-dml](modules/module-25-sql-dml/) | 25 |
+| **13** | נרמול | [6 normalization](modules/module-06-normalization/) | 6 |
+| **14** | ממודל לטבלאות + DDL ⭐ | [12 mapping](modules/module-12-mapping/) · [26 sql-ddl](modules/module-26-sql-ddl/) | 12, 26 |
+| **15** | אילוצים | [7 constraints](modules/module-07-constraints/) · [27 sql-constraints](modules/module-27-sql-constraints/) | 7, 27 |
+| **16** | Views | [28 sql-views](modules/module-28-sql-views/) | 28 |
+| **17** | אינדקסים, הרשאות וטרנזקציות | [29 sql-objects](modules/module-29-sql-objects/) · [30 sql-users](modules/module-30-sql-users/) · [32 sql-transactions](modules/module-32-sql-transactions/) | 29, 30, 32 |
+| **18** | הרחבה — לא בבחינה | [4 subtypes](modules/module-04-subtypes-supertypes/) · [10 tracking-changes](modules/module-10-tracking-changes/) · [11 generic-models](modules/module-11-generic-models/) | 4, 10, 11 |
+| **19** | פרויקט I | [9 project-1](modules/module-09-project-1/) | 9 |
+| **20** | פרויקט מסכם והגנה | [תמצית 8–15](modules/module-08-15-summary/) · [31 sql-final-project](modules/module-31-sql-final-project/) | 8, 13–15, 31 |
+| ★ | **הכנה לבחינה (735911)** | [exam-prep](exam-prep/) | — |
+
+כל המודולים ✅ **מוכנים** — בכל אחד `README.md`, `questions.md`, `exercises.md` ו‑`solutions.md`.
+
+<details>
+<summary>📂 מודולים שאינם בסדר ההוראה (להעשרה ולעיון)</summary>
+
+| המודול | למה הוא לא בסדר השיעורים |
+|--------|---------------------------|
+| [0 intro](modules/module-00-intro/) | הגרסה המלאה של המבוא — שיעור 1 מחליף אותו בכיתה |
+| [1 foundations](modules/module-01-foundations/) | רקע, היסטוריה ו‑DBMS — לא נשאל בבחינה; תמציתו בשיעור 1 |
+| [8 consultant](modules/module-08-consultant/) | מקופל ל[תמצית 8–15](modules/module-08-15-summary/) לקראת הפרויקט |
+| [13 sql-1](modules/module-13-sql-1/) | מקופל ל[תמצית 8–15](modules/module-08-15-summary/) |
+| [14 sdlc](modules/module-14-sdlc/) | מקופל ל[תמצית 8–15](modules/module-08-15-summary/) |
+| [15 presentation](modules/module-15-presentation/) | מקופל ל[תמצית 8–15](modules/module-08-15-summary/) |
+
+</details>
 
 ---
 
