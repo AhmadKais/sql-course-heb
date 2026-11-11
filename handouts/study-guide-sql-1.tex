@@ -1,0 +1,1430 @@
+\documentclass[11pt,a4paper]{article}
+\input{sqlcommon.tex}
+
+\fancyhead[R]{\small בסיסי נתונים ו\lr{-}\lr{SQL} \textbar{} חומר לימוד לבחינת אמצע}
+\fancyhead[L]{\small \lr{\texttt{SELECT} · \texttt{WHERE} · \texttt{ORDER BY}}}
+
+\begin{document}
+
+\begin{center}
+{\LARGE\bfseries\color{inkblue} כל מה שצריך לדעת לבחינה}\\[4pt]
+{\large טבלאות ומפתחות \textbullet{} \texttt{SELECT} \textbullet{} \texttt{WHERE} \textbullet{} \texttt{ORDER BY}}\\[6pt]
+{\large\bfseries חומר לימוד ודף עזר}
+\end{center}
+\vspace{2pt}
+{\color{inkblue}\hrule height 1.2pt}
+\vspace{8pt}
+
+\begin{panel}
+\textbf{איך משתמשים בדף הזה}
+\begin{itemize}[leftmargin=1.3em, itemsep=2pt, topsep=3pt]
+  \item \textbf{זה כל החומר של הבחינה, ולא יותר.} כל מה שכתוב כאן \textendash{} נלמד בכיתה. כל מה שלא כתוב כאן (צירוף טבלאות, \lr{\texttt{COUNT}, \texttt{GROUP BY}}, שינוי נתונים) \textbf{לא ייבחן}.
+  \item \textbf{מותר להביא את הדף הזה לבחינה}, מודפס או בכתב יד. אל תסתמכו עליו בלבד: מי שלא תרגל, לא ימצא בו את התשובה בזמן.
+  \item \textbf{כל הדוגמאות רצו באמת.} הפלט שמופיע כאן הוא הפלט האמיתי של \lr{SQLite}, ולא כתוב ביד. אפשר להעתיק כל דוגמה ל-\lr{\texttt{onecompiler.com/sqlite}} ולראות את אותו דבר.
+  \item \textbf{פרק \lr{8} הוא דף העזר} \textendash{} טבלה אחת עם כל התחביר. בזמן הבחינה תסתכלו בעיקר בו.
+\end{itemize}
+\end{panel}
+
+\vspace{4pt}
+\noindent\begin{minipage}{\linewidth}
+{\small\textbf{מה יש בדף}}\par\vspace{3pt}
+{\small
+\begin{tabular}{@{}p{0.30\linewidth}p{0.30\linewidth}p{0.34\linewidth}@{}}
+\toprule
+\thd{היסודות} & \thd{השליפה} & \thd{לקראת הבחינה} \\
+\midrule
+\lr{1.} טבלאות, מפתחות וקשרים & \lr{3.\ \texttt{SELECT}}: מה מציגים & \lr{7.} מהשאלה בעברית לשאילתה \\
+\lr{2.} מבנה השאילתה וסדר הביצוע & \lr{4.\ \texttt{NULL}}: הערך החסר & \lr{8.} דף העזר \textendash{} הכול בטבלה אחת \\
+ & \lr{5.\ \texttt{WHERE}}: אילו שורות & \lr{9.} הטעויות שחוזרות על עצמן \\
+ & \lr{6.\ \texttt{ORDER BY}}: באיזה סדר & \lr{10.} תרגול א': כתיבת שאילתות \\
+ & & \lr{11.} תרגול ב': מסוג הבחינה \\
+\bottomrule
+\end{tabular}}
+\end{minipage}
+
+\vspace{10pt}
+\section{טבלאות, מפתחות וקשרים}
+\rulebar
+
+בסיס נתונים הוא אוסף של \textbf{טבלאות}. בכל טבלה יש \textbf{עמודות} (שדות) \textendash{} אלה הן התכונות שאנחנו שומרים, ו\textbf{שורות} (רשומות) \textendash{} אלה הן המופעים עצמם.
+
+\vspace{2pt}
+\begin{panel}
+\textbf{הדוגמה של הפרק הזה: ליגת כדורסל.} \lr{\texttt{Teams}} (קבוצות), \lr{\texttt{Players}} (שחקנים), \lr{\texttt{Towns}} (ערים), \lr{\texttt{Halls}} (אולמות) ו-\lr{\texttt{PlayerTour}} (מי משתתף באיזה טורניר). בטבלת \lr{\texttt{Players}} כל שורה היא שחקן אחד, וכל עמודה היא דבר אחד שאנחנו יודעים על כל שחקן.
+\end{panel}
+
+\subsection{מפתח ראשי \lr{(Primary Key)}}
+
+\textbf{המפתח הראשי הוא העמודה שמזהה שורה אחת ויחידה.} שתי שורות לא יכולות להחזיק את אותו ערך בעמודה הזאת, והערך בה לעולם אינו \lr{\texttt{NULL}}.
+
+\begin{panel}
+\textbf{איך מזהים מפתח ראשי בבחינה?} מחפשים את העמודה שהערכים בה \textbf{לא חוזרים אף פעם}, ושכל העמודות האחרות "תלויות" בה. בדרך כלל זו העמודה הראשונה, ובדרך כלל יש בשמה \lr{\texttt{Num}}, \lr{\texttt{Code}} או \lr{\texttt{Id}}: \lr{\texttt{PlayerNum}}, \lr{\texttt{TownCode}}, \lr{\texttt{TeamCode}}.
+
+\vspace{3pt}
+\textbf{מפתח מורכב.} לפעמים אין עמודה אחת שמספיקה, ואז המפתח הראשי בנוי מ\textbf{שתי עמודות יחד}. זה המצב הרגיל בטבלה מקשרת: בטבלה שרושמת אילו שחקנים משתתפים באיזה טורניר, אותו שחקן מופיע בכמה שורות ואותו טורניר מופיע בכמה שורות \textendash{} אבל \textbf{הצירוף} של השניים מופיע פעם אחת בלבד, ולכן הוא המפתח.
+\end{panel}
+
+\subsection{מפתח זר \lr{(Foreign Key)}}
+
+\textbf{מפתח זר הוא עמודה שמצביעה על המפתח הראשי של טבלה אחרת.} זה הדבק שמחבר את הטבלאות. בעמודה \lr{\texttt{TeamTown}} שבטבלת הקבוצות נשמר \textbf{קוד} של עיר, ולא שם של עיר \textendash{} והקוד הזה קיים בטבלת הערים, בעמודה \lr{\texttt{TownCode}}.
+
+\begin{notepanel}{tipgold}{שימו לב \textendash{} זה בדיוק מה שמבלבל בבחינה}
+לשני השדות יש \textbf{שמות שונים}: \lr{\texttt{TeamTown}} מצביע על \lr{\texttt{TownCode}}. בבחינה של תשפ"ז לכל שדה בבסיס הנתונים שם \textbf{ייחודי}, ולכן אי אפשר לזהות מפתח זר לפי שם זהה. מזהים אותו \textbf{לפי המשמעות ולפי הנתונים}: אם בעמודה יש מספרים קטנים שחוזרים על עצמם, והמספרים האלה הם בדיוק המפתח הראשי של טבלה אחרת \textendash{} זה מפתח זר.
+\end{notepanel}
+
+\vspace{2pt}
+\textbf{שלוש שאלות שעוזרות להחליט:} (א) האם הערך בעמודה הוא "קוד של משהו"? (ב) האם יש טבלה שבה הקוד הזה הוא המפתח הראשי? (ג) האם הערכים חוזרים על עצמם? אם כן לשלושתן \textendash{} זה מפתח זר, והקשר הוא \lr{1:N}.
+
+\subsection{שלושה סוגי קשרים}
+
+\vspace{2pt}
+\noindent\begin{tabular}{@{}p{0.26\linewidth}p{0.33\linewidth}p{0.34\linewidth}@{}}
+\toprule
+\thd{הקשר} & \thd{מה זה אומר} & \thd{איך מזהים בטבלאות} \\
+\midrule
+\textbf{\lr{1:1}} \newline אחד לאחד & לכל שורה בצד אחד מתאימה \textbf{שורה אחת לכל היותר} בצד השני & המפתח הזר הוא גם \textbf{ייחודי} \lr{(\texttt{UNIQUE})}. לדוגמה: לכל קבוצה אולם בית אחד \\
+\textbf{\lr{1:N}} \newline אחד לרבים & לשורה אחת בצד ה"אחד" מתאימות \textbf{הרבה} שורות בצד ה"רבים" & המפתח הזר יושב בצד ה\textbf{רבים}, והערכים בו \textbf{חוזרים}. לדוגמה: קבוצה אחת, הרבה שחקנים \\
+\textbf{\lr{M:N}} \newline רבים לרבים & לכל שורה בצד אחד הרבה שורות בצד השני, ו\textbf{להפך} & יש \textbf{טבלה שלישית}, מקשרת, שכל תוכנה הוא שני מפתחות זרים. לדוגמה: שחקן משתתף בכמה טורנירים, ובטורניר משתתפים הרבה שחקנים \\
+\bottomrule
+\end{tabular}
+
+\vspace{6pt}
+\begin{notepanel}{warnred}{הכלל שפותר את רוב השאלות}
+\textbf{המפתח הזר תמיד יושב בצד ה"רבים".} בקשר "עיר אחת \textendash{} הרבה קבוצות", העמודה \lr{\texttt{TeamTown}} נמצאת בטבלת ה\textbf{קבוצות}, ולא בטבלת הערים. אם ראיתם עמודה שהערכים בה חוזרים ומצביעים לטבלה אחרת \textendash{} אתם בצד הרבים.
+\end{notepanel}
+
+\begin{notepanel}{tipgold}{שאלה שחוזרת: "יש עיר שאין בה אף אחד" \textendash{} האם זו תקלה?}
+\textbf{לא. זה תקין לגמרי.} בקשר \lr{1:N}, לשורה בצד ה"אחד" מותר שלא יהיו לה \textbf{בכלל} שורות מתאימות בצד ה"רבים": עיר שרשומה בטבלת הערים, ואין בה אף קבוצה; קטגוריה שאין בה אף פריט. \textbf{ההפך אסור:} ערך במפתח הזר חייב להתאים לשורה קיימת \textendash{} אי אפשר לרשום קבוצה בעיר שאינה בטבלת הערים.
+
+\vspace{3pt}
+\textbf{איך בודקים בבחינה:} עוברים על העמודה של המפתח הזר, ומסמנים אילו קודים מופיעים בה. קוד שנמצא בטבלת העזר ולא מופיע אף פעם במפתח הזר \textendash{} הוא ה"ריק" שהשאלה מחפשת.
+\end{notepanel}
+
+\subsection{תרשים \lr{DSD}}
+
+ב\lr{DSD} כל טבלה היא מלבן, שבתוכו שמות השדות. המפתח הראשי מסומן למעלה (או בקו תחתי), וכל מפתח זר מחובר ב\textbf{חץ} אל המפתח הראשי שהוא מצביע עליו. כך נראה תרשים של שלוש טבלאות:
+
+\vspace{4pt}
+\begin{otherlanguage}{english}
+\begin{center}
+\begin{tikzpicture}[font=\scriptsize\sffamily]
+\tikzset{tblm/.style={matrix of nodes,
+  nodes={anchor=west, inner sep=2.6pt, text width=25mm, align=left, font=\scriptsize\sffamily},
+  row sep=-\pgflinewidth, draw=inkblue, line width=0.7pt, inner sep=0pt,
+  row 1/.style={nodes={fill=inkblue, text=white, font=\scriptsize\sffamily\bfseries,
+                       align=center, text width=25mm}}}}
+\matrix (C) [tblm] { Towns \\ \underline{TownCode} \\ TownName \\ };
+\matrix (T) [tblm, right=17mm of C] { Teams \\ \underline{TeamCode} \\ TeamName \\ TeamTown \\ FoundYear \\ };
+\matrix (R) [tblm, right=17mm of T] { Players \\ \underline{PlayerNum} \\ PlayerName \\ PlayerTeam \\ BirthYear \\ };
+\draw[-latex, inkblue, line width=0.8pt] (T-4-1.west)
+      -- node[midway, above, font=\tiny\sffamily, text=inkblue] {1:N} (C-2-1.east);
+\draw[-latex, inkblue, line width=0.8pt] (R-4-1.west)
+      -- node[midway, above, font=\tiny\sffamily, text=inkblue] {1:N} (T-2-1.east);
+\end{tikzpicture}
+\end{center}
+\end{otherlanguage}
+
+\vspace{2pt}
+\textbf{איך מציירים את החצים בבחינה.} עוברים שדה-שדה ושואלים "האם זה קוד של משהו אחר?". \lr{\texttt{TeamTown}} הוא קוד של עיר, ולכן חץ ממנו אל \lr{\texttt{TownCode}}. \lr{\texttt{PlayerTeam}} הוא קוד של קבוצה, ולכן חץ ממנו אל \lr{\texttt{TeamCode}}. \lr{\texttt{PlayerName}} הוא טקסט חופשי \textendash{} ואינו מחובר לשום דבר.
+
+\newpage
+\section{מבנה השאילתה וסדר הביצוע}
+\rulebar
+
+כל שאילתה שתכתבו בבחינה בנויה מארבעה חלקים, \textbf{תמיד בסדר הזה}. שניים חייבים להופיע, ושניים לא:
+
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT     BookTitle, BookPrice     -- חייב:  אילו עמודות להציג
+FROM       Books                    -- חייב:  מאיזו טבלה
+WHERE      BookPrice > 70           -- רשות:  אילו שורות להחזיר
+ORDER BY   BookPrice DESC;          -- רשות:  באיזה סדר להציג
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{notepanel}{warnred}{הסדר הזה אינו המלצה אלא חוק}
+\lr{\texttt{WHERE}} שנכתב אחרי \lr{\texttt{ORDER BY}} הוא \textbf{שגיאת תחביר}, והשאילתה לא תרוץ בכלל. אם אתם מתבלבלים, זכרו את ארבע המילים בסדר הזה: \textbf{מה \textendash{} מאיפה \textendash{} מי \textendash{} באיזה סדר}.
+\end{notepanel}
+
+\subsection{סדר הביצוע הלוגי \textendash{} ולמה חשוב להכיר אותו}
+
+מנוע בסיס הנתונים \textbf{אינו} מבצע את השאילתה בסדר שבו היא כתובה. הוא מבצע אותה כך:
+
+\vspace{3pt}
+\begin{otherlanguage}{english}
+\begin{center}
+\begin{tikzpicture}[font=\small\sffamily, node distance=7mm]
+\tikzset{st/.style={draw=rulegray, line width=0.6pt, rounded corners=2pt, fill=boxgray,
+         inner sep=4pt, minimum height=9mm, text width=25mm, align=center, font=\small\sffamily}}
+\node[st] (d) {4.~\textbf{ORDER BY}};
+\node[st, right=of d] (c) {3.~\textbf{SELECT}};
+\node[st, right=of c] (b) {2.~\textbf{WHERE}};
+\node[st, right=of b] (a) {1.~\textbf{FROM}};
+\draw[-latex, line width=0.9pt, inkblue] (a) -- (b);
+\draw[-latex, line width=0.9pt, inkblue] (b) -- (c);
+\draw[-latex, line width=0.9pt, inkblue] (c) -- (d);
+\end{tikzpicture}
+\end{center}
+\end{otherlanguage}
+\vspace{-6pt}
+\begin{center}
+{\small קוראים את הטבלה \ \textbullet\ \ מסננים שורות \ \textbullet\ \ בוחרים עמודות \ \textbullet\ \ ממיינים את התוצאה}
+\end{center}
+
+\vspace{4pt}
+\textbf{שתי מסקנות מעשיות שנובעות מכאן:}
+
+\begin{enumerate}[leftmargin=1.5em, itemsep=3pt, topsep=3pt]
+  \item \lr{\texttt{ORDER BY}} מתבצע \textbf{אחרי} \lr{\texttt{SELECT}}, ולכן \textbf{מותר} למיין לפי כינוי \lr{(AS)} שהגדרתם \textendash{} הכינוי כבר קיים.
+  \item \lr{\texttt{WHERE}} מתבצע \textbf{לפני} \lr{\texttt{SELECT}}, ולכן \textbf{אסור} לסנן לפי כינוי \textendash{} בשלב הסינון הוא עוד לא נולד. בתנאי כותבים את החישוב במלואו.
+\end{enumerate}
+
+\begin{panel}
+\textbf{וגם:} התוצאה של כל שאילתה היא \textbf{טבלה חדשה}, והטבלה המקורית \textbf{אינה משתנה}. \lr{\texttt{SELECT}} רק מציג \textendash{} הוא לא מוחק, לא ממיין ולא משנה שום דבר בבסיס הנתונים. גם \lr{\texttt{ORDER BY}} אינו ממיין את הטבלה: הוא ממיין רק את \textbf{הפלט} של השאילתה הזאת.
+\end{panel}
+
+\vspace{4pt}
+\section{\lr{\texttt{SELECT}} \textendash{} מה מציגים}
+\rulebar
+
+כל הדוגמאות בפרקים \lr{3\textendash7} רצות על בסיס הנתונים הקטן הזה, \textbf{מועדון הקריאה}. שתי טבלאות, וקשר \lr{1:N} ביניהן. שימו לב ל\lr{\texttt{NULL}}-ים: לספר \lr{3} אין מדף, ולשני קוראים אין טלפון.
+
+\begin{fulltable}{Books}{7 שורות}{}
+\begin{tabular}{lllll}
+\toprule
+\thd{BookNum} & \thd{BookTitle} & \thd{BookPrice} & \thd{BookYear} & \thd{BookShelf} \\
+\midrule
+1 & מסע אל הירח & 68 & 2018 & A \\
+2 & סודות הגלקסיה & 95 & 2021 & B \\
+3 & יומן מהמחסן & 45 & 2018 & \nullv \\
+4 & הדרך לירכא & 72 & 2023 & A \\
+5 & ספר המתכונים & 120 & 2021 & C \\
+6 & שירים מהגליל & 45 & 2019 & B \\
+7 & אגדות הגליל & 38 & 2018 & A \\
+\bottomrule
+\end{tabular}
+\end{fulltable}
+
+\begin{fulltable}{Readers}{4 שורות}{}
+\begin{tabular}{lllll}
+\toprule
+\thd{ReaderNum} & \thd{ReaderFirst} & \thd{ReaderLast} & \thd{JoinDate} & \thd{ReaderPhone} \\
+\midrule
+1 & נור & סאלם & 2024-09-01 & 050-1111111 \\
+2 & איתי & ברק & 2025-02-10 & \nullv \\
+3 & לינא & חדאד & 2025-09-01 & 052-3333333 \\
+4 & עומר & לוי & 2023-11-15 & \nullv \\
+\bottomrule
+\end{tabular}
+\end{fulltable}
+
+\subsection{בחירת עמודות}
+
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT * FROM Books;                      -- כל העמודות, בסדר שבו הן בטבלה
+SELECT BookTitle, BookPrice FROM Books;   -- רק שתי עמודות, בסדר שביקשתי
+SELECT BookPrice, BookTitle FROM Books;   -- אותן עמודות, בסדר הפוך
+\end{sqlverb}
+\end{otherlanguage}
+
+\textbf{הכוכבית נוחה אך מסוכנת.} בבחינה, שאלה שמבקשת "הצג את שם הספר והמחיר" דורשת שתי עמודות בדיוק. \lr{\texttt{SELECT *}} יציג חמש, וזו תשובה שגויה.
+
+\subsection{כינויים \lr{(\texttt{AS})} \textendash{} לשנות את כותרת העמודה}
+
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT BookTitle AS "שם הספר", BookPrice AS "מחיר בשח"
+FROM   Books;
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outtable}{ \textendash{} הכותרות השתנו, הנתונים לא}
+\begin{tabular}{ll}
+\toprule
+\thd{שם הספר} & \thd{מחיר בשח} \\
+\midrule
+מסע אל הירח & 68 \\
+סודות הגלקסיה & 95 \\
+יומן מהמחסן & 45 \\
+\multicolumn{2}{l}{\textit{\small ... ועוד 4 שורות}} \\
+\bottomrule
+\end{tabular}
+\end{outtable}
+
+\begin{notepanel}{warnred}{גרש בודד לערך, גרש כפול לשם}
+זה הכלל שמפיל הכי הרבה תלמידים:
+\begin{itemize}[leftmargin=1.3em, itemsep=1pt, topsep=2pt]
+  \item \sqlin{'A'} \textendash{} עם גרש \textbf{בודד} \textendash{} הוא \textbf{ערך}: המחרוזת \lr{A}. כך כותבים טקסט בתוך \lr{\texttt{WHERE}}.
+  \item \sqlin{"שם הספר"} \textendash{} עם גרש \textbf{כפול} \textendash{} הוא \textbf{שם}: של עמודה או של כינוי. כך כותבים כינוי שיש בו רווח או עברית.
+\end{itemize}
+\vspace{2pt}
+לכן \sqlin{WHERE BookShelf = "A"} מחפש \textbf{עמודה} בשם \lr{A}. באורקל, ובבחינת הבגרות, זו \textbf{שגיאה}. ב-\lr{SQLite} יש "רשת ביטחון": אם אין עמודה בשם הזה, הוא מתייחס לזה כטקסט \textendash{} והשאילתה עובדת במקרה. \textbf{אל תסמכו על זה}: אותה שאילתה תיפול בבחינה. וכינוי של מילה אחת באנגלית, בלי רווח, לא דורש גרשיים בכלל: \sqlin{AS AfterSale}.
+\end{notepanel}
+
+\subsection{חישובים בתוך \lr{\texttt{SELECT}}}
+
+מותר לחשב על עמודה, והחישוב מתבצע \textbf{לכל שורה בנפרד}. האופרטורים: \lr{\texttt{+}\ \ \texttt{-}\ \ \texttt{*}\ \ \texttt{/}}.
+
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT BookTitle, BookPrice, BookPrice * 0.9 AS AfterSale
+FROM   Books;
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outplain}
+\begin{tabular}{lll}
+\toprule
+\thd{BookTitle} & \thd{BookPrice} & \thd{AfterSale} \\
+\midrule
+מסע אל הירח & 68 & 61.2 \\
+סודות הגלקסיה & 95 & 85.5 \\
+יומן מהמחסן & 45 & 40.5 \\
+הדרך לירכא & 72 & 64.8 \\
+ספר המתכונים & 120 & 108.0 \\
+שירים מהגליל & 45 & 40.5 \\
+אגדות הגליל & 38 & 34.2 \\
+\bottomrule
+\end{tabular}
+\end{outplain}
+
+{\small\textbf{הוספת מע"מ \lr{18\%}:} מכפילים ב-\sqlin{1.18}. \textbf{הנחה של \lr{10\%}:} מכפילים ב-\sqlin{0.9}. \textbf{לשנה שלמה:} מכפילים ב-\sqlin{12}.}
+
+\subsection{שרשור מחרוזות \lr{(\texttt{||})}}
+
+שני קווים אנכיים \textbf{מדביקים} שתי מחרוזות. כדי לקבל רווח ביניהן, מדביקים גם מחרוזת של רווח:
+
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT ReaderFirst || ' ' || ReaderLast AS FullName
+FROM   Readers;
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outplain}
+\begin{tabular}{l}
+\toprule
+\thd{FullName} \\
+\midrule
+נור סאלם \\
+איתי ברק \\
+לינא חדאד \\
+עומר לוי \\
+\bottomrule
+\end{tabular}
+\end{outplain}
+
+\subsection{\lr{\texttt{DISTINCT}} \textendash{} בלי כפילויות}
+
+\lr{\texttt{DISTINCT}} נכתב \textbf{פעם אחת}, מיד אחרי \lr{\texttt{SELECT}}, ומסלק שורות פלט זהות.
+
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT DISTINCT BookYear FROM Books;     -- אילו שנים בכלל קיימות?
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outplain}
+\begin{tabular}{l}
+\toprule
+\thd{BookYear} \\
+\midrule
+2018 \\
+2021 \\
+2023 \\
+2019 \\
+\bottomrule
+\end{tabular}
+\end{outplain}
+
+{\small מ-\lr{7} שורות נשארו \lr{4}: \lr{2018} הופיעה שלוש פעמים ו-\lr{2021} פעמיים. שימו לב שהתוצאה \textbf{אינה ממוינת} \textendash{} \lr{\texttt{DISTINCT}} מסלק כפילויות, ולא ממיין. רוצים גם סדר? הוסיפו \lr{\texttt{ORDER BY}}.}
+
+\begin{notepanel}{tipgold}{\lr{\texttt{DISTINCT}} עובד על \textbf{השורה} כולה, לא על עמודה אחת}
+\sqlin{SELECT DISTINCT BookYear, BookShelf FROM Books} יחזיר \lr{6} שורות ולא \lr{4}: הצירוף \lr{(2018, A)} מופיע פעמיים ולכן נספר פעם אחת, אבל \lr{(2021, B)} ו-\lr{(2021, C)} הם \textbf{צירופים שונים} ושניהם נשארים. השאלה היא תמיד "האם \textbf{כל השורה} בפלט חוזרת?".
+\end{notepanel}
+
+\newpage
+\section{\lr{\texttt{NULL}} \textendash{} הערך החסר}
+\rulebar
+
+\lr{\texttt{NULL}} הוא \textbf{לא אפס}, \textbf{לא מחרוזת ריקה} ו\textbf{לא רווח}. הוא אומר דבר אחד: \textbf{אנחנו לא יודעים מה הערך}. לספר \lr{3} אין מדף רשום, ולאיתי ולעומר אין טלפון.
+
+\subsection{\lr{\texttt{NULL}} "מדביק"}
+
+כל חישוב שבו משתתף \lr{\texttt{NULL}} מחזיר \lr{\texttt{NULL}} \textendash{} גם חשבון, וגם שרשור מחרוזות:
+
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT ReaderFirst || ' ' || ReaderPhone AS Res FROM Readers;
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outplain}
+\begin{tabular}{l}
+\toprule
+\thd{Res} \\
+\midrule
+נור 050-1111111 \\
+\nullv \\
+לינא 052-3333333 \\
+\nullv \\
+\bottomrule
+\end{tabular}
+\end{outplain}
+
+{\small השם \textbf{נעלם} אצל איתי ועומר. לא כתוב "איתי" ואחריו כלום \textendash{} \textbf{כל הביטוי} הפך ל-\lr{\texttt{NULL}}. זו שאלת "השלמת ערכים" קלאסית בבחינה.}
+
+\subsection{איך בודקים \lr{\texttt{NULL}}: \lr{\texttt{IS NULL}}}
+
+\begin{notepanel}{warnred}{\lr{\texttt{= NULL}} לא עובד. אף פעם.}
+\sqlin{WHERE BookShelf = NULL} מחזיר \textbf{אפס שורות}, גם כשיש שורות בלי מדף \textendash{} והוא \textbf{אינו} שגיאת תחביר, ולכן הוא לא מתריע. הסיבה: אי אפשר להשוות לערך שלא ידוע. התשובה ל"האם הלא-ידוע שווה ל-\lr{5}?" היא "לא ידוע", ו"לא ידוע" אינו "אמת" \textendash{} ולכן השורה לא נכנסת לפלט.
+
+\vspace{3pt}
+\textbf{הדרך היחידה:} \sqlin{IS NULL} \ ו-\ \sqlin{IS NOT NULL}.
+\end{notepanel}
+
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT BookNum, BookTitle, BookShelf FROM Books WHERE BookShelf IS NULL;
+SELECT ReaderFirst, ReaderPhone     FROM Readers WHERE ReaderPhone IS NOT NULL;
+\end{sqlverb}
+\end{otherlanguage}
+
+\vspace{2pt}
+\noindent\begin{minipage}[t]{0.48\linewidth}
+\begin{outplain}
+\begin{tabular}{lll}
+\toprule
+\thd{BookNum} & \thd{BookTitle} & \thd{BookShelf} \\
+\midrule
+3 & יומן מהמחסן & \nullv \\
+\bottomrule
+\end{tabular}
+\end{outplain}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\linewidth}
+\begin{outplain}
+\begin{tabular}{ll}
+\toprule
+\thd{ReaderFirst} & \thd{ReaderPhone} \\
+\midrule
+נור & 050-1111111 \\
+לינא & 052-3333333 \\
+\bottomrule
+\end{tabular}
+\end{outplain}
+\end{minipage}
+
+\vspace{4pt}
+\begin{panel}
+\textbf{ההשלכה הנסתרת, ששווה נקודות בבחינה.} שורה עם \lr{\texttt{NULL}} \textbf{אינה נכנסת גם לתנאי ההפוך}. התנאי \sqlin{WHERE BookShelf <> 'A'} \textbf{לא} יחזיר את ספר \lr{3}, למרות שהמדף שלו בוודאות אינו \lr{A} \textendash{} כי הוא לא ידוע. רוצים לכלול אותו? כותבים במפורש:
+
+\vspace{2pt}
+\sqlin{WHERE BookShelf <> 'A' OR BookShelf IS NULL}
+\end{panel}
+
+\newpage
+\section{\lr{\texttt{WHERE}} \textendash{} אילו שורות}
+\rulebar
+
+\lr{\texttt{WHERE}} הוא \textbf{מסננת}. המנוע עובר שורה-שורה, בודק את התנאי, ומכניס לפלט רק את השורות שבהן התנאי יצא \textbf{אמת}.
+
+\subsection{אופרטורי השוואה}
+
+\vspace{2pt}
+\noindent\begin{tabular}{@{}p{0.16\linewidth}p{0.30\linewidth}p{0.46\linewidth}@{}}
+\toprule
+\thd{האופרטור} & \thd{המשמעות} & \thd{דוגמה} \\
+\midrule
+\sqlin{=} & שווה & \sqlin{WHERE BookYear = 2018} \\
+\sqlin{<>} & \textbf{אינו} שווה & \sqlin{WHERE BookShelf <> 'A'} \\
+\lr{\texttt{>} \ \texttt{<}} & גדול / קטן & \sqlin{WHERE BookPrice > 70} \\
+\lr{\texttt{>=} \ \texttt{<=}} & גדול או שווה / קטן או שווה & \sqlin{WHERE BookPrice >= 45} \\
+\bottomrule
+\end{tabular}
+
+\vspace{5pt}
+{\small\textbf{שימו לב:} "שווה" הוא סימן \textbf{אחד} (\sqlin{=}), ולא שניים. "אינו שווה" הוא \sqlin{<>} \textendash{} קטן ואחריו גדול. (\sqlin{!=} עובד ברוב המנועים, אבל בבחינה כתבו \sqlin{<>}.)}
+
+\subsection{טקסט ותאריכים}
+
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+WHERE BookShelf  = 'A'                 -- טקסט: גרש בודד
+WHERE JoinDate  >= '2025-01-01'        -- תאריך: גם הוא טקסט, בגרש בודד
+\end{sqlverb}
+\end{otherlanguage}
+
+\textbf{למה השוואת תאריכים בכלל עובדת?} כי התאריך נשמר בפורמט \lr{\texttt{YYYY-MM-DD}} \textendash{} שנה, אחריה חודש, אחריה יום. בפורמט הזה הסדר ה\textbf{אלפביתי} של המחרוזות הוא בדיוק הסדר ה\textbf{כרונולוגי}, ולכן \sqlin{'2026-03-02' < '2026-05-15'} הוא אמת. זו הסיבה שלא כותבים תאריך כ-\lr{\texttt{02/03/2026}}.
+
+\subsection{\lr{\texttt{BETWEEN}} \textendash{} טווח}
+
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT BookTitle, BookPrice FROM Books WHERE BookPrice BETWEEN 45 AND 72;
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outplain}
+\begin{tabular}{ll}
+\toprule
+\thd{BookTitle} & \thd{BookPrice} \\
+\midrule
+מסע אל הירח & 68 \\
+יומן מהמחסן & 45 \\
+הדרך לירכא & 72 \\
+שירים מהגליל & 45 \\
+\bottomrule
+\end{tabular}
+\end{outplain}
+
+\begin{notepanel}{warnred}{\lr{\texttt{BETWEEN}} \textbf{כולל} את שני הקצוות}
+בפלט למעלה מופיעים גם \lr{45} וגם \lr{72}. \sqlin{BETWEEN 45 AND 72} הוא בדיוק \sqlin{BookPrice >= 45 AND BookPrice <= 72}.
+
+\vspace{3pt}
+\textbf{וגם:} הקטן תמיד נכתב \textbf{קודם}. \sqlin{BETWEEN 72 AND 45} יחזיר \textbf{אפס שורות} \textendash{} בלי שגיאה, ובלי אזהרה.
+\end{notepanel}
+
+\textbf{הכי שימושי לתאריכים}, כדי לקבל חודש או טווח חודשים שלם:
+
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+WHERE InDate BETWEEN '2026-03-01' AND '2026-05-31'    -- מרץ עד מאי, כולל
+\end{sqlverb}
+\end{otherlanguage}
+
+\subsection{\lr{\texttt{IN}} \textendash{} רשימה של ערכים}
+
+\lr{\texttt{IN}} מקצר שרשרת של \lr{\texttt{OR}}. שתי השורות האלה עושות אותו דבר בדיוק:
+
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+WHERE BookYear = 2019 OR BookYear = 2023      -- ארוך
+WHERE BookYear IN (2019, 2023)                -- קצר, ועדיף
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outplain}
+\begin{tabular}{ll}
+\toprule
+\thd{BookTitle} & \thd{BookYear} \\
+\midrule
+הדרך לירכא & 2023 \\
+שירים מהגליל & 2019 \\
+\bottomrule
+\end{tabular}
+\end{outplain}
+
+{\small ברשימה של טקסט, כל ערך בגרש בודד: \sqlin{WHERE Priority IN ('דחוף', 'מיידי')}. ההפך: \sqlin{NOT IN (...)}.}
+
+\subsection{\lr{\texttt{LIKE}} \textendash{} חיפוש לפי תבנית}
+
+\lr{\texttt{LIKE}} מחפש \textbf{צורה} של מחרוזת, ולא התאמה מדויקת. שני סימנים מיוחדים:
+
+\vspace{2pt}
+\noindent\begin{tabular}{@{}p{0.13\linewidth}p{0.36\linewidth}p{0.43\linewidth}@{}}
+\toprule
+\thd{הסימן} & \thd{מה הוא מחליף} & \thd{דוגמה} \\
+\midrule
+\sqlin{\%} & \textbf{כל מספר} של תווים \textendash{} גם אפס & \sqlin{'ס\%'} = מתחיל ב-ס \\
+\sqlin{\_} & \textbf{תו אחד} בדיוק & \sqlin{'\_\_\_'} = בדיוק שלושה תווים \\
+\bottomrule
+\end{tabular}
+
+\vspace{4pt}
+\noindent\begin{tabular}{@{}p{0.30\linewidth}p{0.62\linewidth}@{}}
+\toprule
+\thd{התבנית} & \thd{מה היא מוצאת} \\
+\midrule
+\sqlin{LIKE 'גל\%'} & \textbf{מתחיל} ב"גל" \\
+\sqlin{LIKE '\%גל'} & \textbf{מסתיים} ב"גל" \\
+\sqlin{LIKE '\%גל\%'} & \textbf{מכיל} "גל" \textendash{} בכל מקום במחרוזת \\
+\bottomrule
+\end{tabular}
+
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT BookNum, BookTitle FROM Books WHERE BookTitle LIKE '%גל%';
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outplain}
+\begin{tabular}{ll}
+\toprule
+\thd{BookNum} & \thd{BookTitle} \\
+\midrule
+2 & סודות הגלקסיה \\
+6 & שירים מהגליל \\
+7 & אגדות הגליל \\
+\bottomrule
+\end{tabular}
+\end{outplain}
+
+\begin{notepanel}{tipgold}{שתי מלכודות ב-\lr{\texttt{LIKE}}}
+\lr{1.} \textbf{בלי אחוז, \lr{\texttt{LIKE}} הוא פשוט \lr{\texttt{=}}.} \sqlin{LIKE 'גל'} ימצא רק מחרוזת שכולה "גל", וכאן \textendash{} אפס שורות.
+\lr{2.} \textbf{"מכיל" דורש \textbf{שני} סימני אחוז}, אחד מכל צד. שאלה בנוסח "כל הספרים שמופיעה בכותרתם המילה גליל", כשהכותרת שמורה כולה בעמודה אחת, פותרים ב-\sqlin{LIKE '\%גליל\%'}.
+\end{notepanel}
+
+\subsection{\lr{\texttt{AND}}, \lr{\texttt{OR}}, \lr{\texttt{NOT}} \textendash{} ושאלת הסוגריים}
+
+\begin{itemize}[leftmargin=1.3em, itemsep=1pt, topsep=2pt]
+  \item \lr{\texttt{AND}} \textendash{} \textbf{שני} התנאים חייבים להתקיים. מצמצם את הפלט.
+  \item \lr{\texttt{OR}} \textendash{} \textbf{מספיק אחד}. מרחיב את הפלט.
+  \item \lr{\texttt{NOT}} \textendash{} הופך את התנאי.
+\end{itemize}
+
+\vspace{4pt}
+\begin{notepanel}{warnred}{\lr{\texttt{AND}} גובר על \lr{\texttt{OR}} \textendash{} וזאת הטעות היקרה ביותר בבחינה}
+בדיוק כמו שכפל גובר על חיבור בחשבון, \lr{\texttt{AND}} מתבצע \textbf{לפני} \lr{\texttt{OR}}. "ספרים ממדף \lr{A} או \lr{B}, שמחירם מעל \lr{60}" נראה כך \textendash{} ושימו לב להבדל בפלט:
+\end{notepanel}
+
+\vspace{-2pt}
+\noindent\begin{minipage}[t]{0.49\linewidth}
+\begin{otherlanguage}{english}
+\begin{sqlbad}
+WHERE BookShelf = 'A'
+   OR BookShelf = 'B'
+  AND BookPrice > 60
+\end{sqlbad}
+\end{otherlanguage}
+\begin{outplain}
+\begin{tabular}{lll}
+\toprule
+\thd{\#} & \thd{BookTitle} & \thd{BookPrice} \\
+\midrule
+1 & מסע אל הירח & 68 \\
+2 & סודות הגלקסיה & 95 \\
+4 & הדרך לירכא & 72 \\
+\rowcolor{boxgray} 7 & אגדות הגליל & 38 \\
+\bottomrule
+\end{tabular}
+\end{outplain}
+{\scriptsize\textbf{\lr{4} שורות.} ספר \lr{7} נכנס למרות שמחירו \lr{38}: המנוע קרא "מדף \lr{A}" \textbf{או} "מדף \lr{B} ומעל \lr{60}".}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\linewidth}
+\begin{otherlanguage}{english}
+\begin{sqlgood}
+WHERE (BookShelf = 'A'
+    OR BookShelf = 'B')
+  AND BookPrice > 60
+\end{sqlgood}
+\end{otherlanguage}
+\begin{outplain}
+\begin{tabular}{lll}
+\toprule
+\thd{\#} & \thd{BookTitle} & \thd{BookPrice} \\
+\midrule
+1 & מסע אל הירח & 68 \\
+2 & סודות הגלקסיה & 95 \\
+4 & הדרך לירכא & 72 \\
+\bottomrule
+\end{tabular}
+\end{outplain}
+{\scriptsize\textbf{\lr{3} שורות} \textendash{} וזו התשובה הנכונה. הסוגריים כופים "קודם המדף, ואחר כך המחיר".}
+\end{minipage}
+
+\vspace{6pt}
+\begin{panel}
+\textbf{הכלל המעשי:} בכל פעם שיש \lr{\texttt{OR}} בשאילתה, \textbf{ועוד תנאי כלשהו} \textendash{} שימו סוגריים סביב ה-\lr{\texttt{OR}}. גם אם לא היו הכרחיים, הם לא יזיקו, והם מראים למעריך בדיוק מה התכוונתם. \textbf{עברית של שאלה שדורשת סוגריים:} "הספרים שנמצאים \textbf{במדף} \lr{A} \textbf{או במדף} \lr{B}, \textbf{ו}שמחירם מעל \lr{60}" \textendash{} ה"או" מתייחס רק למדף, ולכן הוא נכנס לסוגריים.
+\end{panel}
+
+\newpage
+\section{\lr{\texttt{ORDER BY}} \textendash{} באיזה סדר}
+\rulebar
+
+\lr{\texttt{ORDER BY}} הוא \textbf{תמיד החלק האחרון} בשאילתה, והוא ממיין את הפלט. בלעדיו, הסדר שתקבלו אינו מובטח \textendash{} גם אם הוא נראה "הגיוני".
+
+\subsection{עולה ויורד}
+
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+ORDER BY BookPrice           -- עולה: מהקטן לגדול   (ברירת המחדל)
+ORDER BY BookPrice ASC       -- אותו דבר בדיוק, רק כתוב במפורש
+ORDER BY BookPrice DESC      -- יורד: מהגדול לקטן
+\end{sqlverb}
+\end{otherlanguage}
+
+{\small \lr{\texttt{ASC}} הוא ברירת המחדל, ולכן אין חובה לכתוב אותו. \lr{\texttt{DESC}} \textendash{} יש חובה. בטקסט, "עולה" הוא לפי סדר האלף-בית, ובתאריך \textendash{} מהמוקדם למאוחר.}
+
+\begin{notepanel}{warnred}{\lr{\texttt{ORDER BY}} \textbf{אינו מסנן} \textendash{} מספר השורות לא משתנה}
+זו שאלה אהובה בבחינה: "כמה שורות תחזיר השאילתה?". אם אין \lr{\texttt{WHERE}}, התשובה היא תמיד \textbf{כל השורות בטבלה} \textendash{} גם אם יש \lr{\texttt{ORDER BY}}, וגם אם יש \lr{\texttt{NULL}}-ים בעמודת המיון. \lr{\texttt{ORDER BY}} רק \textbf{מסדר מחדש} את אותן שורות.
+
+\vspace{3pt}
+בטבלת הספרים יש \lr{7} שורות. \sqlin{SELECT BookTitle FROM Books ORDER BY BookShelf} יחזיר \textbf{\lr{7}} שורות \textendash{} כולל הספר שאין לו מדף. \textbf{מי שמסנן \textendash{} זה \lr{\texttt{WHERE}}, והוא לבדו.}
+\end{notepanel}
+
+\subsection{מיון לפי כמה עמודות}
+
+כותבים אותן \textbf{מופרדות בפסיק}. המנוע ממיין לפי הראשונה, ו\textbf{רק כששתי שורות זהות בה} \textendash{} הוא פונה לשנייה כדי להכריע. לכל עמודה כיוון משלה:
+
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT BookTitle, BookYear, BookPrice
+FROM   Books
+ORDER BY BookYear DESC, BookPrice;        -- שנה יורד, ובתוך שנה מחיר עולה
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outplain}
+\begin{tabular}{lll}
+\toprule
+\thd{BookTitle} & \thd{BookYear} & \thd{BookPrice} \\
+\midrule
+הדרך לירכא & 2023 & 72 \\
+סודות הגלקסיה & 2021 & 95 \\
+ספר המתכונים & 2021 & 120 \\
+שירים מהגליל & 2019 & 45 \\
+אגדות הגליל & 2018 & 38 \\
+יומן מהמחסן & 2018 & 45 \\
+מסע אל הירח & 2018 & 68 \\
+\bottomrule
+\end{tabular}
+\end{outplain}
+
+{\small השנים יורדות: \lr{2023}, \lr{2021}, \lr{2019}, \lr{2018}. \textbf{בתוך} \lr{2021} המחירים עולים (\lr{95} ואז \lr{120}), ו\textbf{בתוך} \lr{2018} גם כן (\lr{38}, \lr{45}, \lr{68}). ה-\lr{\texttt{DESC}} חל \textbf{רק} על \lr{\texttt{BookYear}} \textendash{} כל עמודה צריכה \lr{\texttt{DESC}} משלה.}
+
+\subsection{למיין לפי כינוי, ביטוי או מספר עמודה}
+
+שלוש הדרכים האלה תקפות, ושלושתן מחזירות אותו פלט:
+
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT BookTitle, BookPrice * 0.9 AS AfterSale FROM Books ORDER BY AfterSale DESC;
+SELECT BookTitle, BookPrice * 0.9 AS AfterSale FROM Books ORDER BY BookPrice * 0.9 DESC;
+SELECT BookTitle, BookPrice * 0.9 AS AfterSale FROM Books ORDER BY 2 DESC;
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outplain}
+\begin{tabular}{ll}
+\toprule
+\thd{BookTitle} & \thd{AfterSale} \\
+\midrule
+ספר המתכונים & 108.0 \\
+סודות הגלקסיה & 85.5 \\
+הדרך לירכא & 64.8 \\
+מסע אל הירח & 61.2 \\
+יומן מהמחסן & 40.5 \\
+שירים מהגליל & 40.5 \\
+אגדות הגליל & 34.2 \\
+\bottomrule
+\end{tabular}
+\end{outplain}
+
+{\small \lr{\texttt{ORDER BY 2}} פירושו "לפי העמודה ה\textbf{שנייה} ברשימת ה-\lr{\texttt{SELECT}}". זה עובד, אבל שביר: מי שיוסיף עמודה באמצע ישבור את המיון \textendash{} ולכן עדיף למיין לפי כינוי. \textbf{וזכרו את ההבדל מפרק \lr{2}:} ב-\lr{\texttt{ORDER BY}} \textbf{מותר} להשתמש בכינוי, וב-\lr{\texttt{WHERE}} \textbf{אסור}.}
+
+\subsection{מיון טקסט \textendash{} שתי הפתעות}
+
+\textbf{עברית ממוינת לפי האלף-בית}, כמו שמצפים: \sqlin{ORDER BY BookTitle} מחזיר אגדות, הדרך, יומן, מסע, סודות, ספר, שירים.
+
+\vspace{3pt}
+\begin{notepanel}{warnred}{אלפביתי \textendash{} ולא "הגיוני"}
+המחשב אינו מבין את \textbf{המשמעות} של המילים, אלא רק משווה אותיות. לכן בעמודה של סוגי מנות, \textbf{"מנה עיקרית" תופיע לפני "מנה ראשונה"} \textendash{} שתיהן מתחילות ב"מנה~", וההכרעה נופלת על האות הבאה: \textbf{ע} לפני \textbf{ר}. זה נכון, גם אם בתפריט המנה הראשונה מוגשת קודם.
+
+\vspace{3pt}
+אותו דבר בדרגות, בגדלים ובימי השבוע: \textbf{אל תצפו לסדר ההגיוני} \textendash{} צפו לסדר האלף-בית.
+\end{notepanel}
+
+\begin{notepanel}{tipgold}{מספר שמאוחסן כטקסט ממוין כמו \textbf{מילה}}
+אם עמודה מכילה טקסט, \lr{\texttt{'10'}} בא \textbf{לפני} \lr{\texttt{'9'}} \textendash{} כי ההשוואה היא תו-תו, והתו \lr{\texttt{'1'}} קטן מהתו \lr{\texttt{'9'}}. אותה השוואה על \textbf{מספרים} נותנת את התשובה ההפוכה:
+
+\vspace{2pt}
+\sqlin{SELECT '10' < '9'} \ \ מחזיר \ \textbf{\lr{1}} (אמת) \qquad \sqlin{SELECT 10 < 9} \ \ מחזיר \ \textbf{\lr{0}} (שקר)
+
+\vspace{2pt}
+לכן עמודה של מחירים או קודים צריכה להיות \lr{\texttt{INTEGER}}, ולא \lr{\texttt{TEXT}}.
+\end{notepanel}
+
+\subsection{\lr{\texttt{NULL}} במיון \textendash{} איפה הוא נופל}
+
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT BookNum, BookShelf FROM Books ORDER BY BookShelf;         -- עולה
+SELECT BookNum, BookShelf FROM Books ORDER BY BookShelf DESC;    -- יורד
+\end{sqlverb}
+\end{otherlanguage}
+
+\vspace{2pt}
+\noindent\begin{minipage}[t]{0.47\linewidth}
+\begin{outplain}
+\begin{tabular}{ll}
+\toprule
+\thd{BookNum} & \thd{BookShelf} \\
+\midrule
+\rowcolor{boxgray} 3 & \nullv \\
+1 & A \\
+4 & A \\
+7 & A \\
+2 & B \\
+6 & B \\
+5 & C \\
+\bottomrule
+\end{tabular}
+\end{outplain}
+{\scriptsize עולה \textendash{} ה-\lr{\texttt{NULL}} \textbf{ראשון}.}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.47\linewidth}
+\begin{outplain}
+\begin{tabular}{ll}
+\toprule
+\thd{BookNum} & \thd{BookShelf} \\
+\midrule
+5 & C \\
+2 & B \\
+6 & B \\
+1 & A \\
+4 & A \\
+7 & A \\
+\rowcolor{boxgray} 3 & \nullv \\
+\bottomrule
+\end{tabular}
+\end{outplain}
+{\scriptsize יורד \textendash{} ה-\lr{\texttt{NULL}} \textbf{אחרון}.}
+\end{minipage}
+
+\vspace{5pt}
+\begin{panel}
+\textbf{הכלל ב-\lr{SQLite}} (וזה המנוע שבו אנחנו עובדים): ב-\lr{\texttt{ASC}} ה-\lr{\texttt{NULL}}-ים ראשונים, וב-\lr{\texttt{DESC}} אחרונים \textendash{} כאילו \lr{\texttt{NULL}} הוא "הערך הקטן מכולם". \textbf{באורקל זה הפוך.} בבחינה, אם שאלה תלויה במקום של ה-\lr{\texttt{NULL}} \textendash{} סננו אותו במפורש ב-\lr{\texttt{WHERE}}, ואל תסתמכו על המיון.
+\end{panel}
+
+\subsection{\lr{\texttt{LIMIT}} \textendash{} "שלושת הראשונים"}
+
+\lr{\texttt{LIMIT}} מחזיר רק את \lr{N} השורות הראשונות של הפלט, והוא נכתב \textbf{אחרי} \lr{\texttt{ORDER BY}}:
+
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT   BookTitle, BookPrice
+FROM     Books
+ORDER BY BookPrice DESC
+LIMIT    3;                      -- שלושת הספרים היקרים ביותר
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outplain}
+\begin{tabular}{ll}
+\toprule
+\thd{BookTitle} & \thd{BookPrice} \\
+\midrule
+ספר המתכונים & 120 \\
+סודות הגלקסיה & 95 \\
+הדרך לירכא & 72 \\
+\bottomrule
+\end{tabular}
+\end{outplain}
+
+\begin{notepanel}{warnred}{\lr{\texttt{LIMIT}} בלי \lr{\texttt{ORDER BY}} הוא חסר משמעות}
+"שלושת היקרים" = \textbf{קודם למיין} לפי מחיר יורד, \textbf{ואחר כך} לקצוץ ל-\lr{3}. \sqlin{LIMIT 3} לבדו יחזיר שלוש שורות שרירותיות. הכיוון חייב להתאים לשאלה: היקרים \textendash{} \lr{\texttt{DESC}}; הזולים \textendash{} \lr{\texttt{ASC}}.
+\end{notepanel}
+
+\subsection{הכול ביחד}
+
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT   BookTitle, BookPrice          -- 3. מה מציגים
+FROM     Books                         -- 1. מאיפה
+WHERE    BookYear <> 2018              -- 2. אילו שורות
+ORDER BY BookPrice DESC                -- 4. באיזה סדר
+LIMIT    2;                            -- 5. כמה
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outplain}
+\begin{tabular}{ll}
+\toprule
+\thd{BookTitle} & \thd{BookPrice} \\
+\midrule
+ספר המתכונים & 120 \\
+סודות הגלקסיה & 95 \\
+\bottomrule
+\end{tabular}
+\end{outplain}
+
+\newpage
+\section{מהשאלה בעברית לשאילתה}
+\rulebar
+
+רוב התלמידים שיודעים את התחביר עדיין מאבדים נקודות, מסיבה אחת: הם לא מצליחים לתרגם את \textbf{המשפט בעברית} לשאילתה. הפרק הזה הוא השיטה.
+
+\subsection{ארבעה צעדים, תמיד באותו סדר}
+
+\begin{panel}
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt, topsep=2pt]
+  \item \textbf{מאיזו טבלה?} חפשו במשפט את שם הדבר שעליו שואלים \textendash{} ספרים? קוראים? \ זה ה-\lr{\texttt{FROM}}.
+  \item \textbf{אילו עמודות להציג?} סמנו במשפט את המילים שאחרי "\textbf{הציגו את}". \textbf{בדיוק אותן}, ולא יותר \textendash{} זה ה-\lr{\texttt{SELECT}}.
+  \item \textbf{אילו שורות?} חפשו את המילה "\textbf{ש}" \textendash{} "ספרים \textbf{ש}מחירם...", "קוראים \textbf{ש}אין להם..." \ כל מה שבא אחריה הוא ה-\lr{\texttt{WHERE}}.
+  \item \textbf{באיזה סדר?} חפשו "ממוינים", "מה... ל...", "הראשונים" \textendash{} זה ה-\lr{\texttt{ORDER BY}}. אם אין \textendash{} פשוט אין.
+\end{enumerate}
+\end{panel}
+
+\subsection{המילון: מה כתוב בשאלה, ומה כותבים}
+
+{\small שלוש טבלאות קצרות, לפי שלושת החלקים של השאילתה. זה הפרק שכדאי לסמן ולחזור אליו.}
+
+\vspace{5pt}
+\noindent\textbf{\color{inkblue}א. העמודות \textendash{} מה מציגים}\par\vspace{2pt}
+\noindent\begin{tabular}{@{}p{0.46\linewidth}p{0.48\linewidth}@{}}
+\toprule
+\thd{מה כתוב בשאלה} & \thd{מה כותבים} \\
+\midrule
+"הציגו את שם הספר ואת המחיר" & \sqlin{SELECT BookTitle, BookPrice} \\
+"תחת הכותרת \lr{X}" \ \textbar\ \ "בכותרת \lr{X}" & \sqlin{AS X} \ (עברית או רווח: גרש כפול) \\
+"כל סוג \textbf{פעם אחת}" \ \textbar\ \ "אילו סוגים קיימים" & \sqlin{SELECT DISTINCT} \\
+"המחיר כולל מע"מ \lr{18\%}" & \sqlin{BookPrice * 1.18} \\
+"אחרי הנחה של \lr{10\%}" & \sqlin{BookPrice * 0.9} \\
+"שם מלא" (שם פרטי ומשפחה יחד) & \sqlin{First || ' ' || Last} \\
+\bottomrule
+\end{tabular}
+
+\vspace{7pt}
+\noindent\textbf{\color{inkblue}ב. התנאי \textendash{} אילו שורות}\par\vspace{2pt}
+\noindent\begin{tabular}{@{}p{0.46\linewidth}p{0.48\linewidth}@{}}
+\toprule
+\thd{מה כתוב בשאלה} & \thd{מה כותבים} \\
+\midrule
+"\textbf{מעל} \lr{30}" \ \textbar\ \ "גבוה מ-\lr{30}" & \sqlin{> 30} \ \ \textendash{} \lr{30} עצמו \textbf{לא} נכנס \\
+"\lr{30} \textbf{ומעלה}" \ \textbar\ \ "לפחות \lr{30}" & \sqlin{>= 30} \ \ \textendash{} \lr{30} עצמו \textbf{כן} נכנס \\
+"מתחת ל-\lr{30}" \ \textbar\ \ "זול מ-\lr{30}" & \sqlin{< 30} \\
+"בין \lr{10} ל-\lr{20}, כולל" & \sqlin{BETWEEN 10 AND 20} \\
+"אחד מ: א, ב, ג" & \sqlin{IN ('א', 'ב', 'ג')} \\
+"שאינו \lr{X}" \ \textbar\ \ "חוץ מ-\lr{X}" & \sqlin{<> 'X'} \\
+"\textbf{מכיל}" \ \textbar\ \ "מופיעה בו המילה" & \sqlin{LIKE '\%...\%'} \ \ \textendash{} \textbf{שני} אחוזים \\
+"מתחיל ב" & \sqlin{LIKE '...\%'} \\
+"מסתיים ב" & \sqlin{LIKE '\%...'} \\
+"שם המשפחה שלהם \lr{X}" (בעמודה של שם מלא) & \sqlin{LIKE '\%X\%'} \\
+"\textbf{אין לו}" \ \textbar\ \ "לא רשום" \ \textbar\ \ "עדיין פתוח" & \sqlin{IS NULL} \\
+"יש לו" \ \textbar\ \ "רשום" \ \textbar\ \ "כבר הסתיים" & \sqlin{IS NOT NULL} \\
+"\textbf{וגם}" & \sqlin{AND} \\
+"\textbf{או}" & \sqlin{OR} \ \ \textendash{} ואם יש עוד תנאי: \textbf{סוגריים} \\
+"לפני \lr{1.7.2026}" & \sqlin{< '2026-07-01'} \\
+"אחרי \lr{1.7.2026}" & \sqlin{> '2026-07-01'} \\
+\bottomrule
+\end{tabular}
+
+\vspace{7pt}
+\needspace{9\baselineskip}
+\noindent\textbf{\color{inkblue}ג. הסדר \textendash{} באיזה סדר להציג}\par\vspace{2pt}
+\noindent\begin{tabular}{@{}p{0.46\linewidth}p{0.48\linewidth}@{}}
+\toprule
+\thd{מה כתוב בשאלה} & \thd{מה כותבים} \\
+\midrule
+"ממוינים לפי המחיר" & \sqlin{ORDER BY BookPrice} \\
+"מהיקר לזול" \ \textbar\ \ "מהגדול לקטן" \ \textbar\ \ "יורד" & \sqlin{DESC} \\
+"מהזול ליקר" \ \textbar\ \ "לפי האלף-בית" \ \textbar\ \ "עולה" & בלי כלום \textendash{} \lr{\texttt{ASC}} הוא ברירת המחדל \\
+"לפי \lr{X}, ובתוך כל \lr{X} לפי \lr{Y}" & \sqlin{ORDER BY X, Y} \\
+"שלושת ה... ביותר" \ \textbar\ \ "\lr{3} הראשונים" & \sqlin{ORDER BY ... DESC LIMIT 3} \\
+\bottomrule
+\end{tabular}
+
+\vspace{8pt}
+\subsection{שלוש דוגמאות, צעד אחרי צעד}
+
+{\small כל הדוגמאות על \textbf{מועדון הקריאה} שבעמוד \lr{3}.}
+
+\vspace{4pt}
+\begin{notepanel}{okgreen}{דוגמה \lr{1} \textendash{} העמודות, התנאי והסדר}
+"הציגו את \textbf{שם הספר ואת המחיר}, של הספרים \textbf{שיצאו אחרי \lr{2018}} \textendash{} \textbf{מהיקר לזול}."
+\end{notepanel}
+
+\vspace{-2pt}
+\noindent\begin{tabular}{@{}p{0.07\linewidth}p{0.40\linewidth}p{0.47\linewidth}@{}}
+\toprule
+& \thd{מה שואלים את עצמנו} & \thd{מה נכתב} \\
+\midrule
+\lr{1} & על מה מדובר? ספרים & \sqlin{FROM Books} \\
+\lr{2} & מה להציג? שם ומחיר & \sqlin{SELECT BookTitle, BookPrice} \\
+\lr{3} & אילו שורות? "ש"יצאו אחרי \lr{2018} & \sqlin{WHERE BookYear > 2018} \\
+\lr{4} & באיזה סדר? מהיקר לזול & \sqlin{ORDER BY BookPrice DESC} \\
+\bottomrule
+\end{tabular}
+
+\begin{otherlanguage}{english}
+\begin{sqlgood}
+SELECT   BookTitle, BookPrice
+FROM     Books
+WHERE    BookYear > 2018
+ORDER BY BookPrice DESC;
+\end{sqlgood}
+\end{otherlanguage}
+
+\begin{outplain}
+\begin{tabular}{ll}
+\toprule
+\thd{BookTitle} & \thd{BookPrice} \\
+\midrule
+ספר המתכונים & 120 \\
+סודות הגלקסיה & 95 \\
+הדרך לירכא & 72 \\
+שירים מהגליל & 45 \\
+\bottomrule
+\end{tabular}
+\end{outplain}
+
+{\small\textbf{שימו לב:} "אחרי \lr{2018}" פירושו \sqlin{> 2018}, ולכן שלושת הספרים משנת \lr{2018} \textbf{אינם} בפלט. אילו היה כתוב "משנת \lr{2018} ואילך" היינו כותבים \sqlin{>= 2018}.}
+
+\vspace{6pt}
+\begin{notepanel}{okgreen}{דוגמה \lr{2} \textendash{} \lr{\texttt{DISTINCT}} יחד עם תנאי}
+"\textbf{אילו מדפים} יש לספרים \textbf{שמחירם מתחת ל-\lr{50}}? כל מדף \textbf{פעם אחת}."
+\end{notepanel}
+
+\vspace{-2pt}
+\textbf{הדרך לחשוב על זה:} קודם \textbf{מסננים} (\lr{\texttt{WHERE}}), ורק מה שנשאר עובר ל-\lr{\texttt{DISTINCT}} \textendash{} בדיוק כמו סדר הביצוע מפרק \lr{2}. שלוש שורות עומדות בתנאי:
+
+\begin{outtable}{ של \sqlin{SELECT BookNum, BookShelf, BookPrice FROM Books WHERE BookPrice < 50}}
+\begin{tabular}{lll}
+\toprule
+\thd{BookNum} & \thd{BookShelf} & \thd{BookPrice} \\
+\midrule
+3 & \nullv & 45 \\
+6 & B & 45 \\
+7 & A & 38 \\
+\bottomrule
+\end{tabular}
+\end{outtable}
+
+\begin{otherlanguage}{english}
+\begin{sqlgood}
+SELECT DISTINCT BookShelf
+FROM   Books
+WHERE  BookPrice < 50;
+\end{sqlgood}
+\end{otherlanguage}
+
+\begin{outplain}
+\begin{tabular}{l}
+\toprule
+\thd{BookShelf} \\
+\midrule
+\nullv \\
+B \\
+A \\
+\bottomrule
+\end{tabular}
+\end{outplain}
+
+{\small\textbf{שתי נקודות:} \lr{(1)} ה-\lr{\texttt{NULL}} \textbf{מופיע בפלט} \textendash{} וזה נכון, כי "אין מדף" הוא אחד המצבים הקיימים בעמודה. \lr{(2)} הפלט \textbf{אינו ממוין} \textendash{} \lr{\texttt{DISTINCT}} מסלק כפילויות בלבד.}
+
+\vspace{6pt}
+\begin{notepanel}{okgreen}{דוגמה \lr{3} \textendash{} חישוב, כינוי, ו"שלושת ה... ביותר"}
+"הציגו את \textbf{שם הספר} ואת \textbf{המחיר אחרי הנחה של \lr{20\%}}, בכותרת \lr{\texttt{SalePrice}}, עבור \textbf{שלושת הספרים היקרים ביותר}."
+\end{notepanel}
+
+\vspace{-2pt}
+\noindent\begin{tabular}{@{}p{0.07\linewidth}p{0.40\linewidth}p{0.47\linewidth}@{}}
+\toprule
+& \thd{מה שואלים את עצמנו} & \thd{מה נכתב} \\
+\midrule
+\lr{1} & על מה? ספרים & \sqlin{FROM Books} \\
+\lr{2} & הנחה של \lr{20\%}, כלומר נשאר \lr{80\%} & \sqlin{BookPrice * 0.8 AS SalePrice} \\
+\lr{3} & תנאי? \textbf{אין} \textendash{} "שלושת היקרים" הוא סדר, לא תנאי & בלי \lr{\texttt{WHERE}} \\
+\lr{4} & "היקרים ביותר" \lr{$\rightarrow$} יורד, ואז לקצוץ ל-\lr{3} & \lr{\texttt{ORDER BY BookPrice DESC} \ + \ \texttt{LIMIT 3}} \\
+\bottomrule
+\end{tabular}
+
+\begin{otherlanguage}{english}
+\begin{sqlgood}
+SELECT   BookTitle, BookPrice * 0.8 AS SalePrice
+FROM     Books
+ORDER BY BookPrice DESC
+LIMIT    3;
+\end{sqlgood}
+\end{otherlanguage}
+
+\begin{outplain}
+\begin{tabular}{ll}
+\toprule
+\thd{BookTitle} & \thd{SalePrice} \\
+\midrule
+ספר המתכונים & 96.0 \\
+סודות הגלקסיה & 76.0 \\
+הדרך לירכא & 57.6 \\
+\bottomrule
+\end{tabular}
+\end{outplain}
+
+\begin{notepanel}{warnred}{המלכודת של דוגמה \lr{3}}
+"שלושת הספרים היקרים ביותר" נשמע כמו תנאי, ולכן הרבה תלמידים מנסים לכתוב \lr{\texttt{WHERE}}. \textbf{אין שום תנאי בשאלה הזאת} \textendash{} אי אפשר לדעת מראש מאיזה מחיר מתחילים "היקרים". \textbf{ממיינים, ואז קוצצים.} זה תמיד \lr{\texttt{ORDER BY} \ + \ \texttt{LIMIT}}.
+
+\vspace{3pt}
+וגם: \textbf{הנחה של \lr{20\%} היא הכפלה ב-\lr{0.8}}, לא ב-\lr{0.2}. הכפלה ב-\lr{0.2} נותנת את \textbf{גודל ההנחה}, ולא את המחיר לתשלום.
+\end{notepanel}
+
+\newpage
+\section{דף העזר \textendash{} הכול בטבלה אחת}
+\rulebar
+
+{\small זה הפרק שתסתכלו בו בזמן הבחינה. הדוגמאות על בסיס הנתונים של מועדון הקריאה.}
+
+\vspace{4pt}
+\noindent\begin{tabular}{@{}p{0.235\linewidth}p{0.46\linewidth}p{0.24\linewidth}@{}}
+\toprule
+\thd{מה רוצים} & \thd{איך כותבים} & \thd{הערה} \\
+\midrule
+\multicolumn{3}{@{}l}{\textbf{\lr{SELECT} \textendash{} אילו עמודות}}\\
+\midrule
+כל העמודות & \sqlin{SELECT * FROM Books} & מסוכן בבחינה \\
+עמודות נבחרות & \sqlin{SELECT BookTitle, BookPrice FROM Books} & הסדר שלכם \\
+כותרת אחרת & \sqlin{SELECT BookPrice AS Price} & מילה אחת \\
+כותרת בעברית & \sqlin{SELECT BookPrice AS "מחיר"} & גרש \textbf{כפול} \\
+חישוב & \sqlin{SELECT BookPrice * 1.18 AS WithVat} & לכל שורה \\
+חיבור טקסט & \sqlin{SELECT ReaderFirst || ' ' || ReaderLast} & רווח באמצע \\
+בלי כפילויות & \sqlin{SELECT DISTINCT BookYear FROM Books} & על כל השורה \\
+\midrule
+\multicolumn{3}{@{}l}{\textbf{\lr{WHERE} \textendash{} אילו שורות}}\\
+\midrule
+שווה / לא שווה & \lr{\texttt{WHERE BookYear = 2018} \ \textbar\ \ \texttt{<> 2018}} & \sqlin{=} אחד \\
+גדול / קטן & \sqlin{WHERE BookPrice >= 70} & \\
+טקסט & \sqlin{WHERE BookShelf = 'A'} & גרש \textbf{בודד} \\
+תאריך & \sqlin{WHERE JoinDate >= '2025-01-01'} & \lr{\texttt{YYYY-MM-DD}} \\
+טווח & \sqlin{WHERE BookPrice BETWEEN 45 AND 72} & \textbf{כולל} קצוות \\
+רשימה & \sqlin{WHERE BookYear IN (2019, 2023)} & קיצור ל-\lr{\texttt{OR}} \\
+לא ברשימה & \sqlin{WHERE BookYear NOT IN (2018)} & \\
+מתחיל ב & \sqlin{WHERE BookTitle LIKE 'ס\%'} & \\
+מכיל & \sqlin{WHERE BookTitle LIKE '\%גל\%'} & \textbf{שני} אחוזים \\
+תו אחד & \sqlin{WHERE BookShelf LIKE '\_'} & \\
+ערך חסר & \sqlin{WHERE BookShelf IS NULL} & \textbf{לא} \sqlin{= NULL} \\
+ערך קיים & \sqlin{WHERE ReaderPhone IS NOT NULL} & \\
+שני תנאים & \sqlin{WHERE BookYear = 2018 AND BookPrice > 60} & מצמצם \\
+אחד מהשניים & \sqlin{WHERE BookShelf = 'A' OR BookShelf = 'C'} & מרחיב \\
+\textbf{\lr{OR} עם עוד תנאי} & \sqlin{WHERE (A OR B) AND C} & \textbf{סוגריים!} \\
+\midrule
+\multicolumn{3}{@{}l}{\textbf{\lr{ORDER BY} \textendash{} באיזה סדר}}\\
+\midrule
+עולה & \sqlin{ORDER BY BookPrice} & ברירת מחדל \\
+יורד & \sqlin{ORDER BY BookPrice DESC} & חובה לכתוב \\
+שני מפתחות & \sqlin{ORDER BY BookYear DESC, BookPrice} & \lr{\texttt{DESC}} לכל אחד \\
+לפי כינוי & \sqlin{ORDER BY AfterSale DESC} & מותר כאן \\
+לפי מספר עמודה & \sqlin{ORDER BY 2 DESC} & שביר \\
+\lr{N} הראשונים & \sqlin{ORDER BY BookPrice DESC LIMIT 3} & תמיד עם מיון \\
+\bottomrule
+\end{tabular}
+
+\vspace{7pt}
+\begin{panel}
+\textbf{השלד שאפשר לכתוב מההתחלה, בכל שאלה:}
+
+\vspace{3pt}
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT   
+FROM     
+WHERE    
+ORDER BY ;
+\end{sqlverb}
+\end{otherlanguage}
+\vspace{1pt}
+ממלאים מלמעלה למטה, ומוחקים את מה שלא צריך. \textbf{ונקודה-פסיק בסוף.}
+\end{panel}
+
+\newpage
+\section{הטעויות שחוזרות על עצמן}
+\rulebar
+
+\vspace{2pt}
+\noindent\begin{tabular}{@{}p{0.04\linewidth}p{0.29\linewidth}p{0.30\linewidth}p{0.30\linewidth}@{}}
+\toprule
+& \thd{הטעות} & \thd{מה קורה בפועל} & \thd{התיקון} \\
+\midrule
+\lr{1} & \sqlin{WHERE X = NULL} & \textbf{אפס שורות}, בלי שגיאה & \sqlin{WHERE X IS NULL} \\
+\lr{2} & גרש כפול למחרוזת: \sqlin{= "A"} & מחפש \textbf{עמודה} בשם \lr{A} & גרש בודד: \sqlin{= 'A'} \\
+\lr{3} & \lr{\texttt{OR}} בלי סוגריים & \lr{\texttt{AND}} גובר, ונכנסות שורות מיותרות & \sqlin{(A OR B) AND C} \\
+\lr{4} & \sqlin{LIKE 'גליל'} & התאמה מדויקת בלבד & \sqlin{LIKE '\%גליל\%'} \\
+\lr{5} & \lr{\texttt{ORDER BY}} לפני \lr{\texttt{WHERE}} & \textbf{שגיאת תחביר}, לא רץ & הסדר: \lr{\texttt{SELECT-FROM-WHERE-ORDER BY}} \\
+\lr{6} & \lr{\texttt{DESC}} על העמודה הראשונה בלבד & העמודה השנייה נשארה עולה & \lr{\texttt{DESC}} ליד \textbf{כל} עמודה שצריך \\
+\lr{7} & פסיק לפני \lr{\texttt{FROM}} & \lr{\texttt{syntax error near FROM}} & מוחקים את הפסיק \\
+\lr{8} & סינון לפי כינוי ב-\lr{\texttt{WHERE}} & \lr{\texttt{no such column}} & כותבים את החישוב במלואו \\
+\lr{9} & \sqlin{BETWEEN 72 AND 45} & אפס שורות, בלי שגיאה & הקטן \textbf{קודם} \\
+\lr{10} & \sqlin{SELECT *} כשביקשו שתי עמודות & מציג את כל העמודות & בדיוק מה שביקשו \\
+\lr{11} & אין נקודה-פסיק בסוף & השאילתה "נתקעת" ומחכה להמשך & \sqlin{;} בסוף כל שאילתה \\
+\bottomrule
+\end{tabular}
+
+\vspace{8pt}
+\begin{panel}
+\textbf{נתקעתם בשגיאה?} קראו את המילה שאחרי \lr{\texttt{near}} \textendash{} הבעיה נמצאת שם, או ממש לפניה. \lr{\texttt{no such column: X}} פירושו כמעט תמיד שכתבתם מחרוזת בגרש כפול, או שטעיתם באיות שם העמודה.
+\end{panel}
+
+\vspace{6pt}
+\section{תרגול א' \textendash{} כתיבת שאילתות}
+\rulebar
+
+{\small על \textbf{מועדון הקריאה} שבעמוד \lr{3}. כסו את התשובות, פתרו על נייר, ואז בדקו.}
+
+\vspace{3pt}
+\subq{1}{הציגו את שם הספר ואת המחיר, של כל הספרים שמחירם בין \lr{45} ל-\lr{70} \textendash{} מהיקר לזול.}
+\subq{2}{הציגו את מספרי הספרים שאין להם מדף.}
+\subq{3}{אילו מדפים בכלל קיימים במועדון? כל מדף פעם אחת.}
+\subq{4}{הציגו שם מלא של כל קורא (שם פרטי, רווח, שם משפחה), בכותרת \lr{\texttt{FullName}}.}
+\subq{5}{הציגו את שמות הספרים שמופיעות בכותרתם האותיות "גל", ושיצאו \textbf{לפני} שנת \lr{2020}.}
+\subq{6}{הציגו את שם הספר ואת המחיר אחרי מע"מ (\lr{18\%}), בכותרת "מחיר סופי", לספרים ממדף \lr{A} או \lr{B} שמחירם מעל \lr{60}.}
+\subq{7}{הציגו את שלושת הספרים הזולים ביותר.}
+\subq{8}{הציגו את הקוראים שאין להם טלפון, לפי תאריך הצטרפות מהמוקדם למאוחר.}
+
+\vspace{8pt}
+\begin{panel}
+\textbf{התשובות}
+
+\vspace{2pt}
+\begin{otherlanguage}{english}
+\begin{Verbatim}[fontsize=\small]
+1.  SELECT BookTitle, BookPrice FROM Books
+    WHERE BookPrice BETWEEN 45 AND 70 ORDER BY BookPrice DESC;
+
+2.  SELECT BookNum FROM Books WHERE BookShelf IS NULL;
+
+3.  SELECT DISTINCT BookShelf FROM Books;
+
+4.  SELECT ReaderFirst || ' ' || ReaderLast AS FullName FROM Readers;
+
+5.  SELECT BookTitle FROM Books WHERE BookTitle LIKE '%גל%' AND BookYear < 2020;
+
+6.  SELECT BookTitle, BookPrice * 1.18 AS "מחיר סופי" FROM Books
+    WHERE (BookShelf = 'A' OR BookShelf = 'B') AND BookPrice > 60;
+
+7.  SELECT BookTitle, BookPrice FROM Books ORDER BY BookPrice LIMIT 3;
+
+8.  SELECT ReaderFirst, ReaderLast FROM Readers
+    WHERE ReaderPhone IS NULL ORDER BY JoinDate;
+\end{Verbatim}
+\end{otherlanguage}
+
+\vspace{2pt}
+{\small\textbf{שימו לב:} בסעיף \lr{2} \textbf{אסור} \sqlin{= NULL}. בסעיף \lr{3} המדף החסר יופיע גם הוא, כשורת \lr{\texttt{NULL}} \textendash{} זה נכון, כי זה אחד הערכים הקיימים בעמודה. בסעיף \lr{6} \textbf{הסוגריים הכרחיים}. בסעיף \lr{7} "הזולים" פירושו \lr{\texttt{ASC}}, כלומר בלי \lr{\texttt{DESC}}.}
+\end{panel}
+
+\newpage
+\section{תרגול מסוג הבחינה}
+\rulebar
+
+התרגול שבפרק הקודם בדק דבר אחד: \textbf{לכתוב שאילתה}. אבל בבחינה יש עוד \textbf{שלושה סוגי שאלות}, והם שליש מהנקודות: שאלות על \textbf{מבנה} בסיס הנתונים, \textbf{תיקון} שאילתה שגויה, ו\textbf{ניתוח פלט}. הפרק הזה מתרגל בדיוק אותם.
+
+\vspace{3pt}
+\begin{panel}
+\textbf{שימו לב לתנאי התרגול.} חלק א' רץ על בסיס נתונים \textbf{שלא ראיתם} \textendash{} וזה בכוונה. בבחינה תקבלו סכמה חדשה לגמרי, וצריך להתאמן על לקרוא אותה מאפס, ולא על לזכור אותה.
+\end{panel}
+
+\subsection{חלק א' \textendash{} מבנה בסיס הנתונים}
+
+\textbf{בית הספר לנהיגה "דרך בטוחה".} לפניכם חמש טבלאות. לכל תלמיד רשומה עיר מגורים אחת; לכל מורה רכב אחד, ולכל רכב מורה אחד; ותלמיד יכול ללמוד אצל כמה מורים, וכל מורה מלמד כמה תלמידים.
+
+\vspace{3pt}
+\begin{otherlanguage}{english}
+\begin{center}
+\begin{tikzpicture}[font=\scriptsize\sffamily]
+\tikzset{tblm/.style={matrix of nodes,
+  nodes={anchor=west, inner sep=2.6pt, text width=24mm, align=left, font=\scriptsize\sffamily},
+  row sep=-\pgflinewidth, draw=inkblue, line width=0.7pt, inner sep=0pt,
+  row 1/.style={nodes={fill=inkblue, text=white, font=\scriptsize\sffamily\bfseries,
+                       align=center, text width=24mm}}}}
+\matrix (T) [tblm] { Towns \\ TownCode \\ TownName \\ };
+\matrix (P) [tblm, right=9mm of T] { Pupils \\ PupilNum \\ PupilName \\ PupilTown \\ BirthYear \\ };
+\matrix (L) [tblm, right=9mm of P] { PupilTeach \\ LinkPupil \\ LinkTeach \\ Lessons \\ };
+\matrix (E) [tblm, right=9mm of L] { Teachers \\ TeachNum \\ TeachName \\ TeachCar \\ Seniority \\ };
+\matrix (C) [tblm, right=9mm of E] { Cars \\ CarCode \\ CarModel \\ CarGear \\ };
+\end{tikzpicture}
+\end{center}
+\end{otherlanguage}
+
+\vspace{2pt}
+{\small\textbf{דוגמה לשורות בטבלה \lr{\texttt{PupilTeach}}:} \lr{(201, 7, 12)}, \lr{(201, 9, 4)}, \lr{(205, 7, 20)} \textendash{} כלומר תלמיד \lr{201} למד \lr{12} שיעורים אצל מורה \lr{7}, ועוד \lr{4} שיעורים אצל מורה \lr{9}.}
+
+\vspace{3pt}
+\subq{1}{כתבו את \textbf{המפתח הראשי} של חמש הטבלאות. באחת מהן המפתח \textbf{מורכב}.}
+\subq{2}{כתבו את \textbf{כל המפתחות הזרים} בבסיס הנתונים, ולאיזה שדה כל אחד מצביע.}
+\subq{3}{מהו \textbf{סוג הקשר} בכל זוג: \lr{\texttt{Towns}\,\textendash\,\texttt{Pupils} \ \textbar\ \ \texttt{Pupils}\,\textendash\,\texttt{Teachers} \ \textbar\ \ \texttt{Teachers}\,\textendash\,\texttt{Cars}}? נמקו כל אחד במשפט.}
+\subq{4}{נכון או לא נכון: "יכולה להיות עיר בטבלת \lr{\texttt{Towns}} שאף תלמיד אינו גר בה". הסבירו.}
+
+\subsection{חלק ב' \textendash{} תיקון שאילתה שגויה}
+
+{\small על \textbf{מועדון הקריאה} שבעמוד \lr{3}.}
+
+\vspace{2pt}
+\subq{5}{בשאילתה הבאה \textbf{שלוש} טעויות. כתבו אותה מתוקנת. המטרה: שם ומחיר של הספרים שמחירם מעל \lr{50}, מהיקר לזול.}
+
+\begin{otherlanguage}{english}
+\begin{sqlbad}
+SELECT BookTitle, BookPrice,
+FROM   Books
+ORDER BY BookPrice DESC
+WHERE  BookPrice > 50
+\end{sqlbad}
+\end{otherlanguage}
+
+\subq{6}{בשאילתה הבאה \textbf{שתי} טעויות. המטרה: הקוראים שאין להם טלפון, מהמצטרף האחרון לראשון.}
+
+\begin{otherlanguage}{english}
+\begin{sqlbad}
+SELECT   ReaderFirst, ReaderLast
+FROM     Readers
+WHERE    ReaderPhone = NULL
+ORDER BY JoinDate DESC
+\end{sqlbad}
+\end{otherlanguage}
+
+\subsection{חלק ג' \textendash{} ניתוח פלט}
+
+\subq{7}{לפניכם שאילתה. \lr{(א)} כמה שורות היא תחזיר? \lr{(ב)} איזה ספר יופיע \textbf{אחרון}, ומדוע?}
+
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT   BookTitle, BookShelf
+FROM     Books
+ORDER BY BookShelf DESC;
+\end{sqlverb}
+\end{otherlanguage}
+
+\subq{8}{לפניכם \textbf{הפלט} של שאילתה. כתבו את השאילתה הפשוטה ביותר שמפיקה אותו.}
+
+\begin{outplain}
+\begin{tabular}{l}
+\toprule
+\thd{BookShelf} \\
+\midrule
+A \\
+B \\
+\nullv \\
+C \\
+\bottomrule
+\end{tabular}
+\end{outplain}
+
+\newpage
+\subsection{התשובות לחלק א'\textendash ג'}
+
+\begin{panel}
+\textbf{\lr{1.} מפתחות ראשיים}
+
+\vspace{2pt}
+\noindent\begin{tabular}{@{}p{0.24\linewidth}p{0.70\linewidth}@{}}
+\lr{\texttt{Towns}} & \lr{\texttt{TownCode}} \\
+\lr{\texttt{Pupils}} & \lr{\texttt{PupilNum}} \\
+\lr{\texttt{Teachers}} & \lr{\texttt{TeachNum}} \\
+\lr{\texttt{Cars}} & \lr{\texttt{CarCode}} \\
+\lr{\texttt{PupilTeach}} & \lr{\texttt{LinkPupil} + \texttt{LinkTeach}} \textendash{} \textbf{מפתח מורכב} \\
+\end{tabular}
+
+\vspace{3pt}
+{\small\textbf{למה מורכב?} בדוגמה, \lr{201} מופיע פעמיים ו-\lr{7} מופיע פעמיים \textendash{} אף אחד מהם לבדו אינו ייחודי. רק \textbf{הצירוף} מופיע פעם אחת.}
+\end{panel}
+
+\begin{panel}
+\textbf{\lr{2.} מפתחות זרים}
+
+\vspace{2pt}
+\noindent\begin{tabular}{@{}p{0.30\linewidth}p{0.30\linewidth}p{0.34\linewidth}@{}}
+\toprule
+\thd{המפתח הזר} & \thd{בטבלה} & \thd{מצביע אל} \\
+\midrule
+\lr{\texttt{PupilTown}} & \lr{\texttt{Pupils}} & \lr{\texttt{TownCode}} \\
+\lr{\texttt{TeachCar}} & \lr{\texttt{Teachers}} & \lr{\texttt{CarCode}} \\
+\lr{\texttt{LinkPupil}} & \lr{\texttt{PupilTeach}} & \lr{\texttt{PupilNum}} \\
+\lr{\texttt{LinkTeach}} & \lr{\texttt{PupilTeach}} & \lr{\texttt{TeachNum}} \\
+\bottomrule
+\end{tabular}
+
+\vspace{3pt}
+{\small בטבלה מקשרת, \textbf{שני} השדות הם מפתחות זרים \textendash{} וביחד הם גם המפתח הראשי. \lr{\texttt{Lessons}} אינו מפתח זר: הוא סתם מספר שיעורים.}
+\end{panel}
+
+\begin{panel}
+\textbf{\lr{3.} סוגי הקשרים}
+
+\vspace{2pt}
+\noindent\begin{tabular}{@{}p{0.26\linewidth}p{0.10\linewidth}p{0.58\linewidth}@{}}
+\toprule
+\thd{הזוג} & \thd{הקשר} & \thd{הנימוק} \\
+\midrule
+\lr{\texttt{Towns}\,\textendash\,\texttt{Pupils}} & \textbf{\lr{1:N}} & בעיר אחת גרים כמה תלמידים, ולכל תלמיד עיר אחת. המפתח הזר \lr{\texttt{PupilTown}} יושב בצד הרבים \\
+\lr{\texttt{Pupils}\,\textendash\,\texttt{Teachers}} & \textbf{\lr{M:N}} & תלמיד לומד אצל כמה מורים, ומורה מלמד כמה תלמידים. לכן יש טבלה מקשרת, \lr{\texttt{PupilTeach}} \\
+\lr{\texttt{Teachers}\,\textendash\,\texttt{Cars}} & \textbf{\lr{1:1}} & לכל מורה רכב אחד, ולכל רכב מורה אחד. \lr{\texttt{TeachCar}} הוא ייחודי \\
+\bottomrule
+\end{tabular}
+
+\vspace{3pt}
+{\small\textbf{החצים ב-\lr{DSD}:} \lr{\texttt{PupilTown} $\rightarrow$ \texttt{TownCode}} \ \textbullet\ \ \lr{\texttt{TeachCar} $\rightarrow$ \texttt{CarCode}} \ \textbullet\ \ \lr{\texttt{LinkPupil} $\rightarrow$ \texttt{PupilNum}} \ \textbullet\ \ \lr{\texttt{LinkTeach} $\rightarrow$ \texttt{TeachNum}}}
+\end{panel}
+
+\begin{panel}
+\textbf{\lr{4.} נכון.} בקשר \lr{1:N} מותר לצד ה"אחד" להישאר בלי אף שורה מתאימה: עיר שרשומה במערכת, ואף תלמיד אינו גר בה. \textbf{ההפך אסור} \textendash{} אי אפשר לרשום תלמיד עם קוד עיר שאינו קיים בטבלת \lr{\texttt{Towns}}.
+\end{panel}
+
+\begin{panel}
+\textbf{\lr{5.} שלוש הטעויות:} \lr{(1)} פסיק מיותר אחרי \lr{\texttt{BookPrice}}, לפני \lr{\texttt{FROM}}. \lr{(2)} \lr{\texttt{ORDER BY}} נכתב \textbf{לפני} \lr{\texttt{WHERE}} \textendash{} הסדר חייב להיות \lr{\texttt{WHERE}} ואז \lr{\texttt{ORDER BY}}. \lr{(3)} חסרה נקודה-פסיק.
+
+\begin{otherlanguage}{english}
+\begin{sqlgood}
+SELECT   BookTitle, BookPrice
+FROM     Books
+WHERE    BookPrice > 50
+ORDER BY BookPrice DESC;
+\end{sqlgood}
+\end{otherlanguage}
+
+\begin{outplain}
+\begin{tabular}{ll}
+\toprule
+\thd{BookTitle} & \thd{BookPrice} \\
+\midrule
+ספר המתכונים & 120 \\
+סודות הגלקסיה & 95 \\
+הדרך לירכא & 72 \\
+מסע אל הירח & 68 \\
+\bottomrule
+\end{tabular}
+\end{outplain}
+\end{panel}
+
+\begin{panel}
+\textbf{\lr{6.} שתי הטעויות:} \lr{(1)} \sqlin{= NULL} במקום \sqlin{IS NULL} \textendash{} כך נכתב, הפלט ריק. \lr{(2)} חסרה נקודה-פסיק.
+
+\begin{otherlanguage}{english}
+\begin{sqlgood}
+SELECT   ReaderFirst, ReaderLast
+FROM     Readers
+WHERE    ReaderPhone IS NULL
+ORDER BY JoinDate DESC;
+\end{sqlgood}
+\end{otherlanguage}
+
+\begin{outplain}
+\begin{tabular}{lll}
+\toprule
+\thd{ReaderFirst} & \thd{ReaderLast} & \thd{(JoinDate)} \\
+\midrule
+איתי & ברק & 2025-02-10 \\
+עומר & לוי & 2023-11-15 \\
+\bottomrule
+\end{tabular}
+\end{outplain}
+
+{\small\lr{\texttt{JoinDate}} מופיע כאן רק כדי להראות את המיון \textendash{} בשאילתה עצמה לא ביקשו אותו, ולכן הוא אינו ב-\lr{\texttt{SELECT}}.}
+\end{panel}
+
+\begin{panel}
+\textbf{\lr{7.} \lr{(א)} \ \lr{7} שורות} \textendash{} כל הספרים. אין \lr{\texttt{WHERE}}, ו-\lr{\texttt{ORDER BY}} אינו מסנן.
+
+\vspace{2pt}
+\textbf{\lr{(ב)} אחרון יופיע "יומן מהמחסן"} (ספר \lr{3}) \textendash{} הספר שאין לו מדף. במיון \textbf{יורד} ערכי \lr{\texttt{NULL}} נופלים \textbf{בסוף}.
+\end{panel}
+
+\begin{panel}
+\textbf{\lr{8.} השאילתה:}
+
+\begin{otherlanguage}{english}
+\begin{sqlgood}
+SELECT DISTINCT BookShelf FROM Books;
+\end{sqlgood}
+\end{otherlanguage}
+
+\vspace{2pt}
+{\small שלושה רמזים שמובילים לתשובה: \lr{(1)} \textbf{עמודה אחת} בפלט \lr{$\rightarrow$} \lr{\texttt{SELECT}} של שדה אחד. \lr{(2)} כל מדף מופיע \textbf{פעם אחת}, למרות שבטבלה יש \lr{7} ספרים \lr{$\rightarrow$} \lr{\texttt{DISTINCT}}. \lr{(3)} הפלט \textbf{אינו ממוין} (\lr{A}, \lr{B}, \lr{\textit{NULL}}, \lr{C}) \lr{$\rightarrow$} אין \lr{\texttt{ORDER BY}}. ושורת ה-\lr{\texttt{NULL}} מוכיחה שלא היה \lr{\texttt{WHERE}} שסינן אותה.}
+\end{panel}
+
+\vspace{8pt}
+{\color{inkblue}\hrule height 1pt}
+\vspace{4pt}
+\begin{center}
+{\small\textbf{בהצלחה בבחינה.} מי שפתר את שני התרגולים \textendash{} \lr{16} השאלות \textendash{} בלי להציץ, מוכן לכל ארבע השאלות שבבחינה.}
+\end{center}
+
+\end{document}

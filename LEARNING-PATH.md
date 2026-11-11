@@ -3,7 +3,7 @@
 # 🧭 סדר ההוראה: מעשי, ומכוון לבחינה
 
 > **עודכן ב‑2026‑10‑05.** בסדר הקודם, השבועות הראשונים היו כמעט רק תיאוריה: נתונים מול מידע, היסטוריה, ייעוץ. אבל בבחינת הבגרות (שאלון 735911, חלק ב׳) **אין אף שאלה עיונית**. יש בה רק מפתחות, קשרים, תרשים DSD ושאילתות.
-> לכן הסדר עכשיו הוא: **שיעור 1** מעשי ומחליף את פרקים 0–1. **SQL מתחיל בשיעור 2.** כל נושא עיצובי מגיע לצד ה‑SQL שמשתמש בו. פרקים 8, 13, 14 ו‑15 קוצרו ל[תמצית אחת](modules/module-08-15-summary/), לקראת הפרויקט וההגנה.
+> לכן הסדר עכשיו הוא: **שיעור 1** מעשי ומחליף את פרקים 0–1. **SQL מתחיל בשיעור 2.** כל נושא עיצובי מגיע לצד ה‑SQL שמשתמש בו. פרקים 8, 13, 14 ו‑15 קוצרו ל[תמצית אחת](database-design/module-08-15-summary/), לקראת הפרויקט וההגנה.
 >
 > 📌 [SYLLABUS.md](SYLLABUS.md) נשאר המפה הרשמית לפי מספרי הפרקים. מספרי התיקיות **לא השתנו**: `module-21` הוא עדיין פרק 21, גם אם מלמדים אותו בשיעור 6.
 
@@ -11,29 +11,28 @@
 
 ## הסדר
 
-| שיעור | הנושא | התיקיות | מה התלמיד יודע לעשות אחרי השיעור |
-|:-----:|-------|---------|-----------------------------------|
-| **1** | טבלאות, מפתחות, קשרים והשאילתה הראשונה | [quick-start](modules/module-00-quick-start/) | למצוא PK ו‑FK, לשרטט DSD, להריץ `SELECT` |
-| **2** | SELECT | [16](modules/module-16-sql-basics/) | לבחור עמודות, `DISTINCT`, כינויים |
-| **3** | WHERE | [17](modules/module-17-sql-where/) | `BETWEEN`, `IN`, `LIKE`, `IS NULL` |
-| **4** | ORDER BY | [18](modules/module-18-sql-order-by/) | למיין לפי כמה עמודות |
-| **5** | מודל הנתונים ו‑ERD | [2](modules/module-02-data-model/) · [3](modules/module-03-erd/) | ישויות, מאפיינים ומזהים, ולקרוא ERD |
-| **6** | יחסים + JOIN | [5](modules/module-05-relationships/) · [21](modules/module-21-sql-joins/) | 1:N, N:M, טבלת קישור, צירוף **בפסיק** ובעזרת `JOIN` |
-| **7** | JOIN 2 | [22](modules/module-22-sql-joins-2/) | `LEFT JOIN`, צירוף של 3 טבלאות |
-| **8** | פונקציות | [19](modules/module-19-sql-functions/) | פונקציות של מחרוזות, מספרים ותאריכים |
-| **9** | CASE ו‑NULL | [20](modules/module-20-sql-functions-2/) | |
-| **10** | פונקציות מצרפיות | [23](modules/module-23-sql-aggregates/) | `COUNT`, `SUM`, `AVG`, `MIN`, `MAX` |
-| **11** | GROUP BY ותתי־שאילתות | [24](modules/module-24-sql-group-by/) | `HAVING`, `IN` / `NOT IN`, השוואה לממוצע |
-| **12** | DML | [25](modules/module-25-sql-dml/) | `INSERT`, `UPDATE` (גם עם תת־שאילתה), `DELETE` |
-| **13** | נרמול | [6](modules/module-06-normalization/) | לזהות כפילות ולפצל טבלה |
-| **14** | ממודל לטבלאות + DDL | [12](modules/module-12-mapping/) · [26](modules/module-26-sql-ddl/) | ⭐ לבנות בסיס נתונים **משלכם**: `CREATE`, `ALTER`, `DROP` |
-| **15** | אילוצים | [7](modules/module-07-constraints/) · [27](modules/module-27-sql-constraints/) | `PRIMARY KEY`, `FOREIGN KEY`, `CHECK`, `UNIQUE` |
-| **16** | Views | [28](modules/module-28-sql-views/) | "שאילתה שמורה" (Q1 בבחינה) |
-| **17** | אינדקסים, הרשאות, טרנזקציות | [29](modules/module-29-sql-objects/) · [30](modules/module-30-sql-users/) · [32](modules/module-32-sql-transactions/) | `GRANT`/`REVOKE`, `COMMIT`/`ROLLBACK` |
-| **18** | הרחבה (לא בבחינה) | [4](modules/module-04-subtypes-supertypes/) · [10](modules/module-10-tracking-changes/) · [11](modules/module-11-generic-models/) | טיפוסי משנה, היסטוריה, מודלים גנריים |
-| **19** | פרויקט I | [9](modules/module-09-project-1/) | ממודל למסד עובד |
-| **20** | פרויקט מסכם והגנה | [תמצית 8–15](modules/module-08-15-summary/) · [31](modules/module-31-sql-final-project/) | תיק פרויקט + הגנה (שאלון 735915) |
-| ★ | **הכנה לבחינה** | [exam-prep](exam-prep/) | דף עזר + 3 בחינות לדוגמה במתכונת 735911 |
+## הסדר המעשי — מודולי SQL מהקל למתקדם
+
+| שיעור | הנושא | התיקייה ב‑`modules/` | מה התלמיד יודע לעשות אחרי השיעור |
+|:-----:|-------|:---------------------:|-----------------------------------|
+| **0** | טבלאות, מפתחות, קשרים והשאילתה הראשונה | [00-quick-start](modules/00-quick-start/) | למצוא PK ו‑FK, להבין קשרים 1:1, 1:N, M:N, לשרטט DSD, להריץ `SELECT` |
+| **1** | SELECT — מה מציגים | [01-sql-basics](modules/01-sql-basics/) | לבחור עמודות, להסיר כפילויות עם `DISTINCT`, כינויים עם `AS` |
+| **2** | WHERE — הגבלת השליפה | [02-sql-where](modules/02-sql-where/) | אופרטורים, `BETWEEN`, `IN`, `LIKE`, ובדיקת `IS NULL` |
+| **3** | ORDER BY — מיונים | [03-sql-order-by](modules/03-sql-order-by/) | למיין עולה/יורד (`ASC`/`DESC`) ולפי מספר עמודות |
+| **4** | פונקציות סקלריות (שורה) | [04-sql-functions](modules/04-sql-functions/) | פונקציות של מחרוזות (`LENGTH`, `UPPER`, `SUBSTR`), מספרים וחישובים |
+| **5** | CASE וטיפול ב‑NULL | [05-sql-functions-case-null](modules/05-sql-functions-case-null/) | תנאי `CASE WHEN`, פונקציות `COALESCE` ו‑`IFNULL` |
+| **6** | פונקציות מצרפיות (קיבוץ) ⭐ | [06-sql-aggregates](modules/06-sql-aggregates/) | `COUNT(*)`, `COUNT(col)`, `COUNT(DISTINCT)`, `SUM`, `AVG`, `MIN`, `MAX` |
+| **7** | GROUP BY ותנאי HAVING | [07-sql-group-by-having](modules/07-sql-group-by-having/) | חלוקה לקבוצות, סינון קבוצות ב‑`HAVING`, הבדל קריטי מול `WHERE` |
+| **8** | חיבור טבלאות (Joins) | [08-sql-joins](modules/08-sql-joins/) | צירוף 2 טבלאות לפי מפתח ראשי וזר (פסיק ב‑`WHERE` ו‑`INNER JOIN ... ON`) |
+| **9** | צירוף 3 טבלאות ו‑LEFT JOIN | [09-sql-joins-advanced](modules/09-sql-joins-advanced/) | צירוף 3 טבלאות (כולל טבלת קישור M:N), וצירוף חיצוני `LEFT JOIN` |
+| **10** | שינוי נתונים (DML) | [10-sql-dml](modules/10-sql-dml/) | `INSERT INTO`, `UPDATE SET WHERE`, `DELETE FROM WHERE` |
+| **11** | שינוי מבנה (DDL) | [11-sql-ddl](modules/11-sql-ddl/) | `CREATE TABLE`, `ALTER TABLE` (הוספה/מחיקת עמודה), `DROP TABLE` |
+| **12** | אילוצי שלמות נתונים | [12-sql-constraints](modules/12-sql-constraints/) | `PRIMARY KEY`, `FOREIGN KEY`, `CHECK`, `UNIQUE`, `NOT NULL` |
+| **13** | שאילתות שמורות (Views) | [13-sql-views](modules/13-sql-views/) | `CREATE VIEW`, שימוש בשאילתה כטבלה (`Q1` בבחינה) |
+| **14** | אינדקסים ואובייקטים | [14-sql-advanced-objects](modules/14-sql-advanced-objects/) | אינדקסים לשיפור ביצועי שליפה וסיקוונסים |
+| **15** | משתמשים והרשאות | [15-sql-advanced-users](modules/15-sql-advanced-users/) | אבטחת מידע, `GRANT` ו‑`REVOKE` |
+| **16** | טרנזקציות | [16-sql-advanced-transactions](modules/16-sql-advanced-transactions/) | טרנזקציות עסקיות, `COMMIT` ו‑`ROLLBACK` |
+| 🎓 | **הכנה ממוקדת לבחינה (735911)** | [exam-prep](exam-prep/) | 🏆 [מאגר 90 שאלות מדורגות](exam-prep/master-sql-practice.md) · 🧮 [מדריך פונקציות SQL](exam-prep/sql-functions-guide.md) · 🎯 [תרגול תשפ"ז](exam-prep/practice-2027.md) · 📋 [דף עזר](exam-prep/cheat-sheet.md) |
 
 ---
 
@@ -45,8 +44,8 @@
 
 **3. שני בסיסי נתונים בשיעור, בכוונה.** בשיעורים 2–13 עובדים על בסיס נתונים **מוכן** (המקלט) — שהתלמידים מכירים, ולכן אפשר לדבר בו על רעיונות. ב**תרגול בכיתה** עובדים על בית הספר — שהם **לא** מכירים, ולכן הם חייבים לקרוא סכמה ולחשוב, בדיוק כמו בבחינה. בשיעור 14 כל תלמיד בונה בסיס נתונים **משלו**, מה‑ERD שעיצב.
 
-**4. התיאוריה במינון של הבחינה.** מה שנשאל בבחינה (מפתחות, קשרים, DSD, DDL/DML) נלמד כבר בשיעור 1. מה שלא נשאל (היסטוריה, ייעוץ, SDLC, טיפוסי משנה) נלמד בקיצור, או בשיעור ההרחבה. הפרקים המלאים **נשארו** בתיקיות, למי שרוצה להעמיק.
+**4. תיאוריה — מופרדת בתיקייה עצמאית.** פרקי התיאוריה של עיצוב בסיסי נתונים (15 מודולים: ERD, נרמול 1NF-3NF, תפקיד היועץ, SDLC) שאינם נדרשים לבחינת השאילתות הועברו לתיקיית [**`database-design/`**](database-design/) לעיון ולהרחבה.
 
-> 🗂️ הסדר הקודם (13 יחידות) וכל הקבצים שלפני השינוי נשמרו ב‑`SQL/_archive_2026-10-05/`.
+> 🗂️ הסדר הקודם (13 יחידות) וכל הקבצים שלפני השינוי נשמרו ב‑`_archive_2026-10-05/`.
 
 </div>

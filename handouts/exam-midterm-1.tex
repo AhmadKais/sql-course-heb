@@ -1,0 +1,331 @@
+\documentclass[11pt,a4paper]{article}
+\input{sqlcommon.tex}
+
+\fancyhead[R]{\small בסיסי נתונים ו\lr{-}\lr{SQL} \textbar{} בחינת אמצע}
+\fancyhead[L]{\small \lr{\texttt{SELECT} · \texttt{WHERE} · \texttt{ORDER BY}}}
+
+\begin{document}
+
+\begin{center}
+{\LARGE\bfseries\color{inkblue} בחינת אמצע בבסיסי נתונים}\\[3pt]
+{\large טבלאות ומפתחות \textbullet{} \texttt{SELECT} \textbullet{} \texttt{WHERE} \textbullet{} \texttt{ORDER BY}}\\[6pt]
+{\large\bfseries משך הבחינה: שעתיים \ \textbar\ \ \lr{100} נקודות}
+\end{center}
+\vspace{2pt}
+{\color{inkblue}\hrule height 1.2pt}
+\vspace{8pt}
+
+\noindent שם המגיש/ה:~\rule{5.2cm}{0.4pt}\hfill כיתה:~\rule{2.2cm}{0.4pt}\hfill תאריך:~\rule{3cm}{0.4pt}
+\vspace{8pt}
+
+\begin{panel}
+\textbf{הוראות}
+\begin{itemize}[leftmargin=1.3em, itemsep=2pt, topsep=3pt]
+  \item בבחינה \textbf{ארבע שאלות}, ועונים על \textbf{כולן}. הניקוד של כל סעיף רשום לצדו. בסוף יש סעיף \textbf{בונוס} של \lr{5} נקודות.
+  \item \textbf{מותר להשתמש בחומר עזר} כתוב או מודפס \textendash{} דף העזר, המחברת וחומר הלימוד. \textbf{אסור} להשתמש במחשב או בטלפון.
+  \item \textbf{כל השאילתות בבחינה הזאת הן על טבלה אחת.} אין צורך לצרף טבלאות.
+  \item \textbf{שפת \lr{SQL} נכתבת משמאל לימין.} מתחילים לכתוב מהקצה ה\textbf{שמאלי} של השורה.
+  \item ערך טקסט נכתב בגרש \textbf{בודד}: \sqlin{'דחוף'}. גרש \textbf{כפול} הוא שם של עמודה או כינוי: \sqlin{AS "מחיר"}.
+  \item מסיימים כל שאילתה ב\textbf{נקודה-פסיק}.
+  \item תאריך נכתב תמיד בצורה \sqlin{'YYYY-MM-DD'}, למשל \sqlin{'2026-03-01'}.
+\end{itemize}
+\end{panel}
+
+\vspace{6pt}
+\section*{בסיס הנתונים: מעבדת "דלתא-טק"}
+\vspace{-5pt}{\color{rulegray}\hrule height 0.8pt}\vspace{6pt}
+
+"דלתא-טק" היא מעבדה לתיקון מכשירים. לקוח מביא מכשיר, המעבדה פותחת \textbf{תיקון}, ומשייכת אותו ל\textbf{טכנאי} אחד. במהלך התיקון נכנסים למכשיר \textbf{חלפים}. לכל טכנאי יש \textbf{עמדת עבודה} אחת לכל היותר.
+
+\vspace{3pt}
+\noindent\textbf{הטבלאות:}
+\begin{itemize}[leftmargin=1.3em, itemsep=1pt, topsep=2pt]
+  \item \textbf{טבלאות ראשיות:} \lr{\texttt{Technicians}} (טכנאים) ו-\lr{\texttt{Repairs}} (תיקונים).
+  \item \textbf{טבלאות עזר:} \lr{\texttt{Cities}} (ערים), \lr{\texttt{DevTypes}} (סוגי מכשירים) ו-\lr{\texttt{Parts}} (חלפים).
+  \item \textbf{טבלאות נוספות:} \lr{\texttt{Benches}} (עמדות עבודה) ו-\lr{\texttt{PartUsage}} (אילו חלפים נכנסו לאיזה תיקון, ובאיזו כמות).
+\end{itemize}
+
+\vspace{2pt}
+{\small\textbf{הערות לנתונים:} \lr{\texttt{HourWage}} הוא שכר הטכנאי לשעה בש"ח. \lr{\texttt{RepairPrice}} הוא מחיר התיקון בש"ח. \lr{\texttt{InDate}} הוא תאריך קבלת המכשיר, ו-\lr{\texttt{DoneDate}} הוא תאריך סיום התיקון \textendash{} \textbf{ערך \lr{\texttt{NULL}} פירושו שהתיקון עדיין פתוח}. לשני טכנאים לא רשום טלפון.}
+
+\vspace{4pt}
+\noindent\begin{minipage}[t]{0.48\linewidth}
+\begin{fulltable}{Cities}{6 שורות}{}
+\begin{tabular}{ll}
+\toprule
+\thd{CityCode} & \thd{CityName} \\
+\midrule
+1 & ירכא \\
+2 & עכו \\
+3 & כרמיאל \\
+4 & נהריה \\
+5 & שפרעם \\
+6 & מעלות \\
+\bottomrule
+\end{tabular}
+\end{fulltable}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\linewidth}
+\begin{fulltable}{Parts}{7 שורות}{}
+\begin{tabular}{lll}
+\toprule
+\thd{PartCode} & \thd{PartName} & \thd{PartPrice} \\
+\midrule
+101 & מסך & 450 \\
+102 & סוללה & 180 \\
+103 & שקע טעינה & 90 \\
+104 & רמקול & 70 \\
+105 & מקלדת & 220 \\
+106 & מצלמה & 160 \\
+107 & כבל שטוח & 45 \\
+\bottomrule
+\end{tabular}
+\end{fulltable}
+\end{minipage}
+
+\vspace{2pt}
+\begin{fulltable}{DevTypes}{6 שורות}{}
+\begin{tabular}{lll}
+\toprule
+\thd{DevCode} & \thd{DevName} & \thd{DevFamily} \\
+\midrule
+10 & טלפון חכם & סלולר \\
+20 & מחשב נייד & מחשבים \\
+30 & טאבלט & סלולר \\
+40 & שעון חכם & לבישים \\
+50 & אוזניות & לבישים \\
+60 & קונסולת משחק & מחשבים \\
+\bottomrule
+\end{tabular}
+\end{fulltable}
+
+\begin{fulltable}{Technicians}{7 שורות}{}
+\begin{tabular}{lllllll}
+\toprule
+\thd{TechCode} & \thd{TechFirst} & \thd{TechLast} & \thd{TechCity} & \thd{StartDate} & \thd{HourWage} & \thd{TechPhone} \\
+\midrule
+1 & נביל & סרחאן & 1 & 2019-03-01 & 95 & 050-7010101 \\
+2 & רונית & בר-לב & 4 & 2021-09-15 & 80 & \nullv \\
+3 & חוסאם & זיאד & 5 & 2020-01-12 & 88 & 054-7030303 \\
+4 & דנה & כהן & 1 & 2023-06-01 & 72 & 052-7040404 \\
+5 & סאמר & חלבי & 1 & 2018-11-20 & 105 & \nullv \\
+6 & מאיה & אברהם & 6 & 2024-02-10 & 65 & 053-7060606 \\
+7 & ליאן & קבלאן & 2 & 2022-05-05 & 80 & 050-7070707 \\
+\bottomrule
+\end{tabular}
+\end{fulltable}
+
+\begin{fulltable}{Repairs}{16 שורות}{}
+\begin{tabular}{llllllll}
+\toprule
+\thd{RepairNum} & \thd{CustName} & \thd{RepairDev} & \thd{RepairTech} & \thd{InDate} & \thd{DoneDate} & \thd{RepairPrice} & \thd{Priority} \\
+\midrule
+1001 & אדם חלבי & 10 & 1 & 2026-01-12 & 2026-01-15 & 420 & רגיל \\
+1002 & מאיה כהן & 20 & 3 & 2026-01-20 & 2026-02-02 & 980 & דחוף \\
+1003 & כרים עזאם & 10 & 2 & 2026-02-03 & 2026-02-05 & 310 & רגיל \\
+1004 & שירה לוי & 30 & 1 & 2026-02-14 & \nullv & 540 & דחוף \\
+1005 & רמי חורי & 60 & 5 & 2026-03-02 & 2026-03-09 & 760 & רגיל \\
+1006 & תמר אברהם & 40 & 4 & 2026-03-11 & 2026-03-12 & 190 & מיידי \\
+1007 & ליאן קבלאן & 10 & 7 & 2026-03-25 & 2026-04-01 & 450 & רגיל \\
+1008 & עומר ביטון & 20 & 3 & 2026-04-05 & \nullv & 1250 & דחוף \\
+1009 & סאלי חסון & 50 & 6 & 2026-04-18 & 2026-04-19 & 120 & רגיל \\
+1010 & יואב שושן & 10 & 1 & 2026-05-02 & 2026-05-06 & 380 & מיידי \\
+1011 & נור מנסור & 30 & 2 & 2026-05-15 & 2026-05-20 & 610 & רגיל \\
+1012 & אלון כהן & 20 & 5 & 2026-06-01 & 2026-06-14 & 1480 & דחוף \\
+1013 & סלים דיאב & 10 & 7 & 2026-06-22 & 2026-06-24 & 290 & רגיל \\
+1014 & הילה פרץ & 60 & 4 & 2026-07-03 & \nullv & 820 & רגיל \\
+1015 & מוחמד דיב & 40 & 6 & 2026-07-19 & 2026-07-21 & 230 & מיידי \\
+1016 & אורי שמש & 20 & 3 & 2026-08-04 & 2026-08-20 & 1100 & דחוף \\
+\bottomrule
+\end{tabular}
+\end{fulltable}
+
+\vspace{2pt}
+\noindent\begin{minipage}[t]{0.40\linewidth}
+\begin{fulltable}{Benches}{5 שורות}{}
+\begin{tabular}{lll}
+\toprule
+\thd{BenchNum} & \thd{BenchTech} & \thd{BenchFloor} \\
+\midrule
+1 & 1 & 1 \\
+2 & 3 & 1 \\
+3 & 5 & 2 \\
+4 & 7 & 2 \\
+5 & 4 & 2 \\
+\bottomrule
+\end{tabular}
+\end{fulltable}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.56\linewidth}
+\begin{fulltable}{PartUsage}{15 שורות}{}
+\begin{tabular}{lll|lll}
+\toprule
+\thd{UseRepair} & \thd{UsePart} & \thd{UseQty} & \thd{UseRepair} & \thd{UsePart} & \thd{UseQty} \\
+\midrule
+1001 & 102 & 1 & 1008 & 105 & 1 \\
+1002 & 105 & 1 & 1010 & 102 & 1 \\
+1002 & 102 & 1 & 1011 & 101 & 1 \\
+1003 & 101 & 1 & 1012 & 105 & 1 \\
+1004 & 101 & 1 & 1012 & 102 & 1 \\
+1005 & 104 & 2 & 1016 & 101 & 1 \\
+1007 & 103 & 1 & 1016 & 106 & 1 \\
+1008 & 101 & 1 & & & \\
+\bottomrule
+\end{tabular}
+\end{fulltable}
+\end{minipage}
+
+\newpage
+\question{20}{מבנה בסיס הנתונים}
+
+\subqp{א}{כתבו את \textbf{המפתח הראשי} של כל אחת מהטבלאות הבאות. שימו לב: באחת מהן המפתח \textbf{מורכב} משני שדות.}{4}
+\vspace{2pt}
+\noindent\begin{tabular}{@{}p{0.22\linewidth}p{0.70\linewidth}@{}}
+\lr{\texttt{Technicians}} & \blankline{7cm} \\[7pt]
+\lr{\texttt{Repairs}} & \blankline{7cm} \\[7pt]
+\lr{\texttt{Benches}} & \blankline{7cm} \\[7pt]
+\lr{\texttt{PartUsage}} & \blankline{7cm} \\[5pt]
+\end{tabular}
+
+\subqp{ב}{בטבלת \lr{\texttt{Repairs}} יש \textbf{שני} מפתחות זרים. כתבו את שם כל אחד מהם, ואת \textbf{הטבלה והשדה} שאליהם הוא מצביע.}{4}
+\vspace{2pt}
+\noindent\begin{tabular}{@{}p{0.30\linewidth}p{0.30\linewidth}p{0.32\linewidth}@{}}
+\toprule
+\thd{המפתח הזר} & \thd{מצביע לטבלה} & \thd{לשדה} \\
+\midrule
+\blankline{3.4cm} & \blankline{3.4cm} & \blankline{3.4cm} \\[8pt]
+\blankline{3.4cm} & \blankline{3.4cm} & \blankline{3.4cm} \\[4pt]
+\bottomrule
+\end{tabular}
+
+\subqp{ג}{לפניכם שלושה זוגות של טבלאות. כתבו לכל זוג את \textbf{סוג הקשר} (\lr{1:1} או \lr{1:N} או \lr{M:N}), \textbf{ונמקו במשפט אחד}.}{6}
+\vspace{1pt}
+\pairitem{\lr{\texttt{Cities} \ \textendash\ \ \texttt{Technicians}}}
+\answerlines{2}
+\pairitem{\lr{\texttt{Repairs} \ \textendash\ \ \texttt{Parts}}}
+\answerlines{2}
+\pairitem{\lr{\texttt{Technicians} \ \textendash\ \ \texttt{Benches}}}
+\answerlines{2}
+
+\subqp{ד}{לפניכם תרשים \lr{DSD} חלקי. \textbf{ציירו חץ} מכל מפתח זר אל המפתח הראשי שהוא מצביע עליו (שלושה חצים).}{3}
+
+\vspace{4pt}
+\begin{otherlanguage}{english}
+\begin{center}
+\begin{tikzpicture}[font=\scriptsize\sffamily]
+\tikzset{tblm/.style={matrix of nodes,
+  nodes={anchor=west, inner sep=3pt, text width=26mm, align=left, font=\scriptsize\sffamily},
+  row sep=-\pgflinewidth, draw=inkblue, line width=0.7pt, inner sep=0pt,
+  row 1/.style={nodes={fill=inkblue, text=white, font=\scriptsize\sffamily\bfseries,
+                       align=center, text width=26mm}}}}
+\matrix (C) [tblm] { Cities \\ CityCode \\ CityName \\ };
+\matrix (T) [tblm, right=22mm of C] { Technicians \\ TechCode \\ TechFirst \\ TechLast \\ TechCity \\ StartDate \\ HourWage \\ };
+\matrix (R) [tblm, right=22mm of T] { Repairs \\ RepairNum \\ CustName \\ RepairDev \\ RepairTech \\ InDate \\ RepairPrice \\ };
+\matrix (D) [tblm, below=9mm of C] { DevTypes \\ DevCode \\ DevName \\ DevFamily \\ };
+\end{tikzpicture}
+\end{center}
+\end{otherlanguage}
+
+\subqp{ה}{נכון או לא נכון? הקיפו, ו\textbf{הסבירו במשפט} כל קביעה שסימנתם "לא נכון".}{3}
+\vspace{2pt}
+\subq{1}{אפשר להוסיף לטבלת \lr{\texttt{Benches}} שורה נוספת שבה \sqlin{BenchTech = 1}. \hfill \textbf{נכון \ / \ לא נכון}}
+\subq{2}{בטבלת \lr{\texttt{PartUsage}}, השדה \lr{\texttt{UseRepair}} לבדו יכול לשמש מפתח ראשי. \hfill \textbf{נכון \ / \ לא נכון}}
+\subq{3}{יש עיר בטבלת \lr{\texttt{Cities}} שאין בה אף טכנאי. \hfill \textbf{נכון \ / \ לא נכון}}
+\answerlines{3}
+
+\vspace{10pt}
+\question{25}{\lr{\texttt{SELECT}} \textendash{} מה מציגים}
+
+\subqp{א}{הציגו מטבלת \lr{\texttt{Repairs}} את מספר התיקון, שם הלקוח ומחיר התיקון. תנו לשלוש העמודות כותרות בעברית: \textbf{מספר תיקון}, \textbf{שם הלקוח} ו-\textbf{מחיר}.}{5}
+\answerlines{3}
+
+\subqp{ב}{אילו רמות דחיפות קיימות בטבלת התיקונים? הציגו כל רמה \textbf{פעם אחת בלבד}.}{5}
+\answerlines{2}
+
+\subqp{ג}{הציגו את השם המלא של כל טכנאי \textendash{} שם פרטי, רווח, ושם משפחה \textendash{} בעמודה אחת, תחת הכותרת \lr{\texttt{FullName}}.}{5}
+\answerlines{3}
+
+\subqp{ד}{למחיר כל תיקון מתווסף מע"מ בשיעור \lr{18\%}. הציגו את מספר התיקון, את המחיר, ואת המחיר כולל מע"מ תחת הכותרת \lr{\texttt{TotalPrice}}.}{5}
+\answerlines{3}
+
+\subqp{ה}{השאילתה הבאה \textbf{אינה רצה}. יש בה \textbf{שלוש} טעויות. כתבו אותה מחדש, מתוקנת.}{5}
+
+\begin{otherlanguage}{english}
+\begin{sqlbad}
+SELECT RepairNum, CustName, Priority,
+FROM   Repairs
+WHERE  Priority = "רגיל"
+\end{sqlbad}
+\end{otherlanguage}
+\answerlines{4}
+
+\newpage
+\question{30}{\lr{\texttt{WHERE}} \textendash{} אילו שורות}
+
+\subqp{א}{הציגו את מספר התיקון, שם הלקוח והמחיר, של כל התיקונים שמחירם \textbf{גבוה מ-\lr{700}} ש"ח.}{5}
+\answerlines{3}
+
+\subqp{ב}{הציגו את מספר התיקון, תאריך הקבלה והדחיפות, של התיקונים שהתקבלו במעבדה \textbf{בין \lr{1.3.2026} ל-\lr{31.5.2026}} (כולל). השתמשו ב-\lr{\texttt{BETWEEN}}.}{5}
+\answerlines{3}
+
+\subqp{ג}{הציגו את מספר התיקון, שם הלקוח והדחיפות, של התיקונים שדחיפותם \textbf{"דחוף" או "מיידי"}. השתמשו ב-\lr{\texttt{IN}}.}{5}
+\answerlines{3}
+
+\subqp{ד}{הציגו את מספר התיקון ואת שם הלקוח, של כל הלקוחות ש\textbf{שם המשפחה שלהם "כהן"}. שימו לב: בעמודה \lr{\texttt{CustName}} שמור השם המלא.}{5}
+\answerlines{3}
+
+\subqp{ה}{הציגו את מספר התיקון, שם הלקוח ותאריך הקבלה, של כל התיקונים ש\textbf{עדיין פתוחים}.}{5}
+\answerlines{3}
+
+\subqp{ו}{הציגו את שם המשפחה ואת השכר לשעה, של הטכנאים ש\textbf{גרים בירכא (קוד \lr{1}) או בעכו (קוד \lr{2})}, \textbf{ו}שהשכר שלהם לשעה הוא \textbf{\lr{80} ש"ח ומעלה}.}{5}
+
+\vspace{-2pt}
+{\small\textbf{שימו לב} \textendash{} בסעיף הזה יש \lr{\texttt{OR}} ו-\lr{\texttt{AND}} באותה שאילתה.}
+\answerlines{3}
+
+\vspace{10pt}
+\question{25}{\lr{\texttt{ORDER BY}} \textendash{} באיזה סדר}
+
+\subqp{א}{הציגו את מספר התיקון, הדחיפות והמחיר של \textbf{כל} התיקונים, ממוינים לפי \textbf{הדחיפות} בסדר עולה (לפי האלף-בית), ובתוך כל דחיפות \textendash{} לפי \textbf{המחיר מהגבוה לנמוך}.}{5}
+\answerlines{3}
+
+\subqp{ב}{הציגו את \textbf{שלושת התיקונים היקרים ביותר} מבין התיקונים ש\textbf{כבר הסתיימו}: מספר תיקון, שם לקוח ומחיר.}{5}
+\answerlines{3}
+
+\subqp{ג}{הציגו את שם המשפחה והשכר לשעה של כל הטכנאים, ממוינים לפי \textbf{השכר מהגבוה לנמוך}. לשני טכנאים אותו שכר \textendash{} ביניהם מיינו לפי \textbf{שם המשפחה} בסדר האלף-בית.}{5}
+\answerlines{3}
+
+\subqp{ד}{הציגו את שם החלף ואת מחירו, לחלפים שמחירם \textbf{בין \lr{100} ל-\lr{300}} ש"ח, \textbf{מהיקר לזול}.}{5}
+\answerlines{3}
+
+\subqp{ה}{לפניכם שאילתה. ענו על שתי השאלות שאחריה.}{5}
+
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT   RepairNum, DoneDate
+FROM     Repairs
+ORDER BY DoneDate;
+\end{sqlverb}
+\end{otherlanguage}
+
+\subq{1}{\textbf{כמה שורות} תחזיר השאילתה?}
+\answerlines{1}
+\subq{2}{\textbf{אילו שורות יופיעו ראשונות, ומדוע?} כתבו את מספרי התיקונים.}
+\answerlines{3}
+
+\vspace{6pt}
+{\color{rulegray}\hrule height 0.8pt}
+\vspace{4pt}
+\question{5}{בונוס}
+
+\noindent{הציגו את מספר התיקון, שם הלקוח ותאריך הקבלה, של התיקונים ש\textbf{דחיפותם אינה "רגיל"} \textbf{ו}שהתקבלו \textbf{לפני \lr{1.7.2026}} \textendash{} ממוינים מ\textbf{התאריך המאוחר לתאריך המוקדם}.}\par
+\answerlines{4}
+
+\vspace{8pt}
+{\color{inkblue}\hrule height 1pt}
+\vspace{4pt}
+\begin{center}
+{\small\textbf{בהצלחה!} \ \ לפני ההגשה: בדקו שכל שאילתה מסתיימת ב\textbf{נקודה-פסיק}, ושכל ערך טקסט כתוב ב\textbf{גרש בודד}.}
+\end{center}
+
+\end{document}

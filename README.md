@@ -1,233 +1,146 @@
 <div dir="rtl">
 
-# קורס בסיסי נתונים ו‑SQL 🗄️
+# 🗄️ תרגול SQL מעשי והכנה לבחינה (שאלון 735911)
 
-### מגמת תקשוב | מערכות תקשוב | התמחות י"ג–י"ד
+### מכללת עתיד | מגמת תקשוב | התמחות י"ג–י"ד | מה"ט ומשרד החינוך
 
-קורס מלא, מודול אחר מודול, לבניית הבנה עמוקה בעולם בסיסי הנתונים — מהמושגים הבסיסיים ביותר, דרך עיצוב מודל נתונים ותרשימי ERD, ועד לכתיבת שאילתות SQL מורכבות.
+> 🎯 **מטרת המאגר:** הכנה מעשית ממוקדת לבחינה. **ללא תיאוריה מיותרת של עיצוב בסיסי נתונים** — אלא 100% תרגול שאילתות SQL מהרמה הבסיסית ביותר ועד לשאלות הבחינה המורכבות.
 
-הקורס בנוי על פי **תכנית הלימודים של משרד החינוך – מינהל מדע וטכנולוגיה, מגמת תקשוב** (32 פרקים), ומרחיב אותה עם הסברים מלאים, דוגמאות, סיפורים מהעולם האמיתי, שאלות ותשובות ותרגילים עם פתרונות מלאים.
+---
+
+## ⚡ התחילו כאן: הכלים המרכזיים לפתרון הבחינה
 
 <div align="center">
 
-## 👇 חדשים כאן? התחילו מכאן
+### 📖 [ספר הקורס המעשי: SQL מהקל למתקדם — ללא תיאוריה](exam-prep/practical-course-guide.md)
+*מדריך מקיף וקצר שמכסה את כל נושאי השאילתות לבחינה ב-12 פרקים תמציתיים: תחביר, דוגמאות קוד, ומלכודות בחינה.*
 
-### 🚪 **[שיעור 1: טבלאות, מפתחות והשאילתה הראשונה](modules/module-00-quick-start/)**
+### 🏆 [מאגר שאילתות ותרגול מהקל למתקדם (90 שאלות מדורגות)](exam-prep/master-sql-practice.md)
+*מסלול תרגול מקיף ב‑9 רמות קושי מדורגות עם [פתרונות מלאים](exam-prep/master-sql-practice-solutions.md)*
 
-*מפתח ראשי ומפתח זר · קשרים · תרשים DSD · השאילתה הראשונה, כבר בשיעור הראשון*
+### 🧮 [מדריך ותרגול פונקציות ב‑SQL (COUNT, MAX, AVG, MIN, SUM ועוד)](exam-prep/sql-functions-guide.md)
+*כל מה שצריך לדעת על פונקציות קיבוץ ופונקציות שורה, כללי ברזל לבחינה, ו‑25 תרגילי פונקציות עם פתרונות*
 
-### 🧭 **[סדר ההוראה: 20 שיעורים, SQL משיעור 2](LEARNING-PATH.md)**
+### 🎯 [תרגול לפי הנחיות משרד החינוך לתשפ"ז (48 שאלות בחינה)](exam-prep/practice-2027.md)
+*שאלות בסגנון הבחינה המדויק על בסיס הנתונים `music.sql` עם [פתרונות מלאים](exam-prep/practice-2027-solutions.md)*
 
-*כל נושא עיצובי לצד ה‑SQL שמשתמש בו · תרגול בסגנון הבחינה בכל שיעור*
+### 💡 [20 דוגמאות פתורות צעד אחרי צעד](exam-prep/examples-2027.md)
+*איך לגשת לשאלה, איך לחשוב, השאילתה והתוצאה המדויקת שלה*
 
-### 📋 **[קובצי ה‑SQL להעתקה](SQL-FILES.md)**
+### 📋 [דף עזר להדפסה ולבחינה (Cheat Sheet)](exam-prep/cheat-sheet.md)
+*כל התחביר, הפונקציות, המלכודות והכללים בטבלאות מרוכזות — מותר להביא לבחינה!*
 
-*כל בסיסי הנתונים של הקורס: מעתיקים בשתי לחיצות ומדביקים ב‑[OneCompiler](https://onecompiler.com/sqlite)*
-
-### 🎓 **[הכנה לבחינה (שאלון 735911)](exam-prep/)**
-
-*איך בנוי חלק בסיסי הנתונים · 🆕 הדגשים של משרד החינוך לתשפ"ז ותרגול לפיהם · דף עזר להדפסה · 3 בחינות לדוגמה*
+### 💻 [קובצי ה‑SQL להרצה מיידית בדפדפן](SQL-FILES.md)
+*העתיקו בלחיצה אחת והדביקו ב‑[OneCompiler SQLite](https://onecompiler.com/sqlite) או ב‑[SQLite Online](https://sqliteonline.com/)*
 
 </div>
 
 ---
 
-## 📚 מבנה הקורס — לפי סדר ההוראה
+## 🧭 מסלול לימוד שאילתות SQL: מהקל למתקדם
 
-> 📖 הטבלה מסודרת **לפי סדר השיעורים**: מתחילים בשיעור 1 ויורדים שורה־שורה עד 20. אין צורך לקפוץ.
->
-> מספרי התיקיות (`module-NN`) **הם מספרי הפרקים של משרד החינוך**, ולכן הם לא רצים ברצף — `module-21` הוא פרק 21 גם כשמלמדים אותו בשיעור 6. זה בכוונה, כדי שתמיד אפשר יהיה להצליב מול [תכנית הלימודים הרשמית](SYLLABUS.md). **לכו לפי עמודת "שיעור".**
+כל החומר של הבחינה מחולק ל‑9 שלבים מדורגים. עברו שלב אחר שלב:
 
-| שיעור | הנושא | התיקיות ללמד מהן | פרק |
-|:-----:|-------|------------------|:---:|
-| **1** | טבלאות, מפתחות, קשרים והשאילתה הראשונה | [quick-start](modules/module-00-quick-start/) | 0–1 |
-| **2** | SQL: המשפט הראשון — `SELECT` | [16 sql-basics](modules/module-16-sql-basics/) | 16 |
-| **3** | SQL: הגבלת השליפה — `WHERE` | [17 sql-where](modules/module-17-sql-where/) | 17 |
-| **4** | SQL: מיונים — `ORDER BY` | [18 sql-order-by](modules/module-18-sql-order-by/) | 18 |
-| **5** | מודל הנתונים ו‑ERD | [2 data-model](modules/module-02-data-model/) · [3 erd](modules/module-03-erd/) | 2, 3 |
-| **6** | יחסים + איחוד טבלאות (`JOIN`) | [5 relationships](modules/module-05-relationships/) · [21 sql-joins](modules/module-21-sql-joins/) | 5, 21 |
-| **7** | איחוד טבלאות 2 — `LEFT JOIN`, 3 טבלאות | [22 sql-joins-2](modules/module-22-sql-joins-2/) | 22 |
-| **8** | SQL: פונקציות | [19 sql-functions](modules/module-19-sql-functions/) | 19 |
-| **9** | SQL: `CASE` ו‑NULL | [20 sql-functions-2](modules/module-20-sql-functions-2/) | 20 |
-| **10** | SQL: פונקציות מצרפיות | [23 sql-aggregates](modules/module-23-sql-aggregates/) | 23 |
-| **11** | SQL: `GROUP BY` ותתי‑שאילתות | [24 sql-group-by](modules/module-24-sql-group-by/) | 24 |
-| **12** | SQL: DML — `INSERT`, `UPDATE`, `DELETE` | [25 sql-dml](modules/module-25-sql-dml/) | 25 |
-| **13** | נרמול | [6 normalization](modules/module-06-normalization/) | 6 |
-| **14** | ממודל לטבלאות + DDL ⭐ | [12 mapping](modules/module-12-mapping/) · [26 sql-ddl](modules/module-26-sql-ddl/) | 12, 26 |
-| **15** | אילוצים | [7 constraints](modules/module-07-constraints/) · [27 sql-constraints](modules/module-27-sql-constraints/) | 7, 27 |
-| **16** | Views | [28 sql-views](modules/module-28-sql-views/) | 28 |
-| **17** | אינדקסים, הרשאות וטרנזקציות | [29 sql-objects](modules/module-29-sql-objects/) · [30 sql-users](modules/module-30-sql-users/) · [32 sql-transactions](modules/module-32-sql-transactions/) | 29, 30, 32 |
-| **18** | הרחבה — לא בבחינה | [4 subtypes](modules/module-04-subtypes-supertypes/) · [10 tracking-changes](modules/module-10-tracking-changes/) · [11 generic-models](modules/module-11-generic-models/) | 4, 10, 11 |
-| **19** | פרויקט I | [9 project-1](modules/module-09-project-1/) | 9 |
-| **20** | פרויקט מסכם והגנה | [תמצית 8–15](modules/module-08-15-summary/) · [31 sql-final-project](modules/module-31-sql-final-project/) | 8, 13–15, 31 |
-| ★ | **הכנה לבחינה (735911)** | [exam-prep](exam-prep/) | — |
+| שלב | נושא השאילתות | מה לומדים ומתרגלים? | מודול מעשי ותרגול מומלץ |
+|:---:|---|---|:---:|
+| **🟢 שלב 1** | **שליפה בסיסית וסינון פשוט** | `SELECT`, `FROM`, `WHERE` (`=, >, <, <>`), `ORDER BY` (`ASC/DESC`), `DISTINCT`, כינויים (`AS`) | [מאגר שאלות: רמה 1](exam-prep/master-sql-practice.md#🟢-רמה-1-שליפה-בסיסית-וסינון-פשוט) · [01 sql-basics](modules/01-sql-basics/) · [02 sql-where](modules/02-sql-where/) · [03 sql-order-by](modules/03-sql-order-by/) |
+| **🟢 שלב 2** | **תנאים מורכבים ולוגיקה** | שילוב `AND`, `OR`, `NOT`, שימוש בסוגריים, `BETWEEN` (כולל קצוות), `IN`, חיפוש טקסט `LIKE ('%_')`, בדיקת ערך חסר `IS NULL` / `IS NOT NULL` | [מאגר שאלות: רמה 2](exam-prep/master-sql-practice.md#🟢-רמה-2-תנאים-מורכבים-ולוגיקה-and-or-between-in-like-null) · [02 sql-where](modules/02-sql-where/) |
+| **🟡 שלב 3** | **פונקציות ב‑SQL (ספירה וצבירה)** | פונקציות מצרפיות: `COUNT(*)`, `COUNT(col)`, `COUNT(DISTINCT)`, `SUM`, `AVG`, `MIN`, `MAX`. פונקציות שורה: `LENGTH`, `UPPER`, `LOWER`, `ROUND`, `SUBSTR`, `COALESCE` | 🧮 **[מדריך הפונקציות המלא](exam-prep/sql-functions-guide.md)** · [מאגר שאלות: רמה 3](exam-prep/master-sql-practice.md#🟡-רמה-3-פונקציות-בsql-קיבוץ-סקלריות-מחרוזות-ועיגול) · [04 sql-functions](modules/04-sql-functions/) · [06 sql-aggregates](modules/06-sql-aggregates/) |
+| **🟡 שלב 4** | **קיבוץ נתונים (GROUP BY & HAVING)** | חלוקה לקבוצות לפי עמודות, חישוב מצרפי לכל קבוצה, סינון קבוצות ב‑`HAVING`, ההבדל הקריטי בין `WHERE` (שורה) ל‑`HAVING` (קבוצה) | [מאגר שאלות: רמה 4](exam-prep/master-sql-practice.md#🟡-רמה-4-קיבוץ-נתונים-ותנאי-קבוצה-group-by--having) · [07 sql-group-by-having](modules/07-sql-group-by-having/) |
+| **🟡 שלב 5** | **חיבור טבלאות (צירופים — Joins)** | צירוף 2 ו‑3 טבלאות לפי מפתח ראשי וזר (`WHERE PK = FK`), תחביר `JOIN ... ON`, וצירוף חיצוני `LEFT JOIN` להצגת נתונים שאין להם התאמה | [מאגר שאלות: רמה 5](exam-prep/master-sql-practice.md#🟡-רמה-5-חיבור-טבלאות-צירופים--joins) · [08 sql-joins](modules/08-sql-joins/) · [09 sql-joins-advanced](modules/09-sql-joins-advanced/) |
+| **🔴 שלב 6** | **שאילתות מקוננות (Subqueries)** | שאילתה בתוך שאילתה: `WHERE col IN (SELECT...)`, `WHERE col NOT IN (...)`, השוואה לערך מקסימלי או ממוצע מחושב | [מאגר שאלות: רמה 6](exam-prep/master-sql-practice.md#🔴-רמה-6-שאילתות-מקוננות-תתשאילתות--subqueries) · [דוגמאות 13–16](exam-prep/examples-2027.md) |
+| **🔴 שלב 7** | **שאילתות שמורות (Views)** | שימוש בשאילתה שמורה (Q1) כטבלה, יצירת View (`CREATE VIEW`), תת‑שאילתה בתוך ה‑`FROM` | [מאגר שאלות: רמה 7](exam-prep/master-sql-practice.md#🔴-רמה-7-שאילתות-שמורות-ותתשאילתה-בfrom) · [13 sql-views](modules/13-sql-views/) |
+| **🟡-🔴 שלב 8** | **שינוי נתונים ומבנה (DML & DDL)** | עדכון שורות (`UPDATE SET WHERE`), מחיקת שורות (`DELETE FROM WHERE`), הוספת רשומות (`INSERT INTO`), הוספה ומחיקת עמודות (`ALTER TABLE`), ומחיקת טבלה (`DROP TABLE`) | [מאגר שאלות: רמה 8](exam-prep/master-sql-practice.md#🟡-🔴-רמה-8-שינוי-נתונים-ומבנה-dml--ddl) · [10 sql-dml](modules/10-sql-dml/) · [11 sql-ddl](modules/11-sql-ddl/) · [12 sql-constraints](modules/12-sql-constraints/) |
+| **🎯 שלב 9** | **סימולציית הבחינה הרשמית** | 5 הפורמטים של הבחינה: זיהוי טבלה מתקבלת, השלמת ערכים מספריים, השלמת פקודות (באנגלית), ניתוח פלט (התאמת שאילתה לטבלה), ומפתחות/קשרים ב‑DSD | [מאגר שאלות: רמה 9](exam-prep/master-sql-practice.md#🎯-רמה-9-סימולציית-הבחינה-הרשמית-מגוון-סגנונות) · [תרגול תשפ"ז](exam-prep/practice-2027.md) |
 
-כל המודולים ✅ **מוכנים** — בכל אחד `README.md`, `questions.md`, `exercises.md` ו‑`solutions.md`.
+---
+
+## 📂 סדר המודולים המעשיים בתיקיית `modules/`
+
+כל המודולים בתיקייה מסודרים **בסדר כרונולוגי מהקל למתקדם**:
+
+| מספר | תיקיית המודול | הנושא הנלמד |
+|:---:|---|---|
+| **00** | [00-quick-start](modules/00-quick-start/) | טבלאות, מפתח ראשי (PK), מפתח זר (FK), קשרים 1:1, 1:N, M:N ותרשים DSD |
+| **01** | [01-sql-basics](modules/01-sql-basics/) | משפט `SELECT` הראשון, בחירת עמודות, `DISTINCT`, וכינויים (`AS`) |
+| **02** | [02-sql-where](modules/02-sql-where/) | הגבלת שליפה עם `WHERE`, אופרטורים, `BETWEEN`, `IN`, `LIKE`, `IS NULL` |
+| **03** | [03-sql-order-by](modules/03-sql-order-by/) | מיונים עם `ORDER BY`, `ASC`, `DESC`, ומיון לפי מספר עמודות |
+| **04** | [04-sql-functions](modules/04-sql-functions/) | פונקציות סקלריות: מחרוזות (`LENGTH`, `UPPER`, `SUBSTR`), מספרים וחישובים |
+| **05** | [05-sql-functions-case-null](modules/05-sql-functions-case-null/) | תנאים בשורה עם `CASE`, טיפול בערכים חסרים עם `COALESCE` ו‑`IFNULL` |
+| **06** | [06-sql-aggregates](modules/06-sql-aggregates/) | פונקציות מצרפיות: `COUNT(*)`, `COUNT(col)`, `COUNT(DISTINCT)`, `SUM`, `AVG`, `MIN`, `MAX` |
+| **07** | [07-sql-group-by-having](modules/07-sql-group-by-having/) | קיבוץ נתונים לקבוצות `GROUP BY`, וסינון קבוצות לפי פונקציה עם `HAVING` |
+| **08** | [08-sql-joins](modules/08-sql-joins/) | צירוף טבלאות ראשון: תחביר פסיק ב‑`WHERE`, ו‑`INNER JOIN ... ON` |
+| **09** | [09-sql-joins-advanced](modules/09-sql-joins-advanced/) | צירוף 3 טבלאות (כולל טבלת קישור), וצירוף חיצוני `LEFT JOIN` |
+| **10** | [10-sql-dml](modules/10-sql-dml/) | פקודות שינוי נתונים: `INSERT INTO`, `UPDATE SET WHERE`, `DELETE FROM` |
+| **11** | [11-sql-ddl](modules/11-sql-ddl/) | הגדרת מבנה: `CREATE TABLE`, `ALTER TABLE` (הוספה/מחיקת עמודה), `DROP TABLE` |
+| **12** | [12-sql-constraints](modules/12-sql-constraints/) | אילוצים: `PRIMARY KEY`, `FOREIGN KEY`, `CHECK`, `UNIQUE`, `NOT NULL` |
+| **13** | [13-sql-views](modules/13-sql-views/) | שאילתות שמורות (`CREATE VIEW`) ושימוש בשאילתה כטבלה (`Q1` בבחינה) |
+| **14** | [14-sql-advanced-objects](modules/14-sql-advanced-objects/) | אובייקטים נוספים: אינדקסים (Indexes) לשיפור ביצועים וסיקוונסים |
+| **15** | [15-sql-advanced-users](modules/15-sql-advanced-users/) | ניהול משתמשים והרשאות אבטחה: `GRANT` ו‑`REVOKE` |
+| **16** | [16-sql-advanced-transactions](modules/16-sql-advanced-transactions/) | טרנזקציות עסקיות: `COMMIT` ו‑`ROLLBACK` |
+
+---
+
+## 🗄️ בסיסי הנתונים לתרגול
+
+בבחינה מקבלים בסיס נתונים עם **שמות שדות ייחודיים** (ללא צורך בקידומת שם הטבלה).
+הקוד של כל בסיסי הנתונים מוכן להעתקה מיידית ולהרצה:
+
+| בסיס נתונים | תיאור | קובץ להעתקה | שימוש מומלץ |
+|---|---|:---:|---|
+| 🎵 **בית הספר למוזיקה "צלילים"** | 3 טבלאות ראשיות (תלמידים, מורים, רישומים) ו‑3 טבלאות עזר (ערים, כלים, לוקרים). קשר 1:1, 1:N, M:N | [`db/music.sql`](exam-prep/db/music.sql) | **בסיס הנתונים הראשי של הבחינה** ([מאגר תרגול](exam-prep/master-sql-practice.md) ו[מדריך פונקציות](exam-prep/sql-functions-guide.md)) |
+| 🔧 **מעבדת "דלתא‑טק"** | תיקוני מכשירים, טכנאים, חלפים ולקוחות | [`db/repairs.sql`](exam-prep/db/repairs.sql) | בחינת אמצע (SELECT, WHERE, ORDER BY) |
+| ☕ **בית הקפה "אל‑בלד"** | מלצרים, הזמנות, שולחנות ומנות | [`db/cafe.sql`](exam-prep/db/cafe.sql) | בחינת מתכונת ותרגול מהיר |
+| ⚽ **חוגי ספורט עירוניים** | מועדונים, מאמנים ומשתתפים | [`db/clubs.sql`](exam-prep/db/clubs.sql) | בחינה לדוגמה 1 |
+| 📚 **ספרייה עירונית** | ספרים, השאלות, קוראים וסניפים | [`db/library.sql`](exam-prep/db/library.sql) | בחינה לדוגמה 2 |
+| 🎮 **חנות משחקי מחשב** | משחקים, לקוחות, הזמנות וז'אנרים | [`db/games.sql`](exam-prep/db/games.sql) | בחינה לדוגמה 3 |
+
+---
+
+## ⚠️ 5 מלכודות SQL נפוצות בבחינה שחייבים להכיר
+
+1. **פונקציה מצרפית ב‑WHERE:**
+   - ❌ `WHERE HourRate > AVG(HourRate)` — **שגיאה!** אסור לשים פונקציה מצרפית ב‑WHERE.
+   - ✅ `WHERE HourRate > (SELECT AVG(HourRate) FROM Teachers)` — תמיד דרך תת‑שאילתה.
+2. **`COUNT(*)` מול `COUNT(col)`:**
+   - `COUNT(*)` סופר את **כל** השורות כולל אלו שיש בהן NULL.
+   - `COUNT(col)` סופר רק שורות שבהן העמודה אינה ריקה (מדלג על NULL).
+3. **סוגריים ב‑AND ו‑OR:**
+   - האופרטור `AND` קודם ל‑`OR`! תמיד עטפו תנאי `OR` בסוגריים: `WHERE (City = 1 OR City = 2) AND Age > 12`.
+4. **בדיקת NULL:**
+   - ❌ `WHERE Phone = NULL` — שגוי לחלוטין ולא מחזיר דבר.
+   - ✅ `WHERE Phone IS NULL` או `WHERE Phone IS NOT NULL`.
+5. **עמודות רגילות לצד פונקציות קיבוץ:**
+   - כל שדה שמופיע ב‑`SELECT` ואינו בתוך פונקציה מצרפית **חייב** להופיע ב‑`GROUP BY`.
+
+---
 
 <details>
-<summary>📂 מודולים שאינם בסדר ההוראה (להעשרה ולעיון)</summary>
+<summary>📚 <b>פרקי העשרה עיוניים: עיצוב בסיסי נתונים (רשות — אינו נדרש לבחינת השאילתות)</b></summary>
 
-| המודול | למה הוא לא בסדר השיעורים |
-|--------|---------------------------|
-| [0 intro](modules/module-00-intro/) | הגרסה המלאה של המבוא — שיעור 1 מחליף אותו בכיתה |
-| [1 foundations](modules/module-01-foundations/) | רקע, היסטוריה ו‑DBMS — לא נשאל בבחינה; תמציתו בשיעור 1 |
-| [8 consultant](modules/module-08-consultant/) | מקופל ל[תמצית 8–15](modules/module-08-15-summary/) לקראת הפרויקט |
-| [13 sql-1](modules/module-13-sql-1/) | מקופל ל[תמצית 8–15](modules/module-08-15-summary/) |
-| [14 sdlc](modules/module-14-sdlc/) | מקופל ל[תמצית 8–15](modules/module-08-15-summary/) |
-| [15 presentation](modules/module-15-presentation/) | מקופל ל[תמצית 8–15](modules/module-08-15-summary/) |
+> מודולים אלו שייכים לחלק התיאורטי של תכנית הלימודים (ERD, נרמול ומידול). בבחינת השאילתות **אין צורך לשרטט ERD או לבצע תהליכי נרמול**. החומר נשמר כאן לעיון בלבד:
+
+- [מודול 1 — מבוא ונתונים מול מידע](database-design/module-01-foundations/)
+- [מודול 2 — מודל הנתונים](database-design/module-02-data-model/)
+- [מודול 3 — תרשימי ERD](database-design/module-03-erd/)
+- [מודול 4 — טיפוסי על ותת טיפוסים](database-design/module-04-subtypes-supertypes/)
+- [מודול 5 — יחסים בין ישויות](database-design/module-05-relationships/)
+- [מודול 6 — נרמול (1NF, 2NF, 3NF)](database-design/module-06-normalization/)
+- [מודול 7 — אילוצים עסקיים](database-design/module-07-constraints/)
+- [מודול 8 — תפקיד היועץ](database-design/module-08-consultant/)
+- [מודול 10 — מעקב אחר שינויים](database-design/module-10-tracking-changes/)
+- [מודול 11 — מודלים גנריים](database-design/module-11-generic-models/)
+- [מודול 12 — מיפוי מודל לטבלאות](database-design/module-12-mapping/)
+- [מודול 14 — מחזור חיי פיתוח מערכת (SDLC)](database-design/module-14-sdlc/)
+- [מודול 15 — הצגת פרויקט](database-design/module-15-presentation/)
 
 </details>
 
 ---
 
-## 🎯 מטרות הקורס
-
-- להקנות מושגי יסוד בניהול ידע ארגוני
-- להקנות כלים לניתוח תרחישים עסקיים מורכבים
-- ללמד כיצד יוצרים מודל נתונים
-- ללמד כיצד מתרגמים מודל נתונים למסד נתונים רלציוני
-- הכרות עם מונחי מסד הנתונים הרלציוני
-- הכרות מעמיקה עם שפת SQL
-
----
-
-## 🧭 איך לומדים כאן?
-
-> **באיזה סדר?** לפי [**סדר ההוראה**](LEARNING-PATH.md): 20 שיעורים, ו‑SQL כבר מהשיעור השני. [סדר הפרקים הרשמי](SYLLABUS.md) (15 פרקי עיצוב ואחריהם 17 פרקי SQL) נשאר רק כמפה.
-
-כל מודול בקורס בנוי מארבעה קבצים, וכדאי לעבור עליהם **לפי הסדר**:
-
-| קובץ | מה יש בו | כמה זמן |
-|------|----------|---------|
-| `README.md` | ההסבר המלא: תיאוריה, דוגמאות וסיפורים מהשטח | 45–60 דק' |
-| `questions.md` | שאלות ותשובות לבדיקה עצמית — קראו את השאלה, ענו בראש, ואז פתחו את התשובה | 20 דק' |
-| `exercises.md` | תרגילים מעשיים לפי רמות קושי | 60–90 דק' |
-| `solutions.md` | פתרונות מלאים עם הסבר — **רק אחרי שניסיתם!** | 30 דק' |
-
-> 💡 **טיפ למידה:** בכל מודול יש קופסאות `🎬 סיפור מהשטח`. אלה לא קישוט — הן מסבירות *למה* המושג התיאורטי קיים. אם משהו לא ברור בתיאוריה, קראו קודם את הסיפור.
-
-### המבנה הקבוע של כל מודול
-
-כל `README.md` בנוי לפי אותו סדר, כדי שתמיד תדעו איפה למצוא מה:
-
-| הסעיף | מה יש בו |
-|--------|-----------|
-| 🎯 **מה תדעו בסוף המודול** | רשימת יעדים לסימון — השתמשו בה כמבחן עצמי בסוף |
-| 🗺️ **מפת המודול** | תוכן עניינים עם קישורים — לקפיצה ישירה לכל סעיף |
-| **1 … N** | ההסבר עצמו, מהמושג הבסיסי אל המורכב |
-| **דוגמה מלאה מקצה לקצה** | מקרה אחד שמלווה את כל מושגי המודול |
-| **טעויות נפוצות** | טבלה של מה משתבש בפועל, ואיך מתקנים |
-| **רשימת בדיקה** | לסימון לפני שממשיכים למודול הבא |
-| **סיכום המודול** | הנקודות שחייבים לצאת איתן |
-| 📎 **המשך** | קישורים לשאלות, תרגילים, פתרונות והמודול הבא |
-
----
-
-## 👩‍🏫 למרצים ולמציגים בכיתה
-
-הקבצים כתובים כך שאפשר להציג אותם ישירות מהמסך, בלי להכין מצגת:
-
-| מה | איך |
-|-----|------|
-| **שיעור של 45 דק'** | סעיפים 1–4 של המודול + סיפור מהשטח אחד |
-| **שיעור של 90 דק'** | המודול המלא + פתרון משותף של 2–3 תרגילים 🟢🟡 |
-| **פתיחת שיעור** | ה‑🎬 **סיפור מהשטח** — הוא נכתב כדי להיאמר בקול |
-| **דיון בכיתה** | ה‑❓ **שאלות** — הציגו את השאלה, תנו דקה, ואז פתחו את התשובה |
-| **שיעורי בית** | 🟢 ו‑🟡 מה‑**תרגילים**; ה‑🔴 למתקדמים |
-| **סיכום שיעור** | טבלת **טעויות נפוצות** + **רשימת הבדיקה** |
-| **מבחן** | ה‑❓ שאלות מכל המודולים; מודול 9 כולל מבחן חזרה של 25 שאלות ומחוון של 100 נקודות |
-
-> 💡 **בהצגה על מסך:** קפלו את התשובות ב‑`questions.md` — הן סגורות כברירת מחדל ונפתחות בלחיצה. זה מאפשר לשאול את הכיתה לפני שחושפים.
-
----
-
-## 🛠️ סביבת עבודה
-
-מודולים 1–11 הם **מודולים עיוניים** של עיצוב נתונים — לא נדרשת התקנה של כלום. נייר ועיפרון (או כלי שרטוט) יספיקו.
-
-מהמודולים המתקדמים ואילך נעבוד עם בסיס נתונים אמיתי. ההמלצות:
-
-| כלי | למה הוא טוב | קישור |
-|-----|-------------|-------|
-| ⭐ **OneCompiler (SQLite)** | **ברירת המחדל של הקורס**: בדפדפן, בלי התקנה. מדביקים את `shelter.sql` או קובץ של בחינה לדוגמה, וכל הפקודות עובדות | [onecompiler.com/sqlite](https://onecompiler.com/sqlite) |
-| ⭐ **W3Schools SQL** | הסבר על כל נושא, ותרגול `SELECT` על בסיס הנתונים שלו (לקריאה בלבד, SQL Server) | [w3schools.com/sql](https://www.w3schools.com/sql/) |
-| ⭐ **SQLite Online** | אותו דבר בדפדפן, אבל **רואים את הטבלאות ברשימה בצד**, ולחיצה כפולה על טבלה מריצה לה `SELECT` | [sqliteonline.com](https://sqliteonline.com/) |
-| **DB Fiddle** | חלופה בדפדפן לבדיקת שאילתה בודדת | [db-fiddle.com](https://www.db-fiddle.com) |
-| **SQLite + DB Browser** | מקומי, ללא שרת — כשרוצים לשמור פרויקט מתמשך | [sqlitebrowser.org](https://sqlitebrowser.org) |
-| **Oracle APEX** | סביבת התרגול הרשמית של תכנית הלימודים | [apex.oracle.com](https://apex.oracle.com) |
-| **MySQL / PostgreSQL** | בסיסי נתונים תעשייתיים אמיתיים | — |
-
-לשרטוט תרשימי ERD: [draw.io](https://app.diagrams.net) (חינמי), Lucidchart, או פשוט נייר.
-
-👈 **[מדריך התקנה מפורט צעד‑אחר‑צעד](resources/setup.md)** — כולל פתרון תקלות נפוצות.
-
----
-
-## 📂 מבנה התיקיות
-
-</div>
-
-```text
-sql-course-heb/
-├── README.md                    <- you are here
-├── LEARNING-PATH.md             <- teaching order (20 lessons, SQL from lesson 2)
-├── exam-prep/                   <- Ministry exam 735911: guide, cheat sheet, mock-exam databases
-├── SYLLABUS.md                  <- official chapter order (32 chapters)
-├── modules/
-│   ├── module-00-quick-start/   <- START HERE (lesson 1, replaces 00 + 01 in class)
-│   ├── module-00-intro/
-│   ├── module-01-foundations/
-│   │   ├── README.md            <- full explanation
-│   │   ├── questions.md         <- Q & A
-│   │   ├── exercises.md         <- exercises
-│   │   └── solutions.md         <- solutions
-│   ├── module-02-data-model/
-│   ├── module-03-erd/
-│   ├── module-04-subtypes-supertypes/
-│   ├── module-05-relationships/
-│   ├── module-06-normalization/
-│   ├── module-07-constraints/
-│   ├── module-08-consultant/
-│   ├── module-08-15-summary/    <- chapters 8, 13, 14, 15 condensed (project + defense)
-│   ├── module-09-project-1/
-│   ├── module-10-tracking-changes/
-│   ├── module-11-generic-models/
-│   ├── module-16-sql-basics/
-│   ├── module-17-sql-where/
-│   ├── module-18-sql-order-by/
-│   └── module-19-sql-functions/    (module number = syllabus chapter)
-├── project/
-│   └── README.md                <- running project: animal shelter
-└── resources/
-    ├── glossary.md              <- Hebrew-English glossary
-    ├── setup.md                 <- environment setup guide
-    ├── shelter-db/              <- ready-made practice database (units 2-7)
-    ├── school-db/               <- classroom practice DB (every SQL lesson)
-    └── pro-data.pdf             <- original syllabus
-```
-
-<div dir="rtl">
-
----
-
-## 🐾 הפרויקט המלווה
-
-לאורך כל הקורס נבנה יחד מערכת אחת אמיתית: **מקלט לבעלי חיים**. בכל מודול נוסיף לה שכבה — קודם נבין את הצרכים, אחר כך נבנה מודל נתונים, נשרטט ERD, ולבסוף נתרגם הכל לטבלאות ולשאילתות SQL.
-
-👈 [לפרטי הפרויקט](project/)
-
----
-
-## 📖 מקורות
-
-- תכנית הלימודים: **משרד החינוך, מינהל מדע וטכנולוגיה, מגמת תקשוב** — "מערכות תקשוב התמחות י"ג, תכנית לימודים – בסיסי נתונים", מאת דגנית סולומון הרטמן.
-- Oracle Academy – Database Design & Database Programming with SQL.
-
----
-
 <div align="center">
 
-**בהצלחה! 🚀**
+**בהצלחה בבחינה! 🚀**
 
 </div>
 

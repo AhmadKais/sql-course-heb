@@ -1,0 +1,404 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{fontspec}
+\directlua{
+  luaotfload.add_fallback("hbfb", {"DejaVu Serif:mode=node;", "DejaVu Sans:mode=node;"})
+  luaotfload.add_fallback("ltfb", {"DejaVu Sans:mode=node;"})
+}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import, main]{hebrew}
+\babelprovide[import]{english}
+\babelfont{rm}[Ligatures=TeX, RawFeature={fallback=ltfb}]{DejaVu Serif}
+\babelfont[hebrew]{rm}[Script=Hebrew, Ligatures=TeX, RawFeature={fallback=hbfb}]{Noto Serif Hebrew}
+\babelfont{tt}[Scale=0.84, RawFeature={fallback=ltfb}]{DejaVu Sans Mono}
+
+\usepackage[a4paper,top=2.1cm,bottom=2.1cm,left=1.9cm,right=1.9cm,headsep=0.5cm,footskip=1cm]{geometry}
+\usepackage{booktabs, longtable, array, adjustbox, xcolor, enumitem, fancyhdr, titlesec, fancyvrb, needspace}
+
+\definecolor{inkblue}{HTML}{14365A}
+\definecolor{rulegray}{HTML}{8A97A3}
+\definecolor{boxgray}{HTML}{F4F6F8}
+\definecolor{codebg}{HTML}{F7F8FA}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt plus 1pt}
+\renewcommand{\arraystretch}{1.15}
+
+% ---- running head / foot ----
+\pagestyle{fancy}\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancyhead[R]{\small בסיסי נתונים ו-SQL \textbar{} מודול 16}
+\fancyhead[L]{\small דף עבודה מס' 1}
+\fancyfoot[C]{\small עמוד \thepage{} מתוך \pageref{LastPage}}
+\usepackage{lastpage}
+
+% ---- section titles ----
+\titleformat{\section}{\needspace{3\baselineskip}\large\bfseries\color{inkblue}}{}{0pt}{}
+\titlespacing*{\section}{0pt}{14pt plus 3pt}{6pt}
+
+\newcommand{\partheader}[3]{%
+  \section*{#1}%
+  \vspace{-4pt}{\color{rulegray}\hrule height 0.8pt}\vspace{4pt}%
+  {\small\textbf{בסיס הנתונים:} #2 \hfill \textbf{ניקוד:} #3}\par\vspace{2pt}%
+  {\color{rulegray}\hrule height 0.4pt}\vspace{6pt}}
+
+% ---- a question ----
+\newcounter{qnum}[section]
+\newcommand{\question}[2]{%
+  \needspace{5\baselineskip}\refstepcounter{qnum}\par\vspace{7pt}%
+  \noindent\textbf{\color{inkblue}שאלה \theqnum.}\ \textbf{#2}\hfill{\small(#1 נק')}\par\vspace{2pt}}
+\newcommand{\subq}[1]{\par\vspace{1pt}\hspace{1.1em}\textbf{#1.}~}
+
+% ---- dotted answer space ----
+\newcommand{\answerlines}[1]{%
+  \par\vspace{1pt}%
+  \begingroup\color{rulegray}%
+  \count255=#1\relax
+  \loop\ifnum\count255>0
+    \noindent\babelsublr{\rule[-2pt]{0.6pt}{9pt}\rule[-2pt]{\dimexpr\linewidth-0.6pt}{0.3pt}}\par\vspace{5.4mm}%
+    \advance\count255 by -1
+  \repeat
+  \endgroup\vspace{-2mm}}
+
+% ---- SQL code, always left-to-right ----
+\DefineVerbatimEnvironment{sqlverb}{Verbatim}{fontsize=\small, frame=leftline, framerule=1.2pt,
+  rulecolor=\color{rulegray}, framesep=7pt, xleftmargin=12pt, samepage=true}
+\newsavebox{\panelbox}
+\newenvironment{panel}{\par\addvspace{7pt}\begin{lrbox}{\panelbox}%
+  \begin{minipage}{\dimexpr\linewidth-2\fboxsep-2\fboxrule}}%
+  {\end{minipage}\end{lrbox}\noindent\fcolorbox{rulegray}{boxgray}{\usebox{\panelbox}}\par\addvspace{7pt}}
+
+% ---- data preview table ----
+\newenvironment{tablepreview}[2]{%
+  \needspace{4\baselineskip}\par\vspace{4pt}%
+  \noindent{\small הטבלה \babelsublr{\texttt{\textbf{#1}}} \textendash\ #2 שורות}\par\vspace{1pt}%
+  \begin{otherlanguage}{english}\begin{adjustbox}{max width=\linewidth}}
+  {\end{adjustbox}\end{otherlanguage}\par\vspace{3pt}}
+\newcommand{\thd}[1]{\textbf{#1}}
+\newenvironment{fulltable}[3]{%
+  \needspace{5\baselineskip}\par\addvspace{7pt}%
+  \noindent{\small הטבלה \babelsublr{\texttt{\textbf{#1}}} \textendash\ #2 שורות#3}\par\vspace{2pt}%
+  \begin{otherlanguage}{english}\begin{adjustbox}{max width=\linewidth}}
+  {\end{adjustbox}\end{otherlanguage}\par\addvspace{4pt}}
+
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\begin{document}
+
+
+\begin{center}
+{\LARGE\bfseries\color{inkblue} בסיסי נתונים ושפת SQL}\\[2pt]
+{\large מודול 16 \textendash\ המשפט הראשון: \texttt{SELECT}, כינויים, \texttt{DISTINCT} ו-\texttt{NULL}}\\[6pt]
+{\large\bfseries דף עבודה להגשה}
+\end{center}
+\vspace{2pt}
+{\color{inkblue}\hrule height 1.2pt}
+\vspace{6pt}
+
+\noindent שם המגיש/ה:~\rule{5.2cm}{0.4pt}\hfill כיתה:~\rule{2.2cm}{0.4pt}\hfill תאריך:~\rule{3cm}{0.4pt}
+\vspace{8pt}
+
+\begin{panel}
+\textbf{הוראות}
+\begin{itemize}[leftmargin=1.2em, itemsep=1pt, topsep=3pt]
+  \item בדף שני חלקים, ובכל חלק בסיס נתונים אחר. \textbf{סך הכול 100 נקודות.}
+  \item לכל חלק מצורפות \textbf{הטבלאות ושלוש הרשומות הראשונות} שבכל טבלה. אלה הנתונים שעליהם נשאלות השאלות.
+  \item את השאילתות כותבים בשורות שמתחת לכל שאלה. \textbf{שפת SQL נכתבת משמאל לימין} \textendash\ מתחילים מהסימן שבקצה \textbf{השמאלי} של השורה.
+  \item לפני ההגשה \textbf{מריצים} כל שאילתה: \texttt{onecompiler.com/sqlite} או \texttt{sqliteonline.com}.
+  \item כתבו שם טבלה ושם עמודה במלואם, בסגנון \texttt{Table.Column}, וסיימו כל שאילתה בנקודה-פסיק.
+  \item ערך טקסט נכתב בין גרשיים \textbf{בודדים}: \texttt{'Haifa'}. גרשיים כפולים הם \textbf{שם} של עמודה או כינוי.
+  \item בכל חישוב תאריכים השתמשו בתאריך הייחוס \texttt{'2026-09-21'}, ולא ב-\texttt{DATE('now')}.
+\end{itemize}
+\end{panel}
+
+
+\vspace{10pt}
+\section*{תזכורת לפני שמתחילים}
+\vspace{-6pt}{\color{rulegray}\hrule height 0.8pt}\vspace{6pt}
+
+\textbf{מבנה השאילתה.} שני חלקים, תמיד בסדר הזה, ונקודה-פסיק בסוף:
+
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT   <what to show>      -- the columns
+FROM     <which table>;      -- the source
+\end{sqlverb}
+\end{otherlanguage}
+
+\vspace{2pt}
+\textbf{מה אפשר לכתוב ב-\babelsublr{\texttt{SELECT}}} (הדוגמאות על בסיס הנתונים של חלק א'):
+
+\vspace{2pt}
+\noindent\begin{tabular}{@{}p{0.69\linewidth}p{0.27\linewidth}@{}}
+\toprule
+\thd{איך זה נראה} & \thd{מה רוצים} \\
+\midrule
+\babelsublr{\texttt{SELECT * FROM Students;}} & כל העמודות \\
+\babelsublr{\texttt{SELECT FirstName, LastName FROM Students;}} & עמודות נבחרות \\
+\babelsublr{\texttt{SELECT Salary AS AnnualPay FROM Teachers;}} & כותרת אחרת לעמודה \\
+\babelsublr{\texttt{SELECT Salary AS "שכר חודשי" FROM Teachers;}} & כותרת עם רווח או בעברית \\
+\babelsublr{\texttt{SELECT DISTINCT Subject FROM Teachers;}} & בלי כפילויות \\
+\babelsublr{\texttt{SELECT Salary * 12 AS Yearly FROM Teachers;}} & חישוב \\
+\babelsublr{\texttt{SELECT FirstName || ' ' || LastName FROM Students;}} & חיבור מחרוזות \\
+\bottomrule
+\end{tabular}
+
+\vspace{8pt}
+\begin{panel}
+\textbf{שלושה כללים שחוזרים בכל שאלה}
+\begin{enumerate}[leftmargin=1.4em, itemsep=2pt, topsep=3pt]
+  \item \textbf{גרש בודד לערך, גרש כפול לשם.} \babelsublr{\texttt{'Haifa'}} הוא טקסט; \babelsublr{\texttt{"Haifa"}} הוא \textbf{שם} של עמודה או של כינוי \textendash\ ולכן \babelsublr{\texttt{SELECT "Haifa" FROM Students}} ייכשל.
+  \item \textbf{\babelsublr{\texttt{NULL}} מדביק.} כל פעולה עם \babelsublr{\texttt{NULL}} מחזירה \babelsublr{\texttt{NULL}}, גם חיבור מחרוזות. ערך חסר אינו אפס ואינו מחרוזת ריקה.
+  \item \textbf{כל שאילתה מחזירה טבלה} \textendash\ והטבלה המקורית לא משתנה. \babelsublr{\texttt{SELECT}} רק מציג.
+\end{enumerate}
+\end{panel}
+
+\needspace{9\baselineskip}\vspace{2pt}
+\textbf{ארבע הטעויות שכדאי לא לעשות}
+
+\vspace{2pt}
+\noindent\begin{tabular}{@{}p{0.33\linewidth}p{0.30\linewidth}p{0.30\linewidth}@{}}
+\toprule
+\thd{התיקון} & \thd{מה קורה} & \thd{הטעות} \\
+\midrule
+גרש בודד & מחפש עמודה בשם הזה & גרש כפול למחרוזת \\
+להסיר את הפסיק & \babelsublr{\texttt{syntax error near FROM}} & פסיק לפני \babelsublr{\texttt{FROM}} \\
+\babelsublr{\texttt{|| ' ' ||}} באמצע & \babelsublr{\texttt{AdamHalabi}} & חיבור בלי רווח \\
+לזהות, ולטפל במודול 20 & כל הביטוי נעלם & לצפות ש-\babelsublr{\texttt{NULL}} יתנהג כמו 0 \\
+\bottomrule
+\end{tabular}
+
+\vspace{6pt}
+{\small\textbf{נתקעתם בשגיאה?} קראו את המילה שאחרי \babelsublr{\texttt{near}} \textendash\ שם נמצאת הבעיה, או ממש לפניה.}
+
+\vspace{6pt}
+\partheader{חלק א' \textendash\ בית הספר "עתיד"}{\texttt{school.sql}}{84 נקודות (12 שאלות \texttt{$\times$} 7)}
+\textbf{הנתונים.} שלוש הרשומות הראשונות בכל טבלה:\par\vspace{2pt}
+\begin{tablepreview}{Cities}{6}
+\begin{tabular}{ll}
+\toprule
+\thd{CityCode} & \thd{CityName} \\
+\midrule
+1 & ירכא \\
+2 & עכו \\
+3 & כרמיאל \\
+\bottomrule
+\end{tabular}
+\end{tablepreview}
+
+\begin{tablepreview}{Teachers}{7}
+\begin{tabular}{llllllll}
+\toprule
+\thd{TeacherCode} & \thd{FirstName} & \thd{LastName} & \thd{Subject} & \thd{HireDate} & \thd{Salary} & \thd{CityCode} & \thd{Phone} \\
+\midrule
+1 & נביל & סרחאן & מתמטיקה & 2012-09-01 & 14500 & 1 & 050-7010101 \\
+2 & רונית & בר-לב & אנגלית & 2018-09-01 & 11200 & 4 & \textit{NULL} \\
+3 & חוסאם & זיאד & מחשבים & 2021-02-15 & 12800 & 6 & 054-7030303 \\
+\bottomrule
+\end{tabular}
+\end{tablepreview}
+
+\begin{tablepreview}{Classes}{5}
+\begin{tabular}{lllll}
+\toprule
+\thd{ClassCode} & \thd{ClassName} & \thd{Grade} & \thd{TeacherCode} & \thd{RoomNumber} \\
+\midrule
+101 & י1 & 10 & 1 & 12 \\
+102 & י2 & 10 & 2 & 14 \\
+103 & יא1 & 11 & 3 & 21 \\
+\bottomrule
+\end{tabular}
+\end{tablepreview}
+
+\begin{tablepreview}{Courses}{7}
+\begin{tabular}{llll}
+\toprule
+\thd{CourseCode} & \thd{CourseName} & \thd{TeacherCode} & \thd{WeeklyHours} \\
+\midrule
+11 & מתמטיקה 5 יח"ל & 1 & 5 \\
+12 & אנגלית 4 יח"ל & 2 & 4 \\
+13 & מבוא לבסיסי נתונים & 3 & 3 \\
+\bottomrule
+\end{tabular}
+\end{tablepreview}
+
+\begin{tablepreview}{Students}{18}
+\begin{tabular}{lllllllll}
+\toprule
+\thd{StudentId} & \thd{FirstName} & \thd{LastName} & \thd{ClassCode} & \thd{Gender} & \thd{BirthDate} & \thd{CityCode} & \thd{EnrollDate} & \thd{Phone} \\
+\midrule
+1001 & אדם & חלבי & 101 & M & 2011-03-14 & 1 & 2026-09-01 & 050-1000001 \\
+1002 & נור & עזאם & 101 & F & 2011-07-22 & 1 & 2026-09-01 & \textit{NULL} \\
+1003 & יואב & כהן & 101 & M & 2011-01-09 & 3 & 2026-09-01 & 052-1000003 \\
+\bottomrule
+\end{tabular}
+\end{tablepreview}
+
+\begin{tablepreview}{Grades}{60}
+\begin{tabular}{llll}
+\toprule
+\thd{StudentId} & \thd{CourseCode} & \thd{Term} & \thd{Grade} \\
+\midrule
+1001 & 11 & 1 & 88 \\
+1001 & 12 & 1 & 74 \\
+1001 & 14 & 1 & 92 \\
+\bottomrule
+\end{tabular}
+\end{tablepreview}
+
+\begin{tablepreview}{Absences}{16}
+\begin{tabular}{lllll}
+\toprule
+\thd{AbsenceId} & \thd{StudentId} & \thd{AbsenceDate} & \thd{Excused} & \thd{Reason} \\
+\midrule
+1 & 1003 & 2026-09-02 & 1 & מחלה \\
+2 & 1003 & 2026-09-03 & 1 & מחלה \\
+3 & 1004 & 2026-09-07 & 0 & \textit{NULL} \\
+\bottomrule
+\end{tabular}
+\end{tablepreview}
+
+\vspace{6pt}{\color{rulegray}\hrule height 0.4pt}
+\setcounter{qnum}{0}
+\question{7}{}
+הציגו \textbf{את כל} העמודות של כל המורים. כמה שורות חזרו?
+\answerlines{3}
+\question{7}{}
+הציגו \textbf{שם פרטי ושם משפחה} של כל התלמידים.
+\answerlines{3}
+\question{7}{}
+הציגו את שם המקצוע ושעות הלימוד השבועיות, עם כינויים בעברית: \babelsublr{\texttt{מקצוע}} ו-\babelsublr{\texttt{שעות\ שבועיות}}.
+\answerlines{3}
+\question{7}{}
+אילו \textbf{מקצועות הוראה} (\babelsublr{\texttt{Subject}}) קיימים בבית הספר? כל מקצוע \textbf{פעם אחת}. יש 7 מורים \textemdash{} למה התוצאה קטנה יותר?
+\answerlines{3}
+\question{7}{}
+אילו \textbf{שכבות} (\babelsublr{\texttt{Grade}}) יש בבית הספר? בלי כפילויות.
+\answerlines{3}
+\question{7}{}
+הציגו לכל מורה \textbf{שם מלא} בעמודה אחת (שם פרטי, רווח, שם משפחה), בכינוי \babelsublr{\texttt{FullName}}.
+\answerlines{3}
+\question{7}{}
+הציגו לכל מורה את שם המשפחה, השכר החודשי, ו\textbf{השכר השנתי} המחושב (×12) בכינוי \babelsublr{\texttt{AnnualSalary}}.
+\answerlines{3}
+\question{7}{}
+שנת לימודים היא 30 שבועות. הציגו לכל מקצוע \textbf{כמה שעות לימוד בשנה}, בכינוי \babelsublr{\texttt{YearlyHours}}.
+\answerlines{3}
+\question{7}{}
+הציגו שם פרטי וטלפון של כל התלמידים. \textbf{אצל כמה מהם} הטלפון הוא \babelsublr{\texttt{NULL}}? (ספרו בעיניים \textemdash{} \babelsublr{\texttt{COUNT}} נלמד בשיעור 23.)
+\answerlines{3}
+\question{7}{}
+\textbf{מלכודת.} הריצו:
+
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT Students.FirstName, Students.Phone || ' (בית)' AS PhoneLabel FROM Students;
+\end{sqlverb}
+\end{otherlanguage}
+
+מה קיבלתם אצל התלמידים שאין להם טלפון? \textbf{הסבירו למה} \textemdash{} ולא, זו לא שגיאה.
+\answerlines{3}
+\question{7}{}
+הציגו את \textbf{5 השורות הראשונות} של טבלת הציונים. מה אתם מסיקים על \textbf{המפתח הראשי} שלה?
+\answerlines{3}
+\question{7}{}
+\textbf{קריאת שגיאה.} הריצו:
+
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT Students.FirstName, Students.LastName FROM Student;
+\end{sqlverb}
+\end{otherlanguage}
+
+מה ההודעה? מה המילה החשובה בה, ומה התיקון?
+\answerlines{3}
+
+\clearpage
+\partheader{חלק ב' \textendash\ חוגי ספורט \textendash\ בסגנון שאלון 735911}{\texttt{clubs.sql}}{16 נקודות}
+\textbf{הנתונים.} שלוש הרשומות הראשונות בכל טבלה:\par\vspace{2pt}
+\begin{tablepreview}{Cities}{6}
+\begin{tabular}{ll}
+\toprule
+\thd{CityCode} & \thd{CityName} \\
+\midrule
+1 & ירכא \\
+2 & עכו \\
+3 & כרמיאל \\
+\bottomrule
+\end{tabular}
+\end{tablepreview}
+
+\begin{tablepreview}{Coaches}{5}
+\begin{tabular}{llll}
+\toprule
+\thd{CoachCode} & \thd{FirstName} & \thd{LastName} & \thd{Phone} \\
+\midrule
+1 & סאמר & חלבי & 050-1111111 \\
+2 & מיכל & לוי & \textit{NULL} \\
+3 & ראמי & עזאם & 054-3333333 \\
+\bottomrule
+\end{tabular}
+\end{tablepreview}
+
+\begin{tablepreview}{Clubs}{8}
+\begin{tabular}{lllll}
+\toprule
+\thd{ClubCode} & \thd{ClubName} & \thd{Sport} & \thd{CoachCode} & \thd{Price} \\
+\midrule
+100 & כדורגל צעירים & כדורגל & 1 & 150 \\
+101 & כדורגל בוגרים & כדורגל & 1 & 180 \\
+102 & שחייה מתחילים & שחייה & 2 & 220 \\
+\bottomrule
+\end{tabular}
+\end{tablepreview}
+
+\begin{tablepreview}{Members}{12}
+\begin{tabular}{llllll}
+\toprule
+\thd{Id} & \thd{FirstName} & \thd{LastName} & \thd{CityCode} & \thd{Age} & \thd{JoinYear} \\
+\midrule
+1001 & אדם & חלבי & 1 & 14 & 2023 \\
+1002 & נור & עזאם & 1 & 15 & 2024 \\
+1003 & יואב & כהן & 3 & 16 & 2022 \\
+\bottomrule
+\end{tabular}
+\end{tablepreview}
+
+\begin{tablepreview}{ClubMembers}{18}
+\begin{tabular}{ll}
+\toprule
+\thd{Id} & \thd{ClubCode} \\
+\midrule
+1001 & 100 \\
+1001 & 104 \\
+1002 & 102 \\
+\bottomrule
+\end{tabular}
+\end{tablepreview}
+
+\vspace{6pt}{\color{rulegray}\hrule height 0.4pt}
+\setcounter{qnum}{0}
+\question{4}{}
+איזו פקודה מחזירה את \textbf{כל השדות} של כל הרשומות בטבלה Clubs?
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \babelsublr{\texttt{SELECT\ All\ FROM\ Clubs}}
+\item
+  \babelsublr{\texttt{SELECT\ *\ FROM\ Clubs}}
+\item
+  \babelsublr{\texttt{SELECT\ Clubs\ FROM\ *}}
+\item
+  \babelsublr{\texttt{SELECT\ (ALL)\ FROM\ Clubs}}
+\end{enumerate}
+\answerlines{3}
+\question{6}{}
+כמה שורות תחזיר השאילתה \babelsublr{\texttt{SELECT\ DISTINCT\ Clubs.Sport\ FROM\ Clubs;}}? ומה הייתה התשובה בלי \babelsublr{\texttt{DISTINCT}}?
+\answerlines{3}
+\question{6}{}
+כתבו בסגנון הבחינה שאילתה שמציגה את שם החוג ואת המחיר שלו, כשהכותרת של עמודת המחיר היא "מחיר חודשי".
+\answerlines{3}
+
+\end{document}

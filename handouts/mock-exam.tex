@@ -1,0 +1,519 @@
+\documentclass[11pt,a4paper]{article}
+\input{sqlcommon.tex}
+
+\fancyhead[R]{\small בסיסי נתונים ו\lr{-}\lr{SQL} \textbar{} בחינת מתכונת}
+\fancyhead[L]{\small תרגול לקראת בחינת האמצע}
+
+\begin{document}
+
+\begin{center}
+{\LARGE\bfseries\color{inkblue} בחינת מתכונת \textendash{} תרגול לפני הבחינה}\\[3pt]
+{\large בית הקפה "אל-בלד" \ \textbullet\ \ \texttt{SELECT} \textbullet{} \texttt{WHERE} \textbullet{} \texttt{ORDER BY}}\\[6pt]
+{\large\bfseries שעה אחת \ \textbar\ \ \lr{60} נקודות \ \textbar\ \ הפתרונות המלאים בסוף הדף}
+\end{center}
+\vspace{2pt}
+{\color{inkblue}\hrule height 1.2pt}
+\vspace{8pt}
+
+\begin{panel}
+\textbf{איך מתרגלים עם הדף הזה}
+\begin{itemize}[leftmargin=1.3em, itemsep=2pt, topsep=3pt]
+  \item הבחינה הזאת \textbf{קצרה וקלה יותר} מבחינת האמצע, ובנויה \textbf{באותו מבנה} בדיוק: ארבע שאלות, באותו סדר נושאים.
+  \item \textbf{פתרו הכול לבד, על נייר, בשעה אחת} \textendash{} בלי מחשב ובלי להציץ. רק אחר כך פתחו את הפתרונות שבעמוד האחרון.
+  \item מי שמסיים לפני הזמן: טענו את \sqlin{cafe.sql} ל-\lr{\texttt{onecompiler.com/sqlite}} והריצו את התשובות שלכם.
+  \item \textbf{כל השאילתות כאן הן על טבלה אחת.} אין צורך לצרף טבלאות.
+  \item ערך טקסט בגרש \textbf{בודד}, כינוי בגרש \textbf{כפול}, ונקודה-פסיק בסוף כל שאילתה.
+\end{itemize}
+\end{panel}
+
+\vspace{6pt}
+\section*{בסיס הנתונים: בית הקפה "אל-בלד"}
+\vspace{-5pt}{\color{rulegray}\hrule height 0.8pt}\vspace{6pt}
+
+בבית הקפה מועסקים \textbf{עובדים}, בתפריט יש \textbf{מנות}, וכל \textbf{הזמנה} היא מנה אחת שלקוח הזמין אצל עובד מסוים, בתאריך מסוים.
+
+\vspace{2pt}
+{\small\textbf{הערות לנתונים:} \lr{\texttt{HourPay}} הוא שכר העובד לשעה בש"ח, \lr{\texttt{DishPrice}} הוא מחיר המנה בש"ח, ו-\lr{\texttt{Guests}} הוא מספר הסועדים שישבו בשולחן. \textbf{לשני עובדים לא רשום טלפון.}}
+
+\vspace{4pt}
+\noindent\begin{minipage}[t]{0.37\linewidth}
+\begin{fulltable}{Cities}{5 שורות}{}
+\begin{tabular}{ll}
+\toprule
+\thd{CityCode} & \thd{CityName} \\
+\midrule
+1 & ירכא \\
+2 & עכו \\
+3 & כרמיאל \\
+4 & נהריה \\
+5 & שפרעם \\
+\bottomrule
+\end{tabular}
+\end{fulltable}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.59\linewidth}
+\begin{fulltable}{Dishes}{8 שורות}{}
+\begin{tabular}{llll}
+\toprule
+\thd{DishCode} & \thd{DishName} & \thd{DishKind} & \thd{DishPrice} \\
+\midrule
+10 & חומוס & מנה ראשונה & 28 \\
+20 & סלט ירקות & מנה ראשונה & 32 \\
+30 & שניצל & מנה עיקרית & 56 \\
+40 & פסטה & מנה עיקרית & 48 \\
+50 & קנאפה & קינוח & 30 \\
+60 & עוגת גבינה & קינוח & 26 \\
+70 & לימונדה & שתייה & 14 \\
+80 & קפה & שתייה & 12 \\
+\bottomrule
+\end{tabular}
+\end{fulltable}
+\end{minipage}
+
+\vspace{2pt}
+\begin{fulltable}{Workers}{6 שורות}{}
+\begin{tabular}{llllll}
+\toprule
+\thd{WorkerNum} & \thd{WorkerName} & \thd{WorkerCity} & \thd{StartDate} & \thd{HourPay} & \thd{WorkerPhone} \\
+\midrule
+1 & סאלי חדאד & 2 & 2022-03-01 & 42 & 050-1111111 \\
+2 & יובל נחום & 1 & 2023-07-15 & 38 & \nullv \\
+3 & אמיר טאהא & 2 & 2021-11-10 & 50 & 054-3333333 \\
+4 & מיכל שרון & 4 & 2024-01-20 & 36 & 052-4444444 \\
+5 & רים עבאס & 1 & 2020-05-05 & 55 & \nullv \\
+6 & תום בראל & 5 & 2023-09-01 & 38 & 053-6666666 \\
+\bottomrule
+\end{tabular}
+\end{fulltable}
+
+\begin{fulltable}{Orders}{12 שורות}{}
+\begin{tabular}{llllll}
+\toprule
+\thd{OrderNum} & \thd{CustName} & \thd{OrderDish} & \thd{OrderWorker} & \thd{OrderDate} & \thd{Guests} \\
+\midrule
+101 & דנה לוי & 30 & 1 & 2026-02-04 & 2 \\
+102 & עומר חורי & 10 & 3 & 2026-02-18 & 4 \\
+103 & נועה כץ & 40 & 2 & 2026-03-05 & 3 \\
+104 & סמיר דיב & 30 & 1 & 2026-03-22 & 6 \\
+105 & ליאת בר & 50 & 4 & 2026-04-09 & 2 \\
+106 & ראמי סעיד & 20 & 3 & 2026-04-27 & 5 \\
+107 & יעל שגיא & 30 & 5 & 2026-05-11 & 2 \\
+108 & חנאן זועבי & 70 & 6 & 2026-05-30 & 8 \\
+109 & איתי פלד & 40 & 2 & 2026-06-14 & 3 \\
+110 & מאיה לוי & 60 & 4 & 2026-06-28 & 4 \\
+111 & ואיל נסאר & 30 & 5 & 2026-07-07 & 2 \\
+112 & שני אדרי & 80 & 6 & 2026-07-21 & 10 \\
+\bottomrule
+\end{tabular}
+\end{fulltable}
+
+\newpage
+\question{10}{מבנה בסיס הנתונים}
+
+\subqp{א}{כתבו את \textbf{המפתח הראשי} של כל אחת מהטבלאות.}{3}
+\vspace{2pt}
+\noindent\begin{tabular}{@{}p{0.20\linewidth}p{0.72\linewidth}@{}}
+\lr{\texttt{Workers}} & \blankline{7cm} \\[7pt]
+\lr{\texttt{Dishes}} & \blankline{7cm} \\[7pt]
+\lr{\texttt{Orders}} & \blankline{7cm} \\[5pt]
+\end{tabular}
+
+\subqp{ב}{בטבלת \lr{\texttt{Orders}} יש \textbf{שני} מפתחות זרים. כתבו כל אחד, ואת הטבלה והשדה שאליהם הוא מצביע.}{4}
+\vspace{2pt}
+\noindent\begin{tabular}{@{}p{0.30\linewidth}p{0.30\linewidth}p{0.32\linewidth}@{}}
+\toprule
+\thd{המפתח הזר} & \thd{מצביע לטבלה} & \thd{לשדה} \\
+\midrule
+\blankline{3.4cm} & \blankline{3.4cm} & \blankline{3.4cm} \\[8pt]
+\blankline{3.4cm} & \blankline{3.4cm} & \blankline{3.4cm} \\[4pt]
+\bottomrule
+\end{tabular}
+
+\subqp{ג}{מהו \textbf{סוג הקשר} בין \lr{\texttt{Cities}} ל-\lr{\texttt{Workers}}? נמקו במשפט אחד.}{3}
+\answerlines{3}
+
+\vspace{6pt}
+\question{15}{\lr{\texttt{SELECT}} \textendash{} מה מציגים}
+
+\subqp{א}{הציגו את שם המנה ואת מחירה. תנו לעמודות כותרות בעברית: \textbf{שם המנה} ו-\textbf{מחיר}.}{5}
+\answerlines{3}
+
+\subqp{ב}{אילו \textbf{סוגי מנות} קיימים בתפריט? הציגו כל סוג \textbf{פעם אחת בלבד}.}{5}
+\answerlines{2}
+
+\subqp{ג}{בית הקפה נותן \textbf{הנחה של \lr{10\%}} על כל המנות. הציגו את שם המנה, את המחיר, ואת המחיר אחרי ההנחה תחת הכותרת \lr{\texttt{NewPrice}}.}{5}
+\answerlines{3}
+
+\newpage
+\question{20}{\lr{\texttt{WHERE}} \textendash{} אילו שורות}
+
+\subqp{א}{הציגו את שם המנה ואת מחירה, של המנות שמחירן \textbf{גבוה מ-\lr{30}} ש"ח.}{5}
+\answerlines{3}
+
+\subqp{ב}{הציגו את מספר ההזמנה, שם הלקוח והתאריך, של ההזמנות שהתקבלו \textbf{בין \lr{1.4.2026} ל-\lr{30.6.2026}} (כולל). השתמשו ב-\lr{\texttt{BETWEEN}}.}{5}
+\answerlines{3}
+
+\subqp{ג}{הציגו את מספר העובד ואת שמו, של העובדים ש\textbf{לא רשום להם טלפון}.}{5}
+\answerlines{3}
+
+\subqp{ד}{הציגו את מספר ההזמנה ואת שם הלקוח, של כל הלקוחות ש\textbf{שם המשפחה שלהם "לוי"}. שימו לב: בעמודה \lr{\texttt{CustName}} שמור השם המלא.}{5}
+\answerlines{3}
+
+\vspace{6pt}
+\question{15}{\lr{\texttt{ORDER BY}} \textendash{} באיזה סדר}
+
+\subqp{א}{הציגו את שם המנה, הסוג והמחיר של \textbf{כל} המנות, ממוינות לפי \textbf{סוג המנה} בסדר עולה, ובתוך כל סוג \textendash{} לפי \textbf{המחיר מהגבוה לנמוך}.}{5}
+\answerlines{3}
+
+\subqp{ב}{הציגו את \textbf{שלוש ההזמנות עם הכי הרבה סועדים}: מספר הזמנה, שם לקוח ומספר הסועדים.}{5}
+\answerlines{3}
+
+\subqp{ג}{הציגו את שם העובד ואת שכרו לשעה, ממוינים לפי \textbf{השכר מהגבוה לנמוך}. לשני עובדים אותו שכר \textendash{} ביניהם מיינו לפי \textbf{השם} בסדר האלף-בית.}{5}
+\answerlines{3}
+
+\vspace{10pt}
+{\color{inkblue}\hrule height 1pt}
+\vspace{4pt}
+\begin{center}
+{\small\textbf{סיימתם?} בדקו שכל שאילתה מסתיימת ב\textbf{נקודה-פסיק}, ושכל ערך טקסט כתוב ב\textbf{גרש בודד} \textendash{} ורק אז הפכו את הדף.}
+\end{center}
+
+\newpage
+\begin{center}
+\vspace*{2.5cm}
+{\color{warnred}\hrule height 1.5pt}
+\vspace{10pt}
+{\Huge\bfseries\color{warnred} עצרו}\\[10pt]
+{\LARGE\bfseries אל תמשיכו לפני שסיימתם}\\[12pt]
+{\large בעמודים הבאים נמצאים \textbf{הפתרונות המלאים}.}\\[4pt]
+{\large תרגול שבו מציצים בתשובה לפני שמנסים \textendash{} אינו תרגול.}
+\vspace{10pt}
+{\color{warnred}\hrule height 1.5pt}
+\end{center}
+
+\newpage
+\partheader{פתרונות \textendash{} שאלה 1}{\texttt{cafe.sql}}{10 נקודות}
+
+\subqp{א}{מפתחות ראשיים}{3}
+\vspace{2pt}
+\noindent\begin{tabular}{@{}p{0.22\linewidth}p{0.30\linewidth}p{0.42\linewidth}@{}}
+\toprule
+\thd{הטבלה} & \thd{המפתח הראשי} & \thd{למה} \\
+\midrule
+\lr{\texttt{Workers}} & \lr{\texttt{WorkerNum}} & המספר מזהה עובד אחד, ואינו חוזר \\
+\lr{\texttt{Dishes}} & \lr{\texttt{DishCode}} & הקוד מזהה מנה אחת \\
+\lr{\texttt{Orders}} & \lr{\texttt{OrderNum}} & מספר ההזמנה מזהה הזמנה אחת \\
+\bottomrule
+\end{tabular}
+
+\subqp{ב}{מפתחות זרים בטבלת \lr{\texttt{Orders}}}{4}
+\vspace{2pt}
+\noindent\begin{tabular}{@{}p{0.26\linewidth}p{0.26\linewidth}p{0.24\linewidth}p{0.18\linewidth}@{}}
+\toprule
+\thd{המפתח הזר} & \thd{מצביע לטבלה} & \thd{לשדה} & \thd{הקשר} \\
+\midrule
+\lr{\texttt{OrderDish}} & \lr{\texttt{Dishes}} & \lr{\texttt{DishCode}} & \lr{1:N} \\
+\lr{\texttt{OrderWorker}} & \lr{\texttt{Workers}} & \lr{\texttt{WorkerNum}} & \lr{1:N} \\
+\bottomrule
+\end{tabular}
+
+\vspace{3pt}
+{\small\lr{\texttt{CustName}} \textbf{אינו} מפתח זר \textendash{} הוא טקסט חופשי, ואין טבלה של לקוחות.}
+
+\subqp{ג}{הקשר בין \lr{\texttt{Cities}} ל-\lr{\texttt{Workers}}}{3}
+
+\vspace{2pt}
+התשובה: \textbf{\lr{1:N}} (אחד לרבים).
+
+\vspace{2pt}
+\textbf{הנימוק:} בעיר אחת יכולים לעבוד כמה עובדים, אבל לכל עובד רשומה \textbf{עיר אחת} בלבד. המפתח הזר \lr{\texttt{WorkerCity}} יושב בטבלת \lr{\texttt{Workers}} \textendash{} כלומר בצד ה"רבים" \textendash{} והערכים בו חוזרים (ירכא ועכו מופיעות פעמיים כל אחת).
+
+\begin{panel}
+\textbf{בונוס למי שבדק:} לעיר \textbf{כרמיאל} (קוד \lr{3}) אין אף עובד. זה \textbf{תקין לגמרי} \textendash{} בקשר \lr{1:N}, לשורה בצד ה"אחד" מותר שלא יהיו לה שורות מתאימות בכלל.
+\end{panel}
+
+\vspace{4pt}
+\partheader{פתרונות \textendash{} שאלה 2}{\texttt{cafe.sql}}{15 נקודות}
+
+\subqp{א}{שם המנה ומחירה, עם כותרות בעברית}{5}
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT DishName AS "שם המנה", DishPrice AS "מחיר"
+FROM   Dishes;
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outtable}{ \textendash{} \lr{8} שורות}
+\begin{tabular}{ll}
+\toprule
+\thd{שם המנה} & \thd{מחיר} \\
+\midrule
+חומוס & 28 \\
+סלט ירקות & 32 \\
+שניצל & 56 \\
+פסטה & 48 \\
+קנאפה & 30 \\
+עוגת גבינה & 26 \\
+לימונדה & 14 \\
+קפה & 12 \\
+\bottomrule
+\end{tabular}
+\end{outtable}
+
+{\small\textbf{שימו לב:} כותרת בעברית \textendash{} או כל כותרת עם רווח \textendash{} חייבת גרשיים \textbf{כפולים}.}
+
+\subqp{ב}{סוגי המנות, כל סוג פעם אחת}{5}
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT DISTINCT DishKind FROM Dishes;
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outplain}
+\begin{tabular}{l}
+\toprule
+\thd{DishKind} \\
+\midrule
+מנה ראשונה \\
+מנה עיקרית \\
+קינוח \\
+שתייה \\
+\bottomrule
+\end{tabular}
+\end{outplain}
+
+{\small מ-\lr{8} שורות נשארו \lr{4}. בלי \lr{\texttt{DISTINCT}} היו חוזרות כל שמונה השורות, וכל סוג היה מופיע פעמיים.}
+
+\subqp{ג}{מחיר אחרי הנחה של \lr{10\%}}{5}
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT DishName, DishPrice, DishPrice * 0.9 AS NewPrice
+FROM   Dishes;
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outtable}{ \textendash{} \lr{8} שורות}
+\begin{tabular}{lll}
+\toprule
+\thd{DishName} & \thd{DishPrice} & \thd{NewPrice} \\
+\midrule
+חומוס & 28 & 25.2 \\
+סלט ירקות & 32 & 28.8 \\
+שניצל & 56 & 50.4 \\
+פסטה & 48 & 43.2 \\
+קנאפה & 30 & 27.0 \\
+עוגת גבינה & 26 & 23.4 \\
+לימונדה & 14 & 12.6 \\
+קפה & 12 & 10.8 \\
+\bottomrule
+\end{tabular}
+\end{outtable}
+
+{\small \textbf{הנחה של \lr{10\%}} פירושה שנשאר \lr{90\%}, ולכן מכפילים ב-\sqlin{0.9}. גם \sqlin{DishPrice - DishPrice * 0.1} נכון. \textbf{טעות נפוצה:} להכפיל ב-\sqlin{0.1} \textendash{} זה מחשב את ההנחה עצמה, לא את המחיר החדש.}
+
+\newpage
+\partheader{פתרונות \textendash{} שאלה 3}{\texttt{cafe.sql}}{20 נקודות}
+
+\subqp{א}{מנות שמחירן מעל \lr{30}}{5}
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT DishName, DishPrice
+FROM   Dishes
+WHERE  DishPrice > 30;
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outtable}{ \textendash{} \lr{3} שורות}
+\begin{tabular}{ll}
+\toprule
+\thd{DishName} & \thd{DishPrice} \\
+\midrule
+סלט ירקות & 32 \\
+שניצל & 56 \\
+פסטה & 48 \\
+\bottomrule
+\end{tabular}
+\end{outtable}
+
+{\small \textbf{שימו לב ל"מעל":} קנאפה עולה \lr{30} בדיוק, ולכן היא \textbf{אינה} בפלט. אם היה כתוב "\lr{30} ומעלה" היינו כותבים \sqlin{>= 30}, והיא כן הייתה נכנסת.}
+
+\subqp{ב}{הזמנות מאפריל עד יוני}{5}
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT OrderNum, CustName, OrderDate
+FROM   Orders
+WHERE  OrderDate BETWEEN '2026-04-01' AND '2026-06-30';
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outtable}{ \textendash{} \lr{6} שורות}
+\begin{tabular}{lll}
+\toprule
+\thd{OrderNum} & \thd{CustName} & \thd{OrderDate} \\
+\midrule
+105 & ליאת בר & 2026-04-09 \\
+106 & ראמי סעיד & 2026-04-27 \\
+107 & יעל שגיא & 2026-05-11 \\
+108 & חנאן זועבי & 2026-05-30 \\
+109 & איתי פלד & 2026-06-14 \\
+110 & מאיה לוי & 2026-06-28 \\
+\bottomrule
+\end{tabular}
+\end{outtable}
+
+{\small התאריך בשאלה כתוב \lr{1.4.2026}, אבל ב-\lr{SQL} כותבים אותו תמיד \sqlin{'2026-04-01'} \textendash{} שנה, חודש, יום, ובגרש בודד. \lr{\texttt{BETWEEN}} \textbf{כולל} את שני הקצוות.}
+
+\subqp{ג}{עובדים בלי טלפון}{5}
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT WorkerNum, WorkerName
+FROM   Workers
+WHERE  WorkerPhone IS NULL;
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outtable}{ \textendash{} \lr{2} שורות}
+\begin{tabular}{ll}
+\toprule
+\thd{WorkerNum} & \thd{WorkerName} \\
+\midrule
+2 & יובל נחום \\
+5 & רים עבאס \\
+\bottomrule
+\end{tabular}
+\end{outtable}
+
+\begin{notepanel}{warnred}{הטעות שחייבים לא לעשות}
+\sqlin{WHERE WorkerPhone = NULL} מחזיר \textbf{אפס שורות} \textendash{} ובלי להודיע על שגיאה. אי אפשר להשוות לערך שאינו ידוע. הדרך היחידה היא \sqlin{IS NULL}, וההפך הוא \sqlin{IS NOT NULL}.
+\end{notepanel}
+
+\subqp{ד}{לקוחות בשם משפחה "לוי"}{5}
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT OrderNum, CustName
+FROM   Orders
+WHERE  CustName LIKE '%לוי%';
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outtable}{ \textendash{} \lr{2} שורות}
+\begin{tabular}{ll}
+\toprule
+\thd{OrderNum} & \thd{CustName} \\
+\midrule
+101 & דנה לוי \\
+110 & מאיה לוי \\
+\bottomrule
+\end{tabular}
+\end{outtable}
+
+{\small בעמודה שמור \textbf{השם המלא}, ולכן \sqlin{= 'לוי'} יחזיר אפס שורות. "מכיל" דורש \textbf{שני} סימני אחוז, אחד מכל צד.}
+
+\newpage
+\partheader{פתרונות \textendash{} שאלה 4}{\texttt{cafe.sql}}{15 נקודות}
+
+\subqp{א}{מיון לפי סוג, ובתוכו לפי מחיר יורד}{5}
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT   DishName, DishKind, DishPrice
+FROM     Dishes
+ORDER BY DishKind, DishPrice DESC;
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outtable}{ \textendash{} \lr{8} שורות}
+\begin{tabular}{lll}
+\toprule
+\thd{DishName} & \thd{DishKind} & \thd{DishPrice} \\
+\midrule
+שניצל & מנה עיקרית & 56 \\
+פסטה & מנה עיקרית & 48 \\
+סלט ירקות & מנה ראשונה & 32 \\
+חומוס & מנה ראשונה & 28 \\
+קנאפה & קינוח & 30 \\
+עוגת גבינה & קינוח & 26 \\
+לימונדה & שתייה & 14 \\
+קפה & שתייה & 12 \\
+\bottomrule
+\end{tabular}
+\end{outtable}
+
+\begin{notepanel}{tipgold}{למה "מנה עיקרית" לפני "מנה ראשונה"?}
+כי המיון הוא \textbf{אלפביתי}, ולא לפי סדר ההגשה בתפריט. שתי המחרוזות מתחילות ב"מנה~", וההכרעה נופלת על האות הבאה: \textbf{ע} באה לפני \textbf{ר} באלף-בית. המחשב אינו יודע מה זה "מנה ראשונה" \textendash{} הוא רק משווה אותיות.
+
+\vspace{3pt}
+\textbf{וגם:} ה-\lr{\texttt{DESC}} חל \textbf{רק} על \lr{\texttt{DishPrice}}. אילו היה כתוב \sqlin{ORDER BY DishKind DESC, DishPrice} התוצאה הייתה שונה לגמרי.
+\end{notepanel}
+
+\subqp{ב}{שלוש ההזמנות עם הכי הרבה סועדים}{5}
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT   OrderNum, CustName, Guests
+FROM     Orders
+ORDER BY Guests DESC
+LIMIT    3;
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outtable}{ \textendash{} \lr{3} שורות}
+\begin{tabular}{lll}
+\toprule
+\thd{OrderNum} & \thd{CustName} & \thd{Guests} \\
+\midrule
+112 & שני אדרי & 10 \\
+108 & חנאן זועבי & 8 \\
+104 & סמיר דיב & 6 \\
+\bottomrule
+\end{tabular}
+\end{outtable}
+
+{\small "הכי הרבה" \textendash{} \lr{\texttt{DESC}}. "שלוש" \textendash{} \sqlin{LIMIT 3}. \textbf{סדר הכתיבה חשוב:} \lr{\texttt{LIMIT}} תמיד \textbf{אחרי} \lr{\texttt{ORDER BY}}, ובלי מיון הוא יחזיר שלוש שורות שרירותיות.}
+
+\subqp{ג}{עובדים לפי שכר יורד, ובשכר זהה לפי שם}{5}
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT   WorkerName, HourPay
+FROM     Workers
+ORDER BY HourPay DESC, WorkerName;
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outtable}{ \textendash{} \lr{6} שורות}
+\begin{tabular}{ll}
+\toprule
+\thd{WorkerName} & \thd{HourPay} \\
+\midrule
+רים עבאס & 55 \\
+אמיר טאהא & 50 \\
+סאלי חדאד & 42 \\
+יובל נחום & 38 \\
+תום בראל & 38 \\
+מיכל שרון & 36 \\
+\bottomrule
+\end{tabular}
+\end{outtable}
+
+{\small \textbf{הבדיקה המהירה:} שני העובדים שמשתכרים \lr{38} חייבים להופיע בסדר \textbf{יובל ואז תום} \textendash{} י' לפני ת' באלף-בית. אם קיבלתם אותם בסדר הפוך, המפתח השני חסר בשאילתה שלכם.}
+
+\vspace{8pt}
+{\color{inkblue}\hrule height 1pt}
+\vspace{5pt}
+\begin{panel}
+\textbf{בדקו את עצמכם לפני בחינת האמצע}
+
+\vspace{3pt}
+\noindent\begin{tabular}{@{}p{0.16\linewidth}p{0.78\linewidth}@{}}
+\toprule
+\thd{הציון} & \thd{מה לעשות עכשיו} \\
+\midrule
+\lr{50\textendash60} & אתם מוכנים. עברו שוב על דף העזר, ובמיוחד על \lr{\texttt{NULL}} ועל הסוגריים \\
+\lr{40\textendash49} & כמעט. סמנו את הסעיפים שטעיתם בהם, וחיזרו על הפרק שלהם בחומר הלימוד \\
+\lr{מתחת ל-40} & חיזרו על חומר הלימוד מההתחלה, ופתרו שוב את המיני-תרגול שבסופו \\
+\bottomrule
+\end{tabular}
+
+\vspace{5pt}
+{\small\textbf{שלוש הטעויות שתופסות את רוב הכיתה:} \sqlin{= NULL} במקום \sqlin{IS NULL} \textbullet{} \lr{\texttt{LIKE}} בלי סימני אחוז \textbullet{} \lr{\texttt{DESC}} שנכתב רק ליד העמודה הראשונה.}
+\end{panel}
+
+\end{document}

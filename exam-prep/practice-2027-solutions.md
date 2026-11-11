@@ -226,6 +226,36 @@ HAVING SUM(MonthlyFee) > 900;
 
 </figure>
 
+**18א.**
+- `AllTeachers = 6`: סופר את כל 6 השורות בטבלת Teachers.
+- `WithPhone = 4`: סופר רק שורות שבהן TeacherPhone אינו NULL (אמיר עזאם ונור מנסור מדלגים).
+- `DistinctInstruments = 5`: יש 5 כלי נגינה שונים שנלמדים (רונית ונור שתיהן מלמדות פסנתר 10, ולכן הוא נספר רק פעם אחת).
+
+**18ב.**
+```sql
+SELECT ROUND(AVG(HourRate), 1) AS AvgRate,
+       COUNT(*) AS TotalTeachers
+FROM Teachers;
+```
+פלט: `AvgRate = 125.0`, `TotalTeachers = 6`.
+
+**18ג.**
+**השגיאה:** אסור להשתמש בפונקציה מצרפית (`AVG`) בתוך פסוקית `WHERE`, מכיוון ש‑WHERE מסננת שורות בודדות לפני שחושב הממוצע הכללי!
+**התיקון באמצעות תת‑שאילתה:**
+```sql
+SELECT TeacherName, HourRate
+FROM Teachers
+WHERE HourRate > (SELECT AVG(HourRate) FROM Teachers);
+```
+פלט: רונית לוי (150), דנה כהן (140), נור מנסור (130).
+
+**18ד.**
+```sql
+SELECT TeacherName, COALESCE(TeacherPhone, 'לא קיים טלפון') AS Phone
+FROM Teachers;
+```
+*(ניתן להשתמש גם ב‑`IFNULL(TeacherPhone, 'לא קיים טלפון')`)*.
+
 ## חלק ו
 
 **19.** `NOT IN` · `RegTeacher`

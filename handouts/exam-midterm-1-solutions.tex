@@ -1,0 +1,613 @@
+\documentclass[11pt,a4paper]{article}
+\input{sqlcommon.tex}
+
+\fancyhead[R]{\small בסיסי נתונים ו\lr{-}\lr{SQL} \textbar{} בחינת אמצע \textendash{} \textbf{מחוון}}
+\fancyhead[L]{\small למורה בלבד}
+
+\begin{document}
+
+\begin{center}
+{\LARGE\bfseries\color{inkblue} בחינת אמצע \textendash{} פתרון ומחוון}\\[3pt]
+{\large מעבדת "דלתא-טק" \ \textbullet\ \ \lr{100} נקודות \lr{+} בונוס \lr{5}}\\[4pt]
+{\small\bfseries\color{warnred} למורה בלבד}
+\end{center}
+\vspace{2pt}
+{\color{inkblue}\hrule height 1.2pt}
+\vspace{6pt}
+
+\begin{panel}
+\textbf{איך להשתמש במחוון}
+\begin{itemize}[leftmargin=1.3em, itemsep=2pt, topsep=3pt]
+  \item \textbf{כל פלט בדף הזה הוא פלט אמיתי} של \lr{SQLite}, שרץ על \sqlin{exam-prep/db/repairs.sql}. אפשר לטעון את הקובץ ולהריץ כל פתרון כדי לבדוק תשובה חריגה של תלמיד.
+  \item \textbf{מקבלים כל שאילתה שמחזירה את הפלט הנכון}, גם אם היא כתובה אחרת מהפתרון כאן (למשל \sqlin{>= 701} במקום \sqlin{> 700}, או \lr{\texttt{OR}} במקום \lr{\texttt{IN}}) \textendash{} אלא אם הסעיף דרש במפורש אופרטור מסוים.
+  \item \textbf{ניקוד חלקי} רשום בכל סעיף. \textbf{אל תורידו פעמיים על אותה טעות} בשני סעיפים שונים.
+  \item \textbf{נקודה-פסיק חסרה:} להעיר, לא להוריד \textendash{} אלא אם היא חסרה בכל השאילתות בבחינה, ואז מורידים נקודה אחת מהציון הסופי.
+\end{itemize}
+\end{panel}
+
+\vspace{4pt}
+\partheader{שאלה 1 \textendash{} מבנה בסיס הנתונים}{\texttt{repairs.sql}}{20 נקודות}
+
+\subqp{א}{מפתחות ראשיים}{4}
+\vspace{2pt}
+\noindent\begin{tabular}{@{}p{0.24\linewidth}p{0.36\linewidth}p{0.32\linewidth}@{}}
+\toprule
+\thd{הטבלה} & \thd{המפתח הראשי} & \thd{ניקוד} \\
+\midrule
+\lr{\texttt{Technicians}} & \lr{\texttt{TechCode}} & \lr{1} \\
+\lr{\texttt{Repairs}} & \lr{\texttt{RepairNum}} & \lr{1} \\
+\lr{\texttt{Benches}} & \lr{\texttt{BenchNum}} & \lr{1} \\
+\lr{\texttt{PartUsage}} & \lr{\texttt{UseRepair} + \texttt{UsePart}} \textendash{} \textbf{מפתח מורכב} & \lr{1} \\
+\bottomrule
+\end{tabular}
+
+\vspace{3pt}
+{\small\textbf{הערת מחוון:} תלמיד שכתב ב-\lr{\texttt{PartUsage}} רק \lr{\texttt{UseRepair}} \textendash{} \lr{0} נקודות בשורה הזאת. זו בדיוק הטעות שסעיף ה\lr{2} בודק שוב.}
+
+\subqp{ב}{מפתחות זרים בטבלת \lr{\texttt{Repairs}}}{4}
+\vspace{2pt}
+\noindent\begin{tabular}{@{}p{0.26\linewidth}p{0.26\linewidth}p{0.22\linewidth}p{0.18\linewidth}@{}}
+\toprule
+\thd{המפתח הזר} & \thd{מצביע לטבלה} & \thd{לשדה} & \thd{ניקוד} \\
+\midrule
+\lr{\texttt{RepairDev}} & \lr{\texttt{DevTypes}} & \lr{\texttt{DevCode}} & \lr{2} \\
+\lr{\texttt{RepairTech}} & \lr{\texttt{Technicians}} & \lr{\texttt{TechCode}} & \lr{2} \\
+\bottomrule
+\end{tabular}
+
+\vspace{3pt}
+{\small\textbf{ניקוד חלקי:} \lr{1} נקודה על זיהוי שם המפתח הזר, ועוד \lr{1} על הטבלה והשדה הנכונים. \textbf{אין} לקבל את \lr{\texttt{CustName}} כמפתח זר \textendash{} זה טקסט חופשי.}
+
+\subqp{ג}{סוגי הקשרים}{6}
+\vspace{2pt}
+\noindent\begin{tabular}{@{}p{0.24\linewidth}p{0.10\linewidth}p{0.52\linewidth}p{0.08\linewidth}@{}}
+\toprule
+\thd{הזוג} & \thd{הקשר} & \thd{הנימוק המצופה} & \thd{ניקוד} \\
+\midrule
+\lr{\texttt{Cities}\,\textendash\,\texttt{Technicians}} & \textbf{\lr{1:N}} & בעיר אחת יכולים לגור כמה טכנאים, אבל לכל טכנאי עיר אחת. המפתח הזר \lr{\texttt{TechCity}} נמצא בצד הרבים & \lr{2} \\
+\lr{\texttt{Repairs}\,\textendash\,\texttt{Parts}} & \textbf{\lr{M:N}} & בתיקון אחד נכנסים כמה חלפים, ואותו חלף נכנס לכמה תיקונים. לכן יש טבלה מקשרת, \lr{\texttt{PartUsage}} & \lr{2} \\
+\lr{\texttt{Technicians}\,\textendash\,\texttt{Benches}} & \textbf{\lr{1:1}} & לכל טכנאי עמדה אחת לכל היותר, ולכל עמדה טכנאי אחד. \lr{\texttt{BenchTech}} הוא ייחודי & \lr{2} \\
+\bottomrule
+\end{tabular}
+
+\vspace{3pt}
+{\small\textbf{ניקוד חלקי:} \lr{1} נקודה על סוג הקשר הנכון, ועוד \lr{1} על נימוק נכון. סוג קשר נכון בלי נימוק \textendash{} \lr{1} נקודה.}
+
+\subqp{ד}{שלושת החצים ב-\lr{DSD}}{3}
+\vspace{2pt}
+\noindent נקודה אחת לכל חץ:
+\begin{itemize}[leftmargin=1.4em, itemsep=1pt, topsep=2pt]
+  \item \lr{\texttt{TechCity} \ $\rightarrow$ \ \texttt{CityCode}}
+  \item \lr{\texttt{RepairTech} \ $\rightarrow$ \ \texttt{TechCode}}
+  \item \lr{\texttt{RepairDev} \ $\rightarrow$ \ \texttt{DevCode}}
+\end{itemize}
+{\small חץ בכיוון ההפוך \textendash{} חצי נקודה. חץ אל שדה שאינו מפתח ראשי \textendash{} \lr{0}.}
+
+\subqp{ה}{נכון / לא נכון}{3}
+\vspace{2pt}
+\noindent\begin{tabular}{@{}p{0.05\linewidth}p{0.17\linewidth}p{0.68\linewidth}@{}}
+\toprule
+& \thd{התשובה} & \thd{ההסבר המצופה} \\
+\midrule
+\lr{1} & \textbf{לא נכון} & לטכנאי \lr{1} \textbf{כבר יש} עמדה (עמדה \lr{1}). הקשר הוא \lr{1:1}, ו-\lr{\texttt{BenchTech}} מוגדר ייחודי \textendash{} ולכן אותו טכנאי לא יכול להופיע פעמיים \\
+\lr{2} & \textbf{לא נכון} & \lr{\texttt{UseRepair}} \textbf{חוזר} בטבלה (למשל \lr{1002} מופיע פעמיים, ו-\lr{1008} פעמיים). מפתח ראשי חייב להיות ייחודי, ולכן המפתח כאן מורכב משני השדות \\
+\lr{3} & \textbf{נכון} & כרמיאל (קוד \lr{3}) אינה מופיעה באף שורה בעמודה \lr{\texttt{TechCity}} \\
+\bottomrule
+\end{tabular}
+
+\vspace{3pt}
+{\small\textbf{ניקוד:} נקודה לכל סעיף. בסעיפים \lr{1} ו-\lr{2} נדרש גם הסבר \textendash{} סימון נכון בלי הסבר: חצי נקודה.}
+
+\newpage
+\partheader{שאלה 2 \textendash{} \texttt{SELECT}}{\texttt{repairs.sql}}{25 נקודות}
+
+\subqp{א}{שלוש עמודות עם כותרות בעברית}{5}
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT RepairNum AS "מספר תיקון", CustName AS "שם הלקוח", RepairPrice AS "מחיר"
+FROM   Repairs;
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outtable}{ \textendash{} \lr{16} שורות (מוצגות \lr{4} הראשונות)}
+\begin{tabular}{lll}
+\toprule
+\thd{מספר תיקון} & \thd{שם הלקוח} & \thd{מחיר} \\
+\midrule
+1001 & אדם חלבי & 420 \\
+1002 & מאיה כהן & 980 \\
+1003 & כרים עזאם & 310 \\
+1004 & שירה לוי & 540 \\
+\bottomrule
+\end{tabular}
+\end{outtable}
+
+{\small\textbf{מחוון:} \lr{2} נק' על שלוש העמודות הנכונות ועל \lr{\texttt{FROM Repairs}}; \lr{3} נק' על שלושת הכינויים (נקודה לכל אחד). \textbf{גרש כפול הוא הנכון כאן}, כי יש רווחים ועברית. תלמיד שכתב גרש בודד \textendash{} מורידים נקודה אחת \textbf{פעם אחת בלבד} בכל הבחינה. \textbf{אין} לקבל \sqlin{SELECT *}.}
+
+\subqp{ב}{רמות הדחיפות, כל אחת פעם אחת}{5}
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT DISTINCT Priority FROM Repairs;
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outplain}
+\begin{tabular}{l}
+\toprule
+\thd{Priority} \\
+\midrule
+רגיל \\
+דחוף \\
+מיידי \\
+\bottomrule
+\end{tabular}
+\end{outplain}
+
+{\small\textbf{מחוון:} \lr{5} נק' על \lr{\texttt{DISTINCT}} \lr{+} העמודה והטבלה הנכונות. בלי \lr{\texttt{DISTINCT}} \textendash{} \lr{1} נק' בלבד (זו כל השאלה). סדר השורות אינו קובע, וגם \lr{\texttt{ORDER BY}} נוסף אינו פוגם.}
+
+\subqp{ג}{שם מלא של כל טכנאי}{5}
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT TechFirst || ' ' || TechLast AS FullName
+FROM   Technicians;
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outplain}
+\begin{tabular}{l}
+\toprule
+\thd{FullName} \\
+\midrule
+נביל סרחאן \\
+רונית בר-לב \\
+חוסאם זיאד \\
+דנה כהן \\
+סאמר חלבי \\
+מאיה אברהם \\
+ליאן קבלאן \\
+\bottomrule
+\end{tabular}
+\end{outplain}
+
+{\small\textbf{מחוון:} \lr{2} נק' על השרשור, \lr{2} נק' על \textbf{הרווח באמצע} (\sqlin{|| ' ' ||}), \lr{1} נק' על הכינוי \lr{\texttt{FullName}}. שרשור בלי רווח (\sqlin{TechFirst || TechLast}) \textendash{} מורידים \lr{2}. כינוי \lr{\texttt{FullName}} בלי גרשיים הוא \textbf{תקין}.}
+
+\subqp{ד}{מחיר כולל מע"מ \lr{18\%}}{5}
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT RepairNum, RepairPrice, RepairPrice * 1.18 AS TotalPrice
+FROM   Repairs;
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outtable}{ \textendash{} \lr{16} שורות (מוצגות \lr{6} הראשונות)}
+\begin{tabular}{lll}
+\toprule
+\thd{RepairNum} & \thd{RepairPrice} & \thd{TotalPrice} \\
+\midrule
+1001 & 420 & 495.6 \\
+1002 & 980 & 1156.4 \\
+1003 & 310 & 365.8 \\
+1004 & 540 & 637.2 \\
+1005 & 760 & 896.8 \\
+1006 & 190 & 224.2 \\
+\bottomrule
+\end{tabular}
+\end{outtable}
+
+{\small\textbf{מחוון:} \lr{2} נק' על שלוש העמודות, \lr{2} נק' על החישוב הנכון, \lr{1} נק' על הכינוי. \textbf{מקבלים גם} \sqlin{RepairPrice + RepairPrice * 0.18} \textendash{} אותה תוצאה בדיוק. \sqlin{* 18} או \sqlin{* 0.18} (רק המע"מ) \textendash{} מורידים \lr{2}.}
+
+\subqp{ה}{שלוש הטעויות בשאילתה}{5}
+
+\vspace{2pt}
+\noindent\begin{tabular}{@{}p{0.05\linewidth}p{0.40\linewidth}p{0.45\linewidth}@{}}
+\toprule
+& \thd{הטעות} & \thd{התיקון} \\
+\midrule
+\lr{1} & \textbf{פסיק מיותר} אחרי \lr{\texttt{Priority}}, לפני \lr{\texttt{FROM}} & מוחקים את הפסיק \\
+\lr{2} & \textbf{גרש כפול} סביב הערך \sqlin{"רגיל"} & גרש בודד: \sqlin{'רגיל'} \\
+\lr{3} & \textbf{חסרה נקודה-פסיק} בסוף & מוסיפים \sqlin{;} \\
+\bottomrule
+\end{tabular}
+
+\vspace{3pt}
+\textbf{השאילתה המתוקנת:}
+\begin{otherlanguage}{english}
+\begin{sqlgood}
+SELECT RepairNum, CustName, Priority
+FROM   Repairs
+WHERE  Priority = 'רגיל';
+\end{sqlgood}
+\end{otherlanguage}
+
+\begin{outtable}{ \textendash{} \lr{8} שורות}
+\begin{tabular}{lll}
+\toprule
+\thd{RepairNum} & \thd{CustName} & \thd{Priority} \\
+\midrule
+1001 & אדם חלבי & רגיל \\
+1003 & כרים עזאם & רגיל \\
+1005 & רמי חורי & רגיל \\
+1007 & ליאן קבלאן & רגיל \\
+1009 & סאלי חסון & רגיל \\
+1011 & נור מנסור & רגיל \\
+1013 & סלים דיאב & רגיל \\
+1014 & הילה פרץ & רגיל \\
+\bottomrule
+\end{tabular}
+\end{outtable}
+
+{\small\textbf{מחוון:} נקודה וחצי לכל טעות שזוהתה ותוקנה, ועוד חצי נקודה על העתקה נקייה של השאילתה כולה. \textbf{כאן כן מורידים} על נקודה-פסיק חסרה \textendash{} זו אחת משלוש הטעויות שהשאלה מבקשת.}
+
+\begin{notepanel}{tipgold}{אם תלמיד יטען שהגרשיים הכפולים "עובדים" \textendash{} הוא לא טועה לגמרי}
+ב-\lr{SQLite} יש חריג: כשאין עמודה בשם שבתוך הגרשיים הכפולים, המנוע מתייחס אליהם כאל טקסט, ולכן \sqlin{Priority = "רגיל"} \textbf{כן} מחזיר שם את \lr{8} השורות. \textbf{באורקל, ובשאלון הבגרות, זו שגיאה} \textendash{} וזה גם מה שלמדנו בכיתה. לכן הניקוד נשאר כפי שהוא, אבל שווה להסביר את ההבדל בכיתה: השאילתה שנשענת על החריג הזה תיפול בבגרות.
+
+\vspace{3pt}
+\textbf{הטעות שבגללה השאילתה באמת אינה רצה} היא הפסיק המיותר שלפני \lr{\texttt{FROM}} \textendash{} אותו כל תלמיד חייב לזהות.
+\end{notepanel}
+
+\newpage
+\partheader{שאלה 3 \textendash{} \texttt{WHERE}}{\texttt{repairs.sql}}{30 נקודות}
+
+{\small\textbf{מחוון כללי לשאלה:} בכל סעיף \textendash{} \lr{2} נק' על העמודות והטבלה הנכונות, ו-\lr{3} נק' על התנאי. תנאי נכון עם עמודות שגויות: \lr{3}. עמודות נכונות עם תנאי שגוי: \lr{2}.}
+
+\subqp{א}{תיקונים שמחירם מעל \lr{700}}{5}
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT RepairNum, CustName, RepairPrice
+FROM   Repairs
+WHERE  RepairPrice > 700;
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outtable}{ \textendash{} \lr{6} שורות}
+\begin{tabular}{lll}
+\toprule
+\thd{RepairNum} & \thd{CustName} & \thd{RepairPrice} \\
+\midrule
+1002 & מאיה כהן & 980 \\
+1005 & רמי חורי & 760 \\
+1008 & עומר ביטון & 1250 \\
+1012 & אלון כהן & 1480 \\
+1014 & הילה פרץ & 820 \\
+1016 & אורי שמש & 1100 \\
+\bottomrule
+\end{tabular}
+\end{outtable}
+
+{\small\textbf{שימו לב:} \sqlin{>= 700} מחזיר \textbf{אותן} \lr{6} שורות, כי אין תיקון שמחירו \lr{700} בדיוק \textendash{} ולכן \textbf{אין להוריד} עליו. גרשיים סביב \lr{700} \textendash{} מורידים נקודה: זה מספר, לא טקסט.}
+
+\subqp{ב}{תיקונים שהתקבלו במרץ\textendash מאי}{5}
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT RepairNum, InDate, Priority
+FROM   Repairs
+WHERE  InDate BETWEEN '2026-03-01' AND '2026-05-31';
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outtable}{ \textendash{} \lr{7} שורות}
+\begin{tabular}{lll}
+\toprule
+\thd{RepairNum} & \thd{InDate} & \thd{Priority} \\
+\midrule
+1005 & 2026-03-02 & רגיל \\
+1006 & 2026-03-11 & מיידי \\
+1007 & 2026-03-25 & רגיל \\
+1008 & 2026-04-05 & דחוף \\
+1009 & 2026-04-18 & רגיל \\
+1010 & 2026-05-02 & מיידי \\
+1011 & 2026-05-15 & רגיל \\
+\bottomrule
+\end{tabular}
+\end{outtable}
+
+{\small\textbf{מחוון:} השאלה דרשה \lr{\texttt{BETWEEN}} במפורש \textendash{} פתרון עם \sqlin{>= AND <=} מקבל \lr{4} מתוך \lr{5}. \textbf{תאריך בפורמט אחר} (\lr{\texttt{01/03/2026}}) \textendash{} מורידים \lr{3}, כי השאילתה לא תחזיר כלום. סדר הפוך (\sqlin{BETWEEN '2026-05-31' AND '2026-03-01'}) \textendash{} מורידים \lr{3}: הפלט ריק.}
+
+\subqp{ג}{תיקונים דחופים או מיידיים}{5}
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT RepairNum, CustName, Priority
+FROM   Repairs
+WHERE  Priority IN ('דחוף', 'מיידי');
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outtable}{ \textendash{} \lr{8} שורות}
+\begin{tabular}{lll}
+\toprule
+\thd{RepairNum} & \thd{CustName} & \thd{Priority} \\
+\midrule
+1002 & מאיה כהן & דחוף \\
+1004 & שירה לוי & דחוף \\
+1006 & תמר אברהם & מיידי \\
+1008 & עומר ביטון & דחוף \\
+1010 & יואב שושן & מיידי \\
+1012 & אלון כהן & דחוף \\
+1015 & מוחמד דיב & מיידי \\
+1016 & אורי שמש & דחוף \\
+\bottomrule
+\end{tabular}
+\end{outtable}
+
+{\small\textbf{מחוון:} השאלה דרשה \lr{\texttt{IN}} \textendash{} פתרון עם \lr{\texttt{OR}} מקבל \lr{4} מתוך \lr{5}. \textbf{מקבלים גם} \sqlin{WHERE Priority <> 'רגיל'} (\lr{4} נק') \textendash{} אותו פלט, אבל לא מה שהתבקש.}
+
+\subqp{ד}{לקוחות בשם משפחה "כהן"}{5}
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT RepairNum, CustName
+FROM   Repairs
+WHERE  CustName LIKE '%כהן%';
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outtable}{ \textendash{} \lr{2} שורות}
+\begin{tabular}{ll}
+\toprule
+\thd{RepairNum} & \thd{CustName} \\
+\midrule
+1002 & מאיה כהן \\
+1012 & אלון כהן \\
+\bottomrule
+\end{tabular}
+\end{outtable}
+
+{\small\textbf{מחוון:} \lr{3} נק' על \lr{\texttt{LIKE}} עם \textbf{שני} סימני אחוז. \sqlin{LIKE 'כהן\%'} (רק בהתחלה) \textendash{} מחזיר \lr{0} שורות, מורידים \lr{3}. \sqlin{= 'כהן'} \textendash{} מחזיר \lr{0} שורות, מורידים \lr{3}. \sqlin{LIKE '\%כהן'} \textendash{} מחזיר כאן את אותן \lr{2} שורות, מורידים \lr{1} בלבד (עובד במקרה, כי השם האחרון).}
+
+\subqp{ה}{תיקונים שעדיין פתוחים}{5}
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT RepairNum, CustName, InDate
+FROM   Repairs
+WHERE  DoneDate IS NULL;
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outtable}{ \textendash{} \lr{3} שורות}
+\begin{tabular}{lll}
+\toprule
+\thd{RepairNum} & \thd{CustName} & \thd{InDate} \\
+\midrule
+1004 & שירה לוי & 2026-02-14 \\
+1008 & עומר ביטון & 2026-04-05 \\
+1014 & הילה פרץ & 2026-07-03 \\
+\bottomrule
+\end{tabular}
+\end{outtable}
+
+{\small\textbf{מחוון:} \sqlin{DoneDate = NULL} \textendash{} \textbf{מורידים את כל \lr{3} נקודות התנאי}. זו שגיאת ה-\lr{\texttt{NULL}} המרכזית, והיא מחזירה אפס שורות בלי להודיע על שגיאה. \sqlin{= ''} או \sqlin{= 0} \textendash{} אותו דין.}
+
+\subqp{ו}{טכנאים מירכא או מעכו, בשכר \lr{80} ומעלה}{5}
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT TechLast, HourWage
+FROM   Technicians
+WHERE  (TechCity = 1 OR TechCity = 2) AND HourWage >= 80;
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outtable}{ \textendash{} \lr{3} שורות}
+\begin{tabular}{ll}
+\toprule
+\thd{TechLast} & \thd{HourWage} \\
+\midrule
+סרחאן & 95 \\
+חלבי & 105 \\
+קבלאן & 80 \\
+\bottomrule
+\end{tabular}
+\end{outtable}
+
+\begin{notepanel}{warnred}{הסעיף שמפריד בין התלמידים \textendash{} קראו אותו לפני הבדיקה}
+\textbf{בלי הסוגריים} \textendash{} \sqlin{WHERE TechCity = 1 OR TechCity = 2 AND HourWage >= 80} \textendash{} מתקבלות \textbf{\lr{4}} שורות: מצטרפת אליהן \textbf{דנה כהן}, ששכרה \lr{72} בלבד. הסיבה: \lr{\texttt{AND}} גובר על \lr{\texttt{OR}}, ולכן המנוע קרא "עיר \lr{1}, \textbf{או} (עיר \lr{2} ושכר \lr{80} ומעלה)".
+
+\vspace{3pt}
+\textbf{ניקוד:} \lr{2} נק' עמודות וטבלה, \lr{1} נק' תנאי העיר, \lr{1} נק' תנאי השכר, \textbf{\lr{1} נק' על הסוגריים}. תשובה בלי סוגריים מאבדת נקודה אחת בלבד \textendash{} אבל \textbf{שווה לסמן אותה לתלמיד}, כי זו הטעות שתחזור בבגרות. \sqlin{IN (1,2) AND HourWage >= 80} \textendash{} פתרון מצוין, ניקוד מלא.
+\end{notepanel}
+
+\newpage
+\partheader{שאלה 4 \textendash{} \texttt{ORDER BY}}{\texttt{repairs.sql}}{25 נקודות}
+
+\subqp{א}{מיון לפי דחיפות, ובתוכה לפי מחיר יורד}{5}
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT   RepairNum, Priority, RepairPrice
+FROM     Repairs
+ORDER BY Priority, RepairPrice DESC;
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outtable}{ \textendash{} \lr{16} שורות}
+\begin{tabular}{lll|lll}
+\toprule
+\thd{RepairNum} & \thd{Priority} & \thd{RepairPrice} & \thd{RepairNum} & \thd{Priority} & \thd{RepairPrice} \\
+\midrule
+1012 & דחוף & 1480 & 1014 & רגיל & 820 \\
+1008 & דחוף & 1250 & 1005 & רגיל & 760 \\
+1016 & דחוף & 1100 & 1011 & רגיל & 610 \\
+1002 & דחוף & 980 & 1007 & רגיל & 450 \\
+1004 & דחוף & 540 & 1001 & רגיל & 420 \\
+1010 & מיידי & 380 & 1003 & רגיל & 310 \\
+1015 & מיידי & 230 & 1013 & רגיל & 290 \\
+1006 & מיידי & 190 & 1009 & רגיל & 120 \\
+\bottomrule
+\end{tabular}
+\end{outtable}
+
+{\small\textbf{מחוון:} \lr{2} נק' על העמודות, \lr{1} נק' על המיון לפי \lr{\texttt{Priority}}, \lr{2} נק' על \lr{\texttt{RepairPrice DESC}} \textbf{כמפתח שני}. \textbf{הטעות הנפוצה:} כתיבת \lr{\texttt{DESC}} אחרי \lr{\texttt{Priority}} \textendash{} מורידים \lr{1}. \textbf{שימו לב} שהסדר האלפביתי של הדחיפויות הוא דחוף, מיידי, רגיל \textendash{} זה נכון, ולא טעות.}
+
+\subqp{ב}{שלושת התיקונים היקרים שהסתיימו}{5}
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT   RepairNum, CustName, RepairPrice
+FROM     Repairs
+WHERE    DoneDate IS NOT NULL
+ORDER BY RepairPrice DESC
+LIMIT    3;
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outtable}{ \textendash{} \lr{3} שורות}
+\begin{tabular}{lll}
+\toprule
+\thd{RepairNum} & \thd{CustName} & \thd{RepairPrice} \\
+\midrule
+1012 & אלון כהן & 1480 \\
+1016 & אורי שמש & 1100 \\
+1002 & מאיה כהן & 980 \\
+\bottomrule
+\end{tabular}
+\end{outtable}
+
+{\small\textbf{מחוון:} \lr{1} נק' עמודות, \lr{2} נק' \sqlin{IS NOT NULL}, \lr{1} נק' \lr{\texttt{DESC}}, \lr{1} נק' \sqlin{LIMIT 3}. \textbf{מי ששכח את תנאי ה-\lr{\texttt{NULL}}} מקבל \lr{1012}, \lr{1008}, \lr{1016} \textendash{} תיקון \lr{1008} עדיין פתוח ואינו אמור להופיע: מורידים \lr{2}. \textbf{\lr{\texttt{ASC}} במקום \lr{\texttt{DESC}}} \textendash{} מורידים \lr{2}.}
+
+\subqp{ג}{טכנאים לפי שכר יורד, ובשכר זהה לפי שם משפחה}{5}
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT   TechLast, HourWage
+FROM     Technicians
+ORDER BY HourWage DESC, TechLast;
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outtable}{ \textendash{} \lr{7} שורות}
+\begin{tabular}{ll}
+\toprule
+\thd{TechLast} & \thd{HourWage} \\
+\midrule
+חלבי & 105 \\
+סרחאן & 95 \\
+זיאד & 88 \\
+בר-לב & 80 \\
+קבלאן & 80 \\
+כהן & 72 \\
+אברהם & 65 \\
+\bottomrule
+\end{tabular}
+\end{outtable}
+
+{\small\textbf{מחוון:} \lr{2} נק' עמודות, \lr{2} נק' \sqlin{HourWage DESC}, \lr{1} נק' המפתח השני. \textbf{הבדיקה המהירה:} שני הטכנאים בשכר \lr{80} חייבים להופיע בסדר \textbf{בר-לב ואז קבלאן}. סדר הפוך פירושו שהמפתח השני חסר \textendash{} מורידים נקודה.}
+
+\subqp{ד}{חלפים במחיר \lr{100\textendash300}, מהיקר לזול}{5}
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT   PartName, PartPrice
+FROM     Parts
+WHERE    PartPrice BETWEEN 100 AND 300
+ORDER BY PartPrice DESC;
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outtable}{ \textendash{} \lr{3} שורות}
+\begin{tabular}{ll}
+\toprule
+\thd{PartName} & \thd{PartPrice} \\
+\midrule
+מקלדת & 220 \\
+סוללה & 180 \\
+מצלמה & 160 \\
+\bottomrule
+\end{tabular}
+\end{outtable}
+
+{\small\textbf{מחוון:} \lr{1} נק' עמודות, \lr{1} נק' \lr{\texttt{FROM Parts}} (ולא \lr{\texttt{PartUsage}}), \lr{2} נק' התנאי, \lr{1} נק' \lr{\texttt{DESC}}.}
+
+\subqp{ה}{שאלת הבנה \textendash{} \lr{\texttt{NULL}} במיון}{5}
+
+\vspace{2pt}
+\noindent\textbf{\lr{1.} כמה שורות?} \ \ \textbf{\lr{16}} \textendash{} כל השורות בטבלה. \lr{\texttt{ORDER BY}} \textbf{אינו מסנן}: הוא רק משנה את הסדר. \hfill{\small(\lr{2} נק')}
+
+\vspace{3pt}
+\noindent\textbf{\lr{2.} אילו שורות ראשונות, ומדוע?} \hfill{\small(\lr{3} נק')}
+
+\vspace{2pt}
+שלוש השורות שבהן \lr{\texttt{DoneDate}} הוא \lr{\texttt{NULL}}: \textbf{\lr{1004}}, \textbf{\lr{1008}}, \textbf{\lr{1014}} \textendash{} התיקונים שעדיין פתוחים. במיון עולה ב-\lr{SQLite} ערכי \lr{\texttt{NULL}} מופיעים \textbf{ראשונים}, כאילו הם הערך הקטן ביותר.
+
+\begin{outtable}{ \textendash{} \lr{6} השורות הראשונות מתוך \lr{16}}
+\begin{tabular}{ll}
+\toprule
+\thd{RepairNum} & \thd{DoneDate} \\
+\midrule
+1004 & \nullv \\
+1008 & \nullv \\
+1014 & \nullv \\
+1001 & 2026-01-15 \\
+1002 & 2026-02-02 \\
+1003 & 2026-02-05 \\
+\bottomrule
+\end{tabular}
+\end{outtable}
+
+{\small\textbf{מחוון:} \lr{2} נק' על "\lr{16} שורות" \textendash{} תשובה כמו "\lr{13}" מעידה שהתלמיד חושב ש-\lr{\texttt{ORDER BY}} מסנן, וזו טעות מהותית. \lr{2} נק' על שלושת המספרים הנכונים, ועוד \lr{1} על הנימוק (\lr{\texttt{NULL}} ראשון במיון עולה). תלמיד שענה "\lr{1001} ראשון" קיבל \lr{0} בסעיף הזה, אבל \textbf{אין} להוריד לו שוב בסעיף ב'.}
+
+\vspace{4pt}
+{\color{rulegray}\hrule height 0.8pt}
+\vspace{3pt}
+\partheader{בונוס}{\texttt{repairs.sql}}{5 נקודות}
+
+\begin{otherlanguage}{english}
+\begin{sqlverb}
+SELECT   RepairNum, CustName, InDate
+FROM     Repairs
+WHERE    Priority <> 'רגיל' AND InDate < '2026-07-01'
+ORDER BY InDate DESC;
+\end{sqlverb}
+\end{otherlanguage}
+
+\begin{outtable}{ \textendash{} \lr{6} שורות}
+\begin{tabular}{lll}
+\toprule
+\thd{RepairNum} & \thd{CustName} & \thd{InDate} \\
+\midrule
+1012 & אלון כהן & 2026-06-01 \\
+1010 & יואב שושן & 2026-05-02 \\
+1008 & עומר ביטון & 2026-04-05 \\
+1006 & תמר אברהם & 2026-03-11 \\
+1004 & שירה לוי & 2026-02-14 \\
+1002 & מאיה כהן & 2026-01-20 \\
+\bottomrule
+\end{tabular}
+\end{outtable}
+
+{\small\textbf{מחוון:} \lr{2} נק' על התנאי הכפול, \lr{1} נק' על \sqlin{<> 'רגיל'} (או \sqlin{IN ('דחוף','מיידי')}), \lr{1} נק' על תנאי התאריך, \lr{1} נק' על \lr{\texttt{DESC}}. \textbf{שימו לב:} \sqlin{<= '2026-06-30'} שקול ונכון. כאן \textbf{אין} \lr{\texttt{NULL}} בעמודה \lr{\texttt{InDate}}, ולכן \sqlin{<>} בטוח לשימוש.}
+
+\newpage
+\section*{דף ריכוז ציונים}
+\vspace{-5pt}{\color{rulegray}\hrule height 0.8pt}\vspace{6pt}
+
+\noindent שם התלמיד/ה:~\rule{6cm}{0.4pt}\hfill כיתה:~\rule{2.5cm}{0.4pt}
+\vspace{8pt}
+
+\noindent\begin{tabular}{@{}p{0.09\linewidth}p{0.40\linewidth}p{0.13\linewidth}p{0.13\linewidth}p{0.17\linewidth}@{}}
+\toprule
+\thd{שאלה} & \thd{הנושא} & \thd{ניקוד מלא} & \thd{הציון} & \thd{הערות} \\
+\midrule
+\lr{1} & מבנה, מפתחות וקשרים & \lr{20} & & \\
+\lr{2} & \lr{\texttt{SELECT}}, כינויים, \lr{\texttt{DISTINCT}} & \lr{25} & & \\
+\lr{3} & \lr{\texttt{WHERE}} & \lr{30} & & \\
+\lr{4} & \lr{\texttt{ORDER BY}} & \lr{25} & & \\
+\midrule
+& \textbf{סך הכול} & \textbf{\lr{100}} & & \\
+\lr{5} & בונוס & \lr{+5} & & \\
+\midrule
+& \textbf{הציון הסופי} & & & \\
+\bottomrule
+\end{tabular}
+
+\vspace{10pt}
+\begin{panel}
+\textbf{שלוש הטעויות שכדאי לספור בכיתה כולה} \textendash{} הן מצביעות על מה ללמד שוב:
+
+\vspace{3pt}
+\begin{enumerate}[leftmargin=1.5em, itemsep=3pt, topsep=2pt]
+  \item \textbf{\sqlin{DoneDate = NULL}} (שאלה \lr{3}ה) \textendash{} אם יותר משליש מהכיתה נפל בזה, שווה לחזור על לוגיקה תלת-ערכית לפני מודול \lr{20}.
+  \item \textbf{\lr{\texttt{OR}} בלי סוגריים} (שאלה \lr{3}ו) \textendash{} זו הטעות שחוזרת בבגרות, בשאלות עם "או" בעברית.
+  \item \textbf{"כמה שורות יחזרו"} (שאלה \lr{4}ה) \textendash{} תשובה שאינה \lr{16} מעידה על בלבול בין מיון לסינון, והיא תפיל שאלות ניתוח פלט בבגרות.
+\end{enumerate}
+\end{panel}
+
+\vspace{6pt}
+\begin{panel}
+\textbf{הקובץ לבדיקה חוזרת.} בסיס הנתונים נמצא ב-\sqlin{exam-prep/db/repairs.sql}. מדביקים את כולו ב-\lr{\texttt{onecompiler.com/sqlite}}, לוחצים \lr{\texttt{Run}}, ומריצים כל שאילתה מהמחוון הזה כדי להשוות לפלט שהתלמיד כתב.
+\end{panel}
+
+\end{document}

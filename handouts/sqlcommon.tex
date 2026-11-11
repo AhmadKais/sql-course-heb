@@ -1,0 +1,126 @@
+% ============================================================
+%  פרמבולה משותפת לחומרי הבחינה — מודולים 16–18
+%  מהדרים עם:  lualatex <file>.tex
+% ============================================================
+\usepackage{fontspec}
+\directlua{
+  luaotfload.add_fallback("hbfb", {"DejaVu Serif:mode=node;", "DejaVu Sans:mode=node;"})
+  luaotfload.add_fallback("ltfb", {"DejaVu Sans:mode=node;"})
+}
+\usepackage[bidi=basic]{babel}
+\babelprovide[import, main]{hebrew}
+\babelprovide[import]{english}
+\babelfont{rm}[Ligatures=TeX, RawFeature={fallback=ltfb}]{DejaVu Serif}
+\babelfont[hebrew]{rm}[Script=Hebrew, Ligatures=TeX, RawFeature={fallback=hbfb}]{Noto Serif Hebrew}
+\babelfont{tt}[Scale=0.84, RawFeature={fallback=ltfb}]{DejaVu Sans Mono}
+
+\usepackage[a4paper,top=2.1cm,bottom=2.0cm,left=1.9cm,right=1.9cm,headsep=0.5cm,footskip=1cm]{geometry}
+\usepackage{booktabs, longtable, array, adjustbox, xcolor, enumitem, fancyhdr, titlesec,
+            fancyvrb, needspace, multicol, lastpage, tikz, colortbl}
+\usetikzlibrary{positioning, fit, backgrounds, matrix}
+
+\definecolor{inkblue}{HTML}{14365A}
+\definecolor{rulegray}{HTML}{8A97A3}
+\definecolor{boxgray}{HTML}{F4F6F8}
+\definecolor{codebg}{HTML}{F7F8FA}
+\definecolor{warnred}{HTML}{9B2226}
+\definecolor{okgreen}{HTML}{1B5E3A}
+\definecolor{tipgold}{HTML}{8A6D1F}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt plus 1pt}
+\renewcommand{\arraystretch}{1.15}
+\setlength{\columnsep}{18pt}
+\setlength{\headheight}{13pt}
+
+\pagestyle{fancy}\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancyfoot[C]{\small עמוד \thepage{} מתוך \pageref{LastPage}}
+
+% ---- כותרות ----
+\titleformat{\section}{\needspace{3\baselineskip}\large\bfseries\color{inkblue}}{\thesection.\ }{0pt}{}
+\titlespacing*{\section}{0pt}{15pt plus 3pt}{6pt}
+\titleformat{\subsection}{\needspace{2.5\baselineskip}\normalsize\bfseries\color{inkblue}}{\thesubsection\ }{0pt}{}
+\titlespacing*{\subsection}{0pt}{10pt plus 2pt}{4pt}
+
+% ---- קו מפריד מתחת לכותרת חלק ----
+\newcommand{\partheader}[3]{%
+  \section*{#1}%
+  \vspace{-4pt}{\color{rulegray}\hrule height 0.8pt}\vspace{4pt}%
+  {\small\textbf{בסיס הנתונים:} #2 \hfill \textbf{ניקוד:} #3}\par\vspace{2pt}%
+  {\color{rulegray}\hrule height 0.4pt}\vspace{6pt}}
+
+\newcommand{\rulebar}{\vspace{-4pt}{\color{rulegray}\hrule height 0.8pt}\vspace{5pt}}
+
+% ---- שאלה וסעיף ----
+\newcounter{qnum}
+\newcommand{\question}[2]{%
+  \needspace{5\baselineskip}\refstepcounter{qnum}\par\vspace{8pt}%
+  \noindent\textbf{\color{inkblue}שאלה \theqnum.}\ \textbf{#2}\hfill{\small(#1 נק')}\par\vspace{2pt}}
+\newcommand{\subq}[2]{\needspace{3\baselineskip}\par\vspace{4pt}\noindent\textbf{#1.}~#2\par}
+\newcommand{\subqp}[3]{\needspace{8\baselineskip}\par\vspace{5pt}\noindent%
+  \textbf{#1.}~{\small\textbf{\color{inkblue}(#3 נק')}}~#2\par}
+\newcommand{\pairitem}[1]{\needspace{2\baselineskip}\par\vspace{4pt}\noindent\hspace{1.4em}\textbf{#1}\par}
+
+% ---- שורות תשובה מנוקדות ----
+\newcommand{\answerlines}[1]{%
+  \par\vspace{1pt}%
+  \needspace{\dimexpr 6mm*#1 + 2mm\relax}%
+  \begingroup\color{rulegray}%
+  \count255=#1\relax
+  \loop\ifnum\count255>0
+    \noindent\babelsublr{\rule[-2pt]{0.6pt}{9pt}\rule[-2pt]{\dimexpr\linewidth-0.6pt}{0.3pt}}\par\vspace{5.4mm}%
+    \advance\count255 by -1
+  \repeat
+  \endgroup\vspace{-2mm}}
+
+% ---- שורת תשובה קצרה אחת ----
+\newcommand{\blankline}[1]{\babelsublr{\rule[-2pt]{#1}{0.4pt}}}
+
+% ---- קוד SQL, תמיד משמאל לימין ----
+\DefineVerbatimEnvironment{sqlverb}{Verbatim}{fontsize=\small, frame=leftline, framerule=1.2pt,
+  rulecolor=\color{rulegray}, framesep=7pt, xleftmargin=12pt, samepage=true}
+\DefineVerbatimEnvironment{sqlbad}{Verbatim}{fontsize=\small, frame=leftline, framerule=1.2pt,
+  rulecolor=\color{warnred}, framesep=7pt, xleftmargin=12pt, samepage=true}
+\DefineVerbatimEnvironment{sqlgood}{Verbatim}{fontsize=\small, frame=leftline, framerule=1.2pt,
+  rulecolor=\color{okgreen}, framesep=7pt, xleftmargin=12pt, samepage=true}
+
+\newcommand{\lr}[1]{\babelsublr{\mbox{#1}}}
+\newcommand{\sqlin}[1]{\babelsublr{\texttt{#1}}}
+
+% ---- תיבה אפורה ----
+\newsavebox{\panelbox}
+\newenvironment{panel}{\par\addvspace{7pt}\begin{lrbox}{\panelbox}%
+  \begin{minipage}{\dimexpr\linewidth-2\fboxsep-2\fboxrule}}%
+  {\end{minipage}\end{lrbox}\noindent\fcolorbox{rulegray}{boxgray}{\usebox{\panelbox}}\par\addvspace{7pt}}
+
+% ---- תיבה צבעונית עם כותרת ----
+\newsavebox{\notebox}
+\newenvironment{notepanel}[2]{\def\npcolor{#1}\par\addvspace{7pt}\begin{lrbox}{\notebox}%
+  \begin{minipage}{\dimexpr\linewidth-2\fboxsep-2\fboxrule}%
+  \textbf{\color{#1}#2}\par\vspace{2pt}}%
+  {\end{minipage}\end{lrbox}\noindent\fcolorbox{\npcolor}{white}{\usebox{\notebox}}\par\addvspace{7pt}}
+
+% ---- טבלת נתונים מלאה ----
+\newcommand{\thd}[1]{\textbf{#1}}
+\newenvironment{fulltable}[3]{%
+  \needspace{5\baselineskip}\par\addvspace{7pt}%
+  \noindent{\small הטבלה \babelsublr{\texttt{\textbf{#1}}} \textendash\ #2#3}\par\vspace{2pt}%
+  \begin{otherlanguage}{english}\begin{adjustbox}{max width=\linewidth}}
+  {\end{adjustbox}\end{otherlanguage}\par\addvspace{4pt}}
+
+% ---- פלט של שאילתה ----
+\newenvironment{outtable}[1]{%
+  \needspace{4\baselineskip}\par\vspace{2pt}%
+  \noindent{\small\textbf{הפלט}#1}\par\vspace{1pt}%
+  \begin{otherlanguage}{english}\begin{adjustbox}{max width=\linewidth}}
+  {\end{adjustbox}\end{otherlanguage}\par\addvspace{5pt}}
+
+% ---- פלט ללא כותרת ----
+\newenvironment{outplain}{%
+  \par\vspace{2pt}\begin{otherlanguage}{english}\begin{adjustbox}{max width=\linewidth}}
+  {\end{adjustbox}\end{otherlanguage}\par\addvspace{4pt}}
+
+\newcommand{\nullv}{\textit{\small NULL}}
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}

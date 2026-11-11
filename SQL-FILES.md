@@ -34,6 +34,9 @@
 | [`library.sql`](exam-prep/db/library.sql) | 📚 ספרייה עירונית: 5 טבלאות | בחינה לדוגמה 2 | [פתיחה להעתקה](https://raw.githubusercontent.com/AhmadKais/sql-course-heb/main/exam-prep/db/library.sql) |
 | [`games.sql`](exam-prep/db/games.sql) | 🎮 חנות משחקי מחשב: 5 טבלאות | בחינה לדוגמה 3 | [פתיחה להעתקה](https://raw.githubusercontent.com/AhmadKais/sql-course-heb/main/exam-prep/db/games.sql) |
 | [`music.sql`](exam-prep/db/music.sql) | 🎵 בית הספר למוזיקה "צלילים": 3 טבלאות ראשיות ו‑3 טבלאות עזר | [תרגול לפי ההנחיות של תשפ"ז](exam-prep/practice-2027.md) | [פתיחה להעתקה](https://raw.githubusercontent.com/AhmadKais/sql-course-heb/main/exam-prep/db/music.sql) |
+| [`repairs.sql`](exam-prep/db/repairs.sql) | 🔧 מעבדת "דלתא‑טק": 2 טבלאות ראשיות, 3 טבלאות עזר, קשר 1:1 וטבלה מקשרת | [בחינת אמצע](handouts/exam-midterm-1.pdf) — SELECT · WHERE · ORDER BY | [פתיחה להעתקה](https://raw.githubusercontent.com/AhmadKais/sql-course-heb/main/exam-prep/db/repairs.sql) |
+| [`cafe.sql`](exam-prep/db/cafe.sql) | ☕ בית הקפה "אל‑בלד": 4 טבלאות, קטן ופשוט | [בחינת מתכונת](handouts/mock-exam.pdf) — תרגול עם פתרונות | [פתיחה להעתקה](https://raw.githubusercontent.com/AhmadKais/sql-course-heb/main/exam-prep/db/cafe.sql) |
+| [`moodle-tables.sql`](exam-prep/db/moodle-tables.sql) | 🧩 17 טבלאות קטנות ועצמאיות (פיצריה, חדר כושר, ספרייה, מרפאה וטרינרית ועוד) | [בחינת Moodle](exam-prep/moodle/) — ולתרגול חופשי בכיתה | [פתיחה להעתקה](https://raw.githubusercontent.com/AhmadKais/sql-course-heb/main/exam-prep/db/moodle-tables.sql) |
 
 **איך יודעים שהכול נטען?** אחרי Run, הדבר הראשון שמופיע ב‑**Output** הוא מספר:
 
@@ -45,6 +48,9 @@
 | `library.sql` | `loans_loaded = 14` |
 | `games.sql` | `orders_loaded = 13` |
 | `music.sql` | `registrations_loaded = 14` |
+| `repairs.sql` | `repairs_loaded = 16` |
+| `cafe.sql` | `orders_loaded = 12` |
+| `moodle-tables.sql` | `tables_loaded = 17` |
 
 ---
 
