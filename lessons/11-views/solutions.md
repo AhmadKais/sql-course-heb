@@ -71,6 +71,56 @@ GROUP BY Lessons;
 
 <div dir="rtl">
 
+### שאלה 3
+
+</div>
+
+```sql
+CREATE VIEW Q1 AS
+SELECT   RegPupil, COUNT(*) AS Lessons, SUM(MonthlyFee) AS Total
+FROM     Registrations
+GROUP BY RegPupil;
+
+SELECT MAX(Total) FROM Q1;
+```
+
+<div dir="rtl">
+
+| MAX(Total) |
+|---|
+| 740 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### שאלה 4
+
+</div>
+
+```sql
+CREATE VIEW Q1 AS
+SELECT   RegPupil, COUNT(*) AS Lessons, SUM(MonthlyFee) AS Total
+FROM     Registrations
+GROUP BY RegPupil;
+
+SELECT COUNT(*) FROM Q1 WHERE Lessons = 1;
+```
+
+<div dir="rtl">
+
+| COUNT(*) |
+|---|
+| 6 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
 ---
 
 ## ✏️ תרגילים — 🎵 בית הספר למוזיקה "צלילים"
@@ -277,6 +327,360 @@ GROUP BY InstFamily;
 
 <div dir="rtl">
 
+### 8. 🟢 צרו VIEW בשם `Expensive` — המורים שהמחיר שלהם 130 ומעלה. הציגו ממנו רק את השמות.
+
+</div>
+
+```sql
+CREATE VIEW Expensive AS
+SELECT * FROM Teachers WHERE HourRate >= 130;
+
+SELECT TeacherName FROM Expensive;
+```
+
+<div dir="rtl">
+
+| TeacherName |
+|---|
+| רונית לוי |
+| דנה כהן |
+| נור מנסור |
+
+**התוצאה: 3 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 9. 🟡 בעזרת Q1 (מספר שיעורים וסך תשלום לכל תלמיד): התלמידים שלומדים 2 שיעורים.
+
+</div>
+
+```sql
+CREATE VIEW Q1 AS
+SELECT   RegPupil, COUNT(*) AS Lessons, SUM(MonthlyFee) AS Total
+FROM     Registrations
+GROUP BY RegPupil;
+
+SELECT RegPupil, Total
+FROM   Q1
+WHERE  Lessons = 2;
+```
+
+<div dir="rtl">
+
+| RegPupil | Total |
+|---|---|
+| 201 | 600 |
+| 204 | 740 |
+| 207 | 670 |
+| 210 | 620 |
+
+**התוצאה: 4 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 10. 🟡 בעזרת Q1: שמות התלמידים שמשלמים פחות מ‑350, ממוינים לפי הסכום.
+
+</div>
+
+```sql
+CREATE VIEW Q1 AS
+SELECT   RegPupil, COUNT(*) AS Lessons, SUM(MonthlyFee) AS Total
+FROM     Registrations
+GROUP BY RegPupil;
+
+SELECT FirstName, LastName, Total
+FROM   Q1, Pupils
+WHERE  RegPupil = PupilId AND Total < 350
+ORDER BY Total;
+```
+
+<div dir="rtl">
+
+| FirstName | LastName | Total |
+|---|---|---|
+| תמר | אברהם | 280 |
+| כרים | עזאם | 300 |
+| עומר | ביטון | 300 |
+| רמי | חורי | 340 |
+
+**התוצאה: 4 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 11. 🟡 צרו VIEW בשם `CityCount` — מספר התלמידים בכל עיר (`HomeTown`, `N`). הציגו את שם העיר עם הכי הרבה תלמידים.
+
+</div>
+
+```sql
+CREATE VIEW CityCount AS
+SELECT   HomeTown, COUNT(*) AS N
+FROM     Pupils
+GROUP BY HomeTown;
+
+SELECT CityName, N
+FROM   CityCount, Cities
+WHERE  HomeTown = CityCode
+  AND  N = (SELECT MAX(N) FROM CityCount);
+```
+
+<div dir="rtl">
+
+| CityName | N |
+|---|---|
+| ירכא | 3 |
+| עכו | 3 |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 12. 🔴 צרו VIEW בשם `TeacherIncome` — לכל מורה (`RegTeacher`) סך התשלומים (`Income`). הציגו את המורים שההכנסה שלהם מעל הממוצע של ההכנסות.
+
+</div>
+
+```sql
+CREATE VIEW TeacherIncome AS
+SELECT   RegTeacher, SUM(MonthlyFee) AS Income
+FROM     Registrations
+GROUP BY RegTeacher;
+
+SELECT TeacherName, Income
+FROM   TeacherIncome, Teachers
+WHERE  RegTeacher = TeacherCode
+  AND  Income > (SELECT AVG(Income) FROM TeacherIncome);
+```
+
+<div dir="rtl">
+
+| TeacherName | Income |
+|---|---|
+| סמיר חלבי | 940 |
+| רונית לוי | 1160 |
+| אמיר עזאם | 960 |
+
+**התוצאה: 3 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 13. 🔴 בעזרת Q1: כמה תלמידים משלמים יותר מ‑500, וכמה — 500 או פחות? (קבצו לפי `CASE`)
+
+</div>
+
+```sql
+CREATE VIEW Q1 AS
+SELECT   RegPupil, COUNT(*) AS Lessons, SUM(MonthlyFee) AS Total
+FROM     Registrations
+GROUP BY RegPupil;
+
+SELECT   CASE WHEN Total > 500 THEN 'מעל 500' ELSE '500 ומטה' END AS Range, COUNT(*) AS Pupils
+FROM     Q1
+GROUP BY Range;
+```
+
+<div dir="rtl">
+
+| Range | Pupils |
+|---|---|
+| 500 ומטה | 6 |
+| מעל 500 | 4 |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+---
+
+## 🎓 בסגנון הבחינה — ☕ בית הקפה "אל‑בלד"
+
+</div>
+
+<div dir="rtl">
+
+### 1. 🟢 נתונה השאילתה השמורה Q1 (לכל עובד: מספר הזמנות וסך הסועדים). הציגו את כל Q1.
+
+</div>
+
+```sql
+CREATE VIEW Q1 AS
+SELECT   OrderWorker, COUNT(*) AS Orders, SUM(Guests) AS AllGuests
+FROM     Orders
+GROUP BY OrderWorker;
+
+SELECT * FROM Q1;
+```
+
+<div dir="rtl">
+
+| OrderWorker | Orders | AllGuests |
+|---|---|---|
+| 1 | 2 | 8 |
+| 2 | 2 | 6 |
+| 3 | 2 | 9 |
+| 4 | 2 | 6 |
+| 5 | 2 | 4 |
+| 6 | 2 | 18 |
+
+**התוצאה: 6 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 2. 🟡 בעזרת Q1: שם העובד ומספר ההזמנות שלו.
+
+</div>
+
+```sql
+CREATE VIEW Q1 AS
+SELECT   OrderWorker, COUNT(*) AS Orders, SUM(Guests) AS AllGuests
+FROM     Orders
+GROUP BY OrderWorker;
+
+SELECT WorkerName, Orders
+FROM   Q1, Workers
+WHERE  OrderWorker = WorkerNum;
+```
+
+<div dir="rtl">
+
+| WorkerName | Orders |
+|---|---|
+| סאלי חדאד | 2 |
+| יובל נחום | 2 |
+| אמיר טאהא | 2 |
+| מיכל שרון | 2 |
+| רים עבאס | 2 |
+| תום בראל | 2 |
+
+**התוצאה: 6 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 3. 🟡 בעזרת Q1: העובד ששירת הכי הרבה סועדים (שם).
+
+</div>
+
+```sql
+CREATE VIEW Q1 AS
+SELECT   OrderWorker, COUNT(*) AS Orders, SUM(Guests) AS AllGuests
+FROM     Orders
+GROUP BY OrderWorker;
+
+SELECT WorkerName, AllGuests
+FROM   Q1, Workers
+WHERE  OrderWorker = WorkerNum
+  AND  AllGuests = (SELECT MAX(AllGuests) FROM Q1);
+```
+
+<div dir="rtl">
+
+| WorkerName | AllGuests |
+|---|---|
+| תום בראל | 18 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 4. 🟡 השלימו את הערך.
+
+</div>
+
+```sql
+CREATE VIEW Q1 AS
+SELECT   OrderWorker, COUNT(*) AS Orders, SUM(Guests) AS AllGuests
+FROM     Orders
+GROUP BY OrderWorker;
+
+SELECT AVG(Orders) FROM Q1;
+```
+
+<div dir="rtl">
+
+| AVG(Orders) |
+|---|
+| 2.0 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 5. 🔴 צרו שאילתה שמורה `DishCount` (לכל מנה כמה פעמים הוזמנה), והציגו את שמות המנות שהוזמנו יותר מפעם אחת.
+
+</div>
+
+```sql
+CREATE VIEW DishCount AS
+SELECT   OrderDish, COUNT(*) AS Times
+FROM     Orders
+GROUP BY OrderDish;
+
+SELECT DishName, Times
+FROM   DishCount, Dishes
+WHERE  OrderDish = DishCode AND Times > 1;
+```
+
+<div dir="rtl">
+
+| DishName | Times |
+|---|---|
+| שניצל | 4 |
+| פסטה | 2 |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 6. 🔴 השלימו את הפקודה שיוצרת את Q1.
+
+</div>
+
+```sql
+CREATE VIEW Q1 AS
+SELECT   OrderWorker, COUNT(*) AS Orders, SUM(Guests) AS AllGuests
+FROM     Orders
+GROUP BY OrderWorker;
+
+SELECT * FROM Q1;
+```
+
+<div dir="rtl">
+
+| OrderWorker | Orders | AllGuests |
+|---|---|---|
+| 1 | 2 | 8 |
+| 2 | 2 | 6 |
+| 3 | 2 | 9 |
+| 4 | 2 | 6 |
+| 5 | 2 | 4 |
+| 6 | 2 | 18 |
+
+**התוצאה: 6 שורות**
+
+</div>
+
+<div dir="rtl">
+
 ---
 
 ## 🏠 תרגול נוסף — 🏫 בית הספר "עתיד"
@@ -377,6 +781,88 @@ WHERE  V.ClassCode = C.ClassCode
 | יב1 | 4 |
 
 **התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 4. 🟢 צרו VIEW בשם `Girls` עם כל התלמידות, והציגו כמה יש.
+
+</div>
+
+```sql
+CREATE VIEW Girls AS
+SELECT * FROM Students WHERE Gender = 'F';
+
+SELECT COUNT(*) AS Girls FROM Girls;
+```
+
+<div dir="rtl">
+
+| Girls |
+|---|
+| 9 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 5. 🟡 צרו VIEW בשם `AbsCount` — מספר ההיעדרויות לכל תלמיד. הציגו שמות התלמידים עם 2 היעדרויות ומעלה.
+
+</div>
+
+```sql
+CREATE VIEW AbsCount AS
+SELECT   StudentId, COUNT(*) AS N
+FROM     Absences
+GROUP BY StudentId;
+
+SELECT S.FirstName, S.LastName, V.N
+FROM   AbsCount V, Students S
+WHERE  V.StudentId = S.StudentId AND V.N >= 2;
+```
+
+<div dir="rtl">
+
+| FirstName | LastName | N |
+|---|---|---|
+| יואב | כהן | 2 |
+| כרים | חלבי | 3 |
+| ג'וד | מנסור | 4 |
+| איתי | גולן | 2 |
+
+**התוצאה: 4 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 6. 🔴 צרו VIEW בשם `CourseAvg` — הממוצע של כל מקצוע במחצית 1. הציגו את שם המקצוע עם הממוצע הנמוך ביותר.
+
+</div>
+
+```sql
+CREATE VIEW CourseAvg AS
+SELECT   CourseCode, AVG(Grade) AS AvgGrade
+FROM     Grades
+WHERE    Term = 1
+GROUP BY CourseCode;
+
+SELECT C.CourseName, ROUND(V.AvgGrade, 1) AS AvgGrade
+FROM   CourseAvg V, Courses C
+WHERE  V.CourseCode = C.CourseCode
+  AND  V.AvgGrade = (SELECT MIN(AvgGrade) FROM CourseAvg);
+```
+
+<div dir="rtl">
+
+| CourseName | AvgGrade |
+|---|---|
+| מתמטיקה 3 יח"ל | 59.0 |
+
+**התוצאה: שורה אחת**
 
 </div>
 

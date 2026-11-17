@@ -441,6 +441,28 @@ SELECT COUNT(*) FROM Lockers;
 
 <div dir="rtl">
 
+**שאלה 3.** מה הערך?
+
+</div>
+
+```sql
+UPDATE Teachers SET HourRate = HourRate * 2 WHERE TeacherCode = 5;
+SELECT HourRate FROM Teachers WHERE TeacherCode = 5;
+```
+
+<div dir="rtl">
+
+**שאלה 4.** כמה רישומים נשארו?
+
+</div>
+
+```sql
+DELETE FROM Registrations WHERE PupilLevel = 'מתחיל';
+SELECT COUNT(*) FROM Registrations;
+```
+
+<div dir="rtl">
+
 ---
 
 ## 6️⃣ תרגילים — 🎵 בית הספר למוזיקה "צלילים"
@@ -467,13 +489,261 @@ SELECT COUNT(*) FROM Lockers;
 
 10. 🔴 העלו ב‑20 את התשלום של כל הרישומים של תלמידים שגרים בעכו. _(🔍 משנה נתונים — בדקו עם SELECT)_
 
+11. 🟢 הוסיפו את העיר 'סח'נין' בקוד 6. _(🔍 משנה נתונים — בדקו עם SELECT)_
+
+12. 🟢 שנו את שם הכלי 'עוד' ל‑'עוד ערבי'. _(🔍 משנה נתונים — בדקו עם SELECT)_
+
+13. 🟡 הוסיפו רישום חדש: התלמיד 206 לומד אצל המורה 2, בשנת 2026, ברמת 'מתחיל', 390 לחודש. _(🔍 משנה נתונים — בדקו עם SELECT)_
+
+14. 🟡 העבירו את כל הלוקרים מקומה 1 לקומה 3. _(🔍 משנה נתונים — בדקו עם SELECT)_
+
+15. 🟡 מחקו את כל הרישומים שהתשלום בהם נמוך מ‑300. _(🔍 משנה נתונים — בדקו עם SELECT)_
+
+16. 🔴 עדכנו בבת אחת: המורה 3 מקבל טלפון '050-3333333' ומחיר 115. _(🔍 משנה נתונים — בדקו עם SELECT)_
+
+17. 🔴 מחקו את הלוקרים של התלמידים שנולדו לפני 2010. _(🔍 משנה נתונים — בדקו עם SELECT)_
+
 </div>
 
 <div dir="rtl">
 
 ---
 
-## 7️⃣ תרגול נוסף — 🏫 בית הספר "עתיד"
+## 7️⃣ 🎓 בסגנון הבחינה — 📚 ספרייה עירונית
+
+> שאלות בפורמט של שאלון 735911: שמות שדות ייחודיים, צירוף עם פסיק + `WHERE`, השלמת ערכים, זיהוי שאילתה לפי פלט והשלמת פקודות. [📋 הטבלאות והקוד](../../databases/library/)
+
+</div>
+
+<details>
+<summary>📋 <b>הטבלאות של ספרייה עירונית</b> (לחצו לפתיחה)</summary>
+
+<div dir="rtl">
+
+**`Cities`**
+
+| CityCode 🔑 | CityName |
+|---|---|
+| 1 | ירכא |
+| 2 | כרמיאל |
+| 3 | עכו |
+| 4 | מעלות |
+| 5 | חיפה |
+
+**`Authors`**
+
+| AuthorCode 🔑 | AuthorFirstName | AuthorLastName | Country |
+|---|---|---|---|
+| 1 | עמוס | עוז | ישראל |
+| 2 | ג'ואן | רולינג | בריטניה |
+| 3 | נגיב | מחפוז | מצרים |
+| 4 | אגתה | כריסטי | בריטניה |
+| 5 | דויד | גרוסמן | ישראל |
+| 6 | סמי | מיכאל | ישראל |
+
+**`Books`**
+
+| BookCode 🔑 | Title | WriterCode 🔗 | Genre | PubYear | Pages |
+|---|---|---|---|---|---|
+| 201 | סיפור על אהבה וחושך | 1 | ביוגרפיה | 2002 | 520 |
+| 202 | הארי פוטר ואבן החכמים | 2 | פנטזיה | 1997 | 320 |
+| 203 | הארי פוטר וחדר הסודות | 2 | פנטזיה | 1998 | 350 |
+| 204 | סמטת מדק | 3 | רומן | 1947 | 280 |
+| 205 | רצח באוריינט אקספרס | 4 | מתח | 1934 | 250 |
+| 206 | ואז לא נשאר אף אחד | 4 | מתח | 1939 | 260 |
+| 207 | סוס אחד נכנס לבר | 5 | רומן | 2014 | 200 |
+| 208 | אשה בורחת מבשורה | 5 | רומן | 2008 | 640 |
+| 209 | מיכאל שלי | 1 | רומן | 1968 | 290 |
+| 210 | ספר הדקדוק הפנימי | 5 | רומן | 1991 | 380 |
+
+**`Members`**
+
+| MemberId 🔑 | FirstName | LastName | TownCode 🔗 | BirthYear |
+|---|---|---|---|---|
+| 501 | ראניה | חלבי | 1 | 2008 |
+| 502 | עידו | כהן | 2 | 2007 |
+| 503 | מוחמד | עזאם | 1 | 2009 |
+| 504 | נועה | לוי | 3 | 2008 |
+| 505 | אליאס | חורי | 3 | 2006 |
+| 506 | יעל | פרץ | 2 | 2009 |
+| 507 | סאמי | קבלאן | 4 | 2007 |
+| 508 | הילה | כהן | 5 | 2008 |
+| 509 | אמיר | חלבי | 1 | 2006 |
+| 510 | רותם | גבאי | 4 | 2009 |
+
+**`Loans`**
+
+| LoanId 🔑 | ReaderId 🔗 | BookNum 🔗 | LoanDate | ReturnDate |
+|---|---|---|---|---|
+| 1 | 501 | 202 | 2025-09-01 | 2025-09-15 |
+| 2 | 501 | 203 | 2025-09-16 | *NULL* |
+| 3 | 502 | 205 | 2025-09-03 | 2025-09-20 |
+| 4 | 503 | 202 | 2025-09-05 | 2025-09-25 |
+| 5 | 504 | 207 | 2025-09-07 | *NULL* |
+| 6 | 505 | 204 | 2025-09-10 | 2025-09-30 |
+| 7 | 502 | 206 | 2025-09-21 | *NULL* |
+| 8 | 506 | 202 | 2025-09-26 | *NULL* |
+| 9 | 507 | 209 | 2025-10-01 | 2025-10-12 |
+| 10 | 501 | 205 | 2025-10-02 | *NULL* |
+| 11 | 508 | 201 | 2025-10-03 | *NULL* |
+| 12 | 505 | 204 | 2025-10-05 | *NULL* |
+| 13 | 503 | 207 | 2025-10-06 | 2025-10-20 |
+| 14 | 509 | 208 | 2025-10-08 | *NULL* |
+
+</div>
+
+</details>
+
+
+<details>
+<summary>📥 <b>הקוד שבונה את בסיס הנתונים 📚 ספרייה עירונית</b> — מעתיקים הכול ומדביקים ב‑OneCompiler</summary>
+
+```sql
+-- ============================================================
+--  ספרייה עירונית  ·  בסיס נתונים לבחינה לדוגמה 2
+--  הדביקו את כל הקובץ ב-OneCompiler, לחצו Run, וכתבו את השאילתות מתחת.
+-- ============================================================
+DROP TABLE IF EXISTS Loans;
+DROP TABLE IF EXISTS Members;
+DROP TABLE IF EXISTS Books;
+DROP TABLE IF EXISTS Authors;
+DROP TABLE IF EXISTS Cities;
+
+CREATE TABLE Cities (
+  CityCode  INTEGER PRIMARY KEY,
+  CityName  TEXT NOT NULL
+);
+INSERT INTO Cities VALUES (1, 'ירכא');
+INSERT INTO Cities VALUES (2, 'כרמיאל');
+INSERT INTO Cities VALUES (3, 'עכו');
+INSERT INTO Cities VALUES (4, 'מעלות');
+INSERT INTO Cities VALUES (5, 'חיפה');
+
+CREATE TABLE Authors (
+  AuthorCode       INTEGER PRIMARY KEY,
+  AuthorFirstName  TEXT NOT NULL,
+  AuthorLastName   TEXT NOT NULL,
+  Country          TEXT
+);
+INSERT INTO Authors VALUES (1, 'עמוס',  'עוז',     'ישראל');
+INSERT INTO Authors VALUES (2, 'ג''ואן', 'רולינג',  'בריטניה');
+INSERT INTO Authors VALUES (3, 'נגיב',  'מחפוז',   'מצרים');
+INSERT INTO Authors VALUES (4, 'אגתה',  'כריסטי',  'בריטניה');
+INSERT INTO Authors VALUES (5, 'דויד',  'גרוסמן',  'ישראל');
+INSERT INTO Authors VALUES (6, 'סמי',   'מיכאל',   'ישראל');
+
+CREATE TABLE Books (
+  BookCode    INTEGER PRIMARY KEY,
+  Title       TEXT NOT NULL,
+  WriterCode  INTEGER REFERENCES Authors(AuthorCode),
+  Genre       TEXT,
+  PubYear     INTEGER,
+  Pages       INTEGER
+);
+INSERT INTO Books VALUES (201, 'סיפור על אהבה וחושך',     1, 'ביוגרפיה', 2002, 520);
+INSERT INTO Books VALUES (202, 'הארי פוטר ואבן החכמים',   2, 'פנטזיה',   1997, 320);
+INSERT INTO Books VALUES (203, 'הארי פוטר וחדר הסודות',   2, 'פנטזיה',   1998, 350);
+INSERT INTO Books VALUES (204, 'סמטת מדק',               3, 'רומן',     1947, 280);
+INSERT INTO Books VALUES (205, 'רצח באוריינט אקספרס',     4, 'מתח',      1934, 250);
+INSERT INTO Books VALUES (206, 'ואז לא נשאר אף אחד',      4, 'מתח',      1939, 260);
+INSERT INTO Books VALUES (207, 'סוס אחד נכנס לבר',        5, 'רומן',     2014, 200);
+INSERT INTO Books VALUES (208, 'אשה בורחת מבשורה',       5, 'רומן',     2008, 640);
+INSERT INTO Books VALUES (209, 'מיכאל שלי',              1, 'רומן',     1968, 290);
+INSERT INTO Books VALUES (210, 'ספר הדקדוק הפנימי',       5, 'רומן',     1991, 380);
+
+CREATE TABLE Members (
+  MemberId   INTEGER PRIMARY KEY,
+  FirstName  TEXT NOT NULL,
+  LastName   TEXT NOT NULL,
+  TownCode   INTEGER REFERENCES Cities(CityCode),
+  BirthYear  INTEGER
+);
+INSERT INTO Members VALUES (501, 'ראניה',  'חלבי',   1, 2008);
+INSERT INTO Members VALUES (502, 'עידו',   'כהן',    2, 2007);
+INSERT INTO Members VALUES (503, 'מוחמד',  'עזאם',   1, 2009);
+INSERT INTO Members VALUES (504, 'נועה',   'לוי',    3, 2008);
+INSERT INTO Members VALUES (505, 'אליאס',  'חורי',   3, 2006);
+INSERT INTO Members VALUES (506, 'יעל',    'פרץ',    2, 2009);
+INSERT INTO Members VALUES (507, 'סאמי',   'קבלאן',  4, 2007);
+INSERT INTO Members VALUES (508, 'הילה',   'כהן',    5, 2008);
+INSERT INTO Members VALUES (509, 'אמיר',   'חלבי',   1, 2006);
+INSERT INTO Members VALUES (510, 'רותם',   'גבאי',   4, 2009);
+
+CREATE TABLE Loans (
+  LoanId      INTEGER PRIMARY KEY,
+  ReaderId    INTEGER REFERENCES Members(MemberId),
+  BookNum     INTEGER REFERENCES Books(BookCode),
+  LoanDate    TEXT NOT NULL,          -- 'YYYY-MM-DD'
+  ReturnDate  TEXT                    -- NULL = not returned yet
+);
+INSERT INTO Loans VALUES ( 1, 501, 202, '2025-09-01', '2025-09-15');
+INSERT INTO Loans VALUES ( 2, 501, 203, '2025-09-16', NULL);
+INSERT INTO Loans VALUES ( 3, 502, 205, '2025-09-03', '2025-09-20');
+INSERT INTO Loans VALUES ( 4, 503, 202, '2025-09-05', '2025-09-25');
+INSERT INTO Loans VALUES ( 5, 504, 207, '2025-09-07', NULL);
+INSERT INTO Loans VALUES ( 6, 505, 204, '2025-09-10', '2025-09-30');
+INSERT INTO Loans VALUES ( 7, 502, 206, '2025-09-21', NULL);
+INSERT INTO Loans VALUES ( 8, 506, 202, '2025-09-26', NULL);
+INSERT INTO Loans VALUES ( 9, 507, 209, '2025-10-01', '2025-10-12');
+INSERT INTO Loans VALUES (10, 501, 205, '2025-10-02', NULL);
+INSERT INTO Loans VALUES (11, 508, 201, '2025-10-03', NULL);
+INSERT INTO Loans VALUES (12, 505, 204, '2025-10-05', NULL);
+INSERT INTO Loans VALUES (13, 503, 207, '2025-10-06', '2025-10-20');
+INSERT INTO Loans VALUES (14, 509, 208, '2025-10-08', NULL);
+
+SELECT COUNT(*) AS loans_loaded FROM Loans;
+```
+
+</details>
+
+
+<div dir="rtl">
+
+**שאלה 1.** 🟢 ✍️ הוסיפו קורא חדש: 511, 'ג'ני', 'נסאר', עיר 3, נולדה ב‑2008. _(🔍 משנה נתונים)_
+
+</div>
+
+<div dir="rtl">
+
+**שאלה 2.** 🟢 ✍️ עדכנו שההשאלה 5 הוחזרה ב‑'2025-10-15'. _(🔍 משנה נתונים)_
+
+</div>
+
+<div dir="rtl">
+
+**שאלה 3.** 🟡 ✍️ הגדילו ב‑10 את מספר העמודים של כל ספרי המתח. _(🔍 משנה נתונים)_
+
+</div>
+
+<div dir="rtl">
+
+**שאלה 4.** 🟡 ✍️ מחקו את כל ההשאלות שהוחזרו. _(🔍 משנה נתונים)_
+
+</div>
+
+<div dir="rtl">
+
+**שאלה 5.** 🔴 ✍️ מחקו את כל ההשאלות של הקוראים מעכו. _(🔍 משנה נתונים)_
+
+</div>
+
+<div dir="rtl">
+
+**שאלה 6.** 🔴 🧩 **השלימו את הפקודה:** השלימו את הפקודה שמשנה את הז'אנר של הספר 210 ל‑'מסה'.
+
+</div>
+
+```sql
+______ Books
+___    _____ = 'מסה'
+_____  ________ = 210;
+```
+
+<div dir="rtl">
+
+---
+
+## 8️⃣ תרגול נוסף — 🏫 בית הספר "עתיד"
 
 > בסיס נתונים אחר, שאתם לא מכירים — בדיוק כמו בבחינה. [📋 הטבלאות והקוד של בית הספר "עתיד"](../../databases/school/)
 
@@ -486,6 +756,14 @@ SELECT COUNT(*) FROM Lockers;
 4. 🟡 מחקו את כל ההיעדרויות המאושרות. _(🔍 משנה נתונים — בדקו עם SELECT)_
 
 5. 🔴 פקטור: הוסיפו 5 נקודות לכל הציונים במקצוע 16, אבל לא מעבר ל‑100 (רמז: `MIN(Grade + 5, 100)`). _(🔍 משנה נתונים — בדקו עם SELECT)_
+
+6. 🟢 הוסיפו מקצוע חדש: 18, 'רובוטיקה', מורה 3, 2 שעות. _(🔍 משנה נתונים — בדקו עם SELECT)_
+
+7. 🟡 שבצו את הכיתה 104 לחדר 22. _(🔍 משנה נתונים — בדקו עם SELECT)_
+
+8. 🟡 תנו ציון 0 לכל מי שלא נבחן (Grade הוא NULL). _(🔍 משנה נתונים — בדקו עם SELECT)_
+
+9. 🔴 מחקו את כל ההיעדרויות של תלמידי הכיתה 104. _(🔍 משנה נתונים — בדקו עם SELECT)_
 
 </div>
 

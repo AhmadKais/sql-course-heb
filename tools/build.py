@@ -289,6 +289,18 @@ def build_databases_index():
 # Lesson pages
 # --------------------------------------------------------------------------
 LEVEL = {1: "🟢", 2: "🟡", 3: "🔴"}
+KIND = {"write": "✍️", "output": "🔎 **איזו שאילתה הציגה את הטבלה?**",
+        "value": "🧮 **השלימו את הערכים:**", "complete": "🧩 **השלימו את הפקודה:**"}
+
+
+def tables_details(dbname: str) -> str:
+    conn = load(dbname)
+    parts = [f'<details>\n<summary>📋 <b>הטבלאות של {DBS[dbname]["title"]}</b> (לחצו לפתיחה)</summary>\n\n<div dir="rtl">\n']
+    for t in tables_of(conn):
+        parts.append(f"**`{t}`**\n\n{data_table(conn, t)}\n")
+    conn.close()
+    parts.append("</div>\n\n</details>\n")
+    return "\n".join(parts)
 
 
 def load_lessons():
@@ -298,7 +310,15 @@ def load_lessons():
         spec = importlib.util.spec_from_file_location(f.stem, f)
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)
-        lessons.append(mod.LESSON)
+        lesson = mod.LESSON
+        # optional extra practice for this lesson: more_NN.py with extend(LESSON)
+        more = f.parent / f"more_{f.stem[1:3]}.py"
+        if more.exists():
+            spec = importlib.util.spec_from_file_location(more.stem, more)
+            mmod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mmod)
+            mmod.extend(lesson)
+        lessons.append(lesson)
     return lessons
 
 
@@ -368,8 +388,34 @@ def build_lesson(lessons, i):
         ex_head.append(f"{n}. {LEVEL[x['level']]} {x['q']}{hint}\n")
     out.append(rtl("\n".join(ex_head)))
 
+    exam_db = L.get("exam_db")
+    if L.get("exam"):
+        eh = [f"---\n\n## {sec + 1}️⃣ 🎓 בסגנון הבחינה — {DBS[exam_db]['emoji']} {DBS[exam_db]['title']}\n",
+              "> שאלות בפורמט של שאלון 735911: שמות שדות ייחודיים, צירוף עם פסיק + `WHERE`, "
+              "השלמת ערכים, זיהוי שאילתה לפי פלט והשלמת פקודות. "
+              f"[📋 הטבלאות והקוד](../../databases/{exam_db}/)\n"]
+        out.append(rtl("\n".join(eh)))
+        out.append(tables_details(exam_db) + "\n")
+        out.append(load_details(exam_db).replace("לחצו כאן לקוד", "הקוד") + "\n")
+        for n, x in enumerate(L["exam"], 1):
+            h, r = execute(exam_db, x["sql"], x.get("check"))
+            kind = x.get("kind", "write")
+            hint = ""
+            if kind == "write":
+                if x.get("check"):
+                    hint = " _(🔍 משנה נתונים)_"
+                elif r is not None:
+                    hint = f" _(🔢 {rows_word(len(r))})_"
+            out.append(rtl(f"**שאלה {n}.** {LEVEL[x['level']]} {KIND[kind]} {x['q']}{hint}"))
+            if kind == "output":
+                out.append(rtl(md_table(h, r) + "\n"))
+            elif kind == "value":
+                out.append(code(x["sql"]))
+            elif kind == "complete":
+                out.append(code(x["given"]))
+
     if L.get("extra"):
-        xh = [f"---\n\n## {sec + 1}️⃣ תרגול נוסף — {DBS[extra_db]['emoji']} {DBS[extra_db]['title']}\n",
+        xh = [f"---\n\n## {sec + 2 if L.get('exam') else sec + 1}️⃣ תרגול נוסף — {DBS[extra_db]['emoji']} {DBS[extra_db]['title']}\n",
               f"> בסיס נתונים אחר, שאתם לא מכירים — בדיוק כמו בבחינה. "
               f"[📋 הטבלאות והקוד של {DBS[extra_db]['title']}](../../databases/{extra_db}/)\n"]
         for n, x in enumerate(L["extra"], 1):
@@ -414,17 +460,20 @@ def build_lesson(lessons, i):
             s.append(rtl(txt))
 
     sol_section(f"✏️ תרגילים — {DBS[db]['emoji']} {DBS[db]['title']}", L["exercises"], db)
+    if L.get("exam"):
+        sol_section(f"🎓 בסגנון הבחינה — {DBS[exam_db]['emoji']} {DBS[exam_db]['title']}", L["exam"], exam_db)
     if L.get("extra"):
         sol_section(f"🏠 תרגול נוסף — {DBS[extra_db]['emoji']} {DBS[extra_db]['title']}", L["extra"], extra_db)
     s.append(rtl(f"---\n\n[⬅️ חזרה לשיעור](README.md) · {lesson_nav(lessons, i, 'solutions.md')}"))
     (lesson_dir / "solutions.md").write_text("\n".join(s), encoding="utf-8")
     return dict(num=num, slug=L["slug"], title=L["title"], goal=L["goal"],
-                n_ex=len(L["exercises"]) + len(L.get("extra", [])) + len(L.get("predict", [])))
+                n_ex=len(L["exercises"]) + len(L.get("extra", [])) + len(L.get("predict", []))
+                + len(L.get("exam", [])))
 
 
 def build_lessons_index(meta):
     lines = ["# 📚 השיעורים\n", "[🏠 לדף הראשי](../README.md)\n",
-             "> כל שיעור: **קוד לטעינת בסיס הנתונים ← הטבלאות ← תחביר קצר ← דוגמאות פתורות ← שאלות ותרגילים ← פתרונות עם פלט אמיתי.**\n",
+             "> כל שיעור: **קוד לטעינת בסיס הנתונים ← הטבלאות ← תחביר קצר ← דוגמאות פתורות ← שאלות ותרגילים ← 🎓 שאלות בסגנון הבחינה ← פתרונות עם פלט אמיתי.**\n",
              "| # | השיעור | מה מתרגלים | שאלות | |", "|:-:|---|---|:-:|:-:|"]
     for m in meta:
         lines.append(f"| {int(m['num'])} | [{m['title']}]({m['slug']}/) | {m['goal']} | {m['n_ex']} | [✅ פתרונות]({m['slug']}/solutions.md) |")

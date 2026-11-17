@@ -392,6 +392,36 @@ GROUP BY Lessons;
 
 <div dir="rtl">
 
+**שאלה 3.** מה הערך?
+
+</div>
+
+```sql
+CREATE VIEW Q1 AS
+SELECT   RegPupil, COUNT(*) AS Lessons, SUM(MonthlyFee) AS Total
+FROM     Registrations
+GROUP BY RegPupil;
+
+SELECT MAX(Total) FROM Q1;
+```
+
+<div dir="rtl">
+
+**שאלה 4.** מה המספר?
+
+</div>
+
+```sql
+CREATE VIEW Q1 AS
+SELECT   RegPupil, COUNT(*) AS Lessons, SUM(MonthlyFee) AS Total
+FROM     Registrations
+GROUP BY RegPupil;
+
+SELECT COUNT(*) FROM Q1 WHERE Lessons = 1;
+```
+
+<div dir="rtl">
+
 ---
 
 ## 6️⃣ תרגילים — 🎵 בית הספר למוזיקה "צלילים"
@@ -412,13 +442,233 @@ GROUP BY Lessons;
 
 7. 🔴 בעזרת VIEW: כמה תלמידים לומדים בכל משפחת כלים? (VIEW שמחבר רישום למשפחת כלי, ועליו `GROUP BY`) _(🔢 3 שורות)_
 
+8. 🟢 צרו VIEW בשם `Expensive` — המורים שהמחיר שלהם 130 ומעלה. הציגו ממנו רק את השמות. _(🔢 3 שורות)_
+
+9. 🟡 בעזרת Q1 (מספר שיעורים וסך תשלום לכל תלמיד): התלמידים שלומדים 2 שיעורים. _(🔢 4 שורות)_
+
+10. 🟡 בעזרת Q1: שמות התלמידים שמשלמים פחות מ‑350, ממוינים לפי הסכום. _(🔢 4 שורות)_
+
+11. 🟡 צרו VIEW בשם `CityCount` — מספר התלמידים בכל עיר (`HomeTown`, `N`). הציגו את שם העיר עם הכי הרבה תלמידים. _(🔢 2 שורות)_
+
+12. 🔴 צרו VIEW בשם `TeacherIncome` — לכל מורה (`RegTeacher`) סך התשלומים (`Income`). הציגו את המורים שההכנסה שלהם מעל הממוצע של ההכנסות. _(🔢 3 שורות)_
+
+13. 🔴 בעזרת Q1: כמה תלמידים משלמים יותר מ‑500, וכמה — 500 או פחות? (קבצו לפי `CASE`) _(🔢 2 שורות)_
+
 </div>
 
 <div dir="rtl">
 
 ---
 
-## 7️⃣ תרגול נוסף — 🏫 בית הספר "עתיד"
+## 7️⃣ 🎓 בסגנון הבחינה — ☕ בית הקפה "אל‑בלד"
+
+> שאלות בפורמט של שאלון 735911: שמות שדות ייחודיים, צירוף עם פסיק + `WHERE`, השלמת ערכים, זיהוי שאילתה לפי פלט והשלמת פקודות. [📋 הטבלאות והקוד](../../databases/cafe/)
+
+</div>
+
+<details>
+<summary>📋 <b>הטבלאות של בית הקפה "אל‑בלד"</b> (לחצו לפתיחה)</summary>
+
+<div dir="rtl">
+
+**`Cities`**
+
+| CityCode 🔑 | CityName |
+|---|---|
+| 1 | ירכא |
+| 2 | עכו |
+| 3 | כרמיאל |
+| 4 | נהריה |
+| 5 | שפרעם |
+
+**`Workers`**
+
+| WorkerNum 🔑 | WorkerName | WorkerCity 🔗 | StartDate | HourPay | WorkerPhone |
+|---|---|---|---|---|---|
+| 1 | סאלי חדאד | 2 | 2022-03-01 | 42 | 050-1111111 |
+| 2 | יובל נחום | 1 | 2023-07-15 | 38 | *NULL* |
+| 3 | אמיר טאהא | 2 | 2021-11-10 | 50 | 054-3333333 |
+| 4 | מיכל שרון | 4 | 2024-01-20 | 36 | 052-4444444 |
+| 5 | רים עבאס | 1 | 2020-05-05 | 55 | *NULL* |
+| 6 | תום בראל | 5 | 2023-09-01 | 38 | 053-6666666 |
+
+**`Dishes`**
+
+| DishCode 🔑 | DishName | DishKind | DishPrice |
+|---|---|---|---|
+| 10 | חומוס | מנה ראשונה | 28 |
+| 20 | סלט ירקות | מנה ראשונה | 32 |
+| 30 | שניצל | מנה עיקרית | 56 |
+| 40 | פסטה | מנה עיקרית | 48 |
+| 50 | קנאפה | קינוח | 30 |
+| 60 | עוגת גבינה | קינוח | 26 |
+| 70 | לימונדה | שתייה | 14 |
+| 80 | קפה | שתייה | 12 |
+
+**`Orders`**
+
+| OrderNum 🔑 | CustName | OrderDish 🔗 | OrderWorker 🔗 | OrderDate | Guests |
+|---|---|---|---|---|---|
+| 101 | דנה לוי | 30 | 1 | 2026-02-04 | 2 |
+| 102 | עומר חורי | 10 | 3 | 2026-02-18 | 4 |
+| 103 | נועה כץ | 40 | 2 | 2026-03-05 | 3 |
+| 104 | סמיר דיב | 30 | 1 | 2026-03-22 | 6 |
+| 105 | ליאת בר | 50 | 4 | 2026-04-09 | 2 |
+| 106 | ראמי סעיד | 20 | 3 | 2026-04-27 | 5 |
+| 107 | יעל שגיא | 30 | 5 | 2026-05-11 | 2 |
+| 108 | חנאן זועבי | 70 | 6 | 2026-05-30 | 8 |
+| 109 | איתי פלד | 40 | 2 | 2026-06-14 | 3 |
+| 110 | מאיה לוי | 60 | 4 | 2026-06-28 | 4 |
+| 111 | ואיל נסאר | 30 | 5 | 2026-07-07 | 2 |
+| 112 | שני אדרי | 80 | 6 | 2026-07-21 | 10 |
+
+</div>
+
+</details>
+
+
+<details>
+<summary>📥 <b>הקוד שבונה את בסיס הנתונים ☕ בית הקפה "אל‑בלד"</b> — מעתיקים הכול ומדביקים ב‑OneCompiler</summary>
+
+```sql
+-- ============================================================
+--  בית הקפה "אל-בלד"  ·  בסיס נתונים לבחינת מתכונת (תרגול)
+--  הדביקו את כל הקובץ ב-OneCompiler (SQLite), לחצו Run, וכתבו את השאילתות מתחת.
+--  לכל שדה בבסיס הנתונים שם ייחודי, ולכן אין צורך בשם הטבלה לפניו.
+-- ============================================================
+DROP TABLE IF EXISTS Orders;
+DROP TABLE IF EXISTS Dishes;
+DROP TABLE IF EXISTS Workers;
+DROP TABLE IF EXISTS Cities;
+
+-- ---------- טבלת עזר: ערים ----------
+CREATE TABLE Cities (
+  CityCode  INTEGER PRIMARY KEY,
+  CityName  TEXT NOT NULL
+);
+INSERT INTO Cities VALUES (1, 'ירכא');
+INSERT INTO Cities VALUES (2, 'עכו');
+INSERT INTO Cities VALUES (3, 'כרמיאל');
+INSERT INTO Cities VALUES (4, 'נהריה');
+INSERT INTO Cities VALUES (5, 'שפרעם');
+
+-- ---------- טבלה ראשית: עובדים ----------
+CREATE TABLE Workers (
+  WorkerNum    INTEGER PRIMARY KEY,
+  WorkerName   TEXT NOT NULL,
+  WorkerCity   INTEGER REFERENCES Cities(CityCode),
+  StartDate    TEXT NOT NULL,
+  HourPay      INTEGER NOT NULL,     -- שכר לשעה בש"ח
+  WorkerPhone  TEXT                  -- NULL = לא רשום טלפון
+);
+INSERT INTO Workers VALUES (1, 'סאלי חדאד',  2, '2022-03-01', 42, '050-1111111');
+INSERT INTO Workers VALUES (2, 'יובל נחום',  1, '2023-07-15', 38, NULL);
+INSERT INTO Workers VALUES (3, 'אמיר טאהא',  2, '2021-11-10', 50, '054-3333333');
+INSERT INTO Workers VALUES (4, 'מיכל שרון',  4, '2024-01-20', 36, '052-4444444');
+INSERT INTO Workers VALUES (5, 'רים עבאס',   1, '2020-05-05', 55, NULL);
+INSERT INTO Workers VALUES (6, 'תום בראל',   5, '2023-09-01', 38, '053-6666666');
+
+-- ---------- טבלה ראשית: מנות ----------
+CREATE TABLE Dishes (
+  DishCode   INTEGER PRIMARY KEY,
+  DishName   TEXT NOT NULL,
+  DishKind   TEXT NOT NULL,
+  DishPrice  INTEGER NOT NULL        -- מחיר המנה בש"ח
+);
+INSERT INTO Dishes VALUES (10, 'חומוס',      'מנה ראשונה', 28);
+INSERT INTO Dishes VALUES (20, 'סלט ירקות',  'מנה ראשונה', 32);
+INSERT INTO Dishes VALUES (30, 'שניצל',      'מנה עיקרית', 56);
+INSERT INTO Dishes VALUES (40, 'פסטה',       'מנה עיקרית', 48);
+INSERT INTO Dishes VALUES (50, 'קנאפה',      'קינוח',      30);
+INSERT INTO Dishes VALUES (60, 'עוגת גבינה', 'קינוח',      26);
+INSERT INTO Dishes VALUES (70, 'לימונדה',    'שתייה',      14);
+INSERT INTO Dishes VALUES (80, 'קפה',        'שתייה',      12);
+
+-- ---------- טבלה ראשית: הזמנות ----------
+CREATE TABLE Orders (
+  OrderNum     INTEGER PRIMARY KEY,
+  CustName     TEXT NOT NULL,
+  OrderDish    INTEGER REFERENCES Dishes(DishCode),
+  OrderWorker  INTEGER REFERENCES Workers(WorkerNum),
+  OrderDate    TEXT NOT NULL,
+  Guests       INTEGER NOT NULL      -- כמה סועדים ישבו בשולחן
+);
+INSERT INTO Orders VALUES (101, 'דנה לוי',    30, 1, '2026-02-04',  2);
+INSERT INTO Orders VALUES (102, 'עומר חורי',  10, 3, '2026-02-18',  4);
+INSERT INTO Orders VALUES (103, 'נועה כץ',    40, 2, '2026-03-05',  3);
+INSERT INTO Orders VALUES (104, 'סמיר דיב',   30, 1, '2026-03-22',  6);
+INSERT INTO Orders VALUES (105, 'ליאת בר',    50, 4, '2026-04-09',  2);
+INSERT INTO Orders VALUES (106, 'ראמי סעיד',  20, 3, '2026-04-27',  5);
+INSERT INTO Orders VALUES (107, 'יעל שגיא',   30, 5, '2026-05-11',  2);
+INSERT INTO Orders VALUES (108, 'חנאן זועבי', 70, 6, '2026-05-30',  8);
+INSERT INTO Orders VALUES (109, 'איתי פלד',   40, 2, '2026-06-14',  3);
+INSERT INTO Orders VALUES (110, 'מאיה לוי',   60, 4, '2026-06-28',  4);
+INSERT INTO Orders VALUES (111, 'ואיל נסאר',  30, 5, '2026-07-07',  2);
+INSERT INTO Orders VALUES (112, 'שני אדרי',   80, 6, '2026-07-21', 10);
+
+SELECT COUNT(*) AS orders_loaded FROM Orders;
+```
+
+</details>
+
+
+<div dir="rtl">
+
+**שאלה 1.** 🟢 ✍️ נתונה השאילתה השמורה Q1 (לכל עובד: מספר הזמנות וסך הסועדים). הציגו את כל Q1. _(🔢 6 שורות)_
+
+</div>
+
+<div dir="rtl">
+
+**שאלה 2.** 🟡 ✍️ בעזרת Q1: שם העובד ומספר ההזמנות שלו. _(🔢 6 שורות)_
+
+</div>
+
+<div dir="rtl">
+
+**שאלה 3.** 🟡 ✍️ בעזרת Q1: העובד ששירת הכי הרבה סועדים (שם). _(🔢 שורה אחת)_
+
+</div>
+
+<div dir="rtl">
+
+**שאלה 4.** 🟡 🧮 **השלימו את הערכים:** השלימו את הערך.
+
+</div>
+
+```sql
+CREATE VIEW Q1 AS
+SELECT   OrderWorker, COUNT(*) AS Orders, SUM(Guests) AS AllGuests
+FROM     Orders
+GROUP BY OrderWorker;
+
+SELECT AVG(Orders) FROM Q1;
+```
+
+<div dir="rtl">
+
+**שאלה 5.** 🔴 ✍️ צרו שאילתה שמורה `DishCount` (לכל מנה כמה פעמים הוזמנה), והציגו את שמות המנות שהוזמנו יותר מפעם אחת. _(🔢 2 שורות)_
+
+</div>
+
+<div dir="rtl">
+
+**שאלה 6.** 🔴 🧩 **השלימו את הפקודה:** השלימו את הפקודה שיוצרת את Q1.
+
+</div>
+
+```sql
+______ ____ Q1 __
+SELECT   OrderWorker, _____(*) AS Orders, ___(Guests) AS AllGuests
+FROM     Orders
+_____ __ OrderWorker;
+```
+
+<div dir="rtl">
+
+---
+
+## 8️⃣ תרגול נוסף — 🏫 בית הספר "עתיד"
 
 > בסיס נתונים אחר, שאתם לא מכירים — בדיוק כמו בבחינה. [📋 הטבלאות והקוד של בית הספר "עתיד"](../../databases/school/)
 
@@ -427,6 +677,12 @@ GROUP BY Lessons;
 2. 🔴 בעזרת `StudentAvg`: שמות התלמידים שהממוצע שלהם גבוה מממוצע הממוצעים. _(🔢 9 שורות)_
 
 3. 🔴 צרו VIEW בשם `ClassSize` — לכל כיתה מספר התלמידים. הציגו את שם הכיתה הגדולה ביותר. _(🔢 2 שורות)_
+
+4. 🟢 צרו VIEW בשם `Girls` עם כל התלמידות, והציגו כמה יש. _(🔢 שורה אחת)_
+
+5. 🟡 צרו VIEW בשם `AbsCount` — מספר ההיעדרויות לכל תלמיד. הציגו שמות התלמידים עם 2 היעדרויות ומעלה. _(🔢 4 שורות)_
+
+6. 🔴 צרו VIEW בשם `CourseAvg` — הממוצע של כל מקצוע במחצית 1. הציגו את שם המקצוע עם הממוצע הנמוך ביותר. _(🔢 שורה אחת)_
 
 </div>
 

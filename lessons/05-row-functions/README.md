@@ -384,6 +384,28 @@ WHERE  LENGTH(TeacherName) = 9;
 
 <div dir="rtl">
 
+**שאלה 4.** מה שני הערכים?
+
+</div>
+
+```sql
+SELECT LENGTH('פסנתר'), SUBSTR('050-1234567', 5, 3);
+```
+
+<div dir="rtl">
+
+**שאלה 5.** כמה פעמים יופיע 'כן'?
+
+</div>
+
+```sql
+SELECT InstName,
+       CASE WHEN InstFamily = 'מיתר' THEN 'כן' ELSE 'לא' END AS Strings
+FROM   Instruments;
+```
+
+<div dir="rtl">
+
 ---
 
 ## 6️⃣ תרגילים — 🎵 בית הספר למוזיקה "צלילים"
@@ -410,13 +432,246 @@ WHERE  LENGTH(TeacherName) = 9;
 
 10. 🔴 הציגו את מספר הטלפון של המורים בלי המקף (רמז: `REPLACE(text, '-', '')`). _(🔢 4 שורות)_
 
+11. 🟢 הציגו לכל מורה את שמו ואת המחיר ל‑90 דקות (שעה וחצי), בשם `Lesson90`. _(🔢 6 שורות)_
+
+12. 🟢 הציגו את שם הכלי ואת משפחתו בעמודה אחת, למשל `פסנתר (קלידים)`. _(🔢 6 שורות)_
+
+13. 🟡 הציגו את 3 הספרות האחרונות של הטלפון של כל מורה (רמז: `SUBSTR(TeacherPhone, -3)`). _(🔢 4 שורות)_
+
+14. 🟡 הציגו לכל רישום את התשלום החודשי כולל מע"מ 18%, מעוגל לשקל, בשם `WithVat`. _(🔢 14 שורות)_
+
+15. 🟡 הציגו לכל תלמיד את שמו ואת מספר האותיות בשם המלא (בלי רווח), בשם `Letters`. _(🔢 10 שורות)_
+
+16. 🔴 הציגו לכל לוקר: 'קרקע' לקומה 1, 'עליונה' לקומה 2. _(🔢 5 שורות)_
+
+17. 🔴 הציגו לכל רישום את קוד התלמיד ו'ותיק' אם נרשם לפני 2024, 'חדש' אם ב‑2024, ו'חדש מאוד' אם ב‑2025. _(🔢 14 שורות)_
+
 </div>
 
 <div dir="rtl">
 
 ---
 
-## 7️⃣ תרגול נוסף — 🏫 בית הספר "עתיד"
+## 7️⃣ 🎓 בסגנון הבחינה — ☕ בית הקפה "אל‑בלד"
+
+> שאלות בפורמט של שאלון 735911: שמות שדות ייחודיים, צירוף עם פסיק + `WHERE`, השלמת ערכים, זיהוי שאילתה לפי פלט והשלמת פקודות. [📋 הטבלאות והקוד](../../databases/cafe/)
+
+</div>
+
+<details>
+<summary>📋 <b>הטבלאות של בית הקפה "אל‑בלד"</b> (לחצו לפתיחה)</summary>
+
+<div dir="rtl">
+
+**`Cities`**
+
+| CityCode 🔑 | CityName |
+|---|---|
+| 1 | ירכא |
+| 2 | עכו |
+| 3 | כרמיאל |
+| 4 | נהריה |
+| 5 | שפרעם |
+
+**`Workers`**
+
+| WorkerNum 🔑 | WorkerName | WorkerCity 🔗 | StartDate | HourPay | WorkerPhone |
+|---|---|---|---|---|---|
+| 1 | סאלי חדאד | 2 | 2022-03-01 | 42 | 050-1111111 |
+| 2 | יובל נחום | 1 | 2023-07-15 | 38 | *NULL* |
+| 3 | אמיר טאהא | 2 | 2021-11-10 | 50 | 054-3333333 |
+| 4 | מיכל שרון | 4 | 2024-01-20 | 36 | 052-4444444 |
+| 5 | רים עבאס | 1 | 2020-05-05 | 55 | *NULL* |
+| 6 | תום בראל | 5 | 2023-09-01 | 38 | 053-6666666 |
+
+**`Dishes`**
+
+| DishCode 🔑 | DishName | DishKind | DishPrice |
+|---|---|---|---|
+| 10 | חומוס | מנה ראשונה | 28 |
+| 20 | סלט ירקות | מנה ראשונה | 32 |
+| 30 | שניצל | מנה עיקרית | 56 |
+| 40 | פסטה | מנה עיקרית | 48 |
+| 50 | קנאפה | קינוח | 30 |
+| 60 | עוגת גבינה | קינוח | 26 |
+| 70 | לימונדה | שתייה | 14 |
+| 80 | קפה | שתייה | 12 |
+
+**`Orders`**
+
+| OrderNum 🔑 | CustName | OrderDish 🔗 | OrderWorker 🔗 | OrderDate | Guests |
+|---|---|---|---|---|---|
+| 101 | דנה לוי | 30 | 1 | 2026-02-04 | 2 |
+| 102 | עומר חורי | 10 | 3 | 2026-02-18 | 4 |
+| 103 | נועה כץ | 40 | 2 | 2026-03-05 | 3 |
+| 104 | סמיר דיב | 30 | 1 | 2026-03-22 | 6 |
+| 105 | ליאת בר | 50 | 4 | 2026-04-09 | 2 |
+| 106 | ראמי סעיד | 20 | 3 | 2026-04-27 | 5 |
+| 107 | יעל שגיא | 30 | 5 | 2026-05-11 | 2 |
+| 108 | חנאן זועבי | 70 | 6 | 2026-05-30 | 8 |
+| 109 | איתי פלד | 40 | 2 | 2026-06-14 | 3 |
+| 110 | מאיה לוי | 60 | 4 | 2026-06-28 | 4 |
+| 111 | ואיל נסאר | 30 | 5 | 2026-07-07 | 2 |
+| 112 | שני אדרי | 80 | 6 | 2026-07-21 | 10 |
+
+</div>
+
+</details>
+
+
+<details>
+<summary>📥 <b>הקוד שבונה את בסיס הנתונים ☕ בית הקפה "אל‑בלד"</b> — מעתיקים הכול ומדביקים ב‑OneCompiler</summary>
+
+```sql
+-- ============================================================
+--  בית הקפה "אל-בלד"  ·  בסיס נתונים לבחינת מתכונת (תרגול)
+--  הדביקו את כל הקובץ ב-OneCompiler (SQLite), לחצו Run, וכתבו את השאילתות מתחת.
+--  לכל שדה בבסיס הנתונים שם ייחודי, ולכן אין צורך בשם הטבלה לפניו.
+-- ============================================================
+DROP TABLE IF EXISTS Orders;
+DROP TABLE IF EXISTS Dishes;
+DROP TABLE IF EXISTS Workers;
+DROP TABLE IF EXISTS Cities;
+
+-- ---------- טבלת עזר: ערים ----------
+CREATE TABLE Cities (
+  CityCode  INTEGER PRIMARY KEY,
+  CityName  TEXT NOT NULL
+);
+INSERT INTO Cities VALUES (1, 'ירכא');
+INSERT INTO Cities VALUES (2, 'עכו');
+INSERT INTO Cities VALUES (3, 'כרמיאל');
+INSERT INTO Cities VALUES (4, 'נהריה');
+INSERT INTO Cities VALUES (5, 'שפרעם');
+
+-- ---------- טבלה ראשית: עובדים ----------
+CREATE TABLE Workers (
+  WorkerNum    INTEGER PRIMARY KEY,
+  WorkerName   TEXT NOT NULL,
+  WorkerCity   INTEGER REFERENCES Cities(CityCode),
+  StartDate    TEXT NOT NULL,
+  HourPay      INTEGER NOT NULL,     -- שכר לשעה בש"ח
+  WorkerPhone  TEXT                  -- NULL = לא רשום טלפון
+);
+INSERT INTO Workers VALUES (1, 'סאלי חדאד',  2, '2022-03-01', 42, '050-1111111');
+INSERT INTO Workers VALUES (2, 'יובל נחום',  1, '2023-07-15', 38, NULL);
+INSERT INTO Workers VALUES (3, 'אמיר טאהא',  2, '2021-11-10', 50, '054-3333333');
+INSERT INTO Workers VALUES (4, 'מיכל שרון',  4, '2024-01-20', 36, '052-4444444');
+INSERT INTO Workers VALUES (5, 'רים עבאס',   1, '2020-05-05', 55, NULL);
+INSERT INTO Workers VALUES (6, 'תום בראל',   5, '2023-09-01', 38, '053-6666666');
+
+-- ---------- טבלה ראשית: מנות ----------
+CREATE TABLE Dishes (
+  DishCode   INTEGER PRIMARY KEY,
+  DishName   TEXT NOT NULL,
+  DishKind   TEXT NOT NULL,
+  DishPrice  INTEGER NOT NULL        -- מחיר המנה בש"ח
+);
+INSERT INTO Dishes VALUES (10, 'חומוס',      'מנה ראשונה', 28);
+INSERT INTO Dishes VALUES (20, 'סלט ירקות',  'מנה ראשונה', 32);
+INSERT INTO Dishes VALUES (30, 'שניצל',      'מנה עיקרית', 56);
+INSERT INTO Dishes VALUES (40, 'פסטה',       'מנה עיקרית', 48);
+INSERT INTO Dishes VALUES (50, 'קנאפה',      'קינוח',      30);
+INSERT INTO Dishes VALUES (60, 'עוגת גבינה', 'קינוח',      26);
+INSERT INTO Dishes VALUES (70, 'לימונדה',    'שתייה',      14);
+INSERT INTO Dishes VALUES (80, 'קפה',        'שתייה',      12);
+
+-- ---------- טבלה ראשית: הזמנות ----------
+CREATE TABLE Orders (
+  OrderNum     INTEGER PRIMARY KEY,
+  CustName     TEXT NOT NULL,
+  OrderDish    INTEGER REFERENCES Dishes(DishCode),
+  OrderWorker  INTEGER REFERENCES Workers(WorkerNum),
+  OrderDate    TEXT NOT NULL,
+  Guests       INTEGER NOT NULL      -- כמה סועדים ישבו בשולחן
+);
+INSERT INTO Orders VALUES (101, 'דנה לוי',    30, 1, '2026-02-04',  2);
+INSERT INTO Orders VALUES (102, 'עומר חורי',  10, 3, '2026-02-18',  4);
+INSERT INTO Orders VALUES (103, 'נועה כץ',    40, 2, '2026-03-05',  3);
+INSERT INTO Orders VALUES (104, 'סמיר דיב',   30, 1, '2026-03-22',  6);
+INSERT INTO Orders VALUES (105, 'ליאת בר',    50, 4, '2026-04-09',  2);
+INSERT INTO Orders VALUES (106, 'ראמי סעיד',  20, 3, '2026-04-27',  5);
+INSERT INTO Orders VALUES (107, 'יעל שגיא',   30, 5, '2026-05-11',  2);
+INSERT INTO Orders VALUES (108, 'חנאן זועבי', 70, 6, '2026-05-30',  8);
+INSERT INTO Orders VALUES (109, 'איתי פלד',   40, 2, '2026-06-14',  3);
+INSERT INTO Orders VALUES (110, 'מאיה לוי',   60, 4, '2026-06-28',  4);
+INSERT INTO Orders VALUES (111, 'ואיל נסאר',  30, 5, '2026-07-07',  2);
+INSERT INTO Orders VALUES (112, 'שני אדרי',   80, 6, '2026-07-21', 10);
+
+SELECT COUNT(*) AS orders_loaded FROM Orders;
+```
+
+</details>
+
+
+<div dir="rtl">
+
+**שאלה 1.** 🟢 ✍️ הציגו לכל מנה את שמה ואת המחיר אחרי הנחה של 10%, בשם `Sale`. _(🔢 8 שורות)_
+
+</div>
+
+<div dir="rtl">
+
+**שאלה 2.** 🟢 ✍️ הציגו לכל הזמנה את שם הלקוח ואת אורך השם. _(🔢 12 שורות)_
+
+</div>
+
+<div dir="rtl">
+
+**שאלה 3.** 🟡 ✍️ הציגו לכל עובד את שמו ואת הטלפון, ובמקום NULL — 'אין'. _(🔢 6 שורות)_
+
+</div>
+
+<div dir="rtl">
+
+**שאלה 4.** 🟡 ✍️ הציגו לכל עובד את שמו ואת שנת תחילת העבודה בלבד. _(🔢 6 שורות)_
+
+</div>
+
+<div dir="rtl">
+
+**שאלה 5.** 🟡 🧮 **השלימו את הערכים:** השלימו את הערכים בטבלה שתתקבל.
+
+</div>
+
+```sql
+SELECT DishName,
+       CASE WHEN DishPrice >= 30 THEN 'יקר' ELSE 'זול' END AS Level
+FROM   Dishes
+WHERE  DishKind = 'מנה ראשונה';
+```
+
+<div dir="rtl">
+
+**שאלה 6.** 🔴 🔎 **איזו שאילתה הציגה את הטבלה?**
+
+</div>
+
+<div dir="rtl">
+
+| DishName | TwoDishes |
+|---|---|
+| לימונדה | 28 |
+| קפה | 24 |
+
+</div>
+
+<div dir="rtl">
+
+**שאלה 7.** 🔴 🧩 **השלימו את הפקודה:** השלימו כך שיוצג לכל עובד שכר יומי (8 שעות) מעוגל, בשם `DayPay`.
+
+</div>
+
+```sql
+SELECT WorkerName, _____(HourPay * _) AS ______
+FROM   _______;
+```
+
+<div dir="rtl">
+
+---
+
+## 8️⃣ תרגול נוסף — 🏫 בית הספר "עתיד"
 
 > בסיס נתונים אחר, שאתם לא מכירים — בדיוק כמו בבחינה. [📋 הטבלאות והקוד של בית הספר "עתיד"](../../databases/school/)
 
@@ -427,6 +682,14 @@ WHERE  LENGTH(TeacherName) = 9;
 3. 🟡 הציגו את הטלפון של התלמידים, ובמקום NULL — 'אין'. _(🔢 18 שורות)_
 
 4. 🔴 הציגו כל ציון ולצידו 'עבר' (55 ומעלה), 'נכשל', או 'לא נבחן' (NULL). _(🔢 52 שורות)_
+
+5. 🟢 הציגו לכל מורה את השכר אחרי העלאה של 3%, מעוגל לשקל. _(🔢 7 שורות)_
+
+6. 🟡 הציגו לכל תלמיד את חודש הלידה בלבד (תווים 6–7 של `BirthDate`). _(🔢 17 שורות)_
+
+7. 🟡 הציגו לכל כיתה את שמה ואת מספר החדר, ו'אין חדר' כשהוא חסר. _(🔢 5 שורות)_
+
+8. 🔴 הציגו לכל היעדרות 'מאושרת' או 'לא מאושרת' לפי `Excused`. _(🔢 16 שורות)_
 
 </div>
 

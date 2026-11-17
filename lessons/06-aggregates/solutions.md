@@ -82,6 +82,49 @@ FROM   Pupils;
 
 <div dir="rtl">
 
+### שאלה 4
+
+</div>
+
+```sql
+SELECT COUNT(DISTINCT HomeTown), COUNT(*)
+FROM   Pupils;
+```
+
+<div dir="rtl">
+
+| COUNT(DISTINCT HomeTown) | COUNT(*) |
+|---|---|
+| 4 | 10 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### שאלה 5
+
+</div>
+
+```sql
+SELECT SUM(MonthlyFee)
+FROM   Registrations
+WHERE  RegPupil = 204;
+```
+
+<div dir="rtl">
+
+| SUM(MonthlyFee) |
+|---|
+| 740 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
 ---
 
 ## ✏️ תרגילים — 🎵 בית הספר למוזיקה "צלילים"
@@ -325,6 +368,315 @@ FROM   Registrations;
 
 <div dir="rtl">
 
+### 12. 🟢 כמה כלים יש בטבלת הכלים?
+
+</div>
+
+```sql
+SELECT COUNT(*) AS Instruments
+FROM   Instruments;
+```
+
+<div dir="rtl">
+
+| Instruments |
+|---|
+| 6 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 13. 🟢 מה המחיר לשעה הנמוך ביותר?
+
+</div>
+
+```sql
+SELECT MIN(HourRate) AS MinRate
+FROM   Teachers;
+```
+
+<div dir="rtl">
+
+| MinRate |
+|---|
+| 100 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 14. 🟡 כמה תלמידים גרים בעיר 1?
+
+</div>
+
+```sql
+SELECT COUNT(*) AS Pupils
+FROM   Pupils
+WHERE  HomeTown = 1;
+```
+
+<div dir="rtl">
+
+| Pupils |
+|---|
+| 3 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 15. 🟡 מה התשלום הממוצע ברישומים של שנת 2025?
+
+</div>
+
+```sql
+SELECT AVG(MonthlyFee) AS AvgFee
+FROM   Registrations
+WHERE  RegYear = 2025;
+```
+
+<div dir="rtl">
+
+| AvgFee |
+|---|
+| 338.0 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 16. 🟡 כמה לוקרים יש בקומה 2?
+
+</div>
+
+```sql
+SELECT COUNT(*) AS Lockers
+FROM   Lockers
+WHERE  LockerFloor = 2;
+```
+
+<div dir="rtl">
+
+| Lockers |
+|---|
+| 3 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 17. 🔴 כמה מורים מלמדים כלי ממשפחת 'מיתר'? (רמז: `TeachInst IN (20, 30, 60)`)
+
+</div>
+
+```sql
+SELECT COUNT(*) AS StringTeachers
+FROM   Teachers
+WHERE  TeachInst IN (20, 30, 60);
+```
+
+<div dir="rtl">
+
+| StringTeachers |
+|---|
+| 3 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 18. 🔴 מה סכום התשלומים, הממוצע (מעוגל) ומספר הרישומים של התלמידים המתקדמים — בשאילתה אחת?
+
+</div>
+
+```sql
+SELECT SUM(MonthlyFee) AS Total, ROUND(AVG(MonthlyFee)) AS AvgFee, COUNT(*) AS Regs
+FROM   Registrations
+WHERE  PupilLevel = 'מתקדם';
+```
+
+<div dir="rtl">
+
+| Total | AvgFee | Regs |
+|---|---|---|
+| 1040 | 347.0 | 3 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+---
+
+## 🎓 בסגנון הבחינה — 🎮 חנות משחקי מחשב
+
+</div>
+
+<div dir="rtl">
+
+### 1. 🟢 כמה משחקים יש בחנות?
+
+</div>
+
+```sql
+SELECT COUNT(*) AS Games
+FROM   Games;
+```
+
+<div dir="rtl">
+
+| Games |
+|---|
+| 10 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 2. 🟢 מה המחיר לשעה הגבוה ביותר?
+
+</div>
+
+```sql
+SELECT MAX(PricePerHour) AS MaxPrice
+FROM   Games;
+```
+
+<div dir="rtl">
+
+| MaxPrice |
+|---|
+| 10.0 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 3. 🟡 כמה משתמשים רשמו אימייל? (בלי `WHERE`)
+
+</div>
+
+```sql
+SELECT COUNT(Email) AS WithEmail
+FROM   Users;
+```
+
+<div dir="rtl">
+
+| WithEmail |
+|---|
+| 5 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 4. 🟡 כמה שעות הוזמנו בסך הכול בספטמבר 2025?
+
+</div>
+
+```sql
+SELECT SUM(Hours) AS TotalHours
+FROM   Orders
+WHERE  OrderDate BETWEEN '2025-09-01' AND '2025-09-30';
+```
+
+<div dir="rtl">
+
+| TotalHours |
+|---|
+| 25 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 5. 🟡 השלימו את שלושת הערכים.
+
+</div>
+
+```sql
+SELECT COUNT(*), COUNT(MakerCode), COUNT(DISTINCT MakerCode)
+FROM   Games;
+```
+
+<div dir="rtl">
+
+| COUNT(*) | COUNT(MakerCode) | COUNT(DISTINCT MakerCode) |
+|---|---|---|
+| 10 | 9 | 4 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 6. 🟡
+
+</div>
+
+```sql
+SELECT MIN(GameYear) AS Oldest, MAX(GameYear) AS Newest
+FROM   Games;
+```
+
+<div dir="rtl">
+
+| Oldest | Newest |
+|---|---|
+| 1984 | 2023 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 7. 🔴 השלימו כך שיוצג המחיר הממוצע לשעה של משחקי הספורט (קטגוריה 2), מעוגל לספרה אחת.
+
+</div>
+
+```sql
+SELECT ROUND(AVG(PricePerHour), 1) AS AvgPrice
+FROM   Games
+WHERE  TypeCode = 2;
+```
+
+<div dir="rtl">
+
+| AvgPrice |
+|---|
+| 7.0 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
 ---
 
 ## 🏠 תרגול נוסף — 🏫 בית הספר "עתיד"
@@ -454,6 +806,90 @@ FROM   Grades;
 | Missing |
 |---|
 | 2 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 7. 🟢 כמה כיתות יש?
+
+</div>
+
+```sql
+SELECT COUNT(*) AS Classes
+FROM   Classes;
+```
+
+<div dir="rtl">
+
+| Classes |
+|---|
+| 5 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 8. 🟢 מה השכר הגבוה ביותר של מורה?
+
+</div>
+
+```sql
+SELECT MAX(Salary) AS MaxSalary
+FROM   Teachers;
+```
+
+<div dir="rtl">
+
+| MaxSalary |
+|---|
+| 15300 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 9. 🟡 כמה שעות שבועיות יש בסך הכול בכל המקצועות?
+
+</div>
+
+```sql
+SELECT SUM(WeeklyHours) AS Hours
+FROM   Courses;
+```
+
+<div dir="rtl">
+
+| Hours |
+|---|
+| 21 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 10. 🔴 מה תאריך ההיעדרות הראשון והאחרון בטבלה?
+
+</div>
+
+```sql
+SELECT MIN(AbsenceDate) AS First, MAX(AbsenceDate) AS Last
+FROM   Absences;
+```
+
+<div dir="rtl">
+
+| First | Last |
+|---|---|
+| 2026-09-02 | 2026-09-18 |
 
 **התוצאה: שורה אחת**
 

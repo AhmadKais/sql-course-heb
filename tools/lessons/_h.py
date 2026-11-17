@@ -21,3 +21,13 @@ def P(sql, q=None, note=None):
 
 def X(level, q, sql, check=None, note=None):
     return dict(level=level, q=q, sql=sql, check=check, note=note)
+
+
+def Q(level, q, sql, kind="write", given=None, check=None, note=None):
+    """Exam-style question.
+    kind="write"    write the query
+    kind="output"   the result table is shown; students find the query
+    kind="value"    the query is shown; students fill in the result
+    kind="complete" a skeleton with ____ is shown (given=...); students complete it
+    """
+    return dict(level=level, q=q, sql=sql, kind=kind, given=given, check=check, note=note)

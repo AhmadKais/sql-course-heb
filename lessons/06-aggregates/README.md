@@ -343,6 +343,29 @@ FROM   Pupils;
 
 <div dir="rtl">
 
+**שאלה 4.** מה שני המספרים?
+
+</div>
+
+```sql
+SELECT COUNT(DISTINCT HomeTown), COUNT(*)
+FROM   Pupils;
+```
+
+<div dir="rtl">
+
+**שאלה 5.** מה הסכום?
+
+</div>
+
+```sql
+SELECT SUM(MonthlyFee)
+FROM   Registrations
+WHERE  RegPupil = 204;
+```
+
+<div dir="rtl">
+
 ---
 
 ## 6️⃣ תרגילים — 🎵 בית הספר למוזיקה "צלילים"
@@ -371,13 +394,269 @@ FROM   Pupils;
 
 11. 🔴 מה ההכנסה השנתית הכוללת (12 חודשים) מכל הרישומים? _(🔢 שורה אחת)_
 
+12. 🟢 כמה כלים יש בטבלת הכלים? _(🔢 שורה אחת)_
+
+13. 🟢 מה המחיר לשעה הנמוך ביותר? _(🔢 שורה אחת)_
+
+14. 🟡 כמה תלמידים גרים בעיר 1? _(🔢 שורה אחת)_
+
+15. 🟡 מה התשלום הממוצע ברישומים של שנת 2025? _(🔢 שורה אחת)_
+
+16. 🟡 כמה לוקרים יש בקומה 2? _(🔢 שורה אחת)_
+
+17. 🔴 כמה מורים מלמדים כלי ממשפחת 'מיתר'? (רמז: `TeachInst IN (20, 30, 60)`) _(🔢 שורה אחת)_
+
+18. 🔴 מה סכום התשלומים, הממוצע (מעוגל) ומספר הרישומים של התלמידים המתקדמים — בשאילתה אחת? _(🔢 שורה אחת)_
+
 </div>
 
 <div dir="rtl">
 
 ---
 
-## 7️⃣ תרגול נוסף — 🏫 בית הספר "עתיד"
+## 7️⃣ 🎓 בסגנון הבחינה — 🎮 חנות משחקי מחשב
+
+> שאלות בפורמט של שאלון 735911: שמות שדות ייחודיים, צירוף עם פסיק + `WHERE`, השלמת ערכים, זיהוי שאילתה לפי פלט והשלמת פקודות. [📋 הטבלאות והקוד](../../databases/games/)
+
+</div>
+
+<details>
+<summary>📋 <b>הטבלאות של חנות משחקי מחשב</b> (לחצו לפתיחה)</summary>
+
+<div dir="rtl">
+
+**`Categories`**
+
+| CatCode 🔑 | CatName |
+|---|---|
+| 1 | פעולה |
+| 2 | ספורט |
+| 3 | אסטרטגיה |
+| 4 | סימולציה |
+| 5 | חידות |
+
+**`Companies`**
+
+| CompCode 🔑 | CompName | Country |
+|---|---|---|
+| 10 | Nintendo | Japan |
+| 20 | Electronic Arts | USA |
+| 30 | Ubisoft | France |
+| 40 | Maxis | USA |
+| 50 | Playtika | Israel |
+
+**`Games`**
+
+| GameCode 🔑 | GameName | TypeCode 🔗 | MakerCode 🔗 | GameYear | PricePerHour |
+|---|---|---|---|---|---|
+| 1 | Mario Kart | 2 | 10 | 2017 | 6.5 |
+| 2 | FIFA | 2 | 20 | 2021 | 8.0 |
+| 3 | Assassin's Creed | 1 | 30 | 2020 | 9.5 |
+| 4 | The Sims | 4 | 40 | 2014 | 7.0 |
+| 5 | SimCity | 4 | 40 | 2013 | 5.5 |
+| 6 | Zelda | 1 | 10 | 2023 | 10.0 |
+| 7 | Anno 1800 | 3 | 30 | 2019 | 8.5 |
+| 8 | NBA Live | 2 | 20 | 2021 | 7.5 |
+| 9 | Tetris | 5 | *NULL* | 1984 | 3.0 |
+| 10 | Just Dance | 2 | 30 | 2022 | 6.0 |
+
+**`Users`**
+
+| UserId 🔑 | FirstName | LastName | Email | BirthYear |
+|---|---|---|---|---|
+| 1 | רמי | חלבי | rami@mail.com | 2007 |
+| 2 | שני | כהן | shani@mail.com | 2008 |
+| 3 | וליד | סעד | walid@mail.com | 2006 |
+| 4 | אור | לוי | *NULL* | 2009 |
+| 5 | דניאל | חורי | dani@mail.com | 2007 |
+| 6 | מאיה | פרץ | maya@mail.com | 2008 |
+| 7 | נאדר | עזאם | *NULL* | 2006 |
+
+**`Orders`**
+
+| OrderId 🔑 | BuyerId 🔗 | GameNum 🔗 | OrderDate | Hours |
+|---|---|---|---|---|
+| 101 | 1 | 2 | 2025-09-02 | 3 |
+| 102 | 2 | 4 | 2025-09-05 | 5 |
+| 103 | 1 | 6 | 2025-09-12 | 2 |
+| 104 | 3 | 2 | 2025-09-15 | 4 |
+| 105 | 4 | 1 | 2025-09-19 | 1 |
+| 106 | 2 | 1 | 2025-09-20 | 2 |
+| 107 | 5 | 7 | 2025-09-25 | 6 |
+| 108 | 1 | 2 | 2025-09-30 | 2 |
+| 109 | 6 | 3 | 2025-10-01 | 3 |
+| 110 | 3 | 8 | 2025-10-03 | 2 |
+| 111 | 2 | 6 | 2025-10-04 | 4 |
+| 112 | 5 | 2 | 2025-10-07 | 1 |
+| 113 | 6 | 4 | 2025-10-09 | 3 |
+
+</div>
+
+</details>
+
+
+<details>
+<summary>📥 <b>הקוד שבונה את בסיס הנתונים 🎮 חנות משחקי מחשב</b> — מעתיקים הכול ומדביקים ב‑OneCompiler</summary>
+
+```sql
+-- ============================================================
+--  חנות משחקי מחשב  ·  בסיס נתונים לבחינה לדוגמה 3
+--  הדביקו את כל הקובץ ב-OneCompiler, לחצו Run, וכתבו את השאילתות מתחת.
+-- ============================================================
+DROP TABLE IF EXISTS Orders;
+DROP TABLE IF EXISTS Users;
+DROP TABLE IF EXISTS Games;
+DROP TABLE IF EXISTS Companies;
+DROP TABLE IF EXISTS Categories;
+
+CREATE TABLE Categories (
+  CatCode  INTEGER PRIMARY KEY,
+  CatName  TEXT NOT NULL
+);
+INSERT INTO Categories VALUES (1, 'פעולה');
+INSERT INTO Categories VALUES (2, 'ספורט');
+INSERT INTO Categories VALUES (3, 'אסטרטגיה');
+INSERT INTO Categories VALUES (4, 'סימולציה');
+INSERT INTO Categories VALUES (5, 'חידות');
+
+CREATE TABLE Companies (
+  CompCode  INTEGER PRIMARY KEY,
+  CompName  TEXT NOT NULL,
+  Country   TEXT
+);
+INSERT INTO Companies VALUES (10, 'Nintendo',        'Japan');
+INSERT INTO Companies VALUES (20, 'Electronic Arts', 'USA');
+INSERT INTO Companies VALUES (30, 'Ubisoft',         'France');
+INSERT INTO Companies VALUES (40, 'Maxis',           'USA');
+INSERT INTO Companies VALUES (50, 'Playtika',        'Israel');
+
+CREATE TABLE Games (
+  GameCode      INTEGER PRIMARY KEY,
+  GameName      TEXT NOT NULL,
+  TypeCode      INTEGER REFERENCES Categories(CatCode),
+  MakerCode     INTEGER REFERENCES Companies(CompCode),
+  GameYear      INTEGER,
+  PricePerHour  REAL               -- NIS per hour of play
+);
+INSERT INTO Games VALUES (1, 'Mario Kart',      2, 10, 2017, 6.5);
+INSERT INTO Games VALUES (2, 'FIFA',            2, 20, 2021, 8.0);
+INSERT INTO Games VALUES (3, 'Assassin''s Creed', 1, 30, 2020, 9.5);
+INSERT INTO Games VALUES (4, 'The Sims',        4, 40, 2014, 7.0);
+INSERT INTO Games VALUES (5, 'SimCity',         4, 40, 2013, 5.5);
+INSERT INTO Games VALUES (6, 'Zelda',           1, 10, 2023, 10.0);
+INSERT INTO Games VALUES (7, 'Anno 1800',       3, 30, 2019, 8.5);
+INSERT INTO Games VALUES (8, 'NBA Live',        2, 20, 2021, 7.5);
+INSERT INTO Games VALUES (9, 'Tetris',          5, NULL, 1984, 3.0);
+INSERT INTO Games VALUES (10, 'Just Dance',     2, 30, 2022, 6.0);
+
+CREATE TABLE Users (
+  UserId     INTEGER PRIMARY KEY,
+  FirstName  TEXT NOT NULL,
+  LastName   TEXT NOT NULL,
+  Email      TEXT,
+  BirthYear  INTEGER
+);
+INSERT INTO Users VALUES (1, 'רמי',   'חלבי',  'rami@mail.com',  2007);
+INSERT INTO Users VALUES (2, 'שני',   'כהן',   'shani@mail.com', 2008);
+INSERT INTO Users VALUES (3, 'וליד',  'סעד',   'walid@mail.com', 2006);
+INSERT INTO Users VALUES (4, 'אור',   'לוי',   NULL,             2009);
+INSERT INTO Users VALUES (5, 'דניאל', 'חורי',  'dani@mail.com',  2007);
+INSERT INTO Users VALUES (6, 'מאיה',  'פרץ',   'maya@mail.com',  2008);
+INSERT INTO Users VALUES (7, 'נאדר',  'עזאם',  NULL,             2006);
+
+CREATE TABLE Orders (
+  OrderId    INTEGER PRIMARY KEY,
+  BuyerId    INTEGER REFERENCES Users(UserId),
+  GameNum    INTEGER REFERENCES Games(GameCode),
+  OrderDate  TEXT NOT NULL,         -- 'YYYY-MM-DD'
+  Hours      INTEGER NOT NULL
+);
+INSERT INTO Orders VALUES (101, 1, 2, '2025-09-02', 3);
+INSERT INTO Orders VALUES (102, 2, 4, '2025-09-05', 5);
+INSERT INTO Orders VALUES (103, 1, 6, '2025-09-12', 2);
+INSERT INTO Orders VALUES (104, 3, 2, '2025-09-15', 4);
+INSERT INTO Orders VALUES (105, 4, 1, '2025-09-19', 1);
+INSERT INTO Orders VALUES (106, 2, 1, '2025-09-20', 2);
+INSERT INTO Orders VALUES (107, 5, 7, '2025-09-25', 6);
+INSERT INTO Orders VALUES (108, 1, 2, '2025-09-30', 2);
+INSERT INTO Orders VALUES (109, 6, 3, '2025-10-01', 3);
+INSERT INTO Orders VALUES (110, 3, 8, '2025-10-03', 2);
+INSERT INTO Orders VALUES (111, 2, 6, '2025-10-04', 4);
+INSERT INTO Orders VALUES (112, 5, 2, '2025-10-07', 1);
+INSERT INTO Orders VALUES (113, 6, 4, '2025-10-09', 3);
+
+SELECT COUNT(*) AS orders_loaded FROM Orders;
+```
+
+</details>
+
+
+<div dir="rtl">
+
+**שאלה 1.** 🟢 ✍️ כמה משחקים יש בחנות? _(🔢 שורה אחת)_
+
+</div>
+
+<div dir="rtl">
+
+**שאלה 2.** 🟢 ✍️ מה המחיר לשעה הגבוה ביותר? _(🔢 שורה אחת)_
+
+</div>
+
+<div dir="rtl">
+
+**שאלה 3.** 🟡 ✍️ כמה משתמשים רשמו אימייל? (בלי `WHERE`) _(🔢 שורה אחת)_
+
+</div>
+
+<div dir="rtl">
+
+**שאלה 4.** 🟡 ✍️ כמה שעות הוזמנו בסך הכול בספטמבר 2025? _(🔢 שורה אחת)_
+
+</div>
+
+<div dir="rtl">
+
+**שאלה 5.** 🟡 🧮 **השלימו את הערכים:** השלימו את שלושת הערכים.
+
+</div>
+
+```sql
+SELECT COUNT(*), COUNT(MakerCode), COUNT(DISTINCT MakerCode)
+FROM   Games;
+```
+
+<div dir="rtl">
+
+**שאלה 6.** 🟡 🔎 **איזו שאילתה הציגה את הטבלה?**
+
+</div>
+
+<div dir="rtl">
+
+| Oldest | Newest |
+|---|---|
+| 1984 | 2023 |
+
+</div>
+
+<div dir="rtl">
+
+**שאלה 7.** 🔴 🧩 **השלימו את הפקודה:** השלימו כך שיוצג המחיר הממוצע לשעה של משחקי הספורט (קטגוריה 2), מעוגל לספרה אחת.
+
+</div>
+
+```sql
+SELECT _____(___(PricePerHour), 1) AS AvgPrice
+FROM   Games
+_____  TypeCode = _;
+```
+
+<div dir="rtl">
+
+---
+
+## 8️⃣ תרגול נוסף — 🏫 בית הספר "עתיד"
 
 > בסיס נתונים אחר, שאתם לא מכירים — בדיוק כמו בבחינה. [📋 הטבלאות והקוד של בית הספר "עתיד"](../../databases/school/)
 
@@ -392,6 +671,14 @@ FROM   Pupils;
 5. 🔴 בכמה מקצועות שונים יש ציונים בטבלת הציונים? _(🔢 שורה אחת)_
 
 6. 🔴 כמה ציונים חסרים (NULL) יש בטבלת הציונים? כתבו עם `COUNT(*) - COUNT(Grade)`. _(🔢 שורה אחת)_
+
+7. 🟢 כמה כיתות יש? _(🔢 שורה אחת)_
+
+8. 🟢 מה השכר הגבוה ביותר של מורה? _(🔢 שורה אחת)_
+
+9. 🟡 כמה שעות שבועיות יש בסך הכול בכל המקצועות? _(🔢 שורה אחת)_
+
+10. 🔴 מה תאריך ההיעדרות הראשון והאחרון בטבלה? _(🔢 שורה אחת)_
 
 </div>
 

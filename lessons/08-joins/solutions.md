@@ -88,6 +88,51 @@ WHERE  HomeTown = CityCode AND FirstName = 'עומר';
 
 <div dir="rtl">
 
+### שאלה 3
+
+</div>
+
+```sql
+SELECT InstName
+FROM   Teachers, Instruments
+WHERE  TeachInst = InstCode AND HourRate > 130;
+```
+
+<div dir="rtl">
+
+| InstName |
+|---|
+| פסנתר |
+| כינור |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### שאלה 4
+
+</div>
+
+```sql
+SELECT COUNT(*)
+FROM   Lockers, Pupils
+WHERE  LockerPupil = PupilId AND HomeTown = 2;
+```
+
+<div dir="rtl">
+
+| COUNT(*) |
+|---|
+| 2 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
 ---
 
 ## ✏️ תרגילים — 🎵 בית הספר למוזיקה "צלילים"
@@ -361,6 +406,379 @@ HAVING   SUM(MonthlyFee) > 600;
 
 <div dir="rtl">
 
+### 11. 🟢 הציגו את שם התלמיד ושם העיר — לתלמידים שנולדו ב‑2012.
+
+</div>
+
+```sql
+SELECT FirstName, CityName
+FROM   Pupils, Cities
+WHERE  HomeTown = CityCode AND BirthYear = 2012;
+```
+
+<div dir="rtl">
+
+| FirstName | CityName |
+|---|---|
+| אדם | ירכא |
+| תמר | נהריה |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 12. 🟢 הציגו את שם המורה ואת משפחת הכלי שהוא מלמד.
+
+</div>
+
+```sql
+SELECT TeacherName, InstFamily
+FROM   Teachers, Instruments
+WHERE  TeachInst = InstCode;
+```
+
+<div dir="rtl">
+
+| TeacherName | InstFamily |
+|---|---|
+| סמיר חלבי | מיתר |
+| רונית לוי | קלידים |
+| אמיר עזאם | מיתר |
+| דנה כהן | מיתר |
+| יוסי פרץ | הקשה |
+| נור מנסור | קלידים |
+
+**התוצאה: 6 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 13. 🟡 הציגו את המורים שמלמדים כלי ממשפחת 'קלידים' או 'הקשה'.
+
+</div>
+
+```sql
+SELECT TeacherName, InstName
+FROM   Teachers, Instruments
+WHERE  TeachInst = InstCode AND InstFamily IN ('קלידים', 'הקשה');
+```
+
+<div dir="rtl">
+
+| TeacherName | InstName |
+|---|---|
+| רונית לוי | פסנתר |
+| יוסי פרץ | תופים |
+| נור מנסור | פסנתר |
+
+**התוצאה: 3 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 14. 🟡 הציגו לכל רישום ברמת 'מתקדם' את שם התלמיד והשנה, ממוין לפי שנה.
+
+</div>
+
+```sql
+SELECT FirstName, LastName, RegYear
+FROM   Pupils, Registrations
+WHERE  PupilId = RegPupil AND PupilLevel = 'מתקדם'
+ORDER BY RegYear;
+```
+
+<div dir="rtl">
+
+| FirstName | LastName | RegYear |
+|---|---|---|
+| רמי | חורי | 2021 |
+| מאיה | כהן | 2022 |
+| יואב | שושן | 2022 |
+
+**התוצאה: 3 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 15. 🟡 הציגו את שמות התלמידים שיש להם לוקר, ואת שם העיר שלהם (3 טבלאות).
+
+</div>
+
+```sql
+SELECT FirstName, CityName, LockerNum
+FROM   Pupils, Cities, Lockers
+WHERE  HomeTown = CityCode AND PupilId = LockerPupil;
+```
+
+<div dir="rtl">
+
+| FirstName | CityName | LockerNum |
+|---|---|---|
+| אדם | ירכא | 5 |
+| מאיה | כרמיאל | 1 |
+| רמי | עכו | 2 |
+| ליאן | ירכא | 3 |
+| יואב | עכו | 4 |
+
+**התוצאה: 5 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 16. 🔴 לכל עיר (שם): שנת הלידה הממוצעת של התלמידים שגרים בה.
+
+</div>
+
+```sql
+SELECT   CityName, AVG(BirthYear) AS AvgYear
+FROM     Pupils, Cities
+WHERE    HomeTown = CityCode
+GROUP BY CityName;
+```
+
+<div dir="rtl">
+
+| CityName | AvgYear |
+|---|---|
+| ירכא | 2012.0 |
+| כרמיאל | 2012.0 |
+| נהריה | 2011.0 |
+| עכו | 2009.67 |
+
+**התוצאה: 4 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 17. 🔴 מורים (שמות) שסכום התשלומים אצלם גבוה מ‑900.
+
+</div>
+
+```sql
+SELECT   TeacherName, SUM(MonthlyFee) AS Total
+FROM     Teachers, Registrations
+WHERE    TeacherCode = RegTeacher
+GROUP BY TeacherCode, TeacherName
+HAVING   SUM(MonthlyFee) > 900;
+```
+
+<div dir="rtl">
+
+| TeacherName | Total |
+|---|---|
+| סמיר חלבי | 940 |
+| רונית לוי | 1160 |
+| אמיר עזאם | 960 |
+
+**התוצאה: 3 שורות**
+
+</div>
+
+<div dir="rtl">
+
+---
+
+## 🎓 בסגנון הבחינה — 📚 ספרייה עירונית
+
+</div>
+
+<div dir="rtl">
+
+### 1. 🟢 הציגו את שם הספר ואת שם המשפחה של הסופר.
+
+</div>
+
+```sql
+SELECT Title, AuthorLastName
+FROM   Books, Authors
+WHERE  WriterCode = AuthorCode;
+```
+
+<div dir="rtl">
+
+| Title | AuthorLastName |
+|---|---|
+| סיפור על אהבה וחושך | עוז |
+| הארי פוטר ואבן החכמים | רולינג |
+| הארי פוטר וחדר הסודות | רולינג |
+| סמטת מדק | מחפוז |
+| רצח באוריינט אקספרס | כריסטי |
+| ואז לא נשאר אף אחד | כריסטי |
+| סוס אחד נכנס לבר | גרוסמן |
+| אשה בורחת מבשורה | גרוסמן |
+| מיכאל שלי | עוז |
+| ספר הדקדוק הפנימי | גרוסמן |
+
+**התוצאה: 10 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 2. 🟢 הציגו את שם הקורא ואת שם העיר שלו.
+
+</div>
+
+```sql
+SELECT FirstName, LastName, CityName
+FROM   Members, Cities
+WHERE  TownCode = CityCode;
+```
+
+<div dir="rtl">
+
+| FirstName | LastName | CityName |
+|---|---|---|
+| ראניה | חלבי | ירכא |
+| עידו | כהן | כרמיאל |
+| מוחמד | עזאם | ירכא |
+| נועה | לוי | עכו |
+| אליאס | חורי | עכו |
+| יעל | פרץ | כרמיאל |
+| סאמי | קבלאן | מעלות |
+| הילה | כהן | חיפה |
+| אמיר | חלבי | ירכא |
+| רותם | גבאי | מעלות |
+
+**התוצאה: 10 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 3. 🟡 הציגו את הספרים שכתבו סופרים מבריטניה.
+
+</div>
+
+```sql
+SELECT Title
+FROM   Books, Authors
+WHERE  WriterCode = AuthorCode AND Country = 'בריטניה';
+```
+
+<div dir="rtl">
+
+| Title |
+|---|
+| הארי פוטר ואבן החכמים |
+| הארי פוטר וחדר הסודות |
+| רצח באוריינט אקספרס |
+| ואז לא נשאר אף אחד |
+
+**התוצאה: 4 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 4. 🟡 הציגו לכל השאלה את מספר ההשאלה ואת שם הקורא — רק השאלות שלא הוחזרו.
+
+</div>
+
+```sql
+SELECT LoanId, FirstName, LastName
+FROM   Loans, Members
+WHERE  ReaderId = MemberId AND ReturnDate IS NULL;
+```
+
+<div dir="rtl">
+
+| LoanId | FirstName | LastName |
+|---|---|---|
+| 2 | ראניה | חלבי |
+| 5 | נועה | לוי |
+| 7 | עידו | כהן |
+| 8 | יעל | פרץ |
+| 10 | ראניה | חלבי |
+| 11 | הילה | כהן |
+| 12 | אליאס | חורי |
+| 14 | אמיר | חלבי |
+
+**התוצאה: 8 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 5. 🟡 השלימו את הערכים בטבלה שתתקבל.
+
+</div>
+
+```sql
+SELECT Title, PubYear
+FROM   Books, Authors
+WHERE  WriterCode = AuthorCode AND AuthorLastName = 'עוז';
+```
+
+<div dir="rtl">
+
+| Title | PubYear |
+|---|---|
+| סיפור על אהבה וחושך | 2002 |
+| מיכאל שלי | 1968 |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 6. 🔴
+
+</div>
+
+```sql
+SELECT   Country, COUNT(*) AS Books
+FROM     Books, Authors
+WHERE    WriterCode = AuthorCode
+GROUP BY Country;
+```
+
+<div dir="rtl">
+
+| Country | Books |
+|---|---|
+| בריטניה | 4 |
+| ישראל | 5 |
+| מצרים | 1 |
+
+**התוצאה: 3 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 7. 🔴 השלימו כך שיוצגו שמות הקוראים מירכא.
+
+</div>
+
+```sql
+SELECT FirstName, LastName
+FROM   Members, Cities
+WHERE  TownCode = CityCode AND CityName = 'ירכא';
+```
+
+<div dir="rtl">
+
+| FirstName | LastName |
+|---|---|
+| ראניה | חלבי |
+| מוחמד | עזאם |
+| אמיר | חלבי |
+
+**התוצאה: 3 שורות**
+
+</div>
+
+<div dir="rtl">
+
 ---
 
 ## 🏠 תרגול נוסף — 🏫 בית הספר "עתיד"
@@ -532,6 +950,121 @@ HAVING   COUNT(*) >= 2;
 | איתי | גולן | 2 |
 
 **התוצאה: 4 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 7. 🟢 הציגו את שם התלמיד ושם העיר שלו.
+
+</div>
+
+```sql
+SELECT S.FirstName, S.LastName, C.CityName
+FROM   Students S, Cities C
+WHERE  S.CityCode = C.CityCode;
+```
+
+<div dir="rtl">
+
+| FirstName | LastName | CityName |
+|---|---|---|
+| אדם | חלבי | ירכא |
+| נור | עזאם | ירכא |
+| יואב | כהן | כרמיאל |
+| מאיה | לוי | חיפה |
+| רוני | אברהם | עכו |
+| סאלי | חסון | עכו |
+| עומר | ביטון | נהריה |
+| שירה | כהן | חיפה |
+| כרים | חלבי | ירכא |
+| תמר | שושן | נהריה |
+| ג'וד | מנסור | שפרעם |
+| דניאל | פרץ | כרמיאל |
+| הדיל | סעיד | שפרעם |
+| איתי | גולן | חיפה |
+| ראניה | עבאס | שפרעם |
+| נועם | שחר | חיפה |
+| לינא | חמוד | עכו |
+
+**התוצאה: 17 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 8. 🟡 הציגו את המקצועות שמלמדים מורים למתמטיקה.
+
+</div>
+
+```sql
+SELECT C.CourseName, T.FirstName
+FROM   Courses C, Teachers T
+WHERE  C.TeacherCode = T.TeacherCode AND T.Subject = 'מתמטיקה';
+```
+
+<div dir="rtl">
+
+| CourseName | FirstName |
+|---|---|
+| מתמטיקה 5 יח"ל | נביל |
+| מתמטיקה 3 יח"ל | גלית |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 9. 🟡 הציגו את ההיעדרויות של תלמידי הכיתה 104 (שם תלמיד + תאריך).
+
+</div>
+
+```sql
+SELECT S.FirstName, A.AbsenceDate
+FROM   Students S, Absences A
+WHERE  S.StudentId = A.StudentId AND S.ClassCode = 104;
+```
+
+<div dir="rtl">
+
+| FirstName | AbsenceDate |
+|---|---|
+| ג'וד | 2026-09-02 |
+| ג'וד | 2026-09-10 |
+| ג'וד | 2026-09-15 |
+| ג'וד | 2026-09-16 |
+| תמר | 2026-09-08 |
+
+**התוצאה: 5 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 10. 🔴 לכל עיר (שם): כמה מורים גרים בה.
+
+</div>
+
+```sql
+SELECT   C.CityName, COUNT(*) AS Teachers
+FROM     Teachers T, Cities C
+WHERE    T.CityCode = C.CityCode
+GROUP BY C.CityName;
+```
+
+<div dir="rtl">
+
+| CityName | Teachers |
+|---|---|
+| חיפה | 1 |
+| ירכא | 2 |
+| כרמיאל | 1 |
+| נהריה | 1 |
+| עכו | 1 |
+| שפרעם | 1 |
+
+**התוצאה: 6 שורות**
 
 </div>
 

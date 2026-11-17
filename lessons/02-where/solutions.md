@@ -99,6 +99,52 @@ WHERE  NOT HomeTown = 1;
 
 <div dir="rtl">
 
+### שאלה 4
+
+</div>
+
+```sql
+SELECT InstName
+FROM   Instruments
+WHERE  InstFamily <> 'מיתר';
+```
+
+<div dir="rtl">
+
+| InstName |
+|---|
+| פסנתר |
+| תופים |
+| חליל |
+
+**התוצאה: 3 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### שאלה 5
+
+</div>
+
+```sql
+SELECT COUNT(*)
+FROM   Registrations
+WHERE  RegYear >= 2024 AND MonthlyFee < 300;
+```
+
+<div dir="rtl">
+
+| COUNT(*) |
+|---|
+| 2 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
 ---
 
 ## ✏️ תרגילים — 🎵 בית הספר למוזיקה "צלילים"
@@ -402,6 +448,351 @@ WHERE  HourRate * 3 > 400;
 
 <div dir="rtl">
 
+### 13. 🟢 הציגו את הלוקרים שבקומה 1.
+
+</div>
+
+```sql
+SELECT LockerNum, LockerPupil
+FROM   Lockers
+WHERE  LockerFloor = 1;
+```
+
+<div dir="rtl">
+
+| LockerNum | LockerPupil |
+|---|---|
+| 1 | 202 |
+| 2 | 205 |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 14. 🟢 הציגו את המורים שמחירם בדיוק 130.
+
+</div>
+
+```sql
+SELECT TeacherName
+FROM   Teachers
+WHERE  HourRate = 130;
+```
+
+<div dir="rtl">
+
+| TeacherName |
+|---|
+| נור מנסור |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 15. 🟡 הציגו רישומים משנת 2024 ואילך שאינם ברמת 'ממשיך'.
+
+</div>
+
+```sql
+SELECT RegPupil, RegYear, PupilLevel
+FROM   Registrations
+WHERE  RegYear >= 2024 AND PupilLevel <> 'ממשיך';
+```
+
+<div dir="rtl">
+
+| RegPupil | RegYear | PupilLevel |
+|---|---|---|
+| 201 | 2025 | מתחיל |
+| 203 | 2025 | מתחיל |
+| 204 | 2025 | מתחיל |
+| 207 | 2025 | מתחיל |
+| 209 | 2025 | מתחיל |
+
+**התוצאה: 5 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 16. 🟡 הציגו תלמידים שנולדו ב‑2009 או ב‑2014.
+
+</div>
+
+```sql
+SELECT FirstName, BirthYear
+FROM   Pupils
+WHERE  BirthYear = 2009 OR BirthYear = 2014;
+```
+
+<div dir="rtl">
+
+| FirstName | BirthYear |
+|---|---|
+| רמי | 2009 |
+| סאלי | 2014 |
+| יואב | 2009 |
+
+**התוצאה: 3 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 17. 🟡 הציגו את המורים שאינם מלמדים את כלי 10 (עם `NOT`).
+
+</div>
+
+```sql
+SELECT TeacherName, TeachInst
+FROM   Teachers
+WHERE  NOT TeachInst = 10;
+```
+
+<div dir="rtl">
+
+| TeacherName | TeachInst |
+|---|---|
+| סמיר חלבי | 60 |
+| אמיר עזאם | 20 |
+| דנה כהן | 30 |
+| יוסי פרץ | 40 |
+
+**התוצאה: 4 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 18. 🔴 הציגו רישומים של המורה 3 או 4, משנת 2023 בלבד.
+
+</div>
+
+```sql
+SELECT RegPupil, RegTeacher, RegYear
+FROM   Registrations
+WHERE  (RegTeacher = 3 OR RegTeacher = 4) AND RegYear = 2023;
+```
+
+<div dir="rtl">
+
+| RegPupil | RegTeacher | RegYear |
+|---|---|---|
+| 204 | 4 | 2023 |
+| 208 | 3 | 2023 |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 19. 🔴 הציגו רישומים שהתשלום השנתי בהם (12 חודשים) גבוה מ‑4,000.
+
+</div>
+
+```sql
+SELECT RegPupil, MonthlyFee * 12 AS YearFee
+FROM   Registrations
+WHERE  MonthlyFee * 12 > 4000;
+```
+
+<div dir="rtl">
+
+| RegPupil | YearFee |
+|---|---|
+| 202 | 4800 |
+| 204 | 4320 |
+| 204 | 4560 |
+| 205 | 4080 |
+| 207 | 4200 |
+| 209 | 4560 |
+
+**התוצאה: 6 שורות**
+
+</div>
+
+<div dir="rtl">
+
+---
+
+## 🎓 בסגנון הבחינה — ☕ בית הקפה "אל‑בלד"
+
+</div>
+
+<div dir="rtl">
+
+### 1. 🟢 הציגו את שמות המנות שמחירן גבוה מ‑30.
+
+</div>
+
+```sql
+SELECT DishName, DishPrice
+FROM   Dishes
+WHERE  DishPrice > 30;
+```
+
+<div dir="rtl">
+
+| DishName | DishPrice |
+|---|---|
+| סלט ירקות | 32 |
+| שניצל | 56 |
+| פסטה | 48 |
+
+**התוצאה: 3 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 2. 🟢 הציגו את ההזמנות של המנה 30.
+
+</div>
+
+```sql
+SELECT OrderNum, CustName
+FROM   Orders
+WHERE  OrderDish = 30;
+```
+
+<div dir="rtl">
+
+| OrderNum | CustName |
+|---|---|
+| 101 | דנה לוי |
+| 104 | סמיר דיב |
+| 107 | יעל שגיא |
+| 111 | ואיל נסאר |
+
+**התוצאה: 4 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 3. 🟡 הציגו את העובדים מהעיר 1 או 2 ששכרם לשעה לפחות 42.
+
+</div>
+
+```sql
+SELECT WorkerName, HourPay
+FROM   Workers
+WHERE  (WorkerCity = 1 OR WorkerCity = 2) AND HourPay >= 42;
+```
+
+<div dir="rtl">
+
+| WorkerName | HourPay |
+|---|---|
+| סאלי חדאד | 42 |
+| אמיר טאהא | 50 |
+| רים עבאס | 55 |
+
+**התוצאה: 3 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 4. 🟡 הציגו את ההזמנות אחרי 1 במאי 2026 שהיו בהן יותר מ‑3 סועדים.
+
+</div>
+
+```sql
+SELECT OrderNum, OrderDate, Guests
+FROM   Orders
+WHERE  OrderDate > '2026-05-01' AND Guests > 3;
+```
+
+<div dir="rtl">
+
+| OrderNum | OrderDate | Guests |
+|---|---|---|
+| 108 | 2026-05-30 | 8 |
+| 110 | 2026-06-28 | 4 |
+| 112 | 2026-07-21 | 10 |
+
+**התוצאה: 3 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 5. 🟡
+
+</div>
+
+```sql
+SELECT DishName
+FROM   Dishes
+WHERE  DishKind = 'קינוח';
+```
+
+<div dir="rtl">
+
+| DishName |
+|---|
+| קנאפה |
+| עוגת גבינה |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 6. 🟡 כמה שורות יחזרו?
+
+</div>
+
+```sql
+SELECT WorkerName
+FROM   Workers
+WHERE  HourPay <> 38;
+```
+
+<div dir="rtl">
+
+| WorkerName |
+|---|
+| סאלי חדאד |
+| אמיר טאהא |
+| מיכל שרון |
+| רים עבאס |
+
+**התוצאה: 4 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 7. 🔴 השלימו כך שיוצגו המנות העיקריות שמחירן נמוך מ‑50.
+
+</div>
+
+```sql
+SELECT DishName
+FROM   Dishes
+WHERE  DishKind = 'מנה עיקרית' AND DishPrice < 50;
+```
+
+<div dir="rtl">
+
+| DishName |
+|---|
+| פסטה |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
 ---
 
 ## 🏠 תרגול נוסף — 🏫 בית הספר "עתיד"
@@ -559,6 +950,100 @@ WHERE  Excused = 0 AND AbsenceDate > '2026-09-10';
 | 1018 | 2026-09-15 |
 
 **התוצאה: 4 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 7. 🟢 הציגו את הכיתות של שכבה 11.
+
+</div>
+
+```sql
+SELECT ClassName
+FROM   Classes
+WHERE  Grade = 11;
+```
+
+<div dir="rtl">
+
+| ClassName |
+|---|
+| יא1 |
+| יא2 |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 8. 🟢 הציגו מקצועות שנלמדים יותר מ‑3 שעות בשבוע.
+
+</div>
+
+```sql
+SELECT CourseName, WeeklyHours
+FROM   Courses
+WHERE  WeeklyHours > 3;
+```
+
+<div dir="rtl">
+
+| CourseName | WeeklyHours |
+|---|---|
+| מתמטיקה 5 יח"ל | 5 |
+| אנגלית 4 יח"ל | 4 |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 9. 🟡 הציגו את הציונים של התלמיד 1007 במחצית 2.
+
+</div>
+
+```sql
+SELECT CourseCode, Grade
+FROM   Grades
+WHERE  StudentId = 1007 AND Term = 2;
+```
+
+<div dir="rtl">
+
+| CourseCode | Grade |
+|---|---|
+| 11 | 90 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 10. 🔴 הציגו תלמידים מהעיר 4 או 6 שנרשמו לפני 2026.
+
+</div>
+
+```sql
+SELECT FirstName, CityCode, EnrollDate
+FROM   Students
+WHERE  (CityCode = 4 OR CityCode = 6) AND EnrollDate < '2026-01-01';
+```
+
+<div dir="rtl">
+
+| FirstName | CityCode | EnrollDate |
+|---|---|---|
+| שירה | 4 | 2025-09-01 |
+| ג'וד | 6 | 2025-09-01 |
+| הדיל | 6 | 2024-09-01 |
+| איתי | 4 | 2024-09-01 |
+| ראניה | 6 | 2024-09-01 |
+
+**התוצאה: 5 שורות**
 
 </div>
 

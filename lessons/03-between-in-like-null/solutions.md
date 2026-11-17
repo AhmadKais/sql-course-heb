@@ -92,6 +92,56 @@ WHERE  FirstName LIKE '___';
 
 <div dir="rtl">
 
+### שאלה 4
+
+</div>
+
+```sql
+SELECT FirstName
+FROM   Pupils
+WHERE  LastName LIKE '%ן';
+```
+
+<div dir="rtl">
+
+| FirstName |
+|---|
+| מאיה |
+| ליאן |
+| עומר |
+| סאלי |
+| יואב |
+
+**התוצאה: 5 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### שאלה 5
+
+</div>
+
+```sql
+SELECT COUNT(*)
+FROM   Registrations
+WHERE  RegTeacher IN (1, 2, 6);
+```
+
+<div dir="rtl">
+
+| COUNT(*) |
+|---|
+| 6 |
+
+**התוצאה: שורה אחת**
+
+> 💡 למורה 6 אין רישומים, אז הוא לא מוסיף כלום.
+
+</div>
+
+<div dir="rtl">
+
 ---
 
 ## ✏️ תרגילים — 🎵 בית הספר למוזיקה "צלילים"
@@ -379,6 +429,355 @@ WHERE  HomeTown IN (1, 3)
 
 <div dir="rtl">
 
+### 12. 🟢 הציגו את הכלים ממשפחות 'הקשה' או 'נשיפה' (עם `IN`).
+
+</div>
+
+```sql
+SELECT InstName, InstFamily
+FROM   Instruments
+WHERE  InstFamily IN ('הקשה', 'נשיפה');
+```
+
+<div dir="rtl">
+
+| InstName | InstFamily |
+|---|---|
+| תופים | הקשה |
+| חליל | נשיפה |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 13. 🟢 הציגו מורים שהמחיר שלהם בין 100 ל‑120.
+
+</div>
+
+```sql
+SELECT TeacherName, HourRate
+FROM   Teachers
+WHERE  HourRate BETWEEN 100 AND 120;
+```
+
+<div dir="rtl">
+
+| TeacherName | HourRate |
+|---|---|
+| סמיר חלבי | 120 |
+| אמיר עזאם | 110 |
+| יוסי פרץ | 100 |
+
+**התוצאה: 3 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 14. 🟡 הציגו תלמידים ששמם הפרטי מתחיל ב‑'ש' או ב‑'ס'.
+
+</div>
+
+```sql
+SELECT FirstName, LastName
+FROM   Pupils
+WHERE  FirstName LIKE 'ש%' OR FirstName LIKE 'ס%';
+```
+
+<div dir="rtl">
+
+| FirstName | LastName |
+|---|---|
+| שירה | לוי |
+| סאלי | חסון |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 15. 🟡 הציגו רישומים משנים 2021–2023 (עם `BETWEEN`).
+
+</div>
+
+```sql
+SELECT RegPupil, RegYear
+FROM   Registrations
+WHERE  RegYear BETWEEN 2021 AND 2023;
+```
+
+<div dir="rtl">
+
+| RegPupil | RegYear |
+|---|---|
+| 202 | 2022 |
+| 204 | 2023 |
+| 205 | 2021 |
+| 208 | 2023 |
+| 210 | 2022 |
+
+**התוצאה: 5 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 16. 🟡 הציגו מורים ששמם הפרטי (המילה הראשונה) בן 3 אותיות בדיוק (רמז: `'___ %'`).
+
+</div>
+
+```sql
+SELECT TeacherName
+FROM   Teachers
+WHERE  TeacherName LIKE '___ %';
+```
+
+<div dir="rtl">
+
+| TeacherName |
+|---|
+| דנה כהן |
+| נור מנסור |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 17. 🔴 הציגו את המורים בלי טלפון, או שהמחיר שלהם לא בין 110 ל‑140.
+
+</div>
+
+```sql
+SELECT TeacherName, HourRate, TeacherPhone
+FROM   Teachers
+WHERE  TeacherPhone IS NULL OR HourRate NOT BETWEEN 110 AND 140;
+```
+
+<div dir="rtl">
+
+| TeacherName | HourRate | TeacherPhone |
+|---|---|---|
+| רונית לוי | 150 | 052-2345678 |
+| אמיר עזאם | 110 | *NULL* |
+| יוסי פרץ | 100 | 053-5678901 |
+| נור מנסור | 130 | *NULL* |
+
+**התוצאה: 4 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 18. 🔴 הציגו רישומים של תלמידים 201–205 שאינם ברמת 'מתחיל'.
+
+</div>
+
+```sql
+SELECT RegPupil, PupilLevel
+FROM   Registrations
+WHERE  RegPupil BETWEEN 201 AND 205 AND PupilLevel NOT IN ('מתחיל');
+```
+
+<div dir="rtl">
+
+| RegPupil | PupilLevel |
+|---|---|
+| 201 | ממשיך |
+| 202 | מתקדם |
+| 204 | ממשיך |
+| 205 | מתקדם |
+
+**התוצאה: 4 שורות**
+
+</div>
+
+<div dir="rtl">
+
+---
+
+## 🎓 בסגנון הבחינה — 📚 ספרייה עירונית
+
+</div>
+
+<div dir="rtl">
+
+### 1. 🟢 הציגו את הספרים שיצאו בין 1990 ל‑2010.
+
+</div>
+
+```sql
+SELECT Title, PubYear
+FROM   Books
+WHERE  PubYear BETWEEN 1990 AND 2010;
+```
+
+<div dir="rtl">
+
+| Title | PubYear |
+|---|---|
+| סיפור על אהבה וחושך | 2002 |
+| הארי פוטר ואבן החכמים | 1997 |
+| הארי פוטר וחדר הסודות | 1998 |
+| אשה בורחת מבשורה | 2008 |
+| ספר הדקדוק הפנימי | 1991 |
+
+**התוצאה: 5 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 2. 🟢 הציגו את ההשאלות שעדיין לא הוחזרו.
+
+</div>
+
+```sql
+SELECT LoanId, ReaderId, BookNum
+FROM   Loans
+WHERE  ReturnDate IS NULL;
+```
+
+<div dir="rtl">
+
+| LoanId | ReaderId | BookNum |
+|---|---|---|
+| 2 | 501 | 203 |
+| 5 | 504 | 207 |
+| 7 | 502 | 206 |
+| 8 | 506 | 202 |
+| 10 | 501 | 205 |
+| 11 | 508 | 201 |
+| 12 | 505 | 204 |
+| 14 | 509 | 208 |
+
+**התוצאה: 8 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 3. 🟡 הציגו את הסופרים מישראל או ממצרים (עם `IN`).
+
+</div>
+
+```sql
+SELECT AuthorFirstName, AuthorLastName
+FROM   Authors
+WHERE  Country IN ('ישראל', 'מצרים');
+```
+
+<div dir="rtl">
+
+| AuthorFirstName | AuthorLastName |
+|---|---|
+| עמוס | עוז |
+| נגיב | מחפוז |
+| דויד | גרוסמן |
+| סמי | מיכאל |
+
+**התוצאה: 4 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 4. 🟡 הציגו ספרים ששמם מכיל את המילה 'הארי'.
+
+</div>
+
+```sql
+SELECT DISTINCT Title
+FROM   Books
+WHERE  Title LIKE '%הארי%';
+```
+
+<div dir="rtl">
+
+| Title |
+|---|
+| הארי פוטר ואבן החכמים |
+| הארי פוטר וחדר הסודות |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 5. 🟡
+
+</div>
+
+```sql
+SELECT FirstName, LastName
+FROM   Members
+WHERE  LastName LIKE 'כ%';
+```
+
+<div dir="rtl">
+
+| FirstName | LastName |
+|---|---|
+| עידו | כהן |
+| הילה | כהן |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 6. 🟡 השלימו את הערכים בטבלה שתתקבל.
+
+</div>
+
+```sql
+SELECT Title
+FROM   Books
+WHERE  Genre = 'מתח' AND Pages BETWEEN 250 AND 300;
+```
+
+<div dir="rtl">
+
+| Title |
+|---|
+| רצח באוריינט אקספרס |
+| ואז לא נשאר אף אחד |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 7. 🔴 השלימו כך שיוצגו ההשאלות מאוקטובר 2025 שכבר הוחזרו.
+
+</div>
+
+```sql
+SELECT LoanId
+FROM   Loans
+WHERE  LoanDate LIKE '2025-10%' AND ReturnDate IS NOT NULL;
+```
+
+<div dir="rtl">
+
+| LoanId |
+|---|
+| 9 |
+| 13 |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
 ---
 
 ## 🏠 תרגול נוסף — 🏫 בית הספר "עתיד"
@@ -548,6 +947,107 @@ WHERE  ClassCode IS NULL OR BirthDate IS NULL;
 | לינא | *NULL* | 2010-10-19 |
 
 **התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 7. 🟢 הציגו כיתות שעדיין לא שובצה להן כיתת אם (`RoomNumber`).
+
+</div>
+
+```sql
+SELECT ClassName
+FROM   Classes
+WHERE  RoomNumber IS NULL;
+```
+
+<div dir="rtl">
+
+| ClassName |
+|---|
+| יא2 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 8. 🟡 הציגו היעדרויות שלא נמסרה להן סיבה.
+
+</div>
+
+```sql
+SELECT StudentId, AbsenceDate
+FROM   Absences
+WHERE  Reason IS NULL;
+```
+
+<div dir="rtl">
+
+| StudentId | AbsenceDate |
+|---|---|
+| 1004 | 2026-09-07 |
+| 1009 | 2026-09-08 |
+| 1009 | 2026-09-09 |
+| 1012 | 2026-09-02 |
+| 1012 | 2026-09-10 |
+| 1012 | 2026-09-15 |
+| 1012 | 2026-09-16 |
+| 1015 | 2026-09-17 |
+| 1018 | 2026-09-15 |
+
+**התוצאה: 9 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 9. 🟡 הציגו מורים שהתחילו לעבוד בין 2015 ל‑2022.
+
+</div>
+
+```sql
+SELECT FirstName, HireDate
+FROM   Teachers
+WHERE  HireDate BETWEEN '2015-01-01' AND '2022-12-31';
+```
+
+<div dir="rtl">
+
+| FirstName | HireDate |
+|---|---|
+| רונית | 2018-09-01 |
+| חוסאם | 2021-02-15 |
+| גלית | 2016-09-01 |
+
+**התוצאה: 3 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 10. 🔴 הציגו תלמידים ששם המשפחה שלהם מכיל '-' או מתחיל ב‑'ח'.
+
+</div>
+
+```sql
+SELECT FirstName, LastName
+FROM   Students
+WHERE  LastName LIKE '%-%' OR LastName LIKE 'ח%';
+```
+
+<div dir="rtl">
+
+| FirstName | LastName |
+|---|---|
+| אדם | חלבי |
+| סאלי | חסון |
+| כרים | חלבי |
+| לינא | חמוד |
+
+**התוצאה: 4 שורות**
 
 </div>
 

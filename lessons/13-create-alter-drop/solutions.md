@@ -323,6 +323,432 @@ SELECT name FROM sqlite_master WHERE type = 'table';
 
 <div dir="rtl">
 
+### 9. 🟢 צרו טבלה `Books` לספרי תווים: קוד (PK), שם (חובה), מחיר. הוסיפו 2 ספרים.
+
+</div>
+
+```sql
+CREATE TABLE Books (
+  BookCode   INTEGER PRIMARY KEY,
+  BookName   TEXT NOT NULL,
+  BookPrice  INTEGER
+);
+INSERT INTO Books VALUES (1, 'תווים לפסנתר א', 60);
+INSERT INTO Books VALUES (2, 'שיטת גיטרה', 75);
+```
+
+<div dir="rtl">
+
+בדיקה:
+
+</div>
+
+```sql
+SELECT * FROM Books;
+```
+
+<div dir="rtl">
+
+| BookCode | BookName | BookPrice |
+|---|---|---|
+| 1 | תווים לפסנתר א | 60 |
+| 2 | שיטת גיטרה | 75 |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 10. 🟢 הוסיפו לטבלת הכלים עמודה `Price` (מספר).
+
+</div>
+
+```sql
+ALTER TABLE Instruments ADD COLUMN Price INTEGER;
+```
+
+<div dir="rtl">
+
+בדיקה:
+
+</div>
+
+```sql
+SELECT * FROM Instruments;
+```
+
+<div dir="rtl">
+
+| InstCode | InstName | InstFamily | Price |
+|---|---|---|---|
+| 10 | פסנתר | קלידים | *NULL* |
+| 20 | גיטרה | מיתר | *NULL* |
+| 30 | כינור | מיתר | *NULL* |
+| 40 | תופים | הקשה | *NULL* |
+| 50 | חליל | נשיפה | *NULL* |
+| 60 | עוד | מיתר | *NULL* |
+
+**התוצאה: 6 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 11. 🟡 שנו את שם העמודה `TeacherPhone` ל‑`Phone`.
+
+</div>
+
+```sql
+ALTER TABLE Teachers RENAME COLUMN TeacherPhone TO Phone;
+```
+
+<div dir="rtl">
+
+בדיקה:
+
+</div>
+
+```sql
+SELECT TeacherName, Phone FROM Teachers;
+```
+
+<div dir="rtl">
+
+| TeacherName | Phone |
+|---|---|
+| סמיר חלבי | 050-1234567 |
+| רונית לוי | 052-2345678 |
+| אמיר עזאם | *NULL* |
+| דנה כהן | 054-4567890 |
+| יוסי פרץ | 053-5678901 |
+| נור מנסור | *NULL* |
+
+**התוצאה: 6 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 12. 🟡 הוסיפו לטבלת הרישומים עמודה `Paid` עם ברירת מחדל 0, ועדכנו ל‑1 את הרישומים של 2025.
+
+</div>
+
+```sql
+ALTER TABLE Registrations ADD COLUMN Paid INTEGER DEFAULT 0;
+UPDATE Registrations SET Paid = 1 WHERE RegYear = 2025;
+```
+
+<div dir="rtl">
+
+בדיקה:
+
+</div>
+
+```sql
+SELECT Paid, COUNT(*) AS Regs FROM Registrations GROUP BY Paid;
+```
+
+<div dir="rtl">
+
+| Paid | Regs |
+|---|---|
+| 0 | 9 |
+| 1 | 5 |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 13. 🟡 מחקו את הטבלה `Lockers` לגמרי.
+
+</div>
+
+```sql
+DROP TABLE Lockers;
+```
+
+<div dir="rtl">
+
+בדיקה:
+
+</div>
+
+```sql
+SELECT name FROM sqlite_master WHERE type = 'table';
+```
+
+<div dir="rtl">
+
+| name |
+|---|
+| Cities |
+| Instruments |
+| Teachers |
+| Pupils |
+| Registrations |
+
+**התוצאה: 5 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 14. 🔴 צרו טבלה `Rentals` (השכרת כלים): קוד (PK), תלמיד (FK ל‑Pupils), כלי (FK ל‑Instruments), חודשים עם `CHECK` בין 1 ל‑12. הוסיפו 2 השכרות והציגו שם תלמיד ושם כלי.
+
+</div>
+
+```sql
+CREATE TABLE Rentals (
+  RentId     INTEGER PRIMARY KEY,
+  RentPupil  INTEGER REFERENCES Pupils(PupilId),
+  RentInst   INTEGER REFERENCES Instruments(InstCode),
+  Months     INTEGER CHECK (Months BETWEEN 1 AND 12)
+);
+INSERT INTO Rentals VALUES (1, 203, 20, 6);
+INSERT INTO Rentals VALUES (2, 209, 10, 12);
+```
+
+<div dir="rtl">
+
+בדיקה:
+
+</div>
+
+```sql
+SELECT FirstName, InstName, Months
+FROM   Rentals, Pupils, Instruments
+WHERE  RentPupil = PupilId AND RentInst = InstCode;
+```
+
+<div dir="rtl">
+
+| FirstName | InstName | Months |
+|---|---|---|
+| כרים | גיטרה | 6 |
+| סאלי | פסנתר | 12 |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+---
+
+## 🎓 בסגנון הבחינה — 🎮 חנות משחקי מחשב
+
+</div>
+
+<div dir="rtl">
+
+### 1. 🟢 הוסיפו לטבלת המשתמשים עמודה `Phone` מסוג טקסט.
+
+</div>
+
+```sql
+ALTER TABLE Users ADD COLUMN Phone TEXT;
+```
+
+<div dir="rtl">
+
+בדיקה:
+
+</div>
+
+```sql
+SELECT UserId, FirstName, Phone FROM Users LIMIT 3;
+```
+
+<div dir="rtl">
+
+| UserId | FirstName | Phone |
+|---|---|---|
+| 1 | רמי | *NULL* |
+| 2 | שני | *NULL* |
+| 3 | וליד | *NULL* |
+
+**התוצאה: 3 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 2. 🟢 מחקו מטבלת החברות את העמודה `Country`.
+
+</div>
+
+```sql
+ALTER TABLE Companies DROP COLUMN Country;
+```
+
+<div dir="rtl">
+
+בדיקה:
+
+</div>
+
+```sql
+SELECT * FROM Companies;
+```
+
+<div dir="rtl">
+
+| CompCode | CompName |
+|---|---|
+| 10 | Nintendo |
+| 20 | Electronic Arts |
+| 30 | Ubisoft |
+| 40 | Maxis |
+| 50 | Playtika |
+
+**התוצאה: 5 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 3. 🟡 צרו טבלת `Reviews`: קוד (PK), משתמש (FK ל‑Users), משחק (FK ל‑Games), ציון עם `CHECK` בין 1 ל‑5. הוסיפו 2 ביקורות.
+
+</div>
+
+```sql
+CREATE TABLE Reviews (
+  ReviewId    INTEGER PRIMARY KEY,
+  ReviewUser  INTEGER REFERENCES Users(UserId),
+  ReviewGame  INTEGER REFERENCES Games(GameCode),
+  Stars       INTEGER CHECK (Stars BETWEEN 1 AND 5)
+);
+INSERT INTO Reviews VALUES (1, 1, 2, 5);
+INSERT INTO Reviews VALUES (2, 3, 8, 3);
+```
+
+<div dir="rtl">
+
+בדיקה:
+
+</div>
+
+```sql
+SELECT FirstName, GameName, Stars
+FROM   Reviews, Users, Games
+WHERE  ReviewUser = UserId AND ReviewGame = GameCode;
+```
+
+<div dir="rtl">
+
+| FirstName | GameName | Stars |
+|---|---|---|
+| רמי | FIFA | 5 |
+| וליד | NBA Live | 3 |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 4. 🟡 מחקו את הטבלה `Categories`.
+
+</div>
+
+```sql
+DROP TABLE Categories;
+```
+
+<div dir="rtl">
+
+בדיקה:
+
+</div>
+
+```sql
+SELECT name FROM sqlite_master WHERE type = 'table';
+```
+
+<div dir="rtl">
+
+| name |
+|---|
+| Companies |
+| Games |
+| Users |
+| Orders |
+
+**התוצאה: 4 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 5. 🔴 השלימו את הפקודה שמוסיפה עמודת `Discount` למשחקים עם ערך ברירת מחדל 0.
+
+</div>
+
+```sql
+ALTER TABLE Games ADD COLUMN Discount INTEGER DEFAULT 0;
+```
+
+<div dir="rtl">
+
+בדיקה:
+
+</div>
+
+```sql
+SELECT GameName, Discount FROM Games LIMIT 3;
+```
+
+<div dir="rtl">
+
+| GameName | Discount |
+|---|---|
+| Mario Kart | 0 |
+| FIFA | 0 |
+| Assassin's Creed | 0 |
+
+**התוצאה: 3 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 6. 🔴 כתבו (על דף — SQLite לא מריץ את זה) את הפקודה שמשנה את טיפוס העמודה `Email` ל‑`VARCHAR(50)`. מה כן אפשר להריץ: שנו את שם העמודה `Email` ל‑`Mail`.
+
+</div>
+
+```sql
+ALTER TABLE Users RENAME COLUMN Email TO Mail;
+```
+
+<div dir="rtl">
+
+בדיקה:
+
+</div>
+
+```sql
+SELECT FirstName, Mail FROM Users LIMIT 3;
+```
+
+<div dir="rtl">
+
+| FirstName | Mail |
+|---|---|
+| רמי | rami@mail.com |
+| שני | shani@mail.com |
+| וליד | walid@mail.com |
+
+**התוצאה: 3 שורות**
+
+> 💡 בבחינה: `ALTER TABLE Users MODIFY COLUMN Email VARCHAR(50);`
+
+</div>
+
+<div dir="rtl">
+
 ---
 
 ## 🏠 תרגול נוסף — 🏫 בית הספר "עתיד"
@@ -435,6 +861,108 @@ SELECT * FROM Absences LIMIT 3;
 | 3 | 1004 | 2026-09-07 | *NULL* |
 
 **התוצאה: 3 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 4. 🟢 הוסיפו לטבלת התלמידים עמודה `Email`.
+
+</div>
+
+```sql
+ALTER TABLE Students ADD COLUMN Email TEXT;
+```
+
+<div dir="rtl">
+
+בדיקה:
+
+</div>
+
+```sql
+SELECT FirstName, Email FROM Students LIMIT 3;
+```
+
+<div dir="rtl">
+
+| FirstName | Email |
+|---|---|
+| אדם | *NULL* |
+| נור | *NULL* |
+| יואב | *NULL* |
+
+**התוצאה: 3 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 5. 🟡 מחקו מטבלת המורים את העמודה `Phone`.
+
+</div>
+
+```sql
+ALTER TABLE Teachers DROP COLUMN Phone;
+```
+
+<div dir="rtl">
+
+בדיקה:
+
+</div>
+
+```sql
+SELECT * FROM Teachers LIMIT 2;
+```
+
+<div dir="rtl">
+
+| TeacherCode | FirstName | LastName | Subject | HireDate | Salary | CityCode |
+|---|---|---|---|---|---|---|
+| 1 | נביל | סרחאן | מתמטיקה | 2012-09-01 | 14500 | 1 |
+| 2 | רונית | בר-לב | אנגלית | 2018-09-01 | 11200 | 4 |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 6. 🔴 צרו טבלת `Clubs` (חוגים) עם קוד (PK), שם (חובה, ייחודי) ומורה אחראי (FK ל‑Teachers). הוסיפו 2 חוגים והציגו שם חוג ושם מורה.
+
+</div>
+
+```sql
+CREATE TABLE Clubs (
+  ClubCode     INTEGER PRIMARY KEY,
+  ClubName     TEXT NOT NULL UNIQUE,
+  TeacherCode  INTEGER REFERENCES Teachers(TeacherCode)
+);
+INSERT INTO Clubs VALUES (1, 'מקהלה', 4);
+INSERT INTO Clubs VALUES (2, 'שחמט', 1);
+```
+
+<div dir="rtl">
+
+בדיקה:
+
+</div>
+
+```sql
+SELECT ClubName, FirstName
+FROM   Clubs C, Teachers T
+WHERE  C.TeacherCode = T.TeacherCode;
+```
+
+<div dir="rtl">
+
+| ClubName | FirstName |
+|---|---|
+| מקהלה | אורלי |
+| שחמט | נביל |
+
+**התוצאה: 2 שורות**
 
 </div>
 

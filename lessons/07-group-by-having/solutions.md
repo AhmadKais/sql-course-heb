@@ -94,6 +94,53 @@ GROUP BY TeachInst;
 
 <div dir="rtl">
 
+### שאלה 4
+
+</div>
+
+```sql
+SELECT   LockerFloor, COUNT(*)
+FROM     Lockers
+GROUP BY LockerFloor;
+```
+
+<div dir="rtl">
+
+| LockerFloor | COUNT(*) |
+|---|---|
+| 1 | 2 |
+| 2 | 3 |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### שאלה 5
+
+</div>
+
+```sql
+SELECT   RegYear, COUNT(*)
+FROM     Registrations
+GROUP BY RegYear
+HAVING   COUNT(*) >= 4;
+```
+
+<div dir="rtl">
+
+| RegYear | COUNT(*) |
+|---|---|
+| 2024 | 4 |
+| 2025 | 5 |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
 ---
 
 ## ✏️ תרגילים — 🎵 בית הספר למוזיקה "צלילים"
@@ -363,6 +410,361 @@ ORDER BY RegYear;
 
 <div dir="rtl">
 
+### 11. 🟢 כמה כלים יש בכל משפחת כלים?
+
+</div>
+
+```sql
+SELECT   InstFamily, COUNT(*) AS Instruments
+FROM     Instruments
+GROUP BY InstFamily;
+```
+
+<div dir="rtl">
+
+| InstFamily | Instruments |
+|---|---|
+| הקשה | 1 |
+| מיתר | 3 |
+| נשיפה | 1 |
+| קלידים | 1 |
+
+**התוצאה: 4 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 12. 🟢 כמה לוקרים יש בכל קומה?
+
+</div>
+
+```sql
+SELECT   LockerFloor, COUNT(*) AS Lockers
+FROM     Lockers
+GROUP BY LockerFloor;
+```
+
+<div dir="rtl">
+
+| LockerFloor | Lockers |
+|---|---|
+| 1 | 2 |
+| 2 | 3 |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 13. 🟡 לכל מורה: התשלום הגבוה ביותר שמשלמים לו.
+
+</div>
+
+```sql
+SELECT   RegTeacher, MAX(MonthlyFee) AS MaxFee
+FROM     Registrations
+GROUP BY RegTeacher;
+```
+
+<div dir="rtl">
+
+| RegTeacher | MaxFee |
+|---|---|
+| 1 | 320 |
+| 2 | 400 |
+| 3 | 340 |
+| 4 | 360 |
+| 5 | 300 |
+
+**התוצאה: 5 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 14. 🟡 שנים שהיו בהן לפחות 3 רישומים.
+
+</div>
+
+```sql
+SELECT   RegYear, COUNT(*) AS Regs
+FROM     Registrations
+GROUP BY RegYear
+HAVING   COUNT(*) >= 3;
+```
+
+<div dir="rtl">
+
+| RegYear | Regs |
+|---|---|
+| 2024 | 4 |
+| 2025 | 5 |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 15. 🟡 לכל עיר: שנת הלידה של התלמיד הצעיר ביותר.
+
+</div>
+
+```sql
+SELECT   HomeTown, MAX(BirthYear) AS Youngest
+FROM     Pupils
+GROUP BY HomeTown;
+```
+
+<div dir="rtl">
+
+| HomeTown | Youngest |
+|---|---|
+| 1 | 2013 |
+| 2 | 2011 |
+| 3 | 2014 |
+| 4 | 2012 |
+
+**התוצאה: 4 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 16. 🔴 כלים (`TeachInst`) שמלמדים אותם יותר ממורה אחד.
+
+</div>
+
+```sql
+SELECT   TeachInst, COUNT(*) AS Teachers
+FROM     Teachers
+GROUP BY TeachInst
+HAVING   COUNT(*) > 1;
+```
+
+<div dir="rtl">
+
+| TeachInst | Teachers |
+|---|---|
+| 10 | 2 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 17. 🔴 לכל מורה — רק ברישומים מ‑2024 ואילך — סכום התשלומים. הציגו מורים עם סכום מעל 500, מהגבוה לנמוך.
+
+</div>
+
+```sql
+SELECT   RegTeacher, SUM(MonthlyFee) AS Total
+FROM     Registrations
+WHERE    RegYear >= 2024
+GROUP BY RegTeacher
+HAVING   SUM(MonthlyFee) > 500
+ORDER BY Total DESC;
+```
+
+<div dir="rtl">
+
+| RegTeacher | Total |
+|---|---|
+| 1 | 940 |
+| 2 | 760 |
+| 5 | 560 |
+
+**התוצאה: 3 שורות**
+
+</div>
+
+<div dir="rtl">
+
+---
+
+## 🎓 בסגנון הבחינה — 🔧 מעבדת "דלתא‑טק"
+
+</div>
+
+<div dir="rtl">
+
+### 1. 🟢 כמה תיקונים יש בכל רמת עדיפות?
+
+</div>
+
+```sql
+SELECT   Priority, COUNT(*) AS Repairs
+FROM     Repairs
+GROUP BY Priority;
+```
+
+<div dir="rtl">
+
+| Priority | Repairs |
+|---|---|
+| דחוף | 5 |
+| מיידי | 3 |
+| רגיל | 8 |
+
+**התוצאה: 3 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 2. 🟢 לכל טכנאי (`RepairTech`): סך מחירי התיקונים שלו.
+
+</div>
+
+```sql
+SELECT   RepairTech, SUM(RepairPrice) AS Total
+FROM     Repairs
+GROUP BY RepairTech;
+```
+
+<div dir="rtl">
+
+| RepairTech | Total |
+|---|---|
+| 1 | 1340 |
+| 2 | 920 |
+| 3 | 3330 |
+| 4 | 1010 |
+| 5 | 2240 |
+| 6 | 350 |
+| 7 | 740 |
+
+**התוצאה: 7 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 3. 🟡 סוגי מכשירים (`RepairDev`) שתוקנו 3 פעמים או יותר.
+
+</div>
+
+```sql
+SELECT   RepairDev, COUNT(*) AS Repairs
+FROM     Repairs
+GROUP BY RepairDev
+HAVING   COUNT(*) >= 3;
+```
+
+<div dir="rtl">
+
+| RepairDev | Repairs |
+|---|---|
+| 10 | 5 |
+| 20 | 4 |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 4. 🟡 לכל עיר (`TechCity`): מספר הטכנאים והשכר הממוצע לשעה.
+
+</div>
+
+```sql
+SELECT   TechCity, COUNT(*) AS Techs, AVG(HourWage) AS AvgWage
+FROM     Technicians
+GROUP BY TechCity;
+```
+
+<div dir="rtl">
+
+| TechCity | Techs | AvgWage |
+|---|---|---|
+| 1 | 3 | 90.67 |
+| 2 | 1 | 80.0 |
+| 4 | 1 | 80.0 |
+| 5 | 1 | 88.0 |
+| 6 | 1 | 65.0 |
+
+**התוצאה: 5 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 5. 🟡 השלימו את הערכים בטבלה שתתקבל.
+
+</div>
+
+```sql
+SELECT   BenchFloor, COUNT(*)
+FROM     Benches
+GROUP BY BenchFloor;
+```
+
+<div dir="rtl">
+
+| BenchFloor | COUNT(*) |
+|---|---|
+| 1 | 2 |
+| 2 | 3 |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 6. 🔴
+
+</div>
+
+```sql
+SELECT   RepairTech, COUNT(*) AS N
+FROM     Repairs
+WHERE    DoneDate IS NULL
+GROUP BY RepairTech;
+```
+
+<div dir="rtl">
+
+| RepairTech | N |
+|---|---|
+| 1 | 1 |
+| 3 | 1 |
+| 4 | 1 |
+
+**התוצאה: 3 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 7. 🔴 השלימו כך שיוצגו הטכנאים שהמחיר הממוצע של התיקונים שלהם מעל 600.
+
+</div>
+
+```sql
+SELECT   RepairTech, AVG(RepairPrice)
+FROM     Repairs
+GROUP BY RepairTech
+HAVING   AVG(RepairPrice) > 600;
+```
+
+<div dir="rtl">
+
+| RepairTech | AVG(RepairPrice) |
+|---|---|
+| 3 | 1110.0 |
+| 5 | 1120.0 |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
 ---
 
 ## 🏠 תרגול נוסף — 🏫 בית הספר "עתיד"
@@ -541,6 +943,105 @@ ORDER BY ClassCode;
 | 105 | M | 2 |
 
 **התוצאה: 11 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 7. 🟢 כמה כיתות יש בכל שכבה?
+
+</div>
+
+```sql
+SELECT   Grade, COUNT(*) AS Classes
+FROM     Classes
+GROUP BY Grade;
+```
+
+<div dir="rtl">
+
+| Grade | Classes |
+|---|---|
+| 10 | 2 |
+| 11 | 2 |
+| 12 | 1 |
+
+**התוצאה: 3 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 8. 🟡 לכל עיר (`CityCode`): כמה תלמידים, רק ערים עם 3 תלמידים ומעלה.
+
+</div>
+
+```sql
+SELECT   CityCode, COUNT(*) AS Students
+FROM     Students
+GROUP BY CityCode
+HAVING   COUNT(*) >= 3;
+```
+
+<div dir="rtl">
+
+| CityCode | Students |
+|---|---|
+| 1 | 3 |
+| 2 | 3 |
+| 4 | 4 |
+| 6 | 3 |
+
+**התוצאה: 4 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 9. 🟡 לכל מחצית: מספר הציונים והציון הממוצע (מעוגל).
+
+</div>
+
+```sql
+SELECT   Term, COUNT(Grade) AS Grades, ROUND(AVG(Grade), 1) AS AvgGrade
+FROM     Grades
+GROUP BY Term;
+```
+
+<div dir="rtl">
+
+| Term | Grades | AvgGrade |
+|---|---|---|
+| 1 | 50 | 77.7 |
+| 2 | 8 | 79.8 |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 10. 🔴 תלמידים שהציון הנמוך ביותר שלהם במחצית 1 הוא מתחת ל‑55.
+
+</div>
+
+```sql
+SELECT   StudentId, MIN(Grade) AS Lowest
+FROM     Grades
+WHERE    Term = 1
+GROUP BY StudentId
+HAVING   MIN(Grade) < 55;
+```
+
+<div dir="rtl">
+
+| StudentId | Lowest |
+|---|---|
+| 1004 | 48 |
+| 1009 | 54 |
+| 1012 | 42 |
+
+**התוצאה: 3 שורות**
 
 </div>
 

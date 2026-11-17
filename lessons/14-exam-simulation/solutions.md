@@ -110,6 +110,52 @@ FROM   Clubs;
 
 <div dir="rtl">
 
+### שאלה 5
+
+</div>
+
+```sql
+SELECT COUNT(*)
+FROM   ClubMembers
+WHERE  ClubNum IN (SELECT ClubCode FROM Clubs WHERE Sport = 'כדורגל');
+```
+
+<div dir="rtl">
+
+| COUNT(*) |
+|---|
+| 6 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### שאלה 6
+
+</div>
+
+```sql
+SELECT   Sport, MIN(Price)
+FROM     Clubs
+GROUP BY Sport
+HAVING   COUNT(*) = 2;
+```
+
+<div dir="rtl">
+
+| Sport | MIN(Price) |
+|---|---|
+| כדורגל | 150 |
+| שחייה | 220 |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
 ---
 
 ## ✏️ תרגילים — ⚽ חוגי ספורט עירוניים
@@ -511,6 +557,424 @@ SELECT MemberId, FirstName, Phone FROM Members LIMIT 3;
 
 <div dir="rtl">
 
+### 15. 🟢 החברים שהצטרפו בשנת 2025, לפי שם משפחה.
+
+</div>
+
+```sql
+SELECT FirstName, LastName
+FROM   Members
+WHERE  JoinYear = 2025
+ORDER BY LastName;
+```
+
+<div dir="rtl">
+
+| FirstName | LastName |
+|---|---|
+| עומר | ביטון |
+| כרים | חלבי |
+| מאיה | לוי |
+| ג'וד | מנסור |
+
+**התוצאה: 4 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 16. 🟡 לכל עיר (שם): כמה חברים גרים בה, כולל ערים בלי חברים.
+
+</div>
+
+```sql
+SELECT    CityName, COUNT(MemberId) AS Members
+FROM      Cities
+LEFT JOIN Members ON CityCode = TownCode
+GROUP BY  CityName;
+```
+
+<div dir="rtl">
+
+| CityName | Members |
+|---|---|
+| חיפה | 2 |
+| ירכא | 4 |
+| כרמיאל | 2 |
+| נהריה | 2 |
+| עכו | 2 |
+| שפרעם | 0 |
+
+**התוצאה: 6 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 17. 🟡 חברים (שמות) שאינם רשומים לאף חוג כדורגל.
+
+</div>
+
+```sql
+SELECT FirstName, LastName
+FROM   Members
+WHERE  MemberId NOT IN (SELECT MemberNum FROM ClubMembers, Clubs
+                       WHERE  ClubNum = ClubCode AND Sport = 'כדורגל');
+```
+
+<div dir="rtl">
+
+| FirstName | LastName |
+|---|---|
+| נור | עזאם |
+| מאיה | לוי |
+| סאלי | חסון |
+| שירה | כהן |
+| תמר | שושן |
+| ג'וד | מנסור |
+
+**התוצאה: 6 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 18. 🔴 החוג (או החוגים) עם הכי הרבה חברים.
+
+</div>
+
+```sql
+CREATE VIEW Q1 AS
+SELECT   ClubNum, COUNT(*) AS N
+FROM     ClubMembers
+GROUP BY ClubNum;
+
+SELECT ClubName, N
+FROM   Q1, Clubs
+WHERE  ClubNum = ClubCode AND N = (SELECT MAX(N) FROM Q1);
+```
+
+<div dir="rtl">
+
+| ClubName | N |
+|---|---|
+| כדורגל צעירים | 4 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 19. 🔴 הגיל הממוצע של החברים בכל ענף (`Sport`), מעוגל לספרה אחת.
+
+</div>
+
+```sql
+SELECT   Sport, ROUND(AVG(Age), 1) AS AvgAge
+FROM     Clubs, ClubMembers, Members
+WHERE    ClubCode = ClubNum AND MemberNum = MemberId
+GROUP BY Sport;
+```
+
+<div dir="rtl">
+
+| Sport | AvgAge |
+|---|---|
+| ג'ודו | 14.7 |
+| טניס | 16.0 |
+| כדורגל | 14.7 |
+| כדורסל | 16.0 |
+| שחייה | 15.3 |
+
+**התוצאה: 5 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 20. 🟡 מחקו את החבר 1012 מכל החוגים.
+
+</div>
+
+```sql
+DELETE FROM ClubMembers
+WHERE  MemberNum = 1012;
+```
+
+<div dir="rtl">
+
+בדיקה:
+
+</div>
+
+```sql
+SELECT COUNT(*) AS Left FROM ClubMembers;
+```
+
+<div dir="rtl">
+
+| Left |
+|---|
+| 17 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+---
+
+## 🎓 בסגנון הבחינה — 🔧 מעבדת "דלתא‑טק"
+
+</div>
+
+<div dir="rtl">
+
+### 1. 🟢 התיקונים שעדיין פתוחים (`DoneDate` ריק), לפי תאריך קבלה.
+
+</div>
+
+```sql
+SELECT RepairNum, CustName, InDate
+FROM   Repairs
+WHERE  DoneDate IS NULL
+ORDER BY InDate;
+```
+
+<div dir="rtl">
+
+| RepairNum | CustName | InDate |
+|---|---|---|
+| 1004 | שירה לוי | 2026-02-14 |
+| 1008 | עומר ביטון | 2026-04-05 |
+| 1014 | הילה פרץ | 2026-07-03 |
+
+**התוצאה: 3 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 2. 🟢 הטכנאים מירכא (לפי שם העיר).
+
+</div>
+
+```sql
+SELECT TechFirst, TechLast
+FROM   Technicians, Cities
+WHERE  TechCity = CityCode AND CityName = 'ירכא';
+```
+
+<div dir="rtl">
+
+| TechFirst | TechLast |
+|---|---|
+| נביל | סרחאן |
+| דנה | כהן |
+| סאמר | חלבי |
+
+**התוצאה: 3 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 3. 🟡 לכל משפחת מכשירים: מספר התיקונים וסך המחירים.
+
+</div>
+
+```sql
+SELECT   DevFamily, COUNT(*) AS Repairs, SUM(RepairPrice) AS Total
+FROM     Repairs, DevTypes
+WHERE    RepairDev = DevCode
+GROUP BY DevFamily;
+```
+
+<div dir="rtl">
+
+| DevFamily | Repairs | Total |
+|---|---|---|
+| לבישים | 3 | 540 |
+| מחשבים | 6 | 6390 |
+| סלולר | 7 | 3000 |
+
+**התוצאה: 3 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 4. 🟡
+
+</div>
+
+```sql
+SELECT DISTINCT TechFirst
+FROM   Technicians, Repairs
+WHERE  TechCode = RepairTech AND Priority = 'דחוף';
+```
+
+<div dir="rtl">
+
+| TechFirst |
+|---|
+| חוסאם |
+| נביל |
+| סאמר |
+
+**התוצאה: 3 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 5. 🟡 השלימו את הערכים.
+
+</div>
+
+```sql
+SELECT COUNT(*), SUM(UseQty)
+FROM   PartUsage
+WHERE  UsePart = 101;
+```
+
+<div dir="rtl">
+
+| COUNT(*) | SUM(UseQty) |
+|---|---|
+| 5 | 5 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 6. 🔴 שם הלקוח, שם החלף ומחיר החלף — לכל חלף שהוחלף בתיקון של מחשב נייד (4 טבלאות).
+
+</div>
+
+```sql
+SELECT CustName, PartName, PartPrice
+FROM   Repairs, PartUsage, Parts, DevTypes
+WHERE  RepairNum = UseRepair AND UsePart = PartCode
+  AND  RepairDev = DevCode AND DevName = 'מחשב נייד';
+```
+
+<div dir="rtl">
+
+| CustName | PartName | PartPrice |
+|---|---|---|
+| מאיה כהן | סוללה | 180 |
+| מאיה כהן | מקלדת | 220 |
+| עומר ביטון | מסך | 450 |
+| עומר ביטון | מקלדת | 220 |
+| אלון כהן | סוללה | 180 |
+| אלון כהן | מקלדת | 220 |
+| אורי שמש | מסך | 450 |
+| אורי שמש | מצלמה | 160 |
+
+**התוצאה: 8 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 7. 🔴 טכנאים (שמות) שהמחיר הממוצע של התיקונים שלהם גבוה מהממוצע הכללי.
+
+</div>
+
+```sql
+SELECT   TechFirst, TechLast, AVG(RepairPrice) AS AvgPrice
+FROM     Technicians, Repairs
+WHERE    TechCode = RepairTech
+GROUP BY TechCode, TechFirst, TechLast
+HAVING   AVG(RepairPrice) > (SELECT AVG(RepairPrice) FROM Repairs);
+```
+
+<div dir="rtl">
+
+| TechFirst | TechLast | AvgPrice |
+|---|---|---|
+| חוסאם | זיאד | 1110.0 |
+| סאמר | חלבי | 1120.0 |
+
+**התוצאה: 2 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 8. 🟡 סגרו את התיקון 1004: עדכנו את `DoneDate` ל‑'2026-02-20'.
+
+</div>
+
+```sql
+UPDATE Repairs
+SET    DoneDate = '2026-02-20'
+WHERE  RepairNum = 1004;
+```
+
+<div dir="rtl">
+
+בדיקה:
+
+</div>
+
+```sql
+SELECT RepairNum, DoneDate FROM Repairs WHERE RepairNum = 1004;
+```
+
+<div dir="rtl">
+
+| RepairNum | DoneDate |
+|---|---|
+| 1004 | 2026-02-20 |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 9. 🔴 השלימו את הפקודה שמוחקת את החלפים שלא השתמשו בהם אף פעם.
+
+</div>
+
+```sql
+DELETE FROM Parts
+WHERE  PartCode NOT IN (SELECT UsePart FROM PartUsage);
+```
+
+<div dir="rtl">
+
+בדיקה:
+
+</div>
+
+```sql
+SELECT PartName FROM Parts;
+```
+
+<div dir="rtl">
+
+| PartName |
+|---|
+| מסך |
+| סוללה |
+| שקע טעינה |
+| רמקול |
+| מקלדת |
+| מצלמה |
+
+**התוצאה: 6 שורות**
+
+</div>
+
+<div dir="rtl">
+
 ---
 
 ## 🏠 תרגול נוסף — 📚 ספרייה עירונית
@@ -676,6 +1140,86 @@ WHERE  WriterCode = AuthorCode
 | אשה בורחת מבשורה | 640 | גרוסמן |
 
 **התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 7. 🟡 הסופרים שאין להם אף ספר בספרייה.
+
+</div>
+
+```sql
+SELECT AuthorFirstName, AuthorLastName
+FROM   Authors
+WHERE  AuthorCode NOT IN (SELECT WriterCode FROM Books);
+```
+
+<div dir="rtl">
+
+| AuthorFirstName | AuthorLastName |
+|---|---|
+| סמי | מיכאל |
+
+**התוצאה: שורה אחת**
+
+</div>
+
+<div dir="rtl">
+
+### 8. 🔴 לכל ז'אנר: מספר ההשאלות (רק ז'אנרים שהושאלו).
+
+</div>
+
+```sql
+SELECT   Genre, COUNT(*) AS Loans
+FROM     Books, Loans
+WHERE    BookCode = BookNum
+GROUP BY Genre;
+```
+
+<div dir="rtl">
+
+| Genre | Loans |
+|---|---|
+| ביוגרפיה | 1 |
+| מתח | 3 |
+| פנטזיה | 4 |
+| רומן | 6 |
+
+**התוצאה: 4 שורות**
+
+</div>
+
+<div dir="rtl">
+
+### 9. 🔴 הוסיפו לטבלת ההשאלות עמודה `Fine` (קנס) עם ברירת מחדל 0, ותנו קנס של 20 לכל השאלה שלא הוחזרה.
+
+</div>
+
+```sql
+ALTER TABLE Loans ADD COLUMN Fine INTEGER DEFAULT 0;
+UPDATE Loans SET Fine = 20 WHERE ReturnDate IS NULL;
+```
+
+<div dir="rtl">
+
+בדיקה:
+
+</div>
+
+```sql
+SELECT Fine, COUNT(*) AS Loans FROM Loans GROUP BY Fine;
+```
+
+<div dir="rtl">
+
+| Fine | Loans |
+|---|---|
+| 0 | 6 |
+| 20 | 8 |
+
+**התוצאה: 2 שורות**
 
 </div>
 
