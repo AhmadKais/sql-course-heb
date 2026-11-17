@@ -6,8 +6,8 @@
 > 
 > המאגר הזה בנוי בצורה מדורגת ב‑9 רמות קושי, מהשליפה הפשוטה ביותר ועד לשאלות מורכבות של בחינת מה"ט ומשרד החינוך.
 > 
-> **בסיס הנתונים לתרגול:** בית הספר למוזיקה "צלילים" ([`db/music.sql`](db/music.sql)).
-> **איך מתרגלים?** מעתיקים את תוכן הקובץ [`music.sql`](db/music.sql) ומדביקים ב‑[OneCompiler SQLite](https://onecompiler.com/sqlite) או ב‑[SQLite Online](https://sqliteonline.com/).
+> **בסיס הנתונים לתרגול:** בית הספר למוזיקה "צלילים" ([`music.sql`](../databases/music/)).
+> **איך מתרגלים?** מעתיקים את תוכן הקובץ [`music.sql`](../databases/music/) ומדביקים ב‑[OneCompiler SQLite](https://onecompiler.com/sqlite) או ב‑[SQLite Online](https://sqliteonline.com/).
 > **פתרונות מלאים:** [master-sql-practice-solutions.md](master-sql-practice-solutions.md)
 
 ---
